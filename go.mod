@@ -4,6 +4,7 @@ go 1.24.0
 
 require (
 	github.com/go-chi/chi/v5 v5.2.1
+	github.com/icholy/digest v1.1.0
 	resty.dev/v3 v3.0.0-beta.2
 )
 
