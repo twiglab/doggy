@@ -21,11 +21,11 @@ type HumanCountUploadData struct {
 }
 
 type DeviceRegisterData struct {
-	DeviceName    string
-	Manufacturer  string
-	DeviceType    string
-	SerialNumver  string
-	IpAddr        string
+	DeviceName    string `json:"DeviceName"`
+	Manufacturer  string `json:"Manufacturer"`
+	DeviceType    string `json:"DeviceType"`
+	SerialNumver  string `json:"SerialNumber"`
+	IpAddr        string `json:"IpAddr"`
 	DeviceVersion DeviceVersionData
 }
 
