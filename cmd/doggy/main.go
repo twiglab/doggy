@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -15,6 +16,11 @@ func main() {
 
 	mux.Put("/SDCEntry", doggy.DeviceRegisterUpload(h))
 	mux.Post("/SDCEntry", doggy.MetadataEntry(h))
+	mux.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("*******")
+		fmt.Println(r.Method)
+		fmt.Println(r.URL)
+	})
 
 	if err := http.ListenAndServe(":10005", mux); err != nil {
 		log.Fatal(err)
