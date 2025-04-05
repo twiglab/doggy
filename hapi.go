@@ -69,3 +69,20 @@ func DeviceRegisterUpload(h *HoleHandl) http.HandlerFunc {
 		}, w)
 	}
 }
+
+func MetadataEntry(h *HoleHandl) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		var data M
+		if err := Bind(r, &data); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		if err := h.HandleMeta(r.Context(), data); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
+		w.WriteHeader(http.StatusOK)
+	}
+}

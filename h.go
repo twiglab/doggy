@@ -3,14 +3,19 @@ package doggy
 import (
 	"context"
 	"fmt"
-	"log/slog"
 )
+
+type M map[string]any
 
 type HoleHandl struct {
 }
 
 func (h *HoleHandl) HandleRegister(ctx context.Context, data DeviceRegisterData) error {
-	slog.DebugContext(ctx, "register", "data", data)
+	fmt.Println(data)
+	return nil
+}
+
+func (h *HoleHandl) HandleMeta(ctx context.Context, data M) error {
 	fmt.Println(data)
 	return nil
 }

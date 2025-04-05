@@ -14,6 +14,7 @@ func main() {
 	mux := chi.NewMux()
 
 	mux.Put("/SDCEntry", doggy.DeviceRegisterUpload(h))
+	mux.Post("/SDCEntry", doggy.MetadataEntry(h))
 
 	if err := http.ListenAndServe(":10005", mux); err != nil {
 		log.Fatal(err)
