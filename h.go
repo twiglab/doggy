@@ -11,7 +11,12 @@ type HoleHandl struct {
 }
 
 func (h *HoleHandl) HandleRegister(ctx context.Context, data DeviceRegisterData) error {
-	fmt.Println(data)
+	fmt.Println(data.DeviceName)
+	fmt.Println(data.Manufacturer)
+	fmt.Println(data.DeviceType)
+	fmt.Println(data.SerialNumber)
+	fmt.Println(data.DeviceVersion)
+	fmt.Println(data.IpAddr)
 	return nil
 }
 

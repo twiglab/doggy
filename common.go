@@ -24,7 +24,7 @@ type DeviceRegisterData struct {
 	DeviceName    string `json:"DeviceName"`
 	Manufacturer  string `json:"Manufacturer"`
 	DeviceType    string `json:"DeviceType"`
-	SerialNumver  string `json:"SerialNumber"`
+	SerialNumber  string `json:"SerialNumber"`
 	IpAddr        string `json:"IpAddr"`
 	DeviceVersion DeviceVersionData
 }
