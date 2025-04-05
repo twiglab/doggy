@@ -3,6 +3,7 @@ package doggy
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -73,6 +74,7 @@ func DeviceRegisterUpload(h *HoleHandl) http.HandlerFunc {
 func MetadataEntry(h *HoleHandl) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		fmt.Println("xxxxxxxx")
 		var data M
 		if err := Bind(r, &data); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
