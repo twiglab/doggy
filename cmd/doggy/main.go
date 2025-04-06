@@ -23,7 +23,9 @@ func main() {
 		fmt.Println("*******")
 		fmt.Println(r.Method)
 		fmt.Println(r.URL)
+		fmt.Println(r.TLS != nil)
 		fmt.Println("*******")
+		fmt.Fprintf(w, "url = %s, meth = %s, ssl = %t", r.URL.String(), r.Method, r.TLS != nil)
 	})
 
 	if err := http.ListenAndServeTLS(":10005", "./cert.pem", "./key.pem", mux); err != nil {
