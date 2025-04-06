@@ -46,7 +46,7 @@ func DeviceRegisterUpload(h *HoleHandl) http.HandlerFunc {
 
 		fmt.Println(r.URL)
 		fmt.Println(r.Method)
-		fmt.Println(r.TLS)
+		fmt.Println(r.TLS != nil)
 
 		var data holo.DeviceRegisterData
 		if err := Bind(r, &data); err != nil {
