@@ -19,6 +19,7 @@ func (h *HoleHandl) HandleRegister(ctx context.Context, data holo.DeviceRegister
 	fmt.Println(data.SerialNumber)
 	fmt.Println(data.DeviceVersion)
 	fmt.Println(data.IpAddr)
+	fmt.Println("------------------------")
 	return nil
 }
 
