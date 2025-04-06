@@ -26,8 +26,14 @@ func main() {
 		fmt.Println("*******")
 	})
 
-	if err := http.ListenAndServe(":10005", mux); err != nil {
+	if err := http.ListenAndServeTLS(":10005", "./cert.pem", "./key.pem", mux); err != nil {
 		log.Fatal(err)
 	}
+
+	/*
+		if err := http.ListenAndServe(":10005", mux); err != nil {
+			log.Fatal(err)
+		}
+	*/
 
 }
