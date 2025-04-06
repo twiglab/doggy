@@ -3,6 +3,7 @@ package doggy
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/twiglab/doggy/holo"
 )
@@ -13,6 +14,7 @@ type HoleHandl struct {
 }
 
 func (h *HoleHandl) HandleRegister(ctx context.Context, data holo.DeviceRegisterData) error {
+	fmt.Println(time.Now())
 	fmt.Println(data.DeviceName)
 	fmt.Println(data.Manufacturer)
 	fmt.Println(data.DeviceType)
