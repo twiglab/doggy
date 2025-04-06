@@ -15,7 +15,10 @@ func main() {
 	mux := chi.NewMux()
 
 	mux.Put("/SDCEntry", doggy.DeviceRegisterUpload(h))
+
 	mux.Post("/SDCEntry", doggy.MetadataEntry(h))
+	mux.Post("/MetadataEntry", doggy.MetadataEntry(h))
+
 	mux.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("*******")
 		fmt.Println(r.Method)
