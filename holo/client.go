@@ -8,13 +8,13 @@ type HoloSens struct {
 	client *resty.Client
 }
 
-func (h *HoloSens) MetadataSubscripton(req MetaSubReq) error {
-	cr := &CommonResponse{}
+func (h *HoloSens) MetadataSubscripton(req MetadataSubscriptionReq) error {
+	cr := CommonResponse{}
 
 	_, err := h.client.R().
 		SetBody(req).
-		SetResult(cr).
-		SetError(cr).
+		SetResult(&cr).
+		SetError(&cr).
 		Post("")
 
 	if err != nil {

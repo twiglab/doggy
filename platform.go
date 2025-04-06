@@ -10,10 +10,10 @@ import (
 
 type M map[string]any
 
-type HoleHandl struct {
+type HoloHandle struct {
 }
 
-func (h *HoleHandl) HandleRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
+func (h *HoloHandle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
 	fmt.Println(time.Now())
 	fmt.Println(data.DeviceName)
 	fmt.Println(data.Manufacturer)
@@ -25,7 +25,7 @@ func (h *HoleHandl) HandleRegister(ctx context.Context, data holo.DeviceAutoRegi
 	return nil
 }
 
-func (h *HoleHandl) HandleMeta(ctx context.Context, data M) error {
+func (h *HoloHandle) HandleMeta(ctx context.Context, data M) error {
 	fmt.Println(data)
 	return nil
 }

@@ -31,3 +31,13 @@ type HumanCountUploadData struct {
 	Common     MetaCommonData       `json:"common"`
 	TargetList []MetaHumanCountData `json:"targetList"`
 }
+
+// 2.6.4
+
+type SubscripionItemData struct {
+	ID int `json:"id"`
+}
+
+type SubscripionsData struct {
+	Subscripions []SubscripionItemData `json:"subscriptions"`
+}

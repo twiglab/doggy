@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/twiglab/doggy/holo"
 )
 
@@ -41,7 +42,7 @@ func HumanCountUpload() http.HandlerFunc {
 	}
 }
 
-func DeviceRegisterUpload(h *HoleHandl) http.HandlerFunc {
+func DeviceAutoRegisterUpload(h *HoloHandle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println(r.URL)
@@ -58,7 +59,7 @@ func DeviceRegisterUpload(h *HoleHandl) http.HandlerFunc {
 			return
 		}
 
-		if err := h.HandleRegister(r.Context(), data); err != nil {
+		if err := h.HandleAutoRegister(r.Context(), data); err != nil {
 			_ = JsonTo(http.StatusInternalServerError, &holo.CommonResponse{
 				RequestUrl:   "/SDCEntry",
 				StatusCode:   -1,
@@ -75,7 +76,7 @@ func DeviceRegisterUpload(h *HoleHandl) http.HandlerFunc {
 	}
 }
 
-func MetadataEntry(h *HoleHandl) http.HandlerFunc {
+func MetadataEntryUpload(h *HoloHandle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println("*******")
@@ -96,4 +97,29 @@ func MetadataEntry(h *HoleHandl) http.HandlerFunc {
 
 		w.WriteHeader(http.StatusOK)
 	}
+}
+
+func PlatformHandle(h *HoloHandle) http.Handler {
+	mux := chi.NewMux()
+
+	mux.Put("/SDCEntry", DeviceAutoRegisterUpload(h))
+	mux.Put("/nat", DeviceAutoRegisterUpload(h))
+
+	mux.Post("/SDCEntry", MetadataEntryUpload(h))
+	mux.Post("/MetadataEntry", MetadataEntryUpload(h))
+
+	mux.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "pong")
+	})
+
+	mux.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("*******")
+		fmt.Println(r.Method)
+		fmt.Println(r.URL)
+		fmt.Println(r.TLS != nil)
+		fmt.Println("*******")
+		fmt.Fprintf(w, "url = %s, meth = %s, ssl = %t", r.URL.String(), r.Method, r.TLS != nil)
+	})
+
+	return mux
 }

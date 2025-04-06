@@ -10,14 +10,14 @@ import (
 )
 
 func main() {
-	h := &doggy.HoleHandl{}
+	h := &doggy.HoloHandle{}
 
 	mux := chi.NewMux()
 
-	mux.Put("/SDCEntry", doggy.DeviceRegisterUpload(h))
+	mux.Put("/SDCEntry", doggy.DeviceAutoRegisterUpload(h))
 
-	mux.Post("/SDCEntry", doggy.MetadataEntry(h))
-	mux.Post("/MetadataEntry", doggy.MetadataEntry(h))
+	mux.Post("/SDCEntry", doggy.MetadataEntryUpload(h))
+	mux.Post("/MetadataEntry", doggy.MetadataEntryUpload(h))
 
 	mux.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("*******")
