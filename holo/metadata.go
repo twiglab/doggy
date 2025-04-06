@@ -41,3 +41,11 @@ type SubscripionItemData struct {
 type SubscripionsData struct {
 	Subscripions []SubscripionItemData `json:"subscriptions"`
 }
+
+func (s SubscripionsData) IsEmpty() bool {
+	return len(s.Subscripions) == 0
+}
+
+func (s SubscripionsData) Size() int {
+	return len(s.Subscripions)
+}

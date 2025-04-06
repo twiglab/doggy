@@ -11,6 +11,7 @@ import (
 type M map[string]any
 
 type HoloHandle struct {
+	Conf holo.DeviceConfig
 }
 
 func (h *HoloHandle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
@@ -22,7 +23,24 @@ func (h *HoloHandle) HandleAutoRegister(ctx context.Context, data holo.DeviceAut
 	fmt.Println(data.DeviceVersion)
 	fmt.Println(data.IpAddr)
 	fmt.Println("------------------------")
-	return nil
+
+	device := holo.NewDevice(data.IpAddr, h.Conf)
+	defer device.Close()
+
+	subscriptions, err := device.GetMetadataSubscription(ctx)
+	if err != nil {
+		return err
+	}
+
+	if subscriptions.Size() != 0 {
+		return nil
+	}
+
+	_, err = device.MetadataSubscription(ctx, holo.MetadataSubscriptionReq{
+		TimeOut:     0,
+		HttpsEnable: 1,
+	})
+	return err
 }
 
 func (h *HoloHandle) HandleMeta(ctx context.Context, data M) error {
