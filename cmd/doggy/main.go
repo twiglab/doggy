@@ -28,14 +28,14 @@ func main() {
 		fmt.Fprintf(w, "url = %s, meth = %s, ssl = %t", r.URL.String(), r.Method, r.TLS != nil)
 	})
 
-	if err := http.ListenAndServeTLS(":10005", "./cert/server.crt", "./cert/server.key", mux); err != nil {
-		log.Fatal(err)
-	}
-
 	/*
-		if err := http.ListenAndServe(":10005", mux); err != nil {
+		if err := http.ListenAndServeTLS(":10005", "./cert/server.crt", "./cert/server.key", mux); err != nil {
 			log.Fatal(err)
 		}
 	*/
+
+	if err := http.ListenAndServe(":10005", mux); err != nil {
+		log.Fatal(err)
+	}
 
 }

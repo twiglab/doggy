@@ -13,7 +13,7 @@ type M map[string]any
 type HoleHandl struct {
 }
 
-func (h *HoleHandl) HandleRegister(ctx context.Context, data holo.DeviceRegisterData) error {
+func (h *HoleHandl) HandleRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
 	fmt.Println(time.Now())
 	fmt.Println(data.DeviceName)
 	fmt.Println(data.Manufacturer)

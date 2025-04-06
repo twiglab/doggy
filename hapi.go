@@ -48,7 +48,7 @@ func DeviceRegisterUpload(h *HoleHandl) http.HandlerFunc {
 		fmt.Println(r.Method)
 		fmt.Println(r.TLS != nil)
 
-		var data holo.DeviceRegisterData
+		var data holo.DeviceAutoRegisterData
 		if err := Bind(r, &data); err != nil {
 			_ = JsonTo(http.StatusInternalServerError, &holo.CommonResponse{
 				RequestUrl:   "/SDCEntry",
