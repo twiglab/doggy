@@ -44,6 +44,9 @@ func HumanCountUpload() http.HandlerFunc {
 func DeviceRegisterUpload(h *HoleHandl) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		fmt.Println(r.URL)
+		fmt.Println(r.URL.Scheme)
+
 		var data holo.DeviceRegisterData
 		if err := Bind(r, &data); err != nil {
 			_ = JsonTo(http.StatusInternalServerError, &holo.CommonResponse{
