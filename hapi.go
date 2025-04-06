@@ -31,7 +31,7 @@ func Bind(r *http.Request, p any) error {
 
 func HumanCountUpload() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var data HumanCountUploadData
+		var data holo.HumanCountUploadData
 		if err := Bind(r, &data); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -44,7 +44,7 @@ func HumanCountUpload() http.HandlerFunc {
 func DeviceRegisterUpload(h *HoleHandl) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		var data DeviceRegisterData
+		var data holo.DeviceRegisterData
 		if err := Bind(r, &data); err != nil {
 			_ = JsonTo(http.StatusInternalServerError, &holo.CommonResponse{
 				RequestUrl:   "/SDCEntry",

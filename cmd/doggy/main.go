@@ -20,6 +20,7 @@ func main() {
 		fmt.Println("*******")
 		fmt.Println(r.Method)
 		fmt.Println(r.URL)
+		fmt.Println("*******")
 	})
 
 	if err := http.ListenAndServe(":10005", mux); err != nil {

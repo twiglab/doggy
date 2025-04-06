@@ -3,6 +3,8 @@ package doggy
 import (
 	"context"
 	"fmt"
+
+	"github.com/twiglab/doggy/holo"
 )
 
 type M map[string]any
@@ -10,7 +12,7 @@ type M map[string]any
 type HoleHandl struct {
 }
 
-func (h *HoleHandl) HandleRegister(ctx context.Context, data DeviceRegisterData) error {
+func (h *HoleHandl) HandleRegister(ctx context.Context, data holo.DeviceRegisterData) error {
 	fmt.Println(data.DeviceName)
 	fmt.Println(data.Manufacturer)
 	fmt.Println(data.DeviceType)
