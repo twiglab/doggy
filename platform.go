@@ -12,6 +12,7 @@ type M map[string]any
 
 type HoloHandle struct {
 	Conf holo.DeviceConfig
+	// log  *slog.Logger
 }
 
 func (h *HoloHandle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
