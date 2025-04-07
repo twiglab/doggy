@@ -8,10 +8,11 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
+
 type M map[string]any
 
 type HoloHandle struct {
-	Conf holo.DeviceConfig
+	Conf holo.DeviceCommonConfig
 	// log  *slog.Logger
 }
 

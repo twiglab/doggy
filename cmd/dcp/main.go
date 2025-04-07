@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/twiglab/doggy"
 )
 
@@ -13,6 +14,7 @@ func main() {
 	h := &doggy.HoloHandle{}
 
 	mux := chi.NewMux()
+	mux.Use(middleware.Logger, middleware.Recoverer)
 
 	mux.Put("/SDCEntry", doggy.DeviceAutoRegisterUpload(h))
 

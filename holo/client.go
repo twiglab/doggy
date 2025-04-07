@@ -14,11 +14,17 @@ const (
 // metadata_subscription = "/SDCAPI/V2.0/Metadata/Subscription"
 )
 
-type DeviceConfig struct {
+type PlatformConfig struct {
+	BaseURL string
+	Address string
+	Port    int
+
+	DeviceCommonConfig DeviceCommonConfig
+}
+
+type DeviceCommonConfig struct {
 	Username string
 	Password string
-
-	PlatformUrl string
 }
 
 type Device struct {
@@ -26,11 +32,11 @@ type Device struct {
 
 	addr string
 
-	config DeviceConfig
+	config PlatformConfig
 }
 
-func NewDevice(addr string, conf DeviceConfig) *Device {
-	c := resty.New().SetDigestAuth(conf.Username, conf.Password)
+func NewDevice(addr string, conf PlatformConfig) *Device {
+	c := resty.New().SetDigestAuth(conf.DeviceCommonConfig.Username, conf.DeviceCommonConfig.Password)
 	return &Device{
 		client: c,
 		addr:   addr,
