@@ -8,11 +8,30 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
+func subUrl(addr string, port int, path string) string {
+	return fmt.Sprintf("https://%s:%d%s", addr, port, path)
+}
+
+type PlatformConfig struct {
+	BaseURL string
+	Address string
+	Port    int
+}
+
+type DeviceResolve struct {
+	Username string
+	Password string
+}
+
+func (d *DeviceResolve) Resolve(data holo.DeviceAutoRegisterData) (*holo.Device, error) {
+	return holo.OpenDevice(data.IpAddr, d.Username, d.Password)
+}
 
 type M map[string]any
 
 type HoloHandle struct {
-	Conf holo.DeviceCommonConfig
+	Conf    PlatformConfig
+	Resolve *DeviceResolve
 	// log  *slog.Logger
 }
 
@@ -26,7 +45,11 @@ func (h *HoloHandle) HandleAutoRegister(ctx context.Context, data holo.DeviceAut
 	fmt.Println(data.IpAddr)
 	fmt.Println("------------------------")
 
-	device := holo.NewDevice(data.IpAddr, h.Conf)
+	device, err := h.Resolve.Resolve(data)
+	if err != nil {
+		return err
+	}
+
 	defer device.Close()
 
 	subscriptions, err := device.GetMetadataSubscription(ctx)
@@ -39,8 +62,11 @@ func (h *HoloHandle) HandleAutoRegister(ctx context.Context, data holo.DeviceAut
 	}
 
 	_, err = device.MetadataSubscription(ctx, holo.MetadataSubscriptionReq{
+		Address:     h.Conf.Address,
+		Port:        h.Conf.Port,
 		TimeOut:     0,
 		HttpsEnable: 1,
+		MetadataURL: "/MetadataEntry",
 	})
 	return err
 }

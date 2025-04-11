@@ -2,46 +2,41 @@ package holo
 
 import (
 	"context"
+	"fmt"
 
 	"resty.dev/v3"
 )
 
-func url(addr, path string) string {
-	return "https://" + addr + path
+func clientUrl(addr, path string) string {
+	url := "https://" + addr + path
+	fmt.Println("client url = " + url)
+	return url
 }
 
 const (
 // metadata_subscription = "/SDCAPI/V2.0/Metadata/Subscription"
 )
 
-type PlatformConfig struct {
-	BaseURL string
-	Address string
-	Port    int
-
-	DeviceCommonConfig DeviceCommonConfig
-}
-
-type DeviceCommonConfig struct {
-	Username string
-	Password string
+type PlatformInfo struct {
 }
 
 type Device struct {
-	client *resty.Client
+	client  *resty.Client
+	isClose bool
 
 	addr string
-
-	config PlatformConfig
 }
 
-func NewDevice(addr string, conf PlatformConfig) *Device {
-	c := resty.New().SetDigestAuth(conf.DeviceCommonConfig.Username, conf.DeviceCommonConfig.Password)
+func OpenDevice(addr, username, password string) (*Device, error) {
+	c := resty.New().SetDigestAuth(username, password)
 	return &Device{
 		client: c,
 		addr:   addr,
-		config: conf,
-	}
+	}, nil
+}
+
+func CloseDevice(d *Device) error {
+	return d.Close()
 }
 
 func (h *Device) MetadataSubscription(ctx context.Context, req MetadataSubscriptionReq) (*CommonResponseID, error) {
@@ -51,7 +46,7 @@ func (h *Device) MetadataSubscription(ctx context.Context, req MetadataSubscript
 		SetBody(req).
 		SetResult(cr).
 		SetError(cr).
-		Post(url(h.addr, "/SDCAPI/V2.0/Metadata/Subscription"))
+		Post(clientUrl(h.addr, "/SDCAPI/V2.0/Metadata/Subscription"))
 
 	if err != nil {
 		return cr, err
@@ -69,7 +64,7 @@ func (h *Device) GetMetadataSubscription(ctx context.Context) (*SubscripionsData
 
 	_, err := h.client.R().
 		SetResult(data).
-		Get(url(h.addr, "/SDCAPI/V2.0/Metadata/Subscription"))
+		Get(clientUrl(h.addr, "/SDCAPI/V2.0/Metadata/Subscription"))
 
 	if err != nil {
 		return data, err
@@ -79,5 +74,8 @@ func (h *Device) GetMetadataSubscription(ctx context.Context) (*SubscripionsData
 }
 
 func (h *Device) Close() error {
-	return h.client.Close()
+	if !h.isClose {
+		return h.client.Close()
+	}
+	return nil
 }
