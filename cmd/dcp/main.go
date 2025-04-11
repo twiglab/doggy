@@ -11,7 +11,17 @@ import (
 )
 
 func main() {
-	h := &doggy.HoloHandle{}
+
+	h := &doggy.HoloHandle{
+		Conf: doggy.PlatformConfig{
+			Address: "",
+			Port:    0,
+		},
+
+		Resolve: &doggy.DeviceResolve{
+			Username: "",
+			Password: "",
+		}}
 
 	mux := chi.NewMux()
 	mux.Use(middleware.Logger, middleware.Recoverer)
