@@ -14,17 +14,17 @@ func main() {
 
 	h := &doggy.HoloHandle{
 		Conf: doggy.PlatformConfig{
-			Address: "",
-			Port:    0,
+			Address: "106.14.44.188",
+			Port:    10005,
 		},
 
 		Resolve: &doggy.DeviceResolve{
-			Username: "",
-			Password: "",
+			Username: "ApiAdmin",
+			Password: "Aaa1234%%",
 		}}
 
 	mux := chi.NewMux()
-	mux.Use(middleware.Logger, middleware.Recoverer)
+	mux.Use(middleware.Logger, middleware.Recoverer, middleware.RequestID)
 
 	mux.Put("/SDCEntry", doggy.DeviceAutoRegisterUpload(h))
 
@@ -40,14 +40,14 @@ func main() {
 		fmt.Fprintf(w, "url = %s, meth = %s, ssl = %t", r.URL.String(), r.Method, r.TLS != nil)
 	})
 
+	if err := http.ListenAndServeTLS(":10005", "/home/mikewang/ssl/server.crt", "/home.mikewang/ssl/server.key", mux); err != nil {
+		log.Fatal(err)
+	}
+
 	/*
-		if err := http.ListenAndServeTLS(":10005", "./cert/server.crt", "./cert/server.key", mux); err != nil {
+		if err := http.ListenAndServe(":10005", mux); err != nil {
 			log.Fatal(err)
 		}
 	*/
-
-	if err := http.ListenAndServe(":10005", mux); err != nil {
-		log.Fatal(err)
-	}
 
 }

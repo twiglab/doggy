@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -45,10 +46,6 @@ func HumanCountUpload() http.HandlerFunc {
 func DeviceAutoRegisterUpload(h *HoloHandle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		fmt.Println(r.URL)
-		fmt.Println(r.Method)
-		fmt.Println(r.TLS != nil)
-
 		var data holo.DeviceAutoRegisterData
 		if err := Bind(r, &data); err != nil {
 			_ = JsonTo(http.StatusInternalServerError, &holo.CommonResponse{
@@ -57,6 +54,14 @@ func DeviceAutoRegisterUpload(h *HoloHandle) http.HandlerFunc {
 				StatusString: err.Error(),
 			}, w)
 			return
+		}
+
+		// fix SDC ver < 9.0.0
+		if data.IpAddr == "" {
+			if ip, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
+				fmt.Println("use RemoteIP = ", ip)
+				data.IpAddr = ip
+			}
 		}
 
 		if err := h.HandleAutoRegister(r.Context(), data); err != nil {
@@ -78,12 +83,6 @@ func DeviceAutoRegisterUpload(h *HoloHandle) http.HandlerFunc {
 
 func MetadataEntryUpload(h *HoloHandle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
-		fmt.Println("*******")
-		fmt.Println("xxxxxxxx")
-		fmt.Println(r.Method)
-		fmt.Println(r.URL)
-		fmt.Println("*******")
 
 		var data M
 		if err := Bind(r, &data); err != nil {
