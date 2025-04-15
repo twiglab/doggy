@@ -1,7 +1,7 @@
 package holo
 
 // 2.6.1
-type MetadataSubscriptionReq struct {
+type SubscriptionReq struct {
 	Address     string `json:"address"`
 	Port        int    `json:"port"`
 	TimeOut     int    `json:"timeOut"`
@@ -12,40 +12,47 @@ type MetadataSubscriptionReq struct {
 }
 
 // 2.6.9
-type MetaCommonData struct {
+type Common struct {
 	UUID     string `json:"UUID"`
 	DeviceID string `json:"deviceID"`
 }
 
-type MetaHumanCountData struct {
-	TargetType           int `json:"targetType"` // 元数据类型，2.6.9取值为15
-	HumanCountIn         int `json:"humanCountIn"`
-	HumanCountOut        int `json:"humanCountOut"`
-	StartTime            int `json:"startTime"`
-	EndTime              int `json:"endTime"`
-	TimeZone             int `json:"timeZone"`
-	DayLightSavingOffset int `json:"dayLightSavingOffset"` //夏令时偏移（秒）
+type HumanMix struct {
+	TargetType    int   `json:"targetType"` // 元数据类型，2.6.9为15, 2.6.7为12
+	HumanCountIn  int   `json:"humanCountIn"`
+	HumanCountOut int   `json:"humanCountOut"`
+	StartTime     int64 `json:"startTime"`
+	EndTime       int64 `json:"endTime"`
+	TimeZone      int   `json:"timeZone"`
+	// DayLightSavingOffset int   `json:"dayLightSavingOffset"` //夏令时偏移（秒）
+
+	HumanCount int `json:"humanCount"`
+	AreaRatio  int `json:"areaRatio"`
 }
 
-type HumanCountUploadData struct {
-	Common     MetaCommonData       `json:"common"`
-	TargetList []MetaHumanCountData `json:"targetList"`
+type MetadataObject struct {
+	Common     Common     `json:"common"`
+	TargetList []HumanMix `json:"targetList"`
+}
+
+type MetadataObjectUpload struct {
+	MetadataObject MetadataObject `json:"metadataObject"`
 }
 
 // 2.6.4
 
-type SubscripionItemData struct {
+type SubscripionItem struct {
 	ID int `json:"id"`
 }
 
-type SubscripionsData struct {
-	Subscripions []SubscripionItemData `json:"subscriptions"`
+type Subscripions struct {
+	Subscripions []SubscripionItem `json:"subscriptions"`
 }
 
-func (s SubscripionsData) IsEmpty() bool {
+func (s Subscripions) IsEmpty() bool {
 	return len(s.Subscripions) == 0
 }
 
-func (s SubscripionsData) Size() int {
+func (s Subscripions) Size() int {
 	return len(s.Subscripions)
 }
