@@ -38,6 +38,6 @@ func (s *Svr) Run() error {
 	return s.hs.ListenAndServe()
 }
 
-func (s *Svr) RunT(cert, key string) error {
+func (s *Svr) RunTLS(cert, key string) error {
 	return s.hs.ListenAndServeTLS(cert, key)
 }

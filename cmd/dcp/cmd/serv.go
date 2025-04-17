@@ -22,12 +22,7 @@ import (
 var servCmd = &cobra.Command{
 	Use:   "serv",
 	Short: "启动dcp服务",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: `使用配置文件启动dcp服务`,
 	Run: func(cmd *cobra.Command, args []string) {
 		serv(cmd, args)
 	},
@@ -83,5 +78,5 @@ func runSvr(s *hx.Svr, cert, key string) error {
 	if cert == "" || key == "" {
 		return s.Run()
 	}
-	return s.RunT(cert, key)
+	return s.RunTLS(cert, key)
 }
