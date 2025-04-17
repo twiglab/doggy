@@ -61,22 +61,3 @@ func MetadataEntryUpload(h *HoloHandle) http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 	}
 }
-
-/*
-func MetadataEntryUpload(h *HoloHandle) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		var data M
-		if err := hx.Bind(r, &data); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if err := h.HandleMeta(r.Context(), data); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-
-		w.WriteHeader(http.StatusOK)
-	}
-}
-*/

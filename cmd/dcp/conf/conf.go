@@ -25,6 +25,6 @@ type App struct {
 	ID                 string             `yaml:"id" mapstructure:"id"`
 	PlatformConfig     PlatformConfig     `yaml:"platform" mapstructure:"platform"`
 	CommonDeviceConfig CommonDeviceConfig `yaml:"device" mapstructure:"device"`
-	Web                Web                `yaml:"server" mapstructure:"server"`
+	ServerConf         Web                `yaml:"server" mapstructure:"server"`
 	DB                 DB                 `yaml:"db" mapstructure:"db"`
 }

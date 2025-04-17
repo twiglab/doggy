@@ -68,8 +68,8 @@ func serv(cmd *cobra.Command, args []string) {
 	mux.Mount("/", pfHandle)
 	mux.Mount("/pf", pfHandle)
 
-	svr := hx.NewServ().SetAddr(config.Web.Addr).SetHandler(mux)
-	if err := runSvr(svr, config.Web.CertFile, config.Web.KeyFile); err != nil {
+	svr := hx.NewServ().SetAddr(config.ServerConf.Addr).SetHandler(mux)
+	if err := runSvr(svr, config.ServerConf.CertFile, config.ServerConf.KeyFile); err != nil {
 		log.Fatal(err)
 	}
 }

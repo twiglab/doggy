@@ -70,12 +70,9 @@ func (h *HoloHandle) HandleAutoRegister(ctx context.Context, data holo.DeviceAut
 func (h *HoloHandle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpload) error {
 	for _, target := range data.MetadataObject.TargetList {
 		if target.TargetType == 12 {
-			return nil
+			return h.handleHuman12(ctx, data.MetadataObject.Common, target)
 		}
 		if target.TargetType == 15 {
-			if target.HumanCountIn == 0 && target.HumanCountOut == 0 {
-				return nil
-			}
 			return h.handleHuman15(ctx, data.MetadataObject.Common, target)
 		}
 	}
@@ -83,7 +80,16 @@ func (h *HoloHandle) HandleMetadata(ctx context.Context, data holo.MetadataObjec
 }
 
 func (h *HoloHandle) handleHuman15(ctx context.Context, common holo.Common, target holo.HumanMix) error {
+	if target.HumanCountIn == 0 && target.HumanCountOut == 0 {
+		return nil
+	}
+
 	fmt.Println(target.HumanCountIn, target.HumanCountOut)
 	fmt.Println(time.UnixMilli(target.StartTime).Format(time.RFC3339), time.UnixMilli(target.EndTime).Format(time.RFC3339))
+
+	return nil
+}
+
+func (h *HoloHandle) handleHuman12(ctx context.Context, common holo.Common, target holo.HumanMix) error {
 	return nil
 }
