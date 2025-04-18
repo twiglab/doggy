@@ -5,8 +5,8 @@ package ent
 import (
 	"time"
 
-	"github.com/twiglab/doggy/db/ent/autoreg"
-	"github.com/twiglab/doggy/db/schema"
+	"github.com/twiglab/doggy/orm/ent/autoreg"
+	"github.com/twiglab/doggy/orm/schema"
 )
 
 // The init function reads all schema descriptors with runtime code

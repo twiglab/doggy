@@ -15,6 +15,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/twiglab/doggy/hx"
+	"github.com/twiglab/doggy/orm"
 
 	"github.com/twiglab/doggy/pf"
 )
@@ -85,6 +86,7 @@ func serv(cmd *cobra.Command, args []string) {
 		Resolver: pf.NewDeviceResolve(
 			config.PlatformConfig.CameraUser,
 			config.PlatformConfig.CameraPwd),
+		Op: orm.NewDBOP(MustClient(config.DB.DSN)),
 	}
 
 	pfHandle := pf.PlatformHandle(h)

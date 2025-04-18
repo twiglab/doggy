@@ -3,7 +3,7 @@
 package ent
 
 import (
-	"github.com/twiglab/doggy/db/ent/autoreg"
+	"github.com/twiglab/doggy/orm/ent/autoreg"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"

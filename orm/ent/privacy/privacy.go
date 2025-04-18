@@ -5,7 +5,7 @@ package privacy
 import (
 	"context"
 
-	"github.com/twiglab/doggy/db/ent"
+	"github.com/twiglab/doggy/orm/ent"
 
 	"entgo.io/ent/entql"
 	"entgo.io/ent/privacy"

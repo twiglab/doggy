@@ -1,4 +1,4 @@
-package db
+package orm
 
 import (
 	"context"
@@ -7,9 +7,9 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 
-	_ "github.com/twiglab/doggy/db/ent/runtime"
+	_ "github.com/twiglab/doggy/orm/ent/runtime"
 
-	"github.com/twiglab/doggy/db/ent"
+	"github.com/twiglab/doggy/orm/ent"
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"

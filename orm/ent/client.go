@@ -9,12 +9,12 @@ import (
 	"log"
 	"reflect"
 
-	"github.com/twiglab/doggy/db/ent/migrate"
+	"github.com/twiglab/doggy/orm/ent/migrate"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/doggy/db/ent/autoreg"
+	"github.com/twiglab/doggy/orm/ent/autoreg"
 
 	stdsql "database/sql"
 )

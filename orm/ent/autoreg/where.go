@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/doggy/db/ent/predicate"
+	"github.com/twiglab/doggy/orm/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

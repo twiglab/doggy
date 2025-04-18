@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/twiglab/doggy/db/ent/autoreg"
+	"github.com/twiglab/doggy/orm/ent/autoreg"
 )
 
 // ent aliases to avoid import conflicts in user's code.

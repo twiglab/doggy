@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/twiglab/doggy/db/ent/autoreg"
-	"github.com/twiglab/doggy/db/ent/predicate"
+	"github.com/twiglab/doggy/orm/ent/autoreg"
+	"github.com/twiglab/doggy/orm/ent/predicate"
 )
 
 // AutoRegDelete is the builder for deleting a AutoReg entity.

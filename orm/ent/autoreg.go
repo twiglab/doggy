@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/doggy/db/ent/autoreg"
+	"github.com/twiglab/doggy/orm/ent/autoreg"
 )
 
 // AutoReg is the model entity for the AutoReg schema.

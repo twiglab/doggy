@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/twiglab/doggy/db/ent"
+	"github.com/twiglab/doggy/orm/ent"
 )
 
 // The AutoRegFunc type is an adapter to allow the use of ordinary

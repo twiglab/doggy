@@ -1,10 +1,13 @@
 package serv
 
 import (
+	"context"
 	"log"
 	"net/url"
 	"strconv"
 
+	"github.com/twiglab/doggy/orm"
+	"github.com/twiglab/doggy/orm/ent"
 	"github.com/twiglab/doggy/pf"
 )
 
@@ -55,4 +58,13 @@ func NewPlatformConfig(s string) (pc pf.PlatformConfig, err error) {
 	}
 
 	return
+}
+
+func MustClient(s string) *ent.Client {
+	db, err := orm.FromURL(context.Background(), s)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return orm.OpenClient(db)
 }

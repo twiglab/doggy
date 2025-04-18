@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/twiglab/doggy/holo"
+	"github.com/twiglab/doggy/orm"
 )
 
 type PlatformConfig struct {
@@ -36,6 +37,7 @@ type M map[string]any
 type Handle struct {
 	Conf     PlatformConfig
 	Resolver DeviceResolver
+	Op       *orm.DBOP
 }
 
 func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
