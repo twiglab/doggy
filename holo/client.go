@@ -43,7 +43,7 @@ func CloseDevice(d *Device) error {
 	return d.Close()
 }
 
-func (h *Device) MetadataSubscription(ctx context.Context, req SubscriptionReq) (*CommonResponseID, error) {
+func (h *Device) PostMetadataSubscription(ctx context.Context, req SubscriptionReq) (*CommonResponseID, error) {
 	cr := &CommonResponseID{}
 
 	_, err := h.client.R().

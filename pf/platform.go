@@ -56,7 +56,7 @@ func (h *HoloHandle) HandleAutoRegister(ctx context.Context, data holo.DeviceAut
 		return nil
 	}
 
-	_, err = device.MetadataSubscription(ctx, holo.SubscriptionReq{
+	_, err = device.PostMetadataSubscription(ctx, holo.SubscriptionReq{
 		Address:     h.Conf.Address,
 		Port:        h.Conf.Port,
 		TimeOut:     0,

@@ -66,7 +66,7 @@ func metaPost(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	resp, err := dev.MetadataSubscription(context.Background(), holo.SubscriptionReq{
+	resp, err := dev.PostMetadataSubscription(context.Background(), holo.SubscriptionReq{
 		Address:     u.Hostname(),
 		Port:        port,
 		TimeOut:     0,
