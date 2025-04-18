@@ -37,7 +37,7 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 			return
 		}
 
-		_ = hx.JsonTo(http.StatusInternalServerError, &holo.CommonResponse{
+		_ = hx.JsonTo(http.StatusOK, &holo.CommonResponse{
 			RequestUrl:   r.URL.Path,
 			StatusCode:   0,
 			StatusString: "OK",
