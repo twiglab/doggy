@@ -42,7 +42,8 @@ type MetadataObjectUpload struct {
 // 2.6.4
 
 type SubscripionItem struct {
-	ID int `json:"id"`
+	ID          int    `json:"id"`
+	MetadataURL string `json:"metadataURL"`
 }
 
 type Subscripions struct {

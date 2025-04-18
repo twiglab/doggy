@@ -1,4 +1,4 @@
-package conf
+package serv
 
 type PlatformConfig struct {
 	BaseURL string `yaml:"base-url" mapstructure:"base-url"`
