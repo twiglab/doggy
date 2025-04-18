@@ -7,7 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func PlatformHandle(h *HoloHandle) http.Handler {
+func PlatformHandle(h *Handle) http.Handler {
 	mux := chi.NewMux()
 
 	mux.Put("/SDCEntry", DeviceAutoRegisterUpload(h))

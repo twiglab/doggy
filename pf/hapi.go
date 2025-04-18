@@ -8,7 +8,7 @@ import (
 	"github.com/twiglab/doggy/hx"
 )
 
-func DeviceAutoRegisterUpload(h *HoloHandle) http.HandlerFunc {
+func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var data holo.DeviceAutoRegisterData
@@ -45,7 +45,7 @@ func DeviceAutoRegisterUpload(h *HoloHandle) http.HandlerFunc {
 	}
 }
 
-func MetadataEntryUpload(h *HoloHandle) http.HandlerFunc {
+func MetadataEntryUpload(h *Handle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var data holo.MetadataObjectUpload

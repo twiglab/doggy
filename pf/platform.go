@@ -8,14 +8,10 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
-func platformURL(base string, path string) string {
-	return base + path
-}
-
 type PlatformConfig struct {
-	BaseURL string
-	Address string
-	Port    int
+	MetadataURL string
+	Address     string
+	Port        int
 }
 
 type DeviceResolver interface {
@@ -27,19 +23,22 @@ type DeviceResolve struct {
 	Password string
 }
 
+func NewDeviceResolve(user, pwd string) *DeviceResolve {
+	return &DeviceResolve{Username: user, Password: pwd}
+}
+
 func (d *DeviceResolve) Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error) {
 	return holo.OpenDevice(data.IpAddr, d.Username, d.Password)
 }
 
 type M map[string]any
 
-type HoloHandle struct {
+type Handle struct {
 	Conf     PlatformConfig
 	Resolver DeviceResolver
-	// log  *slog.Logger
 }
 
-func (h *HoloHandle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
+func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
 	device, err := h.Resolver.Resolve(ctx, data)
 	if err != nil {
 		return err
@@ -61,13 +60,12 @@ func (h *HoloHandle) HandleAutoRegister(ctx context.Context, data holo.DeviceAut
 		Port:        h.Conf.Port,
 		TimeOut:     0,
 		HttpsEnable: 1,
-		//MetadataURL: "/MetadataEntry",
-		MetadataURL: platformURL(h.Conf.BaseURL, "/MetadataEntry"),
+		MetadataURL: h.Conf.MetadataURL,
 	})
 	return err
 }
 
-func (h *HoloHandle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpload) error {
+func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpload) error {
 	for _, target := range data.MetadataObject.TargetList {
 		if target.TargetType == 12 {
 			return h.handleHuman12(ctx, data.MetadataObject.Common, target)
@@ -79,7 +77,7 @@ func (h *HoloHandle) HandleMetadata(ctx context.Context, data holo.MetadataObjec
 	return nil
 }
 
-func (h *HoloHandle) handleHuman15(ctx context.Context, common holo.Common, target holo.HumanMix) error {
+func (h *Handle) handleHuman15(ctx context.Context, common holo.Common, target holo.HumanMix) error {
 	if target.HumanCountIn == 0 && target.HumanCountOut == 0 {
 		return nil
 	}
@@ -90,6 +88,6 @@ func (h *HoloHandle) handleHuman15(ctx context.Context, common holo.Common, targ
 	return nil
 }
 
-func (h *HoloHandle) handleHuman12(ctx context.Context, common holo.Common, target holo.HumanMix) error {
+func (h *Handle) handleHuman12(ctx context.Context, common holo.Common, target holo.HumanMix) error {
 	return nil
 }

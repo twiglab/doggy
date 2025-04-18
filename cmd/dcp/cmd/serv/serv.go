@@ -80,16 +80,11 @@ func serv(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
-	h := &pf.HoloHandle{
-		Conf: pf.PlatformConfig{
-			Address: config.PlatformConfig.Address,
-			Port:    config.PlatformConfig.Port,
-		},
-
-		Resolver: &pf.DeviceResolve{
-			Username: config.CommonDeviceConfig.Username,
-			Password: config.CommonDeviceConfig.Password,
-		},
+	h := &pf.Handle{
+		Conf: MustPlatformConfig(config.PlatformConfig.MetadataURL),
+		Resolver: pf.NewDeviceResolve(
+			config.PlatformConfig.CameraUser,
+			config.PlatformConfig.CameraPwd),
 	}
 
 	pfHandle := pf.PlatformHandle(h)
