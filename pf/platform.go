@@ -89,5 +89,6 @@ func (h *Handle) handleHuman15(ctx context.Context, common holo.Common, target h
 }
 
 func (h *Handle) handleHuman12(ctx context.Context, common holo.Common, target holo.HumanMix) error {
+	fmt.Println(target.HumanCount)
 	return nil
 }
