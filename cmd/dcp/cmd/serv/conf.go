@@ -36,15 +36,15 @@ type AppConf struct {
 	DB             DB             `yaml:"db" mapstructure:"db"`
 }
 
-func MustPfConf(c PlatformConfig) pf.Config {
-	pc, err := NewPfConf(c)
+func MustPfConf(c PlatformConfig, force int) pf.Config {
+	pc, err := NewPfConf(c, force)
 	if err != nil {
 		log.Fatal(err)
 	}
 	return pc
 }
 
-func NewPfConf(c PlatformConfig) (pc pf.Config, err error) {
+func NewPfConf(c PlatformConfig, force int) (pc pf.Config, err error) {
 	var u *url.URL
 
 	if u, err = url.Parse(c.MetadataURL); err != nil {
@@ -60,6 +60,13 @@ func NewPfConf(c PlatformConfig) (pc pf.Config, err error) {
 	}
 
 	if c.NoMetaAutoSub != 0 {
+		pc.NotMetaAutoSub = true
+	}
+
+	switch force {
+	case 1:
+		pc.NotMetaAutoSub = false
+	case 2:
 		pc.NotMetaAutoSub = true
 	}
 

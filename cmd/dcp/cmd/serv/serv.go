@@ -28,9 +28,12 @@ var ServCmd = &cobra.Command{
 	},
 }
 
+var forceSubcription int
+
 func init() {
 	cobra.OnInitialize(initConfig)
-	ServCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.dcp.yaml)")
+	ServCmd.Flags().StringVarP(&cfgFile, "config", "c", "", "config file (default is dcp.yaml)")
+	ServCmd.Flags().IntVar(&forceSubcription, "force-subcription", 0, "强制下发元数据订阅，0: 使用配置(默认), 1: 强制下发, 2: 强制不下发")
 
 }
 
@@ -40,14 +43,11 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
 
 		// Search config in home directory with name ".dcp" (without extension).
-		viper.AddConfigPath(home)
+		viper.AddConfigPath(".")
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".dcp")
+		viper.SetConfigName("dcp")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
@@ -78,7 +78,7 @@ func serv(cmd *cobra.Command, args []string) {
 	// eh := orm.NewEntHandle(MustClient(config.DB.DSN))
 
 	h := &pf.Handle{
-		Conf: MustPfConf(conf.PlatformConfig),
+		Conf: MustPfConf(conf.PlatformConfig, forceSubcription),
 
 		Resolver:       process,
 		Register:       process,
