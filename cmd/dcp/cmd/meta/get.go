@@ -29,7 +29,7 @@ func metaGet(cmd *cobra.Command, args []string) {
 		log.Fatal("no ip")
 	}
 
-	dev, _ := holo.OpenDevice(addr, username, password)
+	dev, _ := holo.OpenDevice(addr, user, pwd)
 	defer dev.Close()
 
 	subs, err := dev.GetMetadataSubscription(context.Background())

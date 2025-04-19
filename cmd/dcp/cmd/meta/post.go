@@ -40,7 +40,7 @@ func metaPost(cmd *cobra.Command, args []string) {
 		log.Fatal("no ip")
 	}
 
-	dev, _ := holo.OpenDevice(addr, username, password)
+	dev, _ := holo.OpenDevice(addr, user, pwd)
 	defer dev.Close()
 
 	if url, err = url.Parse(metadataURL); err != nil {

@@ -11,23 +11,23 @@ import (
 // MetaCmd represents the serv command
 var MetaCmd = &cobra.Command{
 	Use:   "meta",
-	Short: "查询设备元数据订阅信息",
-	Long:  `使用配置文件启动dcp服务`,
+	Short: "设备元数据订阅操作",
+	Long:  `设备元数据订阅操作`,
 	Run: func(cmd *cobra.Command, args []string) {
 		metaGet(cmd, args)
 	},
-	Example: "dcp meta 1.2.3.4",
+	Example: "dcp meta --addr 1.2.3.4",
 }
 
 var (
-	username string
-	password string
-	addr     string
+	user string
+	pwd  string
+	addr string
 )
 
 func init() {
-	MetaCmd.PersistentFlags().StringVar(&username, "username", "ApiAdmin", "摄像头认证用户名")
-	MetaCmd.PersistentFlags().StringVar(&password, "password", "Aaa1234%%", "摄像头认证用户密码")
+	MetaCmd.PersistentFlags().StringVar(&user, "user", "ApiAdmin", "摄像头认证用户名")
+	MetaCmd.PersistentFlags().StringVar(&pwd, "pwd", "Aaa1234%%", "摄像头认证用户密码")
 	MetaCmd.PersistentFlags().StringVar(&addr, "addr", "", "摄像头地址含端口(如：1.2.3.4:80)")
 }
 
