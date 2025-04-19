@@ -1,5 +1,7 @@
 package holo
 
+import "fmt"
+
 type DeviceAutoRegisterData struct {
 	DeviceName    string            `json:"DeviceName"`
 	Manufacturer  string            `json:"Manufacturer"`
@@ -14,4 +16,17 @@ type DeviceVersionData struct {
 	Uboot    string `json:"Uboot"`
 	Kernel   string `json:"Kernel"`
 	Hardware string `json:"Hardware"`
+}
+
+type RebootResp struct {
+	Code int    `json:"HSErrorCode"`
+	Msg  string `json:"HSErrorMsg"`
+}
+
+func (r RebootResp) Error() string {
+	return fmt.Sprintf("code = %d, msg = %s", r.Code, r.Msg)
+}
+
+func (r RebootResp) IsErr() bool {
+	return r.Code != 0
 }

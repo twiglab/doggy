@@ -10,11 +10,11 @@ type CommonResponse struct {
 }
 
 func (r CommonResponse) Error() string {
-	return fmt.Sprintf("url = %s, code = %d, str = %s", r.RequestUrl, r.StatusCode, r.StatusString)
+	return fmt.Sprintf("url = %s, code = %d, msg = %s", r.RequestUrl, r.StatusCode, r.StatusString)
 }
 
 func (r CommonResponse) String() string {
-	return fmt.Sprintf("url = %s, code = %d, str = %s", r.RequestUrl, r.StatusCode, r.StatusString)
+	return fmt.Sprintf("url = %s, code = %d, msg = %s", r.RequestUrl, r.StatusCode, r.StatusString)
 }
 
 func (r CommonResponse) IsErr() bool {

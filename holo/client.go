@@ -7,7 +7,7 @@ import (
 	"resty.dev/v3"
 )
 
-func deviceURL(addr, path string) string {
+func cameraURL(addr, path string) string {
 	url := "https://" + addr + path
 	return url
 }
@@ -46,7 +46,7 @@ func (h *Device) PostMetadataSubscription(ctx context.Context, req SubscriptionR
 		SetBody(req).
 		SetResult(cr).
 		SetError(cr).
-		Post(deviceURL(h.addr, "/SDCAPI/V2.0/Metadata/Subscription"))
+		Post(cameraURL(h.addr, "/SDCAPI/V2.0/Metadata/Subscription"))
 
 	if err != nil {
 		return cr, err
@@ -64,13 +64,31 @@ func (h *Device) GetMetadataSubscription(ctx context.Context) (*Subscripions, er
 
 	_, err := h.client.R().
 		SetResult(data).
-		Get(deviceURL(h.addr, "/SDCAPI/V2.0/Metadata/Subscription"))
+		Get(cameraURL(h.addr, "/SDCAPI/V2.0/Metadata/Subscription"))
 
 	if err != nil {
 		return data, err
 	}
 
 	return data, nil
+}
+
+func (h *Device) Reboot(ctx context.Context) (*RebootResp, error) {
+	resp := &RebootResp{}
+
+	_, err := h.client.R().
+		SetResult(resp).
+		SetError(resp).
+		Post(cameraURL(h.addr, "/HSAPI/V1/System/Reboot"))
+
+	if err != nil {
+		return resp, err
+	}
+
+	if resp.IsErr() {
+		return resp, resp
+	}
+	return resp, nil
 }
 
 func (h *Device) Close() error {

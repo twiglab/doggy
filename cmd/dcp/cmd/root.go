@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/twiglab/doggy/cmd/dcp/cmd/camera"
 	"github.com/twiglab/doggy/cmd/dcp/cmd/meta"
 	"github.com/twiglab/doggy/cmd/dcp/cmd/serv"
 )
@@ -33,6 +34,7 @@ func Execute() {
 func init() {
 	rootCmd.AddCommand(serv.ServCmd)
 	rootCmd.AddCommand(meta.MetaCmd)
+	rootCmd.AddCommand(camera.CameraCmd)
 	// cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
