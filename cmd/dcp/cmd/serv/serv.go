@@ -60,7 +60,8 @@ func initConfig() {
 
 func printConf(conf AppConf) {
 	fmt.Println("--------------------")
-	fmt.Println("no-meta-auto-sub = ", conf.PlatformConfig.NoMetaAutoSub)
+	fmt.Println("( ͡° ᴥ ͡° ʋ)")
+	fmt.Println("no-meta-auto-sub =", conf.PlatformConfig.NoMetaAutoSub)
 	fmt.Println("--------------------")
 }
 

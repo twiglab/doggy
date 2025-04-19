@@ -2,7 +2,6 @@ package pf
 
 import (
 	"context"
-	"errors"
 	"log"
 	"time"
 
@@ -13,8 +12,6 @@ const (
 	HUMMAN_DENSITY = 12
 	HUMMAN_COUNT   = 15
 )
-
-var ErrUnimplement = errors.New("unimplement")
 
 type Config struct {
 	MetadataURL string
@@ -54,7 +51,7 @@ func NewSimpleProcess(user, pwd string) *SimpleProcess {
 
 func (d *SimpleProcess) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
 	log.Printf("auto reg sn = %s, ip = %s\n", data.SerialNumber, data.IpAddr)
-	return ErrUnimplement
+	return nil
 }
 
 func (d *SimpleProcess) Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error) {
@@ -64,13 +61,13 @@ func (d *SimpleProcess) Resolve(ctx context.Context, data holo.DeviceAutoRegiste
 func (d *SimpleProcess) HandleCount(ctx context.Context, common holo.Common, target holo.HumanMix) error {
 	start := holo.MilliToTime(target.StartTime, target.TimeZone).Format(time.DateTime)
 	end := holo.MilliToTime(target.EndTime, target.TimeZone).Format(time.DateTime)
-	log.Printf("count in = %d, out = %d, start = %s, end = %s, type =%d\n", target.HumanCountIn, target.HumanCountOut, start, end, target.TargetType)
-	return ErrUnimplement
+	log.Printf("count in = %d, out = %d, start = %s, end = %s, type = %d\n", target.HumanCountIn, target.HumanCountOut, start, end, target.TargetType)
+	return nil
 }
 
 func (d *SimpleProcess) HandleDensity(ctx context.Context, common holo.Common, target holo.HumanMix) error {
-	log.Printf("density count = %d, ration = %d, type =%d\n", target.HumanCount, target.AreaRatio, target.TargetType)
-	return errors.New("unimplement")
+	log.Printf("density count = %d, ration = %d, type = %d\n", target.HumanCount, target.AreaRatio, target.TargetType)
+	return nil
 }
 
 type Handle struct {
