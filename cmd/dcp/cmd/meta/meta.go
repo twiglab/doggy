@@ -1,6 +1,10 @@
 package meta
 
 import (
+	"fmt"
+	"net"
+	"strconv"
+
 	"github.com/spf13/cobra"
 )
 
@@ -18,23 +22,29 @@ var MetaCmd = &cobra.Command{
 var (
 	username string
 	password string
-	ip string
+	addr     string
 )
 
 func init() {
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// servCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// servCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
 	MetaCmd.PersistentFlags().StringVar(&username, "username", "ApiAdmin", "摄像头认证用户名")
 	MetaCmd.PersistentFlags().StringVar(&password, "password", "Aaa1234%%", "摄像头认证用户密码")
-	MetaCmd.PersistentFlags().StringVar(&ip, "ip", "", "摄像头ip地址")
+	MetaCmd.PersistentFlags().StringVar(&addr, "addr", "", "摄像头地址含端口(如：1.2.3.4:80)")
+}
 
+func verifyAddr(addr string) (host string, port int, err error) {
+	var portS string
+
+	if host, portS, err = net.SplitHostPort(addr); err != nil {
+		return
+	}
+
+	if port, err = strconv.Atoi(portS); err != nil {
+		return
+	}
+
+	if net.ParseIP(host) == nil {
+		err = fmt.Errorf("bad host: %s", host)
+	}
+
+	return
 }

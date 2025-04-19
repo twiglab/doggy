@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net"
 
 	"github.com/spf13/cobra"
 	"github.com/twiglab/doggy/holo"
@@ -18,7 +17,7 @@ var MetaGetCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		metaGet(cmd, args)
 	},
-	Example: "dcp meta get 1.2.3.4",
+	Example: "dcp meta get --addr 1.2.3.4",
 }
 
 func init() {
@@ -26,11 +25,11 @@ func init() {
 }
 
 func metaGet(cmd *cobra.Command, args []string) {
-	if net.ParseIP(ip) == nil {
+	if _, _, err := verifyAddr(addr); err != nil {
 		log.Fatal("no ip")
 	}
 
-	dev, _ := holo.OpenDevice(ip, username, password)
+	dev, _ := holo.OpenDevice(addr, username, password)
 	defer dev.Close()
 
 	subs, err := dev.GetMetadataSubscription(context.Background())

@@ -14,8 +14,8 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "dcp",
-	Short: "(❍ᴥ❍ʋ) 客流平台",
-	Long:  `(❍ᴥ❍ʋ)`,
+	Short: "૮ ・ﻌ・ა 客流平台",
+	Long:  `૮ ・ﻌ・ა`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
