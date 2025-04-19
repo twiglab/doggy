@@ -23,7 +23,7 @@ type HumanMix struct {
 	HumanCountOut int   `json:"humanCountOut"`
 	StartTime     int64 `json:"startTime"`
 	EndTime       int64 `json:"endTime"`
-	TimeZone      int   `json:"timeZone"`
+	TimeZone      int64 `json:"timeZone"`
 	// DayLightSavingOffset int   `json:"dayLightSavingOffset"` //夏令时偏移（秒）
 
 	HumanCount int `json:"humanCount"`

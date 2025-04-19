@@ -39,10 +39,6 @@ func OpenDevice(addr, username, password string) (*Device, error) {
 	}, nil
 }
 
-func CloseDevice(d *Device) error {
-	return d.Close()
-}
-
 func (h *Device) PostMetadataSubscription(ctx context.Context, req SubscriptionReq) (*CommonResponseID, error) {
 	cr := &CommonResponseID{}
 

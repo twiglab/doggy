@@ -15,6 +15,8 @@ type PlatformConfig struct {
 	MetadataURL string `yaml:"metadata-url" mapstructure:"metadata-url"`
 	CameraUser  string `yaml:"camera-user" mapstructure:"camera-user"`
 	CameraPwd   string `yaml:"camera-pwd" mapstructure:"camera-pwd"`
+
+	NoMetaAutoSub int `yaml:"no-meta-auto-sub" mapstructure:"on-meta-auto-sub"`
 }
 
 type ServerConfig struct {
@@ -27,34 +29,38 @@ type DB struct {
 	DSN string `yaml:"dsn" mapstructure:"dsn"`
 }
 
-type App struct {
+type AppConf struct {
 	ID             string         `yaml:"id" mapstructure:"id"`
 	PlatformConfig PlatformConfig `yaml:"platform" mapstructure:"platform"`
 	ServerConf     ServerConfig   `yaml:"server" mapstructure:"server"`
 	DB             DB             `yaml:"db" mapstructure:"db"`
 }
 
-func MustPlatformConfig(s string) pf.PlatformConfig {
-	pc, err := NewPlatformConfig(s)
+func MustPfConf(c PlatformConfig) pf.Config {
+	pc, err := NewPfConf(c)
 	if err != nil {
 		log.Fatal(err)
 	}
 	return pc
 }
 
-func NewPlatformConfig(s string) (pc pf.PlatformConfig, err error) {
+func NewPfConf(c PlatformConfig) (pc pf.Config, err error) {
 	var u *url.URL
 
-	if u, err = url.Parse(s); err != nil {
+	if u, err = url.Parse(c.MetadataURL); err != nil {
 		return
 	}
 
 	pc.Address = u.Hostname()
 	pc.Port = 80
-	pc.MetadataURL = s
+	pc.MetadataURL = c.MetadataURL
 
 	if p := u.Port(); p != "" {
 		pc.Port, err = strconv.Atoi(p)
+	}
+
+	if c.NoMetaAutoSub != 0 {
+		pc.NotMetaAutoSub = true
 	}
 
 	return

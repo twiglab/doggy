@@ -8,16 +8,16 @@ import (
 	"github.com/twiglab/doggy/orm/ent/autoreg"
 )
 
-type DBOP struct {
+type EntHandle struct {
 	client *ent.Client
 }
 
-func NewDBOP(clent *ent.Client) *DBOP {
-	return &DBOP{client: clent}
+func NewEntHandle(clent *ent.Client) *EntHandle {
+	return &EntHandle{client: clent}
 }
 
-func (op *DBOP) Reg(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	return op.client.AutoReg.Create().
+func (h *EntHandle) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
+	return h.client.AutoReg.Create().
 		SetSn(data.SerialNumber).
 		SetIP(data.IpAddr).OnConflictColumns(autoreg.FieldSn).
 		UpdateNewValues().Exec(ctx)

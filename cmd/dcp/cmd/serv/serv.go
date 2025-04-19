@@ -1,6 +1,3 @@
-/*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-*/
 package serv
 
 import (
@@ -15,7 +12,6 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/twiglab/doggy/hx"
-	"github.com/twiglab/doggy/orm"
 
 	"github.com/twiglab/doggy/pf"
 )
@@ -34,18 +30,6 @@ var ServCmd = &cobra.Command{
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	//rootCmd.AddCommand(ServCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// servCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// servCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
 	ServCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.dcp.yaml)")
 
 }
@@ -74,19 +58,31 @@ func initConfig() {
 	}
 }
 
-func serv(cmd *cobra.Command, args []string) {
-	config := App{}
+func printConf(conf AppConf) {
+	fmt.Println("--------------------")
+	fmt.Println("no-meta-auto-sub = ", conf.PlatformConfig.NoMetaAutoSub)
+	fmt.Println("--------------------")
+}
 
-	if err := viper.Unmarshal(&config); err != nil {
+func serv(cmd *cobra.Command, args []string) {
+	conf := AppConf{}
+
+	if err := viper.Unmarshal(&conf); err != nil {
 		log.Fatal(err)
 	}
 
+	printConf(conf)
+
+	process := pf.NewSimpleProcess(conf.PlatformConfig.CameraUser, conf.PlatformConfig.CameraPwd)
+	// eh := orm.NewEntHandle(MustClient(config.DB.DSN))
+
 	h := &pf.Handle{
-		Conf: MustPlatformConfig(config.PlatformConfig.MetadataURL),
-		Resolver: pf.NewDeviceResolve(
-			config.PlatformConfig.CameraUser,
-			config.PlatformConfig.CameraPwd),
-		Op: orm.NewDBOP(MustClient(config.DB.DSN)),
+		Conf: MustPfConf(conf.PlatformConfig),
+
+		Resolver:       process,
+		Register:       process,
+		CountHandler:   process,
+		DensityHandler: process,
 	}
 
 	pfHandle := pf.PlatformHandle(h)
@@ -96,8 +92,8 @@ func serv(cmd *cobra.Command, args []string) {
 	mux.Mount("/", pfHandle)
 	mux.Mount("/pf", pfHandle)
 
-	svr := hx.NewServ().SetAddr(config.ServerConf.Addr).SetHandler(mux)
-	if err := runSvr(svr, config.ServerConf.CertFile, config.ServerConf.KeyFile); err != nil {
+	svr := hx.NewServ().SetAddr(conf.ServerConf.Addr).SetHandler(mux)
+	if err := runSvr(svr, conf.ServerConf.CertFile, conf.ServerConf.KeyFile); err != nil {
 		log.Fatal(err)
 	}
 }
