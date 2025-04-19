@@ -67,7 +67,8 @@ func (d *SimpleProcess) HandleCount(ctx context.Context, common holo.Common, tar
 }
 
 func (d *SimpleProcess) HandleDensity(ctx context.Context, common holo.Common, target holo.HumanMix) error {
-	log.Printf("density count = %d, ration = %d, type = %d\n", target.HumanCount, target.AreaRatio, target.TargetType)
+	now := time.Now().Format(time.RFC3339Nano)
+	log.Printf("density count = %d, ration = %d, type = %d, time = %s\n", target.HumanCount, target.AreaRatio, target.TargetType, now)
 	return nil
 }
 
