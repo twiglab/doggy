@@ -44,8 +44,13 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	} else {
 
-		// Search config in home directory with name ".dcp" (without extension).
+		// Find home directory.
+		home, err := os.UserHomeDir()
+		cobra.CheckErr(err)
+
+		// Search config in home directory with name "dcp" (without extension).
 		viper.AddConfigPath(".")
+		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
 		viper.SetConfigName("dcp")
 	}
