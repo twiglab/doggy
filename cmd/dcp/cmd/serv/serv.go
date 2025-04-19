@@ -89,7 +89,7 @@ func serv(cmd *cobra.Command, args []string) {
 	pfHandle := pf.PlatformHandle(h)
 
 	mux := chi.NewMux()
-	mux.Use(middleware.Logger, middleware.Recoverer)
+	mux.Use( /* middleware.Logger, */ middleware.Recoverer)
 	mux.Mount("/", pfHandle)
 	mux.Mount("/pf", pfHandle)
 
