@@ -50,7 +50,8 @@ func NewSimpleProcess(user, pwd string) *SimpleProcess {
 }
 
 func (d *SimpleProcess) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	log.Printf("auto reg sn = %s, ip = %s\n", data.SerialNumber, data.IpAddr)
+	now := time.Now().Format(time.RFC3339Nano)
+	log.Printf("auto reg sn = %s, ip = %s, time = %s\n", data.SerialNumber, data.IpAddr, now)
 	return nil
 }
 
@@ -59,8 +60,8 @@ func (d *SimpleProcess) Resolve(ctx context.Context, data holo.DeviceAutoRegiste
 }
 
 func (d *SimpleProcess) HandleCount(ctx context.Context, common holo.Common, target holo.HumanMix) error {
-	start := holo.MilliToTime(target.StartTime, target.TimeZone).Format(time.DateTime)
-	end := holo.MilliToTime(target.EndTime, target.TimeZone).Format(time.DateTime)
+	start := holo.MilliToTime(target.StartTime, target.TimeZone).Format(time.RFC3339Nano)
+	end := holo.MilliToTime(target.EndTime, target.TimeZone).Format(time.RFC3339Nano)
 	log.Printf("count in = %d, out = %d, start = %s, end = %s, type = %d\n", target.HumanCountIn, target.HumanCountOut, start, end, target.TargetType)
 	return nil
 }
