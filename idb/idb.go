@@ -71,7 +71,7 @@ func (h *IdbHandle) HandleDensity(ctx context.Context, common holo.Common, data 
 func (h *IdbHandle) HandleCounty(ctx context.Context, common holo.Common, data holo.HumanMix) error {
 	time := holo.MilliToTime(data.EndTime, data.TimeZone)
 
-	p := influxdb2.NewPointWithMeasurement(MA_DENSITY).
+	p := influxdb2.NewPointWithMeasurement(MA_COUNTY).
 		AddField(FIELD_COUNT_IN, data.HumanCountIn).
 		AddField(FIELD_COUNT_OUT, data.HumanCountOut).
 		AddTag(TAG_UUID, common.UUID).
