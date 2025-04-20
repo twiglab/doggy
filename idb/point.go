@@ -43,7 +43,7 @@ func (h *IdbPoint) HandleDensity(ctx context.Context, common holo.Common, data h
 	return nil
 }
 
-func (h *IdbPoint) HandleCounty(ctx context.Context, common holo.Common, data holo.HumanMix) error {
+func (h *IdbPoint) HandleCount(ctx context.Context, common holo.Common, data holo.HumanMix) error {
 	if !hasHumanCount(data) {
 		return nil
 	}
