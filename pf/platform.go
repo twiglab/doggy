@@ -8,11 +8,6 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
-const (
-	HUMMAN_DENSITY = 12
-	HUMMAN_COUNT   = 15
-)
-
 type Config struct {
 	MetadataURL string
 	Address     string
@@ -129,11 +124,17 @@ func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoReg
 
 func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpload) error {
 	for _, target := range data.MetadataObject.TargetList {
-		if target.TargetType == HUMMAN_DENSITY {
-			return h.DensityHandler.HandleDensity(ctx, data.MetadataObject.Common, target)
-		}
-		if target.TargetType == HUMMAN_COUNT {
-			return h.CountHandler.HandleCount(ctx, data.MetadataObject.Common, target)
+		switch target.TargetType {
+		case holo.HUMMAN_DENSITY:
+			if err := h.DensityHandler.HandleDensity(ctx, data.MetadataObject.Common, target); err != nil {
+				log.Println(err)
+			}
+		case holo.HUMMAN_COUNT:
+			if err := h.CountHandler.HandleCount(ctx, data.MetadataObject.Common, target); err != nil {
+				log.Println(err)
+			}
+		default:
+			log.Println("unsupport type ", target.TargetType)
 		}
 	}
 	return nil

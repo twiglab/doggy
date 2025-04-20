@@ -7,6 +7,11 @@ import (
 	"resty.dev/v3"
 )
 
+const (
+	HUMMAN_DENSITY = 12
+	HUMMAN_COUNT   = 15
+)
+
 func cameraURL(addr, path string) string {
 	url := "https://" + addr + path
 	return url
