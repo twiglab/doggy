@@ -7,6 +7,9 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/mattn/go-sqlite3"
+
 	_ "github.com/twiglab/doggy/orm/ent/runtime"
 
 	"github.com/twiglab/doggy/orm/ent"
@@ -29,7 +32,7 @@ func pgxDB(ctx context.Context, url string, ops ...stdlib.OptionOpenDB) (*sql.DB
 }
 
 func Open(driveName string, dataSourceName string, opts ...ent.Option) (*ent.Client, error) {
-	if driveName == "pgx" {
+	if driveName == "pgx" || driveName == "" { // 默认为pgx
 		db, err := pgxDB(context.Background(), dataSourceName)
 		if err != nil {
 			return nil, err
