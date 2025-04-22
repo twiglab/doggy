@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
@@ -12,17 +10,16 @@ import (
 	"entgo.io/ent/schema/mixin"
 )
 
-type Upload struct {
+type Using struct {
 	ent.Schema
 }
 
-func (Upload) Fields() []ent.Field {
+func (Using) Fields() []ent.Field {
 	return []ent.Field{
 
 		field.String("sn").
 			MaxLen(36).
 			NotEmpty().
-			Unique().
 			Immutable().
 			SchemaType(map[string]string{
 				dialect.MySQL:    "varchar(36)", // Override MySQL.
@@ -40,43 +37,54 @@ func (Upload) Fields() []ent.Field {
 				dialect.SQLite:   "char(36)", // Override Postgres.
 			}),
 
-		field.String("device_id").
-			MaxLen(64).
-			Optional().
+		field.String("alg").
+			MaxLen(16).NotEmpty().
+			SchemaType(map[string]string{
+				dialect.MySQL:    "varchar(16)", // Override MySQL.
+				dialect.Postgres: "varchar(16)", // Override Postgres.
+				dialect.SQLite:   "varchar(16)", // Override Postgres.
+			}),
+
+		field.String("name").
+			MaxLen(64).Optional().
 			SchemaType(map[string]string{
 				dialect.MySQL:    "varchar(64)", // Override MySQL.
 				dialect.Postgres: "varchar(64)", // Override Postgres.
 				dialect.SQLite:   "varchar(64)", // Override Postgres.
 			}),
 
-		field.String("ip").
-			MaxLen(64).NotEmpty().
+		field.String("memo").
+			MaxLen(64).Optional().
 			SchemaType(map[string]string{
 				dialect.MySQL:    "varchar(64)", // Override MySQL.
 				dialect.Postgres: "varchar(64)", // Override Postgres.
 				dialect.SQLite:   "varchar(64)", // Override Postgres.
 			}),
 
-		field.Time("last_time").
-			Default(time.Now).
-			UpdateDefault(time.Now),
+		field.String("bk").
+			MaxLen(64).NotEmpty().Unique().Immutable().
+			SchemaType(map[string]string{
+				dialect.MySQL:    "varchar(64)", // Override MySQL.
+				dialect.Postgres: "varchar(64)", // Override Postgres.
+				dialect.SQLite:   "varchar(64)", // Override Postgres.
+			}),
 	}
 }
 
-func (Upload) Mixin() []ent.Mixin {
+func (Using) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixin.Time{},
 	}
 }
 
-func (Upload) Indexes() []ent.Index {
+func (Using) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("sn"),
 	}
 }
 
-func (Upload) Annotations() []schema.Annotation {
+func (Using) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entsql.Annotation{Table: "camera_upload"},
+		entsql.Annotation{Table: "camera_using"},
 	}
 }

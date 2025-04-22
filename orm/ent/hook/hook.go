@@ -9,6 +9,18 @@ import (
 	"github.com/twiglab/doggy/orm/ent"
 )
 
+// The SetupFunc type is an adapter to allow the use of ordinary
+// function as Setup mutator.
+type SetupFunc func(context.Context, *ent.SetupMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SetupFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.SetupMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SetupMutation", m)
+}
+
 // The UploadFunc type is an adapter to allow the use of ordinary
 // function as Upload mutator.
 type UploadFunc func(context.Context, *ent.UploadMutation) (ent.Value, error)
@@ -19,6 +31,18 @@ func (f UploadFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UploadMutation", m)
+}
+
+// The UsingFunc type is an adapter to allow the use of ordinary
+// function as Using mutator.
+type UsingFunc func(context.Context, *ent.UsingMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f UsingFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.UsingMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UsingMutation", m)
 }
 
 // Condition is a hook condition function.

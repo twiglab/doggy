@@ -6,5 +6,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Setup is the predicate function for setup builders.
+type Setup func(*sql.Selector)
+
 // Upload is the predicate function for upload builders.
 type Upload func(*sql.Selector)
+
+// Using is the predicate function for using builders.
+type Using func(*sql.Selector)

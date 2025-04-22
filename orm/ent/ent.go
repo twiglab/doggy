@@ -12,7 +12,9 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/twiglab/doggy/orm/ent/setup"
 	"github.com/twiglab/doggy/orm/ent/upload"
+	"github.com/twiglab/doggy/orm/ent/using"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -73,7 +75,9 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
+			setup.Table:  setup.ValidColumn,
 			upload.Table: upload.ValidColumn,
+			using.Table:  using.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

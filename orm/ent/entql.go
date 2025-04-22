@@ -3,7 +3,9 @@
 package ent
 
 import (
+	"github.com/twiglab/doggy/orm/ent/setup"
 	"github.com/twiglab/doggy/orm/ent/upload"
+	"github.com/twiglab/doggy/orm/ent/using"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -13,8 +15,31 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 1)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 3)}
 	graph.Nodes[0] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   setup.Table,
+			Columns: setup.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: setup.FieldID,
+			},
+		},
+		Type: "Setup",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			setup.FieldCreateTime: {Type: field.TypeTime, Column: setup.FieldCreateTime},
+			setup.FieldUpdateTime: {Type: field.TypeTime, Column: setup.FieldUpdateTime},
+			setup.FieldSn:         {Type: field.TypeString, Column: setup.FieldSn},
+			setup.FieldPos:        {Type: field.TypeString, Column: setup.FieldPos},
+			setup.FieldFloor:      {Type: field.TypeString, Column: setup.FieldFloor},
+			setup.FieldBuilding:   {Type: field.TypeString, Column: setup.FieldBuilding},
+			setup.FieldArea:       {Type: field.TypeString, Column: setup.FieldArea},
+			setup.FieldNat:        {Type: field.TypeString, Column: setup.FieldNat},
+			setup.FieldUser:       {Type: field.TypeString, Column: setup.FieldUser},
+			setup.FieldPwd:        {Type: field.TypeString, Column: setup.FieldPwd},
+		},
+	}
+	graph.Nodes[1] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   upload.Table,
 			Columns: upload.Columns,
@@ -34,6 +59,27 @@ var schemaGraph = func() *sqlgraph.Schema {
 			upload.FieldLastTime:   {Type: field.TypeTime, Column: upload.FieldLastTime},
 		},
 	}
+	graph.Nodes[2] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   using.Table,
+			Columns: using.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeInt,
+				Column: using.FieldID,
+			},
+		},
+		Type: "Using",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			using.FieldCreateTime: {Type: field.TypeTime, Column: using.FieldCreateTime},
+			using.FieldUpdateTime: {Type: field.TypeTime, Column: using.FieldUpdateTime},
+			using.FieldSn:         {Type: field.TypeString, Column: using.FieldSn},
+			using.FieldUUID:       {Type: field.TypeString, Column: using.FieldUUID},
+			using.FieldAlg:        {Type: field.TypeString, Column: using.FieldAlg},
+			using.FieldName:       {Type: field.TypeString, Column: using.FieldName},
+			using.FieldMemo:       {Type: field.TypeString, Column: using.FieldMemo},
+			using.FieldBk:         {Type: field.TypeString, Column: using.FieldBk},
+		},
+	}
 	return graph
 }()
 
@@ -41,6 +87,96 @@ var schemaGraph = func() *sqlgraph.Schema {
 // All update, update-one and query builders implement this interface.
 type predicateAdder interface {
 	addPredicate(func(s *sql.Selector))
+}
+
+// addPredicate implements the predicateAdder interface.
+func (sq *SetupQuery) addPredicate(pred func(s *sql.Selector)) {
+	sq.predicates = append(sq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the SetupQuery builder.
+func (sq *SetupQuery) Filter() *SetupFilter {
+	return &SetupFilter{config: sq.config, predicateAdder: sq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *SetupMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the SetupMutation builder.
+func (m *SetupMutation) Filter() *SetupFilter {
+	return &SetupFilter{config: m.config, predicateAdder: m}
+}
+
+// SetupFilter provides a generic filtering capability at runtime for SetupQuery.
+type SetupFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *SetupFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql int predicate on the id field.
+func (f *SetupFilter) WhereID(p entql.IntP) {
+	f.Where(p.Field(setup.FieldID))
+}
+
+// WhereCreateTime applies the entql time.Time predicate on the create_time field.
+func (f *SetupFilter) WhereCreateTime(p entql.TimeP) {
+	f.Where(p.Field(setup.FieldCreateTime))
+}
+
+// WhereUpdateTime applies the entql time.Time predicate on the update_time field.
+func (f *SetupFilter) WhereUpdateTime(p entql.TimeP) {
+	f.Where(p.Field(setup.FieldUpdateTime))
+}
+
+// WhereSn applies the entql string predicate on the sn field.
+func (f *SetupFilter) WhereSn(p entql.StringP) {
+	f.Where(p.Field(setup.FieldSn))
+}
+
+// WherePos applies the entql string predicate on the pos field.
+func (f *SetupFilter) WherePos(p entql.StringP) {
+	f.Where(p.Field(setup.FieldPos))
+}
+
+// WhereFloor applies the entql string predicate on the floor field.
+func (f *SetupFilter) WhereFloor(p entql.StringP) {
+	f.Where(p.Field(setup.FieldFloor))
+}
+
+// WhereBuilding applies the entql string predicate on the building field.
+func (f *SetupFilter) WhereBuilding(p entql.StringP) {
+	f.Where(p.Field(setup.FieldBuilding))
+}
+
+// WhereArea applies the entql string predicate on the area field.
+func (f *SetupFilter) WhereArea(p entql.StringP) {
+	f.Where(p.Field(setup.FieldArea))
+}
+
+// WhereNat applies the entql string predicate on the nat field.
+func (f *SetupFilter) WhereNat(p entql.StringP) {
+	f.Where(p.Field(setup.FieldNat))
+}
+
+// WhereUser applies the entql string predicate on the user field.
+func (f *SetupFilter) WhereUser(p entql.StringP) {
+	f.Where(p.Field(setup.FieldUser))
+}
+
+// WherePwd applies the entql string predicate on the pwd field.
+func (f *SetupFilter) WherePwd(p entql.StringP) {
+	f.Where(p.Field(setup.FieldPwd))
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -72,7 +208,7 @@ type UploadFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *UploadFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -116,4 +252,84 @@ func (f *UploadFilter) WhereIP(p entql.StringP) {
 // WhereLastTime applies the entql time.Time predicate on the last_time field.
 func (f *UploadFilter) WhereLastTime(p entql.TimeP) {
 	f.Where(p.Field(upload.FieldLastTime))
+}
+
+// addPredicate implements the predicateAdder interface.
+func (uq *UsingQuery) addPredicate(pred func(s *sql.Selector)) {
+	uq.predicates = append(uq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the UsingQuery builder.
+func (uq *UsingQuery) Filter() *UsingFilter {
+	return &UsingFilter{config: uq.config, predicateAdder: uq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *UsingMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the UsingMutation builder.
+func (m *UsingMutation) Filter() *UsingFilter {
+	return &UsingFilter{config: m.config, predicateAdder: m}
+}
+
+// UsingFilter provides a generic filtering capability at runtime for UsingQuery.
+type UsingFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *UsingFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql int predicate on the id field.
+func (f *UsingFilter) WhereID(p entql.IntP) {
+	f.Where(p.Field(using.FieldID))
+}
+
+// WhereCreateTime applies the entql time.Time predicate on the create_time field.
+func (f *UsingFilter) WhereCreateTime(p entql.TimeP) {
+	f.Where(p.Field(using.FieldCreateTime))
+}
+
+// WhereUpdateTime applies the entql time.Time predicate on the update_time field.
+func (f *UsingFilter) WhereUpdateTime(p entql.TimeP) {
+	f.Where(p.Field(using.FieldUpdateTime))
+}
+
+// WhereSn applies the entql string predicate on the sn field.
+func (f *UsingFilter) WhereSn(p entql.StringP) {
+	f.Where(p.Field(using.FieldSn))
+}
+
+// WhereUUID applies the entql string predicate on the uuid field.
+func (f *UsingFilter) WhereUUID(p entql.StringP) {
+	f.Where(p.Field(using.FieldUUID))
+}
+
+// WhereAlg applies the entql string predicate on the alg field.
+func (f *UsingFilter) WhereAlg(p entql.StringP) {
+	f.Where(p.Field(using.FieldAlg))
+}
+
+// WhereName applies the entql string predicate on the name field.
+func (f *UsingFilter) WhereName(p entql.StringP) {
+	f.Where(p.Field(using.FieldName))
+}
+
+// WhereMemo applies the entql string predicate on the memo field.
+func (f *UsingFilter) WhereMemo(p entql.StringP) {
+	f.Where(p.Field(using.FieldMemo))
+}
+
+// WhereBk applies the entql string predicate on the bk field.
+func (f *UsingFilter) WhereBk(p entql.StringP) {
+	f.Where(p.Field(using.FieldBk))
 }

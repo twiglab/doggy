@@ -5,7 +5,9 @@ package ent
 import (
 	"time"
 
+	"github.com/twiglab/doggy/orm/ent/setup"
 	"github.com/twiglab/doggy/orm/ent/upload"
+	"github.com/twiglab/doggy/orm/ent/using"
 	"github.com/twiglab/doggy/orm/schema"
 )
 
@@ -13,6 +15,81 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	setupMixin := schema.Setup{}.Mixin()
+	setupMixinFields0 := setupMixin[0].Fields()
+	_ = setupMixinFields0
+	setupFields := schema.Setup{}.Fields()
+	_ = setupFields
+	// setupDescCreateTime is the schema descriptor for create_time field.
+	setupDescCreateTime := setupMixinFields0[0].Descriptor()
+	// setup.DefaultCreateTime holds the default value on creation for the create_time field.
+	setup.DefaultCreateTime = setupDescCreateTime.Default.(func() time.Time)
+	// setupDescUpdateTime is the schema descriptor for update_time field.
+	setupDescUpdateTime := setupMixinFields0[1].Descriptor()
+	// setup.DefaultUpdateTime holds the default value on creation for the update_time field.
+	setup.DefaultUpdateTime = setupDescUpdateTime.Default.(func() time.Time)
+	// setup.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
+	setup.UpdateDefaultUpdateTime = setupDescUpdateTime.UpdateDefault.(func() time.Time)
+	// setupDescSn is the schema descriptor for sn field.
+	setupDescSn := setupFields[0].Descriptor()
+	// setup.SnValidator is a validator for the "sn" field. It is called by the builders before save.
+	setup.SnValidator = func() func(string) error {
+		validators := setupDescSn.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(sn string) error {
+			for _, fn := range fns {
+				if err := fn(sn); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// setupDescPos is the schema descriptor for pos field.
+	setupDescPos := setupFields[1].Descriptor()
+	// setup.PosValidator is a validator for the "pos" field. It is called by the builders before save.
+	setup.PosValidator = func() func(string) error {
+		validators := setupDescPos.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(pos string) error {
+			for _, fn := range fns {
+				if err := fn(pos); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// setupDescFloor is the schema descriptor for floor field.
+	setupDescFloor := setupFields[2].Descriptor()
+	// setup.FloorValidator is a validator for the "floor" field. It is called by the builders before save.
+	setup.FloorValidator = setupDescFloor.Validators[0].(func(string) error)
+	// setupDescBuilding is the schema descriptor for building field.
+	setupDescBuilding := setupFields[3].Descriptor()
+	// setup.BuildingValidator is a validator for the "building" field. It is called by the builders before save.
+	setup.BuildingValidator = setupDescBuilding.Validators[0].(func(string) error)
+	// setupDescArea is the schema descriptor for area field.
+	setupDescArea := setupFields[4].Descriptor()
+	// setup.AreaValidator is a validator for the "area" field. It is called by the builders before save.
+	setup.AreaValidator = setupDescArea.Validators[0].(func(string) error)
+	// setupDescNat is the schema descriptor for nat field.
+	setupDescNat := setupFields[5].Descriptor()
+	// setup.NatValidator is a validator for the "nat" field. It is called by the builders before save.
+	setup.NatValidator = setupDescNat.Validators[0].(func(string) error)
+	// setupDescUser is the schema descriptor for user field.
+	setupDescUser := setupFields[6].Descriptor()
+	// setup.UserValidator is a validator for the "user" field. It is called by the builders before save.
+	setup.UserValidator = setupDescUser.Validators[0].(func(string) error)
+	// setupDescPwd is the schema descriptor for pwd field.
+	setupDescPwd := setupFields[7].Descriptor()
+	// setup.PwdValidator is a validator for the "pwd" field. It is called by the builders before save.
+	setup.PwdValidator = setupDescPwd.Validators[0].(func(string) error)
 	uploadMixin := schema.Upload{}.Mixin()
 	uploadMixinFields0 := uploadMixin[0].Fields()
 	_ = uploadMixinFields0
@@ -92,4 +169,99 @@ func init() {
 	upload.DefaultLastTime = uploadDescLastTime.Default.(func() time.Time)
 	// upload.UpdateDefaultLastTime holds the default value on update for the last_time field.
 	upload.UpdateDefaultLastTime = uploadDescLastTime.UpdateDefault.(func() time.Time)
+	usingMixin := schema.Using{}.Mixin()
+	usingMixinFields0 := usingMixin[0].Fields()
+	_ = usingMixinFields0
+	usingFields := schema.Using{}.Fields()
+	_ = usingFields
+	// usingDescCreateTime is the schema descriptor for create_time field.
+	usingDescCreateTime := usingMixinFields0[0].Descriptor()
+	// using.DefaultCreateTime holds the default value on creation for the create_time field.
+	using.DefaultCreateTime = usingDescCreateTime.Default.(func() time.Time)
+	// usingDescUpdateTime is the schema descriptor for update_time field.
+	usingDescUpdateTime := usingMixinFields0[1].Descriptor()
+	// using.DefaultUpdateTime holds the default value on creation for the update_time field.
+	using.DefaultUpdateTime = usingDescUpdateTime.Default.(func() time.Time)
+	// using.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
+	using.UpdateDefaultUpdateTime = usingDescUpdateTime.UpdateDefault.(func() time.Time)
+	// usingDescSn is the schema descriptor for sn field.
+	usingDescSn := usingFields[0].Descriptor()
+	// using.SnValidator is a validator for the "sn" field. It is called by the builders before save.
+	using.SnValidator = func() func(string) error {
+		validators := usingDescSn.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(sn string) error {
+			for _, fn := range fns {
+				if err := fn(sn); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// usingDescUUID is the schema descriptor for uuid field.
+	usingDescUUID := usingFields[1].Descriptor()
+	// using.UUIDValidator is a validator for the "uuid" field. It is called by the builders before save.
+	using.UUIDValidator = func() func(string) error {
+		validators := usingDescUUID.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(uuid string) error {
+			for _, fn := range fns {
+				if err := fn(uuid); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// usingDescAlg is the schema descriptor for alg field.
+	usingDescAlg := usingFields[2].Descriptor()
+	// using.AlgValidator is a validator for the "alg" field. It is called by the builders before save.
+	using.AlgValidator = func() func(string) error {
+		validators := usingDescAlg.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(alg string) error {
+			for _, fn := range fns {
+				if err := fn(alg); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// usingDescName is the schema descriptor for name field.
+	usingDescName := usingFields[3].Descriptor()
+	// using.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	using.NameValidator = usingDescName.Validators[0].(func(string) error)
+	// usingDescMemo is the schema descriptor for memo field.
+	usingDescMemo := usingFields[4].Descriptor()
+	// using.MemoValidator is a validator for the "memo" field. It is called by the builders before save.
+	using.MemoValidator = usingDescMemo.Validators[0].(func(string) error)
+	// usingDescBk is the schema descriptor for bk field.
+	usingDescBk := usingFields[5].Descriptor()
+	// using.BkValidator is a validator for the "bk" field. It is called by the builders before save.
+	using.BkValidator = func() func(string) error {
+		validators := usingDescBk.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(bk string) error {
+			for _, fn := range fns {
+				if err := fn(bk); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 }
