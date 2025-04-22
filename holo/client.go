@@ -44,6 +44,13 @@ func OpenDevice(addr, username, password string) (*Device, error) {
 	}, nil
 }
 
+func (h *Device) Close() error {
+	if !h.isClose {
+		return h.client.Close()
+	}
+	return nil
+}
+
 func (h *Device) PostMetadataSubscription(ctx context.Context, req SubscriptionReq) (*CommonResponseID, error) {
 	cr := &CommonResponseID{}
 
@@ -96,9 +103,15 @@ func (h *Device) Reboot(ctx context.Context) (*RebootResp, error) {
 	return resp, nil
 }
 
-func (h *Device) Close() error {
-	if !h.isClose {
-		return h.client.Close()
+func (h *Device) GetDeviceID(ctx context.Context) (*DeviceIDList, error) {
+	ids := &DeviceIDList{}
+
+	_, err := h.client.R().
+		SetResult(ids).
+		Get(cameraURL(h.addr, "/SDCAPI/V1.0/Rest/DeviceID"))
+
+	if err != nil {
+		return ids, err
 	}
-	return nil
+	return ids, nil
 }

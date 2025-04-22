@@ -30,3 +30,11 @@ func (r RebootResp) Error() string {
 func (r RebootResp) IsErr() bool {
 	return r.Code != 0
 }
+
+type DeviceID struct {
+	UUID     string `json:"UUID"`
+	DeviceID string `json:"deviceID"`
+}
+type DeviceIDList struct {
+	IDs []DeviceID `json:"IDs"`
+}
