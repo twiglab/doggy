@@ -8,8 +8,6 @@ import (
 	"github.com/twiglab/doggy/hx"
 )
 
-type Data map[string]any
-
 func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
