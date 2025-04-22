@@ -3,7 +3,7 @@
 package ent
 
 import (
-	"github.com/twiglab/doggy/orm/ent/autoreg"
+	"github.com/twiglab/doggy/orm/ent/upload"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -16,19 +16,22 @@ var schemaGraph = func() *sqlgraph.Schema {
 	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 1)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
-			Table:   autoreg.Table,
-			Columns: autoreg.Columns,
+			Table:   upload.Table,
+			Columns: upload.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
-				Column: autoreg.FieldID,
+				Column: upload.FieldID,
 			},
 		},
-		Type: "AutoReg",
+		Type: "Upload",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			autoreg.FieldCreateTime: {Type: field.TypeTime, Column: autoreg.FieldCreateTime},
-			autoreg.FieldUpdateTime: {Type: field.TypeTime, Column: autoreg.FieldUpdateTime},
-			autoreg.FieldSn:         {Type: field.TypeString, Column: autoreg.FieldSn},
-			autoreg.FieldIP:         {Type: field.TypeString, Column: autoreg.FieldIP},
+			upload.FieldCreateTime: {Type: field.TypeTime, Column: upload.FieldCreateTime},
+			upload.FieldUpdateTime: {Type: field.TypeTime, Column: upload.FieldUpdateTime},
+			upload.FieldSn:         {Type: field.TypeString, Column: upload.FieldSn},
+			upload.FieldUUID:       {Type: field.TypeString, Column: upload.FieldUUID},
+			upload.FieldDeviceID:   {Type: field.TypeString, Column: upload.FieldDeviceID},
+			upload.FieldIP:         {Type: field.TypeString, Column: upload.FieldIP},
+			upload.FieldLastTime:   {Type: field.TypeTime, Column: upload.FieldLastTime},
 		},
 	}
 	return graph
@@ -41,33 +44,33 @@ type predicateAdder interface {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (arq *AutoRegQuery) addPredicate(pred func(s *sql.Selector)) {
-	arq.predicates = append(arq.predicates, pred)
+func (uq *UploadQuery) addPredicate(pred func(s *sql.Selector)) {
+	uq.predicates = append(uq.predicates, pred)
 }
 
-// Filter returns a Filter implementation to apply filters on the AutoRegQuery builder.
-func (arq *AutoRegQuery) Filter() *AutoRegFilter {
-	return &AutoRegFilter{config: arq.config, predicateAdder: arq}
+// Filter returns a Filter implementation to apply filters on the UploadQuery builder.
+func (uq *UploadQuery) Filter() *UploadFilter {
+	return &UploadFilter{config: uq.config, predicateAdder: uq}
 }
 
 // addPredicate implements the predicateAdder interface.
-func (m *AutoRegMutation) addPredicate(pred func(s *sql.Selector)) {
+func (m *UploadMutation) addPredicate(pred func(s *sql.Selector)) {
 	m.predicates = append(m.predicates, pred)
 }
 
-// Filter returns an entql.Where implementation to apply filters on the AutoRegMutation builder.
-func (m *AutoRegMutation) Filter() *AutoRegFilter {
-	return &AutoRegFilter{config: m.config, predicateAdder: m}
+// Filter returns an entql.Where implementation to apply filters on the UploadMutation builder.
+func (m *UploadMutation) Filter() *UploadFilter {
+	return &UploadFilter{config: m.config, predicateAdder: m}
 }
 
-// AutoRegFilter provides a generic filtering capability at runtime for AutoRegQuery.
-type AutoRegFilter struct {
+// UploadFilter provides a generic filtering capability at runtime for UploadQuery.
+type UploadFilter struct {
 	predicateAdder
 	config
 }
 
 // Where applies the entql predicate on the query filter.
-func (f *AutoRegFilter) Where(p entql.P) {
+func (f *UploadFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
 		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
 			s.AddError(err)
@@ -76,26 +79,41 @@ func (f *AutoRegFilter) Where(p entql.P) {
 }
 
 // WhereID applies the entql int predicate on the id field.
-func (f *AutoRegFilter) WhereID(p entql.IntP) {
-	f.Where(p.Field(autoreg.FieldID))
+func (f *UploadFilter) WhereID(p entql.IntP) {
+	f.Where(p.Field(upload.FieldID))
 }
 
 // WhereCreateTime applies the entql time.Time predicate on the create_time field.
-func (f *AutoRegFilter) WhereCreateTime(p entql.TimeP) {
-	f.Where(p.Field(autoreg.FieldCreateTime))
+func (f *UploadFilter) WhereCreateTime(p entql.TimeP) {
+	f.Where(p.Field(upload.FieldCreateTime))
 }
 
 // WhereUpdateTime applies the entql time.Time predicate on the update_time field.
-func (f *AutoRegFilter) WhereUpdateTime(p entql.TimeP) {
-	f.Where(p.Field(autoreg.FieldUpdateTime))
+func (f *UploadFilter) WhereUpdateTime(p entql.TimeP) {
+	f.Where(p.Field(upload.FieldUpdateTime))
 }
 
 // WhereSn applies the entql string predicate on the sn field.
-func (f *AutoRegFilter) WhereSn(p entql.StringP) {
-	f.Where(p.Field(autoreg.FieldSn))
+func (f *UploadFilter) WhereSn(p entql.StringP) {
+	f.Where(p.Field(upload.FieldSn))
+}
+
+// WhereUUID applies the entql string predicate on the uuid field.
+func (f *UploadFilter) WhereUUID(p entql.StringP) {
+	f.Where(p.Field(upload.FieldUUID))
+}
+
+// WhereDeviceID applies the entql string predicate on the device_id field.
+func (f *UploadFilter) WhereDeviceID(p entql.StringP) {
+	f.Where(p.Field(upload.FieldDeviceID))
 }
 
 // WhereIP applies the entql string predicate on the ip field.
-func (f *AutoRegFilter) WhereIP(p entql.StringP) {
-	f.Where(p.Field(autoreg.FieldIP))
+func (f *UploadFilter) WhereIP(p entql.StringP) {
+	f.Where(p.Field(upload.FieldIP))
+}
+
+// WhereLastTime applies the entql time.Time predicate on the last_time field.
+func (f *UploadFilter) WhereLastTime(p entql.TimeP) {
+	f.Where(p.Field(upload.FieldLastTime))
 }

@@ -6,5 +6,5 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// AutoReg is the predicate function for autoreg builders.
-type AutoReg func(*sql.Selector)
+// Upload is the predicate function for upload builders.
+type Upload func(*sql.Selector)

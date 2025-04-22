@@ -1,11 +1,11 @@
 package serv
 
 import (
-	"context"
 	"log"
 	"net/url"
 	"strconv"
 
+	"github.com/twiglab/doggy/idb"
 	"github.com/twiglab/doggy/orm"
 	"github.com/twiglab/doggy/orm/ent"
 	"github.com/twiglab/doggy/pf"
@@ -15,8 +15,6 @@ type PlatformConfig struct {
 	MetadataURL string `yaml:"metadata-url" mapstructure:"metadata-url"`
 	CameraUser  string `yaml:"camera-user" mapstructure:"camera-user"`
 	CameraPwd   string `yaml:"camera-pwd" mapstructure:"camera-pwd"`
-
-	NoMetaAutoSub int `yaml:"no-meta-auto-sub" mapstructure:"on-meta-auto-sub"`
 }
 
 type ServerConfig struct {
@@ -26,7 +24,8 @@ type ServerConfig struct {
 }
 
 type DB struct {
-	DSN string `yaml:"dsn" mapstructure:"dsn"`
+	Name string `yaml:"name" mapstructure:"name"`
+	DSN  string `yaml:"dsn" mapstructure:"dsn"`
 }
 
 type AppConf struct {
@@ -34,17 +33,18 @@ type AppConf struct {
 	PlatformConfig PlatformConfig `yaml:"platform" mapstructure:"platform"`
 	ServerConf     ServerConfig   `yaml:"server" mapstructure:"server"`
 	DB             DB             `yaml:"db" mapstructure:"db"`
+	IdbConf        idb.IdbConf
 }
 
-func MustPfConf(c PlatformConfig, force int) pf.Config {
-	pc, err := NewPfConf(c, force)
+func MustPfConf(c PlatformConfig) pf.Config {
+	pc, err := NewPfConf(c)
 	if err != nil {
 		log.Fatal(err)
 	}
 	return pc
 }
 
-func NewPfConf(c PlatformConfig, force int) (pc pf.Config, err error) {
+func NewPfConf(c PlatformConfig) (pc pf.Config, err error) {
 	var u *url.URL
 
 	if u, err = url.Parse(c.MetadataURL); err != nil {
@@ -59,25 +59,13 @@ func NewPfConf(c PlatformConfig, force int) (pc pf.Config, err error) {
 		pc.Port, err = strconv.Atoi(p)
 	}
 
-	if c.NoMetaAutoSub != 0 {
-		pc.NotMetaAutoSub = true
-	}
-
-	switch force {
-	case 1:
-		pc.NotMetaAutoSub = false
-	case 2:
-		pc.NotMetaAutoSub = true
-	}
-
 	return
 }
 
-func MustClient(s string) *ent.Client {
-	db, err := orm.FromURL(context.Background(), s)
+func MustOpenClient(dbconf DB) *ent.Client {
+	c, err := orm.OpenClient(dbconf.Name, dbconf.DSN)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	return orm.OpenClient(db)
+	return c
 }

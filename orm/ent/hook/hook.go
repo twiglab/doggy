@@ -9,16 +9,16 @@ import (
 	"github.com/twiglab/doggy/orm/ent"
 )
 
-// The AutoRegFunc type is an adapter to allow the use of ordinary
-// function as AutoReg mutator.
-type AutoRegFunc func(context.Context, *ent.AutoRegMutation) (ent.Value, error)
+// The UploadFunc type is an adapter to allow the use of ordinary
+// function as Upload mutator.
+type UploadFunc func(context.Context, *ent.UploadMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f AutoRegFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.AutoRegMutation); ok {
+func (f UploadFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.UploadMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AutoRegMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UploadMutation", m)
 }
 
 // Condition is a hook condition function.

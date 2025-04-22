@@ -12,8 +12,6 @@ type Config struct {
 	MetadataURL string
 	Address     string
 	Port        int
-
-	NotMetaAutoSub bool
 }
 
 type DeviceRegister interface {
@@ -116,9 +114,7 @@ func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoReg
 		return err
 	}
 
-	if !h.Conf.NotMetaAutoSub {
-		return h.metaAutoSub(ctx, data)
-	}
+	//return h.metaAutoSub(ctx, data)
 	return nil
 }
 

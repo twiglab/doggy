@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net"
 
 	"github.com/spf13/cobra"
-	"github.com/twiglab/doggy/cmd/dcp/utils"
 	"github.com/twiglab/doggy/holo"
 )
 
@@ -25,10 +25,10 @@ func init() {
 	CameraCmd.AddCommand(RebootCmd)
 }
 
-func reboot(cmd *cobra.Command, args []string) {
+func reboot(_ *cobra.Command, _ []string) {
 
-	if _, _, err := utils.VerifyAddr(addr); err != nil {
-		log.Fatal("no ip")
+	if _, err := net.ResolveTCPAddr("", addr); err != nil {
+		log.Fatal("bad addr")
 	}
 
 	dev, _ := holo.OpenDevice(addr, user, pwd)

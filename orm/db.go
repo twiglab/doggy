@@ -31,8 +31,8 @@ func pgxDB(ctx context.Context, url string, ops ...stdlib.OptionOpenDB) (*sql.DB
 	return stdlib.OpenDBFromPool(pool, ops...), nil
 }
 
-func Open(driveName string, dataSourceName string, opts ...ent.Option) (*ent.Client, error) {
-	if driveName == "pgx" || driveName == "" { // 默认为pgx
+func OpenClient(driveName string, dataSourceName string, opts ...ent.Option) (*ent.Client, error) {
+	if driveName == "pgx" {
 		db, err := pgxDB(context.Background(), dataSourceName)
 		if err != nil {
 			return nil, err

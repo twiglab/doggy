@@ -28,13 +28,9 @@ var ServCmd = &cobra.Command{
 	},
 }
 
-var forceSubcription int
-
 func init() {
 	cobra.OnInitialize(initConfig)
 	ServCmd.Flags().StringVarP(&cfgFile, "config", "c", "", "config file (default is dcp.yaml)")
-	ServCmd.Flags().IntVar(&forceSubcription, "force-subcription", 0, "强制下发元数据订阅，0: 使用配置(默认), 1: 强制下发, 2: 强制不下发")
-
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -66,7 +62,6 @@ func initConfig() {
 func printConf(conf AppConf) {
 	fmt.Println("--------------------")
 	fmt.Println("( ͡° ᴥ ͡° ʋ)")
-	fmt.Println("no-meta-auto-sub =", conf.PlatformConfig.NoMetaAutoSub)
 	fmt.Println("--------------------")
 }
 
@@ -83,7 +78,7 @@ func serv(cmd *cobra.Command, args []string) {
 	// eh := orm.NewEntHandle(MustClient(config.DB.DSN))
 
 	h := &pf.Handle{
-		Conf: MustPfConf(conf.PlatformConfig, forceSubcription),
+		Conf: MustPfConf(conf.PlatformConfig),
 
 		Resolver:       process,
 		Register:       process,

@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net"
 	"net/url"
 	"strconv"
 
 	"github.com/spf13/cobra"
-	"github.com/twiglab/doggy/cmd/dcp/utils"
 	"github.com/twiglab/doggy/holo"
 )
 
@@ -37,7 +37,7 @@ func metaPost(cmd *cobra.Command, args []string) {
 		url  *url.URL
 	)
 
-	if _, _, err = utils.VerifyAddr(addr); err != nil {
+	if _, err = net.ResolveTCPAddr("", addr); err != nil {
 		log.Fatal("no ip")
 	}
 

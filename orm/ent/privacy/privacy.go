@@ -111,28 +111,28 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
-// The AutoRegQueryRuleFunc type is an adapter to allow the use of ordinary
+// The UploadQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type AutoRegQueryRuleFunc func(context.Context, *ent.AutoRegQuery) error
+type UploadQueryRuleFunc func(context.Context, *ent.UploadQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f AutoRegQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.AutoRegQuery); ok {
+func (f UploadQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.UploadQuery); ok {
 		return f(ctx, q)
 	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.AutoRegQuery", q)
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.UploadQuery", q)
 }
 
-// The AutoRegMutationRuleFunc type is an adapter to allow the use of ordinary
+// The UploadMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type AutoRegMutationRuleFunc func(context.Context, *ent.AutoRegMutation) error
+type UploadMutationRuleFunc func(context.Context, *ent.UploadMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f AutoRegMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.AutoRegMutation); ok {
+func (f UploadMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.UploadMutation); ok {
 		return f(ctx, m)
 	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.AutoRegMutation", m)
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.UploadMutation", m)
 }
 
 type (
@@ -170,7 +170,7 @@ var _ QueryMutationRule = FilterFunc(nil)
 
 func queryFilter(q ent.Query) (Filter, error) {
 	switch q := q.(type) {
-	case *ent.AutoRegQuery:
+	case *ent.UploadQuery:
 		return q.Filter(), nil
 	default:
 		return nil, Denyf("ent/privacy: unexpected query type %T for query filter", q)
@@ -179,7 +179,7 @@ func queryFilter(q ent.Query) (Filter, error) {
 
 func mutationFilter(m ent.Mutation) (Filter, error) {
 	switch m := m.(type) {
-	case *ent.AutoRegMutation:
+	case *ent.UploadMutation:
 		return m.Filter(), nil
 	default:
 		return nil, Denyf("ent/privacy: unexpected mutation type %T for mutation filter", m)

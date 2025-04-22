@@ -14,7 +14,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/doggy/orm/ent/autoreg"
+	"github.com/twiglab/doggy/orm/ent/upload"
 
 	stdsql "database/sql"
 )
@@ -24,8 +24,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// AutoReg is the client for interacting with the AutoReg builders.
-	AutoReg *AutoRegClient
+	// Upload is the client for interacting with the Upload builders.
+	Upload *UploadClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -37,7 +37,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.AutoReg = NewAutoRegClient(c.config)
+	c.Upload = NewUploadClient(c.config)
 }
 
 type (
@@ -128,9 +128,9 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:     ctx,
-		config:  cfg,
-		AutoReg: NewAutoRegClient(cfg),
+		ctx:    ctx,
+		config: cfg,
+		Upload: NewUploadClient(cfg),
 	}, nil
 }
 
@@ -148,16 +148,16 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:     ctx,
-		config:  cfg,
-		AutoReg: NewAutoRegClient(cfg),
+		ctx:    ctx,
+		config: cfg,
+		Upload: NewUploadClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		AutoReg.
+//		Upload.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -179,126 +179,126 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.AutoReg.Use(hooks...)
+	c.Upload.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.AutoReg.Intercept(interceptors...)
+	c.Upload.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *AutoRegMutation:
-		return c.AutoReg.mutate(ctx, m)
+	case *UploadMutation:
+		return c.Upload.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
 }
 
-// AutoRegClient is a client for the AutoReg schema.
-type AutoRegClient struct {
+// UploadClient is a client for the Upload schema.
+type UploadClient struct {
 	config
 }
 
-// NewAutoRegClient returns a client for the AutoReg from the given config.
-func NewAutoRegClient(c config) *AutoRegClient {
-	return &AutoRegClient{config: c}
+// NewUploadClient returns a client for the Upload from the given config.
+func NewUploadClient(c config) *UploadClient {
+	return &UploadClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `autoreg.Hooks(f(g(h())))`.
-func (c *AutoRegClient) Use(hooks ...Hook) {
-	c.hooks.AutoReg = append(c.hooks.AutoReg, hooks...)
+// A call to `Use(f, g, h)` equals to `upload.Hooks(f(g(h())))`.
+func (c *UploadClient) Use(hooks ...Hook) {
+	c.hooks.Upload = append(c.hooks.Upload, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `autoreg.Intercept(f(g(h())))`.
-func (c *AutoRegClient) Intercept(interceptors ...Interceptor) {
-	c.inters.AutoReg = append(c.inters.AutoReg, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `upload.Intercept(f(g(h())))`.
+func (c *UploadClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Upload = append(c.inters.Upload, interceptors...)
 }
 
-// Create returns a builder for creating a AutoReg entity.
-func (c *AutoRegClient) Create() *AutoRegCreate {
-	mutation := newAutoRegMutation(c.config, OpCreate)
-	return &AutoRegCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Upload entity.
+func (c *UploadClient) Create() *UploadCreate {
+	mutation := newUploadMutation(c.config, OpCreate)
+	return &UploadCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of AutoReg entities.
-func (c *AutoRegClient) CreateBulk(builders ...*AutoRegCreate) *AutoRegCreateBulk {
-	return &AutoRegCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Upload entities.
+func (c *UploadClient) CreateBulk(builders ...*UploadCreate) *UploadCreateBulk {
+	return &UploadCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *AutoRegClient) MapCreateBulk(slice any, setFunc func(*AutoRegCreate, int)) *AutoRegCreateBulk {
+func (c *UploadClient) MapCreateBulk(slice any, setFunc func(*UploadCreate, int)) *UploadCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &AutoRegCreateBulk{err: fmt.Errorf("calling to AutoRegClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &UploadCreateBulk{err: fmt.Errorf("calling to UploadClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*AutoRegCreate, rv.Len())
+	builders := make([]*UploadCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &AutoRegCreateBulk{config: c.config, builders: builders}
+	return &UploadCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for AutoReg.
-func (c *AutoRegClient) Update() *AutoRegUpdate {
-	mutation := newAutoRegMutation(c.config, OpUpdate)
-	return &AutoRegUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Upload.
+func (c *UploadClient) Update() *UploadUpdate {
+	mutation := newUploadMutation(c.config, OpUpdate)
+	return &UploadUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *AutoRegClient) UpdateOne(ar *AutoReg) *AutoRegUpdateOne {
-	mutation := newAutoRegMutation(c.config, OpUpdateOne, withAutoReg(ar))
-	return &AutoRegUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *UploadClient) UpdateOne(u *Upload) *UploadUpdateOne {
+	mutation := newUploadMutation(c.config, OpUpdateOne, withUpload(u))
+	return &UploadUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *AutoRegClient) UpdateOneID(id int) *AutoRegUpdateOne {
-	mutation := newAutoRegMutation(c.config, OpUpdateOne, withAutoRegID(id))
-	return &AutoRegUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *UploadClient) UpdateOneID(id int) *UploadUpdateOne {
+	mutation := newUploadMutation(c.config, OpUpdateOne, withUploadID(id))
+	return &UploadUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for AutoReg.
-func (c *AutoRegClient) Delete() *AutoRegDelete {
-	mutation := newAutoRegMutation(c.config, OpDelete)
-	return &AutoRegDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Upload.
+func (c *UploadClient) Delete() *UploadDelete {
+	mutation := newUploadMutation(c.config, OpDelete)
+	return &UploadDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *AutoRegClient) DeleteOne(ar *AutoReg) *AutoRegDeleteOne {
-	return c.DeleteOneID(ar.ID)
+func (c *UploadClient) DeleteOne(u *Upload) *UploadDeleteOne {
+	return c.DeleteOneID(u.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *AutoRegClient) DeleteOneID(id int) *AutoRegDeleteOne {
-	builder := c.Delete().Where(autoreg.ID(id))
+func (c *UploadClient) DeleteOneID(id int) *UploadDeleteOne {
+	builder := c.Delete().Where(upload.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &AutoRegDeleteOne{builder}
+	return &UploadDeleteOne{builder}
 }
 
-// Query returns a query builder for AutoReg.
-func (c *AutoRegClient) Query() *AutoRegQuery {
-	return &AutoRegQuery{
+// Query returns a query builder for Upload.
+func (c *UploadClient) Query() *UploadQuery {
+	return &UploadQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeAutoReg},
+		ctx:    &QueryContext{Type: TypeUpload},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a AutoReg entity by its id.
-func (c *AutoRegClient) Get(ctx context.Context, id int) (*AutoReg, error) {
-	return c.Query().Where(autoreg.ID(id)).Only(ctx)
+// Get returns a Upload entity by its id.
+func (c *UploadClient) Get(ctx context.Context, id int) (*Upload, error) {
+	return c.Query().Where(upload.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *AutoRegClient) GetX(ctx context.Context, id int) *AutoReg {
+func (c *UploadClient) GetX(ctx context.Context, id int) *Upload {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -307,37 +307,37 @@ func (c *AutoRegClient) GetX(ctx context.Context, id int) *AutoReg {
 }
 
 // Hooks returns the client hooks.
-func (c *AutoRegClient) Hooks() []Hook {
-	return c.hooks.AutoReg
+func (c *UploadClient) Hooks() []Hook {
+	return c.hooks.Upload
 }
 
 // Interceptors returns the client interceptors.
-func (c *AutoRegClient) Interceptors() []Interceptor {
-	return c.inters.AutoReg
+func (c *UploadClient) Interceptors() []Interceptor {
+	return c.inters.Upload
 }
 
-func (c *AutoRegClient) mutate(ctx context.Context, m *AutoRegMutation) (Value, error) {
+func (c *UploadClient) mutate(ctx context.Context, m *UploadMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&AutoRegCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&UploadCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&AutoRegUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&UploadUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&AutoRegUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&UploadUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&AutoRegDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&UploadDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown AutoReg mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown Upload mutation op: %q", m.Op())
 	}
 }
 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		AutoReg []ent.Hook
+		Upload []ent.Hook
 	}
 	inters struct {
-		AutoReg []ent.Interceptor
+		Upload []ent.Interceptor
 	}
 )
 

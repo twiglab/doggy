@@ -5,7 +5,6 @@ import (
 
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/orm/ent"
-	"github.com/twiglab/doggy/orm/ent/autoreg"
 )
 
 type EntHandle struct {
@@ -17,8 +16,5 @@ func NewEntHandle(clent *ent.Client) *EntHandle {
 }
 
 func (h *EntHandle) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	return h.client.AutoReg.Create().
-		SetSn(data.SerialNumber).
-		SetIP(data.IpAddr).OnConflictColumns(autoreg.FieldSn).
-		UpdateNewValues().Exec(ctx)
+	return nil
 }

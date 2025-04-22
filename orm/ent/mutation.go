@@ -11,8 +11,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/doggy/orm/ent/autoreg"
 	"github.com/twiglab/doggy/orm/ent/predicate"
+	"github.com/twiglab/doggy/orm/ent/upload"
 )
 
 const (
@@ -24,11 +24,11 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAutoReg = "AutoReg"
+	TypeUpload = "Upload"
 )
 
-// AutoRegMutation represents an operation that mutates the AutoReg nodes in the graph.
-type AutoRegMutation struct {
+// UploadMutation represents an operation that mutates the Upload nodes in the graph.
+type UploadMutation struct {
 	config
 	op            Op
 	typ           string
@@ -36,24 +36,27 @@ type AutoRegMutation struct {
 	create_time   *time.Time
 	update_time   *time.Time
 	sn            *string
+	uuid          *string
+	device_id     *string
 	ip            *string
+	last_time     *time.Time
 	clearedFields map[string]struct{}
 	done          bool
-	oldValue      func(context.Context) (*AutoReg, error)
-	predicates    []predicate.AutoReg
+	oldValue      func(context.Context) (*Upload, error)
+	predicates    []predicate.Upload
 }
 
-var _ ent.Mutation = (*AutoRegMutation)(nil)
+var _ ent.Mutation = (*UploadMutation)(nil)
 
-// autoregOption allows management of the mutation configuration using functional options.
-type autoregOption func(*AutoRegMutation)
+// uploadOption allows management of the mutation configuration using functional options.
+type uploadOption func(*UploadMutation)
 
-// newAutoRegMutation creates new mutation for the AutoReg entity.
-func newAutoRegMutation(c config, op Op, opts ...autoregOption) *AutoRegMutation {
-	m := &AutoRegMutation{
+// newUploadMutation creates new mutation for the Upload entity.
+func newUploadMutation(c config, op Op, opts ...uploadOption) *UploadMutation {
+	m := &UploadMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeAutoReg,
+		typ:           TypeUpload,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -62,20 +65,20 @@ func newAutoRegMutation(c config, op Op, opts ...autoregOption) *AutoRegMutation
 	return m
 }
 
-// withAutoRegID sets the ID field of the mutation.
-func withAutoRegID(id int) autoregOption {
-	return func(m *AutoRegMutation) {
+// withUploadID sets the ID field of the mutation.
+func withUploadID(id int) uploadOption {
+	return func(m *UploadMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *AutoReg
+			value *Upload
 		)
-		m.oldValue = func(ctx context.Context) (*AutoReg, error) {
+		m.oldValue = func(ctx context.Context) (*Upload, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().AutoReg.Get(ctx, id)
+					value, err = m.Client().Upload.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -84,10 +87,10 @@ func withAutoRegID(id int) autoregOption {
 	}
 }
 
-// withAutoReg sets the old AutoReg of the mutation.
-func withAutoReg(node *AutoReg) autoregOption {
-	return func(m *AutoRegMutation) {
-		m.oldValue = func(context.Context) (*AutoReg, error) {
+// withUpload sets the old Upload of the mutation.
+func withUpload(node *Upload) uploadOption {
+	return func(m *UploadMutation) {
+		m.oldValue = func(context.Context) (*Upload, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -96,7 +99,7 @@ func withAutoReg(node *AutoReg) autoregOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m AutoRegMutation) Client() *Client {
+func (m UploadMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -104,7 +107,7 @@ func (m AutoRegMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m AutoRegMutation) Tx() (*Tx, error) {
+func (m UploadMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -115,7 +118,7 @@ func (m AutoRegMutation) Tx() (*Tx, error) {
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *AutoRegMutation) ID() (id int, exists bool) {
+func (m *UploadMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -126,7 +129,7 @@ func (m *AutoRegMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *AutoRegMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *UploadMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -135,19 +138,19 @@ func (m *AutoRegMutation) IDs(ctx context.Context) ([]int, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().AutoReg.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().Upload.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetCreateTime sets the "create_time" field.
-func (m *AutoRegMutation) SetCreateTime(t time.Time) {
+func (m *UploadMutation) SetCreateTime(t time.Time) {
 	m.create_time = &t
 }
 
 // CreateTime returns the value of the "create_time" field in the mutation.
-func (m *AutoRegMutation) CreateTime() (r time.Time, exists bool) {
+func (m *UploadMutation) CreateTime() (r time.Time, exists bool) {
 	v := m.create_time
 	if v == nil {
 		return
@@ -155,10 +158,10 @@ func (m *AutoRegMutation) CreateTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreateTime returns the old "create_time" field's value of the AutoReg entity.
-// If the AutoReg object wasn't provided to the builder, the object is fetched from the database.
+// OldCreateTime returns the old "create_time" field's value of the Upload entity.
+// If the Upload object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AutoRegMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
+func (m *UploadMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreateTime is only allowed on UpdateOne operations")
 	}
@@ -173,17 +176,17 @@ func (m *AutoRegMutation) OldCreateTime(ctx context.Context) (v time.Time, err e
 }
 
 // ResetCreateTime resets all changes to the "create_time" field.
-func (m *AutoRegMutation) ResetCreateTime() {
+func (m *UploadMutation) ResetCreateTime() {
 	m.create_time = nil
 }
 
 // SetUpdateTime sets the "update_time" field.
-func (m *AutoRegMutation) SetUpdateTime(t time.Time) {
+func (m *UploadMutation) SetUpdateTime(t time.Time) {
 	m.update_time = &t
 }
 
 // UpdateTime returns the value of the "update_time" field in the mutation.
-func (m *AutoRegMutation) UpdateTime() (r time.Time, exists bool) {
+func (m *UploadMutation) UpdateTime() (r time.Time, exists bool) {
 	v := m.update_time
 	if v == nil {
 		return
@@ -191,10 +194,10 @@ func (m *AutoRegMutation) UpdateTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdateTime returns the old "update_time" field's value of the AutoReg entity.
-// If the AutoReg object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdateTime returns the old "update_time" field's value of the Upload entity.
+// If the Upload object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AutoRegMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
+func (m *UploadMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdateTime is only allowed on UpdateOne operations")
 	}
@@ -209,17 +212,17 @@ func (m *AutoRegMutation) OldUpdateTime(ctx context.Context) (v time.Time, err e
 }
 
 // ResetUpdateTime resets all changes to the "update_time" field.
-func (m *AutoRegMutation) ResetUpdateTime() {
+func (m *UploadMutation) ResetUpdateTime() {
 	m.update_time = nil
 }
 
 // SetSn sets the "sn" field.
-func (m *AutoRegMutation) SetSn(s string) {
+func (m *UploadMutation) SetSn(s string) {
 	m.sn = &s
 }
 
 // Sn returns the value of the "sn" field in the mutation.
-func (m *AutoRegMutation) Sn() (r string, exists bool) {
+func (m *UploadMutation) Sn() (r string, exists bool) {
 	v := m.sn
 	if v == nil {
 		return
@@ -227,10 +230,10 @@ func (m *AutoRegMutation) Sn() (r string, exists bool) {
 	return *v, true
 }
 
-// OldSn returns the old "sn" field's value of the AutoReg entity.
-// If the AutoReg object wasn't provided to the builder, the object is fetched from the database.
+// OldSn returns the old "sn" field's value of the Upload entity.
+// If the Upload object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AutoRegMutation) OldSn(ctx context.Context) (v string, err error) {
+func (m *UploadMutation) OldSn(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSn is only allowed on UpdateOne operations")
 	}
@@ -245,17 +248,102 @@ func (m *AutoRegMutation) OldSn(ctx context.Context) (v string, err error) {
 }
 
 // ResetSn resets all changes to the "sn" field.
-func (m *AutoRegMutation) ResetSn() {
+func (m *UploadMutation) ResetSn() {
 	m.sn = nil
 }
 
+// SetUUID sets the "uuid" field.
+func (m *UploadMutation) SetUUID(s string) {
+	m.uuid = &s
+}
+
+// UUID returns the value of the "uuid" field in the mutation.
+func (m *UploadMutation) UUID() (r string, exists bool) {
+	v := m.uuid
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUUID returns the old "uuid" field's value of the Upload entity.
+// If the Upload object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UploadMutation) OldUUID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUUID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUUID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUUID: %w", err)
+	}
+	return oldValue.UUID, nil
+}
+
+// ResetUUID resets all changes to the "uuid" field.
+func (m *UploadMutation) ResetUUID() {
+	m.uuid = nil
+}
+
+// SetDeviceID sets the "device_id" field.
+func (m *UploadMutation) SetDeviceID(s string) {
+	m.device_id = &s
+}
+
+// DeviceID returns the value of the "device_id" field in the mutation.
+func (m *UploadMutation) DeviceID() (r string, exists bool) {
+	v := m.device_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeviceID returns the old "device_id" field's value of the Upload entity.
+// If the Upload object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UploadMutation) OldDeviceID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeviceID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeviceID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeviceID: %w", err)
+	}
+	return oldValue.DeviceID, nil
+}
+
+// ClearDeviceID clears the value of the "device_id" field.
+func (m *UploadMutation) ClearDeviceID() {
+	m.device_id = nil
+	m.clearedFields[upload.FieldDeviceID] = struct{}{}
+}
+
+// DeviceIDCleared returns if the "device_id" field was cleared in this mutation.
+func (m *UploadMutation) DeviceIDCleared() bool {
+	_, ok := m.clearedFields[upload.FieldDeviceID]
+	return ok
+}
+
+// ResetDeviceID resets all changes to the "device_id" field.
+func (m *UploadMutation) ResetDeviceID() {
+	m.device_id = nil
+	delete(m.clearedFields, upload.FieldDeviceID)
+}
+
 // SetIP sets the "ip" field.
-func (m *AutoRegMutation) SetIP(s string) {
+func (m *UploadMutation) SetIP(s string) {
 	m.ip = &s
 }
 
 // IP returns the value of the "ip" field in the mutation.
-func (m *AutoRegMutation) IP() (r string, exists bool) {
+func (m *UploadMutation) IP() (r string, exists bool) {
 	v := m.ip
 	if v == nil {
 		return
@@ -263,10 +351,10 @@ func (m *AutoRegMutation) IP() (r string, exists bool) {
 	return *v, true
 }
 
-// OldIP returns the old "ip" field's value of the AutoReg entity.
-// If the AutoReg object wasn't provided to the builder, the object is fetched from the database.
+// OldIP returns the old "ip" field's value of the Upload entity.
+// If the Upload object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AutoRegMutation) OldIP(ctx context.Context) (v string, err error) {
+func (m *UploadMutation) OldIP(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIP is only allowed on UpdateOne operations")
 	}
@@ -281,19 +369,55 @@ func (m *AutoRegMutation) OldIP(ctx context.Context) (v string, err error) {
 }
 
 // ResetIP resets all changes to the "ip" field.
-func (m *AutoRegMutation) ResetIP() {
+func (m *UploadMutation) ResetIP() {
 	m.ip = nil
 }
 
-// Where appends a list predicates to the AutoRegMutation builder.
-func (m *AutoRegMutation) Where(ps ...predicate.AutoReg) {
+// SetLastTime sets the "last_time" field.
+func (m *UploadMutation) SetLastTime(t time.Time) {
+	m.last_time = &t
+}
+
+// LastTime returns the value of the "last_time" field in the mutation.
+func (m *UploadMutation) LastTime() (r time.Time, exists bool) {
+	v := m.last_time
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLastTime returns the old "last_time" field's value of the Upload entity.
+// If the Upload object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UploadMutation) OldLastTime(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLastTime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLastTime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLastTime: %w", err)
+	}
+	return oldValue.LastTime, nil
+}
+
+// ResetLastTime resets all changes to the "last_time" field.
+func (m *UploadMutation) ResetLastTime() {
+	m.last_time = nil
+}
+
+// Where appends a list predicates to the UploadMutation builder.
+func (m *UploadMutation) Where(ps ...predicate.Upload) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the AutoRegMutation builder. Using this method,
+// WhereP appends storage-level predicates to the UploadMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *AutoRegMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.AutoReg, len(ps))
+func (m *UploadMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Upload, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -301,36 +425,45 @@ func (m *AutoRegMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *AutoRegMutation) Op() Op {
+func (m *UploadMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *AutoRegMutation) SetOp(op Op) {
+func (m *UploadMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (AutoReg).
-func (m *AutoRegMutation) Type() string {
+// Type returns the node type of this mutation (Upload).
+func (m *UploadMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *AutoRegMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+func (m *UploadMutation) Fields() []string {
+	fields := make([]string, 0, 7)
 	if m.create_time != nil {
-		fields = append(fields, autoreg.FieldCreateTime)
+		fields = append(fields, upload.FieldCreateTime)
 	}
 	if m.update_time != nil {
-		fields = append(fields, autoreg.FieldUpdateTime)
+		fields = append(fields, upload.FieldUpdateTime)
 	}
 	if m.sn != nil {
-		fields = append(fields, autoreg.FieldSn)
+		fields = append(fields, upload.FieldSn)
+	}
+	if m.uuid != nil {
+		fields = append(fields, upload.FieldUUID)
+	}
+	if m.device_id != nil {
+		fields = append(fields, upload.FieldDeviceID)
 	}
 	if m.ip != nil {
-		fields = append(fields, autoreg.FieldIP)
+		fields = append(fields, upload.FieldIP)
+	}
+	if m.last_time != nil {
+		fields = append(fields, upload.FieldLastTime)
 	}
 	return fields
 }
@@ -338,16 +471,22 @@ func (m *AutoRegMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *AutoRegMutation) Field(name string) (ent.Value, bool) {
+func (m *UploadMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case autoreg.FieldCreateTime:
+	case upload.FieldCreateTime:
 		return m.CreateTime()
-	case autoreg.FieldUpdateTime:
+	case upload.FieldUpdateTime:
 		return m.UpdateTime()
-	case autoreg.FieldSn:
+	case upload.FieldSn:
 		return m.Sn()
-	case autoreg.FieldIP:
+	case upload.FieldUUID:
+		return m.UUID()
+	case upload.FieldDeviceID:
+		return m.DeviceID()
+	case upload.FieldIP:
 		return m.IP()
+	case upload.FieldLastTime:
+		return m.LastTime()
 	}
 	return nil, false
 }
@@ -355,162 +494,207 @@ func (m *AutoRegMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *AutoRegMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *UploadMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case autoreg.FieldCreateTime:
+	case upload.FieldCreateTime:
 		return m.OldCreateTime(ctx)
-	case autoreg.FieldUpdateTime:
+	case upload.FieldUpdateTime:
 		return m.OldUpdateTime(ctx)
-	case autoreg.FieldSn:
+	case upload.FieldSn:
 		return m.OldSn(ctx)
-	case autoreg.FieldIP:
+	case upload.FieldUUID:
+		return m.OldUUID(ctx)
+	case upload.FieldDeviceID:
+		return m.OldDeviceID(ctx)
+	case upload.FieldIP:
 		return m.OldIP(ctx)
+	case upload.FieldLastTime:
+		return m.OldLastTime(ctx)
 	}
-	return nil, fmt.Errorf("unknown AutoReg field %s", name)
+	return nil, fmt.Errorf("unknown Upload field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *AutoRegMutation) SetField(name string, value ent.Value) error {
+func (m *UploadMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case autoreg.FieldCreateTime:
+	case upload.FieldCreateTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreateTime(v)
 		return nil
-	case autoreg.FieldUpdateTime:
+	case upload.FieldUpdateTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdateTime(v)
 		return nil
-	case autoreg.FieldSn:
+	case upload.FieldSn:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSn(v)
 		return nil
-	case autoreg.FieldIP:
+	case upload.FieldUUID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUUID(v)
+		return nil
+	case upload.FieldDeviceID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeviceID(v)
+		return nil
+	case upload.FieldIP:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetIP(v)
 		return nil
+	case upload.FieldLastTime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLastTime(v)
+		return nil
 	}
-	return fmt.Errorf("unknown AutoReg field %s", name)
+	return fmt.Errorf("unknown Upload field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *AutoRegMutation) AddedFields() []string {
+func (m *UploadMutation) AddedFields() []string {
 	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *AutoRegMutation) AddedField(name string) (ent.Value, bool) {
+func (m *UploadMutation) AddedField(name string) (ent.Value, bool) {
 	return nil, false
 }
 
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *AutoRegMutation) AddField(name string, value ent.Value) error {
+func (m *UploadMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	}
-	return fmt.Errorf("unknown AutoReg numeric field %s", name)
+	return fmt.Errorf("unknown Upload numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *AutoRegMutation) ClearedFields() []string {
-	return nil
+func (m *UploadMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(upload.FieldDeviceID) {
+		fields = append(fields, upload.FieldDeviceID)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *AutoRegMutation) FieldCleared(name string) bool {
+func (m *UploadMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *AutoRegMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown AutoReg nullable field %s", name)
+func (m *UploadMutation) ClearField(name string) error {
+	switch name {
+	case upload.FieldDeviceID:
+		m.ClearDeviceID()
+		return nil
+	}
+	return fmt.Errorf("unknown Upload nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *AutoRegMutation) ResetField(name string) error {
+func (m *UploadMutation) ResetField(name string) error {
 	switch name {
-	case autoreg.FieldCreateTime:
+	case upload.FieldCreateTime:
 		m.ResetCreateTime()
 		return nil
-	case autoreg.FieldUpdateTime:
+	case upload.FieldUpdateTime:
 		m.ResetUpdateTime()
 		return nil
-	case autoreg.FieldSn:
+	case upload.FieldSn:
 		m.ResetSn()
 		return nil
-	case autoreg.FieldIP:
+	case upload.FieldUUID:
+		m.ResetUUID()
+		return nil
+	case upload.FieldDeviceID:
+		m.ResetDeviceID()
+		return nil
+	case upload.FieldIP:
 		m.ResetIP()
 		return nil
+	case upload.FieldLastTime:
+		m.ResetLastTime()
+		return nil
 	}
-	return fmt.Errorf("unknown AutoReg field %s", name)
+	return fmt.Errorf("unknown Upload field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *AutoRegMutation) AddedEdges() []string {
+func (m *UploadMutation) AddedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *AutoRegMutation) AddedIDs(name string) []ent.Value {
+func (m *UploadMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *AutoRegMutation) RemovedEdges() []string {
+func (m *UploadMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *AutoRegMutation) RemovedIDs(name string) []ent.Value {
+func (m *UploadMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *AutoRegMutation) ClearedEdges() []string {
+func (m *UploadMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *AutoRegMutation) EdgeCleared(name string) bool {
+func (m *UploadMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *AutoRegMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown AutoReg unique edge %s", name)
+func (m *UploadMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Upload unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *AutoRegMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown AutoReg edge %s", name)
+func (m *UploadMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Upload edge %s", name)
 }

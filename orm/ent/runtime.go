@@ -5,7 +5,7 @@ package ent
 import (
 	"time"
 
-	"github.com/twiglab/doggy/orm/ent/autoreg"
+	"github.com/twiglab/doggy/orm/ent/upload"
 	"github.com/twiglab/doggy/orm/schema"
 )
 
@@ -13,26 +13,26 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	autoregMixin := schema.AutoReg{}.Mixin()
-	autoregMixinFields0 := autoregMixin[0].Fields()
-	_ = autoregMixinFields0
-	autoregFields := schema.AutoReg{}.Fields()
-	_ = autoregFields
-	// autoregDescCreateTime is the schema descriptor for create_time field.
-	autoregDescCreateTime := autoregMixinFields0[0].Descriptor()
-	// autoreg.DefaultCreateTime holds the default value on creation for the create_time field.
-	autoreg.DefaultCreateTime = autoregDescCreateTime.Default.(func() time.Time)
-	// autoregDescUpdateTime is the schema descriptor for update_time field.
-	autoregDescUpdateTime := autoregMixinFields0[1].Descriptor()
-	// autoreg.DefaultUpdateTime holds the default value on creation for the update_time field.
-	autoreg.DefaultUpdateTime = autoregDescUpdateTime.Default.(func() time.Time)
-	// autoreg.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
-	autoreg.UpdateDefaultUpdateTime = autoregDescUpdateTime.UpdateDefault.(func() time.Time)
-	// autoregDescSn is the schema descriptor for sn field.
-	autoregDescSn := autoregFields[0].Descriptor()
-	// autoreg.SnValidator is a validator for the "sn" field. It is called by the builders before save.
-	autoreg.SnValidator = func() func(string) error {
-		validators := autoregDescSn.Validators
+	uploadMixin := schema.Upload{}.Mixin()
+	uploadMixinFields0 := uploadMixin[0].Fields()
+	_ = uploadMixinFields0
+	uploadFields := schema.Upload{}.Fields()
+	_ = uploadFields
+	// uploadDescCreateTime is the schema descriptor for create_time field.
+	uploadDescCreateTime := uploadMixinFields0[0].Descriptor()
+	// upload.DefaultCreateTime holds the default value on creation for the create_time field.
+	upload.DefaultCreateTime = uploadDescCreateTime.Default.(func() time.Time)
+	// uploadDescUpdateTime is the schema descriptor for update_time field.
+	uploadDescUpdateTime := uploadMixinFields0[1].Descriptor()
+	// upload.DefaultUpdateTime holds the default value on creation for the update_time field.
+	upload.DefaultUpdateTime = uploadDescUpdateTime.Default.(func() time.Time)
+	// upload.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
+	upload.UpdateDefaultUpdateTime = uploadDescUpdateTime.UpdateDefault.(func() time.Time)
+	// uploadDescSn is the schema descriptor for sn field.
+	uploadDescSn := uploadFields[0].Descriptor()
+	// upload.SnValidator is a validator for the "sn" field. It is called by the builders before save.
+	upload.SnValidator = func() func(string) error {
+		validators := uploadDescSn.Validators
 		fns := [...]func(string) error{
 			validators[0].(func(string) error),
 			validators[1].(func(string) error),
@@ -46,11 +46,33 @@ func init() {
 			return nil
 		}
 	}()
-	// autoregDescIP is the schema descriptor for ip field.
-	autoregDescIP := autoregFields[1].Descriptor()
-	// autoreg.IPValidator is a validator for the "ip" field. It is called by the builders before save.
-	autoreg.IPValidator = func() func(string) error {
-		validators := autoregDescIP.Validators
+	// uploadDescUUID is the schema descriptor for uuid field.
+	uploadDescUUID := uploadFields[1].Descriptor()
+	// upload.UUIDValidator is a validator for the "uuid" field. It is called by the builders before save.
+	upload.UUIDValidator = func() func(string) error {
+		validators := uploadDescUUID.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(uuid string) error {
+			for _, fn := range fns {
+				if err := fn(uuid); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// uploadDescDeviceID is the schema descriptor for device_id field.
+	uploadDescDeviceID := uploadFields[2].Descriptor()
+	// upload.DeviceIDValidator is a validator for the "device_id" field. It is called by the builders before save.
+	upload.DeviceIDValidator = uploadDescDeviceID.Validators[0].(func(string) error)
+	// uploadDescIP is the schema descriptor for ip field.
+	uploadDescIP := uploadFields[3].Descriptor()
+	// upload.IPValidator is a validator for the "ip" field. It is called by the builders before save.
+	upload.IPValidator = func() func(string) error {
+		validators := uploadDescIP.Validators
 		fns := [...]func(string) error{
 			validators[0].(func(string) error),
 			validators[1].(func(string) error),
@@ -64,4 +86,10 @@ func init() {
 			return nil
 		}
 	}()
+	// uploadDescLastTime is the schema descriptor for last_time field.
+	uploadDescLastTime := uploadFields[4].Descriptor()
+	// upload.DefaultLastTime holds the default value on creation for the last_time field.
+	upload.DefaultLastTime = uploadDescLastTime.Default.(func() time.Time)
+	// upload.UpdateDefaultLastTime holds the default value on update for the last_time field.
+	upload.UpdateDefaultLastTime = uploadDescLastTime.UpdateDefault.(func() time.Time)
 }
