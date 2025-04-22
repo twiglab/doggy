@@ -5,15 +5,15 @@ import (
 	"io"
 	"os"
 
-	"github.com/twiglab/doggy/mdm"
+	"github.com/twiglab/doggy/pf"
 )
 
 type CsvCameraSetup struct {
 	csvFileName string
-	posMap      map[string]mdm.CameraSetup
+	posMap      map[string]pf.CameraSetup
 }
 
-func (r *CsvCameraSetup) Get(sn string) (camera mdm.CameraSetup, ok bool) {
+func (r *CsvCameraSetup) Get(sn string) (camera pf.CameraSetup, ok bool) {
 	camera, ok = r.posMap[sn]
 	return
 }
@@ -41,7 +41,7 @@ func (r *CsvCameraSetup) Load() error {
 
 		l.reload(record)
 
-		r.posMap[l.Pos(0)] = mdm.CameraSetup{
+		r.posMap[l.Pos(0)] = pf.CameraSetup{
 			SN:       l.Pos(0),
 			Pos:      l.Pos(1),
 			Floor:    l.Pos(2),

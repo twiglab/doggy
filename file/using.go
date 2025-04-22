@@ -5,15 +5,15 @@ import (
 	"io"
 	"os"
 
-	"github.com/twiglab/doggy/mdm"
+	"github.com/twiglab/doggy/pf"
 )
 
 type CsvCameraUsing struct {
 	csvFileName string
-	cameraMap   map[string]mdm.CameraUsing
+	cameraMap   map[string]pf.CameraUsing
 }
 
-func (r *CsvCameraUsing) GetByBK(bk string) (u mdm.CameraUsing, ok bool) {
+func (r *CsvCameraUsing) GetByBK(bk string) (u pf.CameraUsing, ok bool) {
 	u, ok = r.cameraMap[bk]
 	return
 }
@@ -41,7 +41,7 @@ func (r *CsvCameraUsing) Load() error {
 
 		l.reload(record)
 
-		u := mdm.CameraUsing{
+		u := pf.CameraUsing{
 			SN:    l.Pos(0),
 			UUID:  l.Pos(1),
 			AlgID: l.Pos(2),
