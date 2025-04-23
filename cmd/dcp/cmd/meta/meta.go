@@ -22,7 +22,7 @@ var (
 )
 
 func init() {
-	MetaCmd.PersistentFlags().StringVarP(&user, "user", "u", "ApiAdmin", "摄像头认证用户名")
-	MetaCmd.PersistentFlags().StringVarP(&pwd, "pwd", "p", "Aaa1234%%", "摄像头认证用户密码")
+	MetaCmd.PersistentFlags().StringVarP(&user, "user", "u", "ApiAdmin", "用户名")
+	MetaCmd.PersistentFlags().StringVarP(&pwd, "pwd", "p", "Aaa1234%%", "密码")
 	MetaCmd.PersistentFlags().StringVar(&addr, "addr", "", "像机地址(ip:port)")
 }

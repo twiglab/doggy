@@ -13,7 +13,7 @@ import (
 var MetaGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: "查询设备元数据订阅信息",
-	Long:  `使用配置文件启动dcp服务`,
+	Long:  `查询设备元数据订阅信息`,
 	Run: func(cmd *cobra.Command, args []string) {
 		metaGet(cmd, args)
 	},

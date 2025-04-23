@@ -15,7 +15,7 @@ import (
 var MetaPostCmd = &cobra.Command{
 	Use:   "post",
 	Short: "设置设备元数据订阅信息",
-	Long:  `使用配置文件启动dcp服务`,
+	Long:  `设置设备元数据订阅信息`,
 	Run: func(cmd *cobra.Command, args []string) {
 		metaPost(cmd, args)
 	},
