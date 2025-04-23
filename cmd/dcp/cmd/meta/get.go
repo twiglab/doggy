@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net"
 
 	"github.com/spf13/cobra"
 	"github.com/twiglab/doggy/holo"
@@ -25,11 +24,7 @@ func init() {
 	MetaCmd.AddCommand(MetaGetCmd)
 }
 
-func metaGet(cmd *cobra.Command, args []string) {
-	if _, err := net.ResolveTCPAddr("", addr); err != nil {
-		log.Fatal("bad addr")
-	}
-
+func metaGet(_ *cobra.Command, _ []string) {
 	dev, _ := holo.OpenDevice(addr, user, pwd)
 	defer dev.Close()
 

@@ -24,5 +24,5 @@ var (
 func init() {
 	MetaCmd.PersistentFlags().StringVarP(&user, "user", "u", "ApiAdmin", "摄像头认证用户名")
 	MetaCmd.PersistentFlags().StringVarP(&pwd, "pwd", "p", "Aaa1234%%", "摄像头认证用户密码")
-	MetaCmd.PersistentFlags().StringVar(&addr, "addr", "", "像机地址含端口(如：1.2.3.4:80)")
+	MetaCmd.PersistentFlags().StringVar(&addr, "addr", "", "像机地址(ip:port)")
 }

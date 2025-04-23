@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net"
 
 	"github.com/spf13/cobra"
 	"github.com/twiglab/doggy/holo"
@@ -18,6 +17,7 @@ var RebootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		reboot(cmd, args)
 	},
+
 	Example: "dcp camera reboot --addr 1.2.3.4",
 }
 
@@ -26,11 +26,6 @@ func init() {
 }
 
 func reboot(_ *cobra.Command, _ []string) {
-
-	if _, err := net.ResolveTCPAddr("", addr); err != nil {
-		log.Fatal("bad addr")
-	}
-
 	dev, _ := holo.OpenDevice(addr, user, pwd)
 	defer dev.Close()
 

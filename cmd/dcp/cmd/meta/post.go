@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net"
 	"net/url"
 	"strconv"
 
@@ -30,16 +29,12 @@ func init() {
 	MetaPostCmd.Flags().StringVar(&metadataURL, "url", "", "平台URL")
 }
 
-func metaPost(cmd *cobra.Command, args []string) {
+func metaPost(_ *cobra.Command, _ []string) {
 	var (
 		err  error
 		port int = 80
 		url  *url.URL
 	)
-
-	if _, err = net.ResolveTCPAddr("", addr); err != nil {
-		log.Fatal("no ip")
-	}
 
 	dev, _ := holo.OpenDevice(addr, user, pwd)
 	defer dev.Close()
