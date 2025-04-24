@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"golang.org/x/telemetry"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -25,6 +26,12 @@ var ServCmd = &cobra.Command{
 	Long:  `使用配置文件启动dcp服务`,
 	Run: func(cmd *cobra.Command, args []string) {
 		serv(cmd, args)
+	},
+
+	PreRun: func(cmd *cobra.Command, args []string) {
+		telemetry.Start(telemetry.Config{
+			ReportCrashes: true,
+		})
 	},
 }
 
