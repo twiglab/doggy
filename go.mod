@@ -17,7 +17,7 @@ require (
 require (
 	ariga.io/atlas v0.31.1-0.20250212144724-069be8033e83 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/99designs/gqlgen v0.17.70 // indirect
+	github.com/99designs/gqlgen v0.17.72 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/agnivade/levenshtein v1.2.1 // indirect
 	github.com/apache/arrow/go/v15 v15.0.2 // indirect
@@ -55,7 +55,7 @@ require (
 	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/urfave/cli/v2 v2.27.6 // indirect
-	github.com/vektah/gqlparser/v2 v2.5.23 // indirect
+	github.com/vektah/gqlparser/v2 v2.5.25 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	github.com/zclconf/go-cty v1.14.4 // indirect
 	github.com/zclconf/go-cty-yaml v1.1.0 // indirect
