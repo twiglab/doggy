@@ -87,7 +87,7 @@ func (Using) Mixin() []ent.Mixin {
 
 func (Using) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("sn"),
+		index.Fields("uuid"),
 	}
 }
 

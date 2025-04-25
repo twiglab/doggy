@@ -79,9 +79,9 @@ var (
 		PrimaryKey: []*schema.Column{CameraUsingColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "using_sn",
+				Name:    "using_uuid",
 				Unique:  false,
-				Columns: []*schema.Column{CameraUsingColumns[3]},
+				Columns: []*schema.Column{CameraUsingColumns[4]},
 			},
 		},
 	}
