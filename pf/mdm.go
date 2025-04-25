@@ -3,12 +3,15 @@ package pf
 import "time"
 
 type CameraSetup struct {
-	SN     string `json:"sn"`
-	IpAddr string `json:"ip_addr"`
+	SN     string
+	IpAddr string
 	Last   time.Time
-	UUID   string
 	User   string
 	Pwd    string
+
+	// 文档规定最多6个uuid
+	UUID1 string
+	UUID2 string
 }
 
 type CameraPos struct {

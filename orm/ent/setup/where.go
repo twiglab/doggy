@@ -69,29 +69,14 @@ func Sn(v string) predicate.Setup {
 	return predicate.Setup(sql.FieldEQ(FieldSn, v))
 }
 
-// Pos applies equality check predicate on the "pos" field. It's identical to PosEQ.
-func Pos(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEQ(FieldPos, v))
+// IP applies equality check predicate on the "ip" field. It's identical to IPEQ.
+func IP(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldEQ(FieldIP, v))
 }
 
-// Floor applies equality check predicate on the "floor" field. It's identical to FloorEQ.
-func Floor(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEQ(FieldFloor, v))
-}
-
-// Building applies equality check predicate on the "building" field. It's identical to BuildingEQ.
-func Building(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEQ(FieldBuilding, v))
-}
-
-// Area applies equality check predicate on the "area" field. It's identical to AreaEQ.
-func Area(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEQ(FieldArea, v))
-}
-
-// Nat applies equality check predicate on the "nat" field. It's identical to NatEQ.
-func Nat(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEQ(FieldNat, v))
+// LastTime applies equality check predicate on the "last_time" field. It's identical to LastTimeEQ.
+func LastTime(v time.Time) predicate.Setup {
+	return predicate.Setup(sql.FieldEQ(FieldLastTime, v))
 }
 
 // User applies equality check predicate on the "user" field. It's identical to UserEQ.
@@ -102,6 +87,16 @@ func User(v string) predicate.Setup {
 // Pwd applies equality check predicate on the "pwd" field. It's identical to PwdEQ.
 func Pwd(v string) predicate.Setup {
 	return predicate.Setup(sql.FieldEQ(FieldPwd, v))
+}
+
+// Uuid1 applies equality check predicate on the "uuid1" field. It's identical to Uuid1EQ.
+func Uuid1(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldEQ(FieldUuid1, v))
+}
+
+// Uuid2 applies equality check predicate on the "uuid2" field. It's identical to Uuid2EQ.
+func Uuid2(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldEQ(FieldUuid2, v))
 }
 
 // CreateTimeEQ applies the EQ predicate on the "create_time" field.
@@ -249,369 +244,109 @@ func SnContainsFold(v string) predicate.Setup {
 	return predicate.Setup(sql.FieldContainsFold(FieldSn, v))
 }
 
-// PosEQ applies the EQ predicate on the "pos" field.
-func PosEQ(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEQ(FieldPos, v))
+// IPEQ applies the EQ predicate on the "ip" field.
+func IPEQ(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldEQ(FieldIP, v))
 }
 
-// PosNEQ applies the NEQ predicate on the "pos" field.
-func PosNEQ(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldNEQ(FieldPos, v))
+// IPNEQ applies the NEQ predicate on the "ip" field.
+func IPNEQ(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldNEQ(FieldIP, v))
 }
 
-// PosIn applies the In predicate on the "pos" field.
-func PosIn(vs ...string) predicate.Setup {
-	return predicate.Setup(sql.FieldIn(FieldPos, vs...))
+// IPIn applies the In predicate on the "ip" field.
+func IPIn(vs ...string) predicate.Setup {
+	return predicate.Setup(sql.FieldIn(FieldIP, vs...))
 }
 
-// PosNotIn applies the NotIn predicate on the "pos" field.
-func PosNotIn(vs ...string) predicate.Setup {
-	return predicate.Setup(sql.FieldNotIn(FieldPos, vs...))
+// IPNotIn applies the NotIn predicate on the "ip" field.
+func IPNotIn(vs ...string) predicate.Setup {
+	return predicate.Setup(sql.FieldNotIn(FieldIP, vs...))
 }
 
-// PosGT applies the GT predicate on the "pos" field.
-func PosGT(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldGT(FieldPos, v))
+// IPGT applies the GT predicate on the "ip" field.
+func IPGT(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldGT(FieldIP, v))
 }
 
-// PosGTE applies the GTE predicate on the "pos" field.
-func PosGTE(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldGTE(FieldPos, v))
+// IPGTE applies the GTE predicate on the "ip" field.
+func IPGTE(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldGTE(FieldIP, v))
 }
 
-// PosLT applies the LT predicate on the "pos" field.
-func PosLT(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldLT(FieldPos, v))
+// IPLT applies the LT predicate on the "ip" field.
+func IPLT(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldLT(FieldIP, v))
 }
 
-// PosLTE applies the LTE predicate on the "pos" field.
-func PosLTE(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldLTE(FieldPos, v))
+// IPLTE applies the LTE predicate on the "ip" field.
+func IPLTE(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldLTE(FieldIP, v))
 }
 
-// PosContains applies the Contains predicate on the "pos" field.
-func PosContains(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldContains(FieldPos, v))
+// IPContains applies the Contains predicate on the "ip" field.
+func IPContains(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldContains(FieldIP, v))
 }
 
-// PosHasPrefix applies the HasPrefix predicate on the "pos" field.
-func PosHasPrefix(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldHasPrefix(FieldPos, v))
+// IPHasPrefix applies the HasPrefix predicate on the "ip" field.
+func IPHasPrefix(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldHasPrefix(FieldIP, v))
 }
 
-// PosHasSuffix applies the HasSuffix predicate on the "pos" field.
-func PosHasSuffix(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldHasSuffix(FieldPos, v))
+// IPHasSuffix applies the HasSuffix predicate on the "ip" field.
+func IPHasSuffix(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldHasSuffix(FieldIP, v))
 }
 
-// PosEqualFold applies the EqualFold predicate on the "pos" field.
-func PosEqualFold(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEqualFold(FieldPos, v))
+// IPEqualFold applies the EqualFold predicate on the "ip" field.
+func IPEqualFold(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldEqualFold(FieldIP, v))
 }
 
-// PosContainsFold applies the ContainsFold predicate on the "pos" field.
-func PosContainsFold(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldContainsFold(FieldPos, v))
+// IPContainsFold applies the ContainsFold predicate on the "ip" field.
+func IPContainsFold(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldContainsFold(FieldIP, v))
 }
 
-// FloorEQ applies the EQ predicate on the "floor" field.
-func FloorEQ(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEQ(FieldFloor, v))
+// LastTimeEQ applies the EQ predicate on the "last_time" field.
+func LastTimeEQ(v time.Time) predicate.Setup {
+	return predicate.Setup(sql.FieldEQ(FieldLastTime, v))
 }
 
-// FloorNEQ applies the NEQ predicate on the "floor" field.
-func FloorNEQ(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldNEQ(FieldFloor, v))
+// LastTimeNEQ applies the NEQ predicate on the "last_time" field.
+func LastTimeNEQ(v time.Time) predicate.Setup {
+	return predicate.Setup(sql.FieldNEQ(FieldLastTime, v))
 }
 
-// FloorIn applies the In predicate on the "floor" field.
-func FloorIn(vs ...string) predicate.Setup {
-	return predicate.Setup(sql.FieldIn(FieldFloor, vs...))
+// LastTimeIn applies the In predicate on the "last_time" field.
+func LastTimeIn(vs ...time.Time) predicate.Setup {
+	return predicate.Setup(sql.FieldIn(FieldLastTime, vs...))
 }
 
-// FloorNotIn applies the NotIn predicate on the "floor" field.
-func FloorNotIn(vs ...string) predicate.Setup {
-	return predicate.Setup(sql.FieldNotIn(FieldFloor, vs...))
+// LastTimeNotIn applies the NotIn predicate on the "last_time" field.
+func LastTimeNotIn(vs ...time.Time) predicate.Setup {
+	return predicate.Setup(sql.FieldNotIn(FieldLastTime, vs...))
 }
 
-// FloorGT applies the GT predicate on the "floor" field.
-func FloorGT(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldGT(FieldFloor, v))
+// LastTimeGT applies the GT predicate on the "last_time" field.
+func LastTimeGT(v time.Time) predicate.Setup {
+	return predicate.Setup(sql.FieldGT(FieldLastTime, v))
 }
 
-// FloorGTE applies the GTE predicate on the "floor" field.
-func FloorGTE(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldGTE(FieldFloor, v))
+// LastTimeGTE applies the GTE predicate on the "last_time" field.
+func LastTimeGTE(v time.Time) predicate.Setup {
+	return predicate.Setup(sql.FieldGTE(FieldLastTime, v))
 }
 
-// FloorLT applies the LT predicate on the "floor" field.
-func FloorLT(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldLT(FieldFloor, v))
+// LastTimeLT applies the LT predicate on the "last_time" field.
+func LastTimeLT(v time.Time) predicate.Setup {
+	return predicate.Setup(sql.FieldLT(FieldLastTime, v))
 }
 
-// FloorLTE applies the LTE predicate on the "floor" field.
-func FloorLTE(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldLTE(FieldFloor, v))
-}
-
-// FloorContains applies the Contains predicate on the "floor" field.
-func FloorContains(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldContains(FieldFloor, v))
-}
-
-// FloorHasPrefix applies the HasPrefix predicate on the "floor" field.
-func FloorHasPrefix(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldHasPrefix(FieldFloor, v))
-}
-
-// FloorHasSuffix applies the HasSuffix predicate on the "floor" field.
-func FloorHasSuffix(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldHasSuffix(FieldFloor, v))
-}
-
-// FloorIsNil applies the IsNil predicate on the "floor" field.
-func FloorIsNil() predicate.Setup {
-	return predicate.Setup(sql.FieldIsNull(FieldFloor))
-}
-
-// FloorNotNil applies the NotNil predicate on the "floor" field.
-func FloorNotNil() predicate.Setup {
-	return predicate.Setup(sql.FieldNotNull(FieldFloor))
-}
-
-// FloorEqualFold applies the EqualFold predicate on the "floor" field.
-func FloorEqualFold(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEqualFold(FieldFloor, v))
-}
-
-// FloorContainsFold applies the ContainsFold predicate on the "floor" field.
-func FloorContainsFold(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldContainsFold(FieldFloor, v))
-}
-
-// BuildingEQ applies the EQ predicate on the "building" field.
-func BuildingEQ(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEQ(FieldBuilding, v))
-}
-
-// BuildingNEQ applies the NEQ predicate on the "building" field.
-func BuildingNEQ(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldNEQ(FieldBuilding, v))
-}
-
-// BuildingIn applies the In predicate on the "building" field.
-func BuildingIn(vs ...string) predicate.Setup {
-	return predicate.Setup(sql.FieldIn(FieldBuilding, vs...))
-}
-
-// BuildingNotIn applies the NotIn predicate on the "building" field.
-func BuildingNotIn(vs ...string) predicate.Setup {
-	return predicate.Setup(sql.FieldNotIn(FieldBuilding, vs...))
-}
-
-// BuildingGT applies the GT predicate on the "building" field.
-func BuildingGT(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldGT(FieldBuilding, v))
-}
-
-// BuildingGTE applies the GTE predicate on the "building" field.
-func BuildingGTE(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldGTE(FieldBuilding, v))
-}
-
-// BuildingLT applies the LT predicate on the "building" field.
-func BuildingLT(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldLT(FieldBuilding, v))
-}
-
-// BuildingLTE applies the LTE predicate on the "building" field.
-func BuildingLTE(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldLTE(FieldBuilding, v))
-}
-
-// BuildingContains applies the Contains predicate on the "building" field.
-func BuildingContains(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldContains(FieldBuilding, v))
-}
-
-// BuildingHasPrefix applies the HasPrefix predicate on the "building" field.
-func BuildingHasPrefix(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldHasPrefix(FieldBuilding, v))
-}
-
-// BuildingHasSuffix applies the HasSuffix predicate on the "building" field.
-func BuildingHasSuffix(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldHasSuffix(FieldBuilding, v))
-}
-
-// BuildingIsNil applies the IsNil predicate on the "building" field.
-func BuildingIsNil() predicate.Setup {
-	return predicate.Setup(sql.FieldIsNull(FieldBuilding))
-}
-
-// BuildingNotNil applies the NotNil predicate on the "building" field.
-func BuildingNotNil() predicate.Setup {
-	return predicate.Setup(sql.FieldNotNull(FieldBuilding))
-}
-
-// BuildingEqualFold applies the EqualFold predicate on the "building" field.
-func BuildingEqualFold(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEqualFold(FieldBuilding, v))
-}
-
-// BuildingContainsFold applies the ContainsFold predicate on the "building" field.
-func BuildingContainsFold(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldContainsFold(FieldBuilding, v))
-}
-
-// AreaEQ applies the EQ predicate on the "area" field.
-func AreaEQ(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEQ(FieldArea, v))
-}
-
-// AreaNEQ applies the NEQ predicate on the "area" field.
-func AreaNEQ(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldNEQ(FieldArea, v))
-}
-
-// AreaIn applies the In predicate on the "area" field.
-func AreaIn(vs ...string) predicate.Setup {
-	return predicate.Setup(sql.FieldIn(FieldArea, vs...))
-}
-
-// AreaNotIn applies the NotIn predicate on the "area" field.
-func AreaNotIn(vs ...string) predicate.Setup {
-	return predicate.Setup(sql.FieldNotIn(FieldArea, vs...))
-}
-
-// AreaGT applies the GT predicate on the "area" field.
-func AreaGT(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldGT(FieldArea, v))
-}
-
-// AreaGTE applies the GTE predicate on the "area" field.
-func AreaGTE(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldGTE(FieldArea, v))
-}
-
-// AreaLT applies the LT predicate on the "area" field.
-func AreaLT(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldLT(FieldArea, v))
-}
-
-// AreaLTE applies the LTE predicate on the "area" field.
-func AreaLTE(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldLTE(FieldArea, v))
-}
-
-// AreaContains applies the Contains predicate on the "area" field.
-func AreaContains(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldContains(FieldArea, v))
-}
-
-// AreaHasPrefix applies the HasPrefix predicate on the "area" field.
-func AreaHasPrefix(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldHasPrefix(FieldArea, v))
-}
-
-// AreaHasSuffix applies the HasSuffix predicate on the "area" field.
-func AreaHasSuffix(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldHasSuffix(FieldArea, v))
-}
-
-// AreaIsNil applies the IsNil predicate on the "area" field.
-func AreaIsNil() predicate.Setup {
-	return predicate.Setup(sql.FieldIsNull(FieldArea))
-}
-
-// AreaNotNil applies the NotNil predicate on the "area" field.
-func AreaNotNil() predicate.Setup {
-	return predicate.Setup(sql.FieldNotNull(FieldArea))
-}
-
-// AreaEqualFold applies the EqualFold predicate on the "area" field.
-func AreaEqualFold(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEqualFold(FieldArea, v))
-}
-
-// AreaContainsFold applies the ContainsFold predicate on the "area" field.
-func AreaContainsFold(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldContainsFold(FieldArea, v))
-}
-
-// NatEQ applies the EQ predicate on the "nat" field.
-func NatEQ(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEQ(FieldNat, v))
-}
-
-// NatNEQ applies the NEQ predicate on the "nat" field.
-func NatNEQ(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldNEQ(FieldNat, v))
-}
-
-// NatIn applies the In predicate on the "nat" field.
-func NatIn(vs ...string) predicate.Setup {
-	return predicate.Setup(sql.FieldIn(FieldNat, vs...))
-}
-
-// NatNotIn applies the NotIn predicate on the "nat" field.
-func NatNotIn(vs ...string) predicate.Setup {
-	return predicate.Setup(sql.FieldNotIn(FieldNat, vs...))
-}
-
-// NatGT applies the GT predicate on the "nat" field.
-func NatGT(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldGT(FieldNat, v))
-}
-
-// NatGTE applies the GTE predicate on the "nat" field.
-func NatGTE(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldGTE(FieldNat, v))
-}
-
-// NatLT applies the LT predicate on the "nat" field.
-func NatLT(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldLT(FieldNat, v))
-}
-
-// NatLTE applies the LTE predicate on the "nat" field.
-func NatLTE(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldLTE(FieldNat, v))
-}
-
-// NatContains applies the Contains predicate on the "nat" field.
-func NatContains(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldContains(FieldNat, v))
-}
-
-// NatHasPrefix applies the HasPrefix predicate on the "nat" field.
-func NatHasPrefix(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldHasPrefix(FieldNat, v))
-}
-
-// NatHasSuffix applies the HasSuffix predicate on the "nat" field.
-func NatHasSuffix(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldHasSuffix(FieldNat, v))
-}
-
-// NatIsNil applies the IsNil predicate on the "nat" field.
-func NatIsNil() predicate.Setup {
-	return predicate.Setup(sql.FieldIsNull(FieldNat))
-}
-
-// NatNotNil applies the NotNil predicate on the "nat" field.
-func NatNotNil() predicate.Setup {
-	return predicate.Setup(sql.FieldNotNull(FieldNat))
-}
-
-// NatEqualFold applies the EqualFold predicate on the "nat" field.
-func NatEqualFold(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldEqualFold(FieldNat, v))
-}
-
-// NatContainsFold applies the ContainsFold predicate on the "nat" field.
-func NatContainsFold(v string) predicate.Setup {
-	return predicate.Setup(sql.FieldContainsFold(FieldNat, v))
+// LastTimeLTE applies the LTE predicate on the "last_time" field.
+func LastTimeLTE(v time.Time) predicate.Setup {
+	return predicate.Setup(sql.FieldLTE(FieldLastTime, v))
 }
 
 // UserEQ applies the EQ predicate on the "user" field.
@@ -762,6 +497,136 @@ func PwdEqualFold(v string) predicate.Setup {
 // PwdContainsFold applies the ContainsFold predicate on the "pwd" field.
 func PwdContainsFold(v string) predicate.Setup {
 	return predicate.Setup(sql.FieldContainsFold(FieldPwd, v))
+}
+
+// Uuid1EQ applies the EQ predicate on the "uuid1" field.
+func Uuid1EQ(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldEQ(FieldUuid1, v))
+}
+
+// Uuid1NEQ applies the NEQ predicate on the "uuid1" field.
+func Uuid1NEQ(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldNEQ(FieldUuid1, v))
+}
+
+// Uuid1In applies the In predicate on the "uuid1" field.
+func Uuid1In(vs ...string) predicate.Setup {
+	return predicate.Setup(sql.FieldIn(FieldUuid1, vs...))
+}
+
+// Uuid1NotIn applies the NotIn predicate on the "uuid1" field.
+func Uuid1NotIn(vs ...string) predicate.Setup {
+	return predicate.Setup(sql.FieldNotIn(FieldUuid1, vs...))
+}
+
+// Uuid1GT applies the GT predicate on the "uuid1" field.
+func Uuid1GT(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldGT(FieldUuid1, v))
+}
+
+// Uuid1GTE applies the GTE predicate on the "uuid1" field.
+func Uuid1GTE(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldGTE(FieldUuid1, v))
+}
+
+// Uuid1LT applies the LT predicate on the "uuid1" field.
+func Uuid1LT(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldLT(FieldUuid1, v))
+}
+
+// Uuid1LTE applies the LTE predicate on the "uuid1" field.
+func Uuid1LTE(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldLTE(FieldUuid1, v))
+}
+
+// Uuid1Contains applies the Contains predicate on the "uuid1" field.
+func Uuid1Contains(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldContains(FieldUuid1, v))
+}
+
+// Uuid1HasPrefix applies the HasPrefix predicate on the "uuid1" field.
+func Uuid1HasPrefix(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldHasPrefix(FieldUuid1, v))
+}
+
+// Uuid1HasSuffix applies the HasSuffix predicate on the "uuid1" field.
+func Uuid1HasSuffix(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldHasSuffix(FieldUuid1, v))
+}
+
+// Uuid1EqualFold applies the EqualFold predicate on the "uuid1" field.
+func Uuid1EqualFold(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldEqualFold(FieldUuid1, v))
+}
+
+// Uuid1ContainsFold applies the ContainsFold predicate on the "uuid1" field.
+func Uuid1ContainsFold(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldContainsFold(FieldUuid1, v))
+}
+
+// Uuid2EQ applies the EQ predicate on the "uuid2" field.
+func Uuid2EQ(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldEQ(FieldUuid2, v))
+}
+
+// Uuid2NEQ applies the NEQ predicate on the "uuid2" field.
+func Uuid2NEQ(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldNEQ(FieldUuid2, v))
+}
+
+// Uuid2In applies the In predicate on the "uuid2" field.
+func Uuid2In(vs ...string) predicate.Setup {
+	return predicate.Setup(sql.FieldIn(FieldUuid2, vs...))
+}
+
+// Uuid2NotIn applies the NotIn predicate on the "uuid2" field.
+func Uuid2NotIn(vs ...string) predicate.Setup {
+	return predicate.Setup(sql.FieldNotIn(FieldUuid2, vs...))
+}
+
+// Uuid2GT applies the GT predicate on the "uuid2" field.
+func Uuid2GT(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldGT(FieldUuid2, v))
+}
+
+// Uuid2GTE applies the GTE predicate on the "uuid2" field.
+func Uuid2GTE(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldGTE(FieldUuid2, v))
+}
+
+// Uuid2LT applies the LT predicate on the "uuid2" field.
+func Uuid2LT(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldLT(FieldUuid2, v))
+}
+
+// Uuid2LTE applies the LTE predicate on the "uuid2" field.
+func Uuid2LTE(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldLTE(FieldUuid2, v))
+}
+
+// Uuid2Contains applies the Contains predicate on the "uuid2" field.
+func Uuid2Contains(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldContains(FieldUuid2, v))
+}
+
+// Uuid2HasPrefix applies the HasPrefix predicate on the "uuid2" field.
+func Uuid2HasPrefix(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldHasPrefix(FieldUuid2, v))
+}
+
+// Uuid2HasSuffix applies the HasSuffix predicate on the "uuid2" field.
+func Uuid2HasSuffix(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldHasSuffix(FieldUuid2, v))
+}
+
+// Uuid2EqualFold applies the EqualFold predicate on the "uuid2" field.
+func Uuid2EqualFold(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldEqualFold(FieldUuid2, v))
+}
+
+// Uuid2ContainsFold applies the ContainsFold predicate on the "uuid2" field.
+func Uuid2ContainsFold(v string) predicate.Setup {
+	return predicate.Setup(sql.FieldContainsFold(FieldUuid2, v))
 }
 
 // And groups predicates with the AND operator between them.

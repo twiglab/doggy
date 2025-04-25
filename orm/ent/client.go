@@ -14,8 +14,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"github.com/twiglab/doggy/orm/ent/pos"
 	"github.com/twiglab/doggy/orm/ent/setup"
-	"github.com/twiglab/doggy/orm/ent/upload"
 	"github.com/twiglab/doggy/orm/ent/using"
 
 	stdsql "database/sql"
@@ -26,10 +26,10 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// Pos is the client for interacting with the Pos builders.
+	Pos *PosClient
 	// Setup is the client for interacting with the Setup builders.
 	Setup *SetupClient
-	// Upload is the client for interacting with the Upload builders.
-	Upload *UploadClient
 	// Using is the client for interacting with the Using builders.
 	Using *UsingClient
 }
@@ -43,8 +43,8 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.Pos = NewPosClient(c.config)
 	c.Setup = NewSetupClient(c.config)
-	c.Upload = NewUploadClient(c.config)
 	c.Using = NewUsingClient(c.config)
 }
 
@@ -138,8 +138,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
+		Pos:    NewPosClient(cfg),
 		Setup:  NewSetupClient(cfg),
-		Upload: NewUploadClient(cfg),
 		Using:  NewUsingClient(cfg),
 	}, nil
 }
@@ -160,8 +160,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
+		Pos:    NewPosClient(cfg),
 		Setup:  NewSetupClient(cfg),
-		Upload: NewUploadClient(cfg),
 		Using:  NewUsingClient(cfg),
 	}, nil
 }
@@ -169,7 +169,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Setup.
+//		Pos.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -191,30 +191,163 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.Pos.Use(hooks...)
 	c.Setup.Use(hooks...)
-	c.Upload.Use(hooks...)
 	c.Using.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
+	c.Pos.Intercept(interceptors...)
 	c.Setup.Intercept(interceptors...)
-	c.Upload.Intercept(interceptors...)
 	c.Using.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
+	case *PosMutation:
+		return c.Pos.mutate(ctx, m)
 	case *SetupMutation:
 		return c.Setup.mutate(ctx, m)
-	case *UploadMutation:
-		return c.Upload.mutate(ctx, m)
 	case *UsingMutation:
 		return c.Using.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
+	}
+}
+
+// PosClient is a client for the Pos schema.
+type PosClient struct {
+	config
+}
+
+// NewPosClient returns a client for the Pos from the given config.
+func NewPosClient(c config) *PosClient {
+	return &PosClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `pos.Hooks(f(g(h())))`.
+func (c *PosClient) Use(hooks ...Hook) {
+	c.hooks.Pos = append(c.hooks.Pos, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `pos.Intercept(f(g(h())))`.
+func (c *PosClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Pos = append(c.inters.Pos, interceptors...)
+}
+
+// Create returns a builder for creating a Pos entity.
+func (c *PosClient) Create() *PosCreate {
+	mutation := newPosMutation(c.config, OpCreate)
+	return &PosCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Pos entities.
+func (c *PosClient) CreateBulk(builders ...*PosCreate) *PosCreateBulk {
+	return &PosCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *PosClient) MapCreateBulk(slice any, setFunc func(*PosCreate, int)) *PosCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &PosCreateBulk{err: fmt.Errorf("calling to PosClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*PosCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &PosCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Pos.
+func (c *PosClient) Update() *PosUpdate {
+	mutation := newPosMutation(c.config, OpUpdate)
+	return &PosUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PosClient) UpdateOne(po *Pos) *PosUpdateOne {
+	mutation := newPosMutation(c.config, OpUpdateOne, withPos(po))
+	return &PosUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PosClient) UpdateOneID(id int) *PosUpdateOne {
+	mutation := newPosMutation(c.config, OpUpdateOne, withPosID(id))
+	return &PosUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Pos.
+func (c *PosClient) Delete() *PosDelete {
+	mutation := newPosMutation(c.config, OpDelete)
+	return &PosDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *PosClient) DeleteOne(po *Pos) *PosDeleteOne {
+	return c.DeleteOneID(po.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *PosClient) DeleteOneID(id int) *PosDeleteOne {
+	builder := c.Delete().Where(pos.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PosDeleteOne{builder}
+}
+
+// Query returns a query builder for Pos.
+func (c *PosClient) Query() *PosQuery {
+	return &PosQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypePos},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Pos entity by its id.
+func (c *PosClient) Get(ctx context.Context, id int) (*Pos, error) {
+	return c.Query().Where(pos.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PosClient) GetX(ctx context.Context, id int) *Pos {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *PosClient) Hooks() []Hook {
+	return c.hooks.Pos
+}
+
+// Interceptors returns the client interceptors.
+func (c *PosClient) Interceptors() []Interceptor {
+	return c.inters.Pos
+}
+
+func (c *PosClient) mutate(ctx context.Context, m *PosMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&PosCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&PosUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&PosUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&PosDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Pos mutation op: %q", m.Op())
 	}
 }
 
@@ -348,139 +481,6 @@ func (c *SetupClient) mutate(ctx context.Context, m *SetupMutation) (Value, erro
 		return (&SetupDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Setup mutation op: %q", m.Op())
-	}
-}
-
-// UploadClient is a client for the Upload schema.
-type UploadClient struct {
-	config
-}
-
-// NewUploadClient returns a client for the Upload from the given config.
-func NewUploadClient(c config) *UploadClient {
-	return &UploadClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `upload.Hooks(f(g(h())))`.
-func (c *UploadClient) Use(hooks ...Hook) {
-	c.hooks.Upload = append(c.hooks.Upload, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `upload.Intercept(f(g(h())))`.
-func (c *UploadClient) Intercept(interceptors ...Interceptor) {
-	c.inters.Upload = append(c.inters.Upload, interceptors...)
-}
-
-// Create returns a builder for creating a Upload entity.
-func (c *UploadClient) Create() *UploadCreate {
-	mutation := newUploadMutation(c.config, OpCreate)
-	return &UploadCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of Upload entities.
-func (c *UploadClient) CreateBulk(builders ...*UploadCreate) *UploadCreateBulk {
-	return &UploadCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *UploadClient) MapCreateBulk(slice any, setFunc func(*UploadCreate, int)) *UploadCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &UploadCreateBulk{err: fmt.Errorf("calling to UploadClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*UploadCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &UploadCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for Upload.
-func (c *UploadClient) Update() *UploadUpdate {
-	mutation := newUploadMutation(c.config, OpUpdate)
-	return &UploadUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *UploadClient) UpdateOne(u *Upload) *UploadUpdateOne {
-	mutation := newUploadMutation(c.config, OpUpdateOne, withUpload(u))
-	return &UploadUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *UploadClient) UpdateOneID(id int) *UploadUpdateOne {
-	mutation := newUploadMutation(c.config, OpUpdateOne, withUploadID(id))
-	return &UploadUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Upload.
-func (c *UploadClient) Delete() *UploadDelete {
-	mutation := newUploadMutation(c.config, OpDelete)
-	return &UploadDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *UploadClient) DeleteOne(u *Upload) *UploadDeleteOne {
-	return c.DeleteOneID(u.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *UploadClient) DeleteOneID(id int) *UploadDeleteOne {
-	builder := c.Delete().Where(upload.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &UploadDeleteOne{builder}
-}
-
-// Query returns a query builder for Upload.
-func (c *UploadClient) Query() *UploadQuery {
-	return &UploadQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeUpload},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a Upload entity by its id.
-func (c *UploadClient) Get(ctx context.Context, id int) (*Upload, error) {
-	return c.Query().Where(upload.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *UploadClient) GetX(ctx context.Context, id int) *Upload {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// Hooks returns the client hooks.
-func (c *UploadClient) Hooks() []Hook {
-	return c.hooks.Upload
-}
-
-// Interceptors returns the client interceptors.
-func (c *UploadClient) Interceptors() []Interceptor {
-	return c.inters.Upload
-}
-
-func (c *UploadClient) mutate(ctx context.Context, m *UploadMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&UploadCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&UploadUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&UploadUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&UploadDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown Upload mutation op: %q", m.Op())
 	}
 }
 
@@ -620,10 +620,10 @@ func (c *UsingClient) mutate(ctx context.Context, m *UsingMutation) (Value, erro
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Setup, Upload, Using []ent.Hook
+		Pos, Setup, Using []ent.Hook
 	}
 	inters struct {
-		Setup, Upload, Using []ent.Interceptor
+		Pos, Setup, Using []ent.Interceptor
 	}
 )
 

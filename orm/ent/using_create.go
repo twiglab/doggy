@@ -62,6 +62,20 @@ func (uc *UsingCreate) SetUUID(s string) *UsingCreate {
 	return uc
 }
 
+// SetDeviceID sets the "device_id" field.
+func (uc *UsingCreate) SetDeviceID(s string) *UsingCreate {
+	uc.mutation.SetDeviceID(s)
+	return uc
+}
+
+// SetNillableDeviceID sets the "device_id" field if the given value is not nil.
+func (uc *UsingCreate) SetNillableDeviceID(s *string) *UsingCreate {
+	if s != nil {
+		uc.SetDeviceID(*s)
+	}
+	return uc
+}
+
 // SetAlg sets the "alg" field.
 func (uc *UsingCreate) SetAlg(s string) *UsingCreate {
 	uc.mutation.SetAlg(s)
@@ -171,6 +185,11 @@ func (uc *UsingCreate) check() error {
 			return &ValidationError{Name: "uuid", err: fmt.Errorf(`ent: validator failed for field "Using.uuid": %w`, err)}
 		}
 	}
+	if v, ok := uc.mutation.DeviceID(); ok {
+		if err := using.DeviceIDValidator(v); err != nil {
+			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Using.device_id": %w`, err)}
+		}
+	}
 	if _, ok := uc.mutation.Alg(); !ok {
 		return &ValidationError{Name: "alg", err: errors.New(`ent: missing required field "Using.alg"`)}
 	}
@@ -239,6 +258,10 @@ func (uc *UsingCreate) createSpec() (*Using, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.UUID(); ok {
 		_spec.SetField(using.FieldUUID, field.TypeString, value)
 		_node.UUID = value
+	}
+	if value, ok := uc.mutation.DeviceID(); ok {
+		_spec.SetField(using.FieldDeviceID, field.TypeString, value)
+		_node.DeviceID = value
 	}
 	if value, ok := uc.mutation.Alg(); ok {
 		_spec.SetField(using.FieldAlg, field.TypeString, value)
@@ -329,6 +352,24 @@ func (u *UsingUpsert) SetUUID(v string) *UsingUpsert {
 // UpdateUUID sets the "uuid" field to the value that was provided on create.
 func (u *UsingUpsert) UpdateUUID() *UsingUpsert {
 	u.SetExcluded(using.FieldUUID)
+	return u
+}
+
+// SetDeviceID sets the "device_id" field.
+func (u *UsingUpsert) SetDeviceID(v string) *UsingUpsert {
+	u.Set(using.FieldDeviceID, v)
+	return u
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *UsingUpsert) UpdateDeviceID() *UsingUpsert {
+	u.SetExcluded(using.FieldDeviceID)
+	return u
+}
+
+// ClearDeviceID clears the value of the "device_id" field.
+func (u *UsingUpsert) ClearDeviceID() *UsingUpsert {
+	u.SetNull(using.FieldDeviceID)
 	return u
 }
 
@@ -456,6 +497,27 @@ func (u *UsingUpsertOne) SetUUID(v string) *UsingUpsertOne {
 func (u *UsingUpsertOne) UpdateUUID() *UsingUpsertOne {
 	return u.Update(func(s *UsingUpsert) {
 		s.UpdateUUID()
+	})
+}
+
+// SetDeviceID sets the "device_id" field.
+func (u *UsingUpsertOne) SetDeviceID(v string) *UsingUpsertOne {
+	return u.Update(func(s *UsingUpsert) {
+		s.SetDeviceID(v)
+	})
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *UsingUpsertOne) UpdateDeviceID() *UsingUpsertOne {
+	return u.Update(func(s *UsingUpsert) {
+		s.UpdateDeviceID()
+	})
+}
+
+// ClearDeviceID clears the value of the "device_id" field.
+func (u *UsingUpsertOne) ClearDeviceID() *UsingUpsertOne {
+	return u.Update(func(s *UsingUpsert) {
+		s.ClearDeviceID()
 	})
 }
 
@@ -757,6 +819,27 @@ func (u *UsingUpsertBulk) SetUUID(v string) *UsingUpsertBulk {
 func (u *UsingUpsertBulk) UpdateUUID() *UsingUpsertBulk {
 	return u.Update(func(s *UsingUpsert) {
 		s.UpdateUUID()
+	})
+}
+
+// SetDeviceID sets the "device_id" field.
+func (u *UsingUpsertBulk) SetDeviceID(v string) *UsingUpsertBulk {
+	return u.Update(func(s *UsingUpsert) {
+		s.SetDeviceID(v)
+	})
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *UsingUpsertBulk) UpdateDeviceID() *UsingUpsertBulk {
+	return u.Update(func(s *UsingUpsert) {
+		s.UpdateDeviceID()
+	})
+}
+
+// ClearDeviceID clears the value of the "device_id" field.
+func (u *UsingUpsertBulk) ClearDeviceID() *UsingUpsertBulk {
+	return u.Update(func(s *UsingUpsert) {
+		s.ClearDeviceID()
 	})
 }
 

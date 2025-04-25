@@ -34,83 +34,23 @@ func (su *SetupUpdate) SetUpdateTime(t time.Time) *SetupUpdate {
 	return su
 }
 
-// SetFloor sets the "floor" field.
-func (su *SetupUpdate) SetFloor(s string) *SetupUpdate {
-	su.mutation.SetFloor(s)
+// SetIP sets the "ip" field.
+func (su *SetupUpdate) SetIP(s string) *SetupUpdate {
+	su.mutation.SetIP(s)
 	return su
 }
 
-// SetNillableFloor sets the "floor" field if the given value is not nil.
-func (su *SetupUpdate) SetNillableFloor(s *string) *SetupUpdate {
+// SetNillableIP sets the "ip" field if the given value is not nil.
+func (su *SetupUpdate) SetNillableIP(s *string) *SetupUpdate {
 	if s != nil {
-		su.SetFloor(*s)
+		su.SetIP(*s)
 	}
 	return su
 }
 
-// ClearFloor clears the value of the "floor" field.
-func (su *SetupUpdate) ClearFloor() *SetupUpdate {
-	su.mutation.ClearFloor()
-	return su
-}
-
-// SetBuilding sets the "building" field.
-func (su *SetupUpdate) SetBuilding(s string) *SetupUpdate {
-	su.mutation.SetBuilding(s)
-	return su
-}
-
-// SetNillableBuilding sets the "building" field if the given value is not nil.
-func (su *SetupUpdate) SetNillableBuilding(s *string) *SetupUpdate {
-	if s != nil {
-		su.SetBuilding(*s)
-	}
-	return su
-}
-
-// ClearBuilding clears the value of the "building" field.
-func (su *SetupUpdate) ClearBuilding() *SetupUpdate {
-	su.mutation.ClearBuilding()
-	return su
-}
-
-// SetArea sets the "area" field.
-func (su *SetupUpdate) SetArea(s string) *SetupUpdate {
-	su.mutation.SetArea(s)
-	return su
-}
-
-// SetNillableArea sets the "area" field if the given value is not nil.
-func (su *SetupUpdate) SetNillableArea(s *string) *SetupUpdate {
-	if s != nil {
-		su.SetArea(*s)
-	}
-	return su
-}
-
-// ClearArea clears the value of the "area" field.
-func (su *SetupUpdate) ClearArea() *SetupUpdate {
-	su.mutation.ClearArea()
-	return su
-}
-
-// SetNat sets the "nat" field.
-func (su *SetupUpdate) SetNat(s string) *SetupUpdate {
-	su.mutation.SetNat(s)
-	return su
-}
-
-// SetNillableNat sets the "nat" field if the given value is not nil.
-func (su *SetupUpdate) SetNillableNat(s *string) *SetupUpdate {
-	if s != nil {
-		su.SetNat(*s)
-	}
-	return su
-}
-
-// ClearNat clears the value of the "nat" field.
-func (su *SetupUpdate) ClearNat() *SetupUpdate {
-	su.mutation.ClearNat()
+// SetLastTime sets the "last_time" field.
+func (su *SetupUpdate) SetLastTime(t time.Time) *SetupUpdate {
+	su.mutation.SetLastTime(t)
 	return su
 }
 
@@ -154,6 +94,34 @@ func (su *SetupUpdate) ClearPwd() *SetupUpdate {
 	return su
 }
 
+// SetUuid1 sets the "uuid1" field.
+func (su *SetupUpdate) SetUuid1(s string) *SetupUpdate {
+	su.mutation.SetUuid1(s)
+	return su
+}
+
+// SetNillableUuid1 sets the "uuid1" field if the given value is not nil.
+func (su *SetupUpdate) SetNillableUuid1(s *string) *SetupUpdate {
+	if s != nil {
+		su.SetUuid1(*s)
+	}
+	return su
+}
+
+// SetUuid2 sets the "uuid2" field.
+func (su *SetupUpdate) SetUuid2(s string) *SetupUpdate {
+	su.mutation.SetUuid2(s)
+	return su
+}
+
+// SetNillableUuid2 sets the "uuid2" field if the given value is not nil.
+func (su *SetupUpdate) SetNillableUuid2(s *string) *SetupUpdate {
+	if s != nil {
+		su.SetUuid2(*s)
+	}
+	return su
+}
+
 // Mutation returns the SetupMutation object of the builder.
 func (su *SetupUpdate) Mutation() *SetupMutation {
 	return su.mutation
@@ -193,28 +161,17 @@ func (su *SetupUpdate) defaults() {
 		v := setup.UpdateDefaultUpdateTime()
 		su.mutation.SetUpdateTime(v)
 	}
+	if _, ok := su.mutation.LastTime(); !ok {
+		v := setup.UpdateDefaultLastTime()
+		su.mutation.SetLastTime(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (su *SetupUpdate) check() error {
-	if v, ok := su.mutation.Floor(); ok {
-		if err := setup.FloorValidator(v); err != nil {
-			return &ValidationError{Name: "floor", err: fmt.Errorf(`ent: validator failed for field "Setup.floor": %w`, err)}
-		}
-	}
-	if v, ok := su.mutation.Building(); ok {
-		if err := setup.BuildingValidator(v); err != nil {
-			return &ValidationError{Name: "building", err: fmt.Errorf(`ent: validator failed for field "Setup.building": %w`, err)}
-		}
-	}
-	if v, ok := su.mutation.Area(); ok {
-		if err := setup.AreaValidator(v); err != nil {
-			return &ValidationError{Name: "area", err: fmt.Errorf(`ent: validator failed for field "Setup.area": %w`, err)}
-		}
-	}
-	if v, ok := su.mutation.Nat(); ok {
-		if err := setup.NatValidator(v); err != nil {
-			return &ValidationError{Name: "nat", err: fmt.Errorf(`ent: validator failed for field "Setup.nat": %w`, err)}
+	if v, ok := su.mutation.IP(); ok {
+		if err := setup.IPValidator(v); err != nil {
+			return &ValidationError{Name: "ip", err: fmt.Errorf(`ent: validator failed for field "Setup.ip": %w`, err)}
 		}
 	}
 	if v, ok := su.mutation.User(); ok {
@@ -225,6 +182,16 @@ func (su *SetupUpdate) check() error {
 	if v, ok := su.mutation.Pwd(); ok {
 		if err := setup.PwdValidator(v); err != nil {
 			return &ValidationError{Name: "pwd", err: fmt.Errorf(`ent: validator failed for field "Setup.pwd": %w`, err)}
+		}
+	}
+	if v, ok := su.mutation.Uuid1(); ok {
+		if err := setup.Uuid1Validator(v); err != nil {
+			return &ValidationError{Name: "uuid1", err: fmt.Errorf(`ent: validator failed for field "Setup.uuid1": %w`, err)}
+		}
+	}
+	if v, ok := su.mutation.Uuid2(); ok {
+		if err := setup.Uuid2Validator(v); err != nil {
+			return &ValidationError{Name: "uuid2", err: fmt.Errorf(`ent: validator failed for field "Setup.uuid2": %w`, err)}
 		}
 	}
 	return nil
@@ -245,29 +212,11 @@ func (su *SetupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := su.mutation.UpdateTime(); ok {
 		_spec.SetField(setup.FieldUpdateTime, field.TypeTime, value)
 	}
-	if value, ok := su.mutation.Floor(); ok {
-		_spec.SetField(setup.FieldFloor, field.TypeString, value)
+	if value, ok := su.mutation.IP(); ok {
+		_spec.SetField(setup.FieldIP, field.TypeString, value)
 	}
-	if su.mutation.FloorCleared() {
-		_spec.ClearField(setup.FieldFloor, field.TypeString)
-	}
-	if value, ok := su.mutation.Building(); ok {
-		_spec.SetField(setup.FieldBuilding, field.TypeString, value)
-	}
-	if su.mutation.BuildingCleared() {
-		_spec.ClearField(setup.FieldBuilding, field.TypeString)
-	}
-	if value, ok := su.mutation.Area(); ok {
-		_spec.SetField(setup.FieldArea, field.TypeString, value)
-	}
-	if su.mutation.AreaCleared() {
-		_spec.ClearField(setup.FieldArea, field.TypeString)
-	}
-	if value, ok := su.mutation.Nat(); ok {
-		_spec.SetField(setup.FieldNat, field.TypeString, value)
-	}
-	if su.mutation.NatCleared() {
-		_spec.ClearField(setup.FieldNat, field.TypeString)
+	if value, ok := su.mutation.LastTime(); ok {
+		_spec.SetField(setup.FieldLastTime, field.TypeTime, value)
 	}
 	if value, ok := su.mutation.User(); ok {
 		_spec.SetField(setup.FieldUser, field.TypeString, value)
@@ -280,6 +229,12 @@ func (su *SetupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if su.mutation.PwdCleared() {
 		_spec.ClearField(setup.FieldPwd, field.TypeString)
+	}
+	if value, ok := su.mutation.Uuid1(); ok {
+		_spec.SetField(setup.FieldUuid1, field.TypeString, value)
+	}
+	if value, ok := su.mutation.Uuid2(); ok {
+		_spec.SetField(setup.FieldUuid2, field.TypeString, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, su.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -307,83 +262,23 @@ func (suo *SetupUpdateOne) SetUpdateTime(t time.Time) *SetupUpdateOne {
 	return suo
 }
 
-// SetFloor sets the "floor" field.
-func (suo *SetupUpdateOne) SetFloor(s string) *SetupUpdateOne {
-	suo.mutation.SetFloor(s)
+// SetIP sets the "ip" field.
+func (suo *SetupUpdateOne) SetIP(s string) *SetupUpdateOne {
+	suo.mutation.SetIP(s)
 	return suo
 }
 
-// SetNillableFloor sets the "floor" field if the given value is not nil.
-func (suo *SetupUpdateOne) SetNillableFloor(s *string) *SetupUpdateOne {
+// SetNillableIP sets the "ip" field if the given value is not nil.
+func (suo *SetupUpdateOne) SetNillableIP(s *string) *SetupUpdateOne {
 	if s != nil {
-		suo.SetFloor(*s)
+		suo.SetIP(*s)
 	}
 	return suo
 }
 
-// ClearFloor clears the value of the "floor" field.
-func (suo *SetupUpdateOne) ClearFloor() *SetupUpdateOne {
-	suo.mutation.ClearFloor()
-	return suo
-}
-
-// SetBuilding sets the "building" field.
-func (suo *SetupUpdateOne) SetBuilding(s string) *SetupUpdateOne {
-	suo.mutation.SetBuilding(s)
-	return suo
-}
-
-// SetNillableBuilding sets the "building" field if the given value is not nil.
-func (suo *SetupUpdateOne) SetNillableBuilding(s *string) *SetupUpdateOne {
-	if s != nil {
-		suo.SetBuilding(*s)
-	}
-	return suo
-}
-
-// ClearBuilding clears the value of the "building" field.
-func (suo *SetupUpdateOne) ClearBuilding() *SetupUpdateOne {
-	suo.mutation.ClearBuilding()
-	return suo
-}
-
-// SetArea sets the "area" field.
-func (suo *SetupUpdateOne) SetArea(s string) *SetupUpdateOne {
-	suo.mutation.SetArea(s)
-	return suo
-}
-
-// SetNillableArea sets the "area" field if the given value is not nil.
-func (suo *SetupUpdateOne) SetNillableArea(s *string) *SetupUpdateOne {
-	if s != nil {
-		suo.SetArea(*s)
-	}
-	return suo
-}
-
-// ClearArea clears the value of the "area" field.
-func (suo *SetupUpdateOne) ClearArea() *SetupUpdateOne {
-	suo.mutation.ClearArea()
-	return suo
-}
-
-// SetNat sets the "nat" field.
-func (suo *SetupUpdateOne) SetNat(s string) *SetupUpdateOne {
-	suo.mutation.SetNat(s)
-	return suo
-}
-
-// SetNillableNat sets the "nat" field if the given value is not nil.
-func (suo *SetupUpdateOne) SetNillableNat(s *string) *SetupUpdateOne {
-	if s != nil {
-		suo.SetNat(*s)
-	}
-	return suo
-}
-
-// ClearNat clears the value of the "nat" field.
-func (suo *SetupUpdateOne) ClearNat() *SetupUpdateOne {
-	suo.mutation.ClearNat()
+// SetLastTime sets the "last_time" field.
+func (suo *SetupUpdateOne) SetLastTime(t time.Time) *SetupUpdateOne {
+	suo.mutation.SetLastTime(t)
 	return suo
 }
 
@@ -424,6 +319,34 @@ func (suo *SetupUpdateOne) SetNillablePwd(s *string) *SetupUpdateOne {
 // ClearPwd clears the value of the "pwd" field.
 func (suo *SetupUpdateOne) ClearPwd() *SetupUpdateOne {
 	suo.mutation.ClearPwd()
+	return suo
+}
+
+// SetUuid1 sets the "uuid1" field.
+func (suo *SetupUpdateOne) SetUuid1(s string) *SetupUpdateOne {
+	suo.mutation.SetUuid1(s)
+	return suo
+}
+
+// SetNillableUuid1 sets the "uuid1" field if the given value is not nil.
+func (suo *SetupUpdateOne) SetNillableUuid1(s *string) *SetupUpdateOne {
+	if s != nil {
+		suo.SetUuid1(*s)
+	}
+	return suo
+}
+
+// SetUuid2 sets the "uuid2" field.
+func (suo *SetupUpdateOne) SetUuid2(s string) *SetupUpdateOne {
+	suo.mutation.SetUuid2(s)
+	return suo
+}
+
+// SetNillableUuid2 sets the "uuid2" field if the given value is not nil.
+func (suo *SetupUpdateOne) SetNillableUuid2(s *string) *SetupUpdateOne {
+	if s != nil {
+		suo.SetUuid2(*s)
+	}
 	return suo
 }
 
@@ -479,28 +402,17 @@ func (suo *SetupUpdateOne) defaults() {
 		v := setup.UpdateDefaultUpdateTime()
 		suo.mutation.SetUpdateTime(v)
 	}
+	if _, ok := suo.mutation.LastTime(); !ok {
+		v := setup.UpdateDefaultLastTime()
+		suo.mutation.SetLastTime(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (suo *SetupUpdateOne) check() error {
-	if v, ok := suo.mutation.Floor(); ok {
-		if err := setup.FloorValidator(v); err != nil {
-			return &ValidationError{Name: "floor", err: fmt.Errorf(`ent: validator failed for field "Setup.floor": %w`, err)}
-		}
-	}
-	if v, ok := suo.mutation.Building(); ok {
-		if err := setup.BuildingValidator(v); err != nil {
-			return &ValidationError{Name: "building", err: fmt.Errorf(`ent: validator failed for field "Setup.building": %w`, err)}
-		}
-	}
-	if v, ok := suo.mutation.Area(); ok {
-		if err := setup.AreaValidator(v); err != nil {
-			return &ValidationError{Name: "area", err: fmt.Errorf(`ent: validator failed for field "Setup.area": %w`, err)}
-		}
-	}
-	if v, ok := suo.mutation.Nat(); ok {
-		if err := setup.NatValidator(v); err != nil {
-			return &ValidationError{Name: "nat", err: fmt.Errorf(`ent: validator failed for field "Setup.nat": %w`, err)}
+	if v, ok := suo.mutation.IP(); ok {
+		if err := setup.IPValidator(v); err != nil {
+			return &ValidationError{Name: "ip", err: fmt.Errorf(`ent: validator failed for field "Setup.ip": %w`, err)}
 		}
 	}
 	if v, ok := suo.mutation.User(); ok {
@@ -511,6 +423,16 @@ func (suo *SetupUpdateOne) check() error {
 	if v, ok := suo.mutation.Pwd(); ok {
 		if err := setup.PwdValidator(v); err != nil {
 			return &ValidationError{Name: "pwd", err: fmt.Errorf(`ent: validator failed for field "Setup.pwd": %w`, err)}
+		}
+	}
+	if v, ok := suo.mutation.Uuid1(); ok {
+		if err := setup.Uuid1Validator(v); err != nil {
+			return &ValidationError{Name: "uuid1", err: fmt.Errorf(`ent: validator failed for field "Setup.uuid1": %w`, err)}
+		}
+	}
+	if v, ok := suo.mutation.Uuid2(); ok {
+		if err := setup.Uuid2Validator(v); err != nil {
+			return &ValidationError{Name: "uuid2", err: fmt.Errorf(`ent: validator failed for field "Setup.uuid2": %w`, err)}
 		}
 	}
 	return nil
@@ -548,29 +470,11 @@ func (suo *SetupUpdateOne) sqlSave(ctx context.Context) (_node *Setup, err error
 	if value, ok := suo.mutation.UpdateTime(); ok {
 		_spec.SetField(setup.FieldUpdateTime, field.TypeTime, value)
 	}
-	if value, ok := suo.mutation.Floor(); ok {
-		_spec.SetField(setup.FieldFloor, field.TypeString, value)
+	if value, ok := suo.mutation.IP(); ok {
+		_spec.SetField(setup.FieldIP, field.TypeString, value)
 	}
-	if suo.mutation.FloorCleared() {
-		_spec.ClearField(setup.FieldFloor, field.TypeString)
-	}
-	if value, ok := suo.mutation.Building(); ok {
-		_spec.SetField(setup.FieldBuilding, field.TypeString, value)
-	}
-	if suo.mutation.BuildingCleared() {
-		_spec.ClearField(setup.FieldBuilding, field.TypeString)
-	}
-	if value, ok := suo.mutation.Area(); ok {
-		_spec.SetField(setup.FieldArea, field.TypeString, value)
-	}
-	if suo.mutation.AreaCleared() {
-		_spec.ClearField(setup.FieldArea, field.TypeString)
-	}
-	if value, ok := suo.mutation.Nat(); ok {
-		_spec.SetField(setup.FieldNat, field.TypeString, value)
-	}
-	if suo.mutation.NatCleared() {
-		_spec.ClearField(setup.FieldNat, field.TypeString)
+	if value, ok := suo.mutation.LastTime(); ok {
+		_spec.SetField(setup.FieldLastTime, field.TypeTime, value)
 	}
 	if value, ok := suo.mutation.User(); ok {
 		_spec.SetField(setup.FieldUser, field.TypeString, value)
@@ -583,6 +487,12 @@ func (suo *SetupUpdateOne) sqlSave(ctx context.Context) (_node *Setup, err error
 	}
 	if suo.mutation.PwdCleared() {
 		_spec.ClearField(setup.FieldPwd, field.TypeString)
+	}
+	if value, ok := suo.mutation.Uuid1(); ok {
+		_spec.SetField(setup.FieldUuid1, field.TypeString, value)
+	}
+	if value, ok := suo.mutation.Uuid2(); ok {
+		_spec.SetField(setup.FieldUuid2, field.TypeString, value)
 	}
 	_node = &Setup{config: suo.config}
 	_spec.Assign = _node.assignValues

@@ -56,64 +56,22 @@ func (sc *SetupCreate) SetSn(s string) *SetupCreate {
 	return sc
 }
 
-// SetPos sets the "pos" field.
-func (sc *SetupCreate) SetPos(s string) *SetupCreate {
-	sc.mutation.SetPos(s)
+// SetIP sets the "ip" field.
+func (sc *SetupCreate) SetIP(s string) *SetupCreate {
+	sc.mutation.SetIP(s)
 	return sc
 }
 
-// SetFloor sets the "floor" field.
-func (sc *SetupCreate) SetFloor(s string) *SetupCreate {
-	sc.mutation.SetFloor(s)
+// SetLastTime sets the "last_time" field.
+func (sc *SetupCreate) SetLastTime(t time.Time) *SetupCreate {
+	sc.mutation.SetLastTime(t)
 	return sc
 }
 
-// SetNillableFloor sets the "floor" field if the given value is not nil.
-func (sc *SetupCreate) SetNillableFloor(s *string) *SetupCreate {
-	if s != nil {
-		sc.SetFloor(*s)
-	}
-	return sc
-}
-
-// SetBuilding sets the "building" field.
-func (sc *SetupCreate) SetBuilding(s string) *SetupCreate {
-	sc.mutation.SetBuilding(s)
-	return sc
-}
-
-// SetNillableBuilding sets the "building" field if the given value is not nil.
-func (sc *SetupCreate) SetNillableBuilding(s *string) *SetupCreate {
-	if s != nil {
-		sc.SetBuilding(*s)
-	}
-	return sc
-}
-
-// SetArea sets the "area" field.
-func (sc *SetupCreate) SetArea(s string) *SetupCreate {
-	sc.mutation.SetArea(s)
-	return sc
-}
-
-// SetNillableArea sets the "area" field if the given value is not nil.
-func (sc *SetupCreate) SetNillableArea(s *string) *SetupCreate {
-	if s != nil {
-		sc.SetArea(*s)
-	}
-	return sc
-}
-
-// SetNat sets the "nat" field.
-func (sc *SetupCreate) SetNat(s string) *SetupCreate {
-	sc.mutation.SetNat(s)
-	return sc
-}
-
-// SetNillableNat sets the "nat" field if the given value is not nil.
-func (sc *SetupCreate) SetNillableNat(s *string) *SetupCreate {
-	if s != nil {
-		sc.SetNat(*s)
+// SetNillableLastTime sets the "last_time" field if the given value is not nil.
+func (sc *SetupCreate) SetNillableLastTime(t *time.Time) *SetupCreate {
+	if t != nil {
+		sc.SetLastTime(*t)
 	}
 	return sc
 }
@@ -143,6 +101,18 @@ func (sc *SetupCreate) SetNillablePwd(s *string) *SetupCreate {
 	if s != nil {
 		sc.SetPwd(*s)
 	}
+	return sc
+}
+
+// SetUuid1 sets the "uuid1" field.
+func (sc *SetupCreate) SetUuid1(s string) *SetupCreate {
+	sc.mutation.SetUuid1(s)
+	return sc
+}
+
+// SetUuid2 sets the "uuid2" field.
+func (sc *SetupCreate) SetUuid2(s string) *SetupCreate {
+	sc.mutation.SetUuid2(s)
 	return sc
 }
 
@@ -189,6 +159,10 @@ func (sc *SetupCreate) defaults() {
 		v := setup.DefaultUpdateTime()
 		sc.mutation.SetUpdateTime(v)
 	}
+	if _, ok := sc.mutation.LastTime(); !ok {
+		v := setup.DefaultLastTime()
+		sc.mutation.SetLastTime(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -207,33 +181,16 @@ func (sc *SetupCreate) check() error {
 			return &ValidationError{Name: "sn", err: fmt.Errorf(`ent: validator failed for field "Setup.sn": %w`, err)}
 		}
 	}
-	if _, ok := sc.mutation.Pos(); !ok {
-		return &ValidationError{Name: "pos", err: errors.New(`ent: missing required field "Setup.pos"`)}
+	if _, ok := sc.mutation.IP(); !ok {
+		return &ValidationError{Name: "ip", err: errors.New(`ent: missing required field "Setup.ip"`)}
 	}
-	if v, ok := sc.mutation.Pos(); ok {
-		if err := setup.PosValidator(v); err != nil {
-			return &ValidationError{Name: "pos", err: fmt.Errorf(`ent: validator failed for field "Setup.pos": %w`, err)}
+	if v, ok := sc.mutation.IP(); ok {
+		if err := setup.IPValidator(v); err != nil {
+			return &ValidationError{Name: "ip", err: fmt.Errorf(`ent: validator failed for field "Setup.ip": %w`, err)}
 		}
 	}
-	if v, ok := sc.mutation.Floor(); ok {
-		if err := setup.FloorValidator(v); err != nil {
-			return &ValidationError{Name: "floor", err: fmt.Errorf(`ent: validator failed for field "Setup.floor": %w`, err)}
-		}
-	}
-	if v, ok := sc.mutation.Building(); ok {
-		if err := setup.BuildingValidator(v); err != nil {
-			return &ValidationError{Name: "building", err: fmt.Errorf(`ent: validator failed for field "Setup.building": %w`, err)}
-		}
-	}
-	if v, ok := sc.mutation.Area(); ok {
-		if err := setup.AreaValidator(v); err != nil {
-			return &ValidationError{Name: "area", err: fmt.Errorf(`ent: validator failed for field "Setup.area": %w`, err)}
-		}
-	}
-	if v, ok := sc.mutation.Nat(); ok {
-		if err := setup.NatValidator(v); err != nil {
-			return &ValidationError{Name: "nat", err: fmt.Errorf(`ent: validator failed for field "Setup.nat": %w`, err)}
-		}
+	if _, ok := sc.mutation.LastTime(); !ok {
+		return &ValidationError{Name: "last_time", err: errors.New(`ent: missing required field "Setup.last_time"`)}
 	}
 	if v, ok := sc.mutation.User(); ok {
 		if err := setup.UserValidator(v); err != nil {
@@ -243,6 +200,22 @@ func (sc *SetupCreate) check() error {
 	if v, ok := sc.mutation.Pwd(); ok {
 		if err := setup.PwdValidator(v); err != nil {
 			return &ValidationError{Name: "pwd", err: fmt.Errorf(`ent: validator failed for field "Setup.pwd": %w`, err)}
+		}
+	}
+	if _, ok := sc.mutation.Uuid1(); !ok {
+		return &ValidationError{Name: "uuid1", err: errors.New(`ent: missing required field "Setup.uuid1"`)}
+	}
+	if v, ok := sc.mutation.Uuid1(); ok {
+		if err := setup.Uuid1Validator(v); err != nil {
+			return &ValidationError{Name: "uuid1", err: fmt.Errorf(`ent: validator failed for field "Setup.uuid1": %w`, err)}
+		}
+	}
+	if _, ok := sc.mutation.Uuid2(); !ok {
+		return &ValidationError{Name: "uuid2", err: errors.New(`ent: missing required field "Setup.uuid2"`)}
+	}
+	if v, ok := sc.mutation.Uuid2(); ok {
+		if err := setup.Uuid2Validator(v); err != nil {
+			return &ValidationError{Name: "uuid2", err: fmt.Errorf(`ent: validator failed for field "Setup.uuid2": %w`, err)}
 		}
 	}
 	return nil
@@ -284,25 +257,13 @@ func (sc *SetupCreate) createSpec() (*Setup, *sqlgraph.CreateSpec) {
 		_spec.SetField(setup.FieldSn, field.TypeString, value)
 		_node.Sn = value
 	}
-	if value, ok := sc.mutation.Pos(); ok {
-		_spec.SetField(setup.FieldPos, field.TypeString, value)
-		_node.Pos = value
+	if value, ok := sc.mutation.IP(); ok {
+		_spec.SetField(setup.FieldIP, field.TypeString, value)
+		_node.IP = value
 	}
-	if value, ok := sc.mutation.Floor(); ok {
-		_spec.SetField(setup.FieldFloor, field.TypeString, value)
-		_node.Floor = value
-	}
-	if value, ok := sc.mutation.Building(); ok {
-		_spec.SetField(setup.FieldBuilding, field.TypeString, value)
-		_node.Building = value
-	}
-	if value, ok := sc.mutation.Area(); ok {
-		_spec.SetField(setup.FieldArea, field.TypeString, value)
-		_node.Area = value
-	}
-	if value, ok := sc.mutation.Nat(); ok {
-		_spec.SetField(setup.FieldNat, field.TypeString, value)
-		_node.Nat = value
+	if value, ok := sc.mutation.LastTime(); ok {
+		_spec.SetField(setup.FieldLastTime, field.TypeTime, value)
+		_node.LastTime = value
 	}
 	if value, ok := sc.mutation.User(); ok {
 		_spec.SetField(setup.FieldUser, field.TypeString, value)
@@ -311,6 +272,14 @@ func (sc *SetupCreate) createSpec() (*Setup, *sqlgraph.CreateSpec) {
 	if value, ok := sc.mutation.Pwd(); ok {
 		_spec.SetField(setup.FieldPwd, field.TypeString, value)
 		_node.Pwd = value
+	}
+	if value, ok := sc.mutation.Uuid1(); ok {
+		_spec.SetField(setup.FieldUuid1, field.TypeString, value)
+		_node.Uuid1 = value
+	}
+	if value, ok := sc.mutation.Uuid2(); ok {
+		_spec.SetField(setup.FieldUuid2, field.TypeString, value)
+		_node.Uuid2 = value
 	}
 	return _node, _spec
 }
@@ -376,75 +345,27 @@ func (u *SetupUpsert) UpdateUpdateTime() *SetupUpsert {
 	return u
 }
 
-// SetFloor sets the "floor" field.
-func (u *SetupUpsert) SetFloor(v string) *SetupUpsert {
-	u.Set(setup.FieldFloor, v)
+// SetIP sets the "ip" field.
+func (u *SetupUpsert) SetIP(v string) *SetupUpsert {
+	u.Set(setup.FieldIP, v)
 	return u
 }
 
-// UpdateFloor sets the "floor" field to the value that was provided on create.
-func (u *SetupUpsert) UpdateFloor() *SetupUpsert {
-	u.SetExcluded(setup.FieldFloor)
+// UpdateIP sets the "ip" field to the value that was provided on create.
+func (u *SetupUpsert) UpdateIP() *SetupUpsert {
+	u.SetExcluded(setup.FieldIP)
 	return u
 }
 
-// ClearFloor clears the value of the "floor" field.
-func (u *SetupUpsert) ClearFloor() *SetupUpsert {
-	u.SetNull(setup.FieldFloor)
+// SetLastTime sets the "last_time" field.
+func (u *SetupUpsert) SetLastTime(v time.Time) *SetupUpsert {
+	u.Set(setup.FieldLastTime, v)
 	return u
 }
 
-// SetBuilding sets the "building" field.
-func (u *SetupUpsert) SetBuilding(v string) *SetupUpsert {
-	u.Set(setup.FieldBuilding, v)
-	return u
-}
-
-// UpdateBuilding sets the "building" field to the value that was provided on create.
-func (u *SetupUpsert) UpdateBuilding() *SetupUpsert {
-	u.SetExcluded(setup.FieldBuilding)
-	return u
-}
-
-// ClearBuilding clears the value of the "building" field.
-func (u *SetupUpsert) ClearBuilding() *SetupUpsert {
-	u.SetNull(setup.FieldBuilding)
-	return u
-}
-
-// SetArea sets the "area" field.
-func (u *SetupUpsert) SetArea(v string) *SetupUpsert {
-	u.Set(setup.FieldArea, v)
-	return u
-}
-
-// UpdateArea sets the "area" field to the value that was provided on create.
-func (u *SetupUpsert) UpdateArea() *SetupUpsert {
-	u.SetExcluded(setup.FieldArea)
-	return u
-}
-
-// ClearArea clears the value of the "area" field.
-func (u *SetupUpsert) ClearArea() *SetupUpsert {
-	u.SetNull(setup.FieldArea)
-	return u
-}
-
-// SetNat sets the "nat" field.
-func (u *SetupUpsert) SetNat(v string) *SetupUpsert {
-	u.Set(setup.FieldNat, v)
-	return u
-}
-
-// UpdateNat sets the "nat" field to the value that was provided on create.
-func (u *SetupUpsert) UpdateNat() *SetupUpsert {
-	u.SetExcluded(setup.FieldNat)
-	return u
-}
-
-// ClearNat clears the value of the "nat" field.
-func (u *SetupUpsert) ClearNat() *SetupUpsert {
-	u.SetNull(setup.FieldNat)
+// UpdateLastTime sets the "last_time" field to the value that was provided on create.
+func (u *SetupUpsert) UpdateLastTime() *SetupUpsert {
+	u.SetExcluded(setup.FieldLastTime)
 	return u
 }
 
@@ -484,6 +405,30 @@ func (u *SetupUpsert) ClearPwd() *SetupUpsert {
 	return u
 }
 
+// SetUuid1 sets the "uuid1" field.
+func (u *SetupUpsert) SetUuid1(v string) *SetupUpsert {
+	u.Set(setup.FieldUuid1, v)
+	return u
+}
+
+// UpdateUuid1 sets the "uuid1" field to the value that was provided on create.
+func (u *SetupUpsert) UpdateUuid1() *SetupUpsert {
+	u.SetExcluded(setup.FieldUuid1)
+	return u
+}
+
+// SetUuid2 sets the "uuid2" field.
+func (u *SetupUpsert) SetUuid2(v string) *SetupUpsert {
+	u.Set(setup.FieldUuid2, v)
+	return u
+}
+
+// UpdateUuid2 sets the "uuid2" field to the value that was provided on create.
+func (u *SetupUpsert) UpdateUuid2() *SetupUpsert {
+	u.SetExcluded(setup.FieldUuid2)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -500,9 +445,6 @@ func (u *SetupUpsertOne) UpdateNewValues() *SetupUpsertOne {
 		}
 		if _, exists := u.create.mutation.Sn(); exists {
 			s.SetIgnore(setup.FieldSn)
-		}
-		if _, exists := u.create.mutation.Pos(); exists {
-			s.SetIgnore(setup.FieldPos)
 		}
 	}))
 	return u
@@ -549,87 +491,31 @@ func (u *SetupUpsertOne) UpdateUpdateTime() *SetupUpsertOne {
 	})
 }
 
-// SetFloor sets the "floor" field.
-func (u *SetupUpsertOne) SetFloor(v string) *SetupUpsertOne {
+// SetIP sets the "ip" field.
+func (u *SetupUpsertOne) SetIP(v string) *SetupUpsertOne {
 	return u.Update(func(s *SetupUpsert) {
-		s.SetFloor(v)
+		s.SetIP(v)
 	})
 }
 
-// UpdateFloor sets the "floor" field to the value that was provided on create.
-func (u *SetupUpsertOne) UpdateFloor() *SetupUpsertOne {
+// UpdateIP sets the "ip" field to the value that was provided on create.
+func (u *SetupUpsertOne) UpdateIP() *SetupUpsertOne {
 	return u.Update(func(s *SetupUpsert) {
-		s.UpdateFloor()
+		s.UpdateIP()
 	})
 }
 
-// ClearFloor clears the value of the "floor" field.
-func (u *SetupUpsertOne) ClearFloor() *SetupUpsertOne {
+// SetLastTime sets the "last_time" field.
+func (u *SetupUpsertOne) SetLastTime(v time.Time) *SetupUpsertOne {
 	return u.Update(func(s *SetupUpsert) {
-		s.ClearFloor()
+		s.SetLastTime(v)
 	})
 }
 
-// SetBuilding sets the "building" field.
-func (u *SetupUpsertOne) SetBuilding(v string) *SetupUpsertOne {
+// UpdateLastTime sets the "last_time" field to the value that was provided on create.
+func (u *SetupUpsertOne) UpdateLastTime() *SetupUpsertOne {
 	return u.Update(func(s *SetupUpsert) {
-		s.SetBuilding(v)
-	})
-}
-
-// UpdateBuilding sets the "building" field to the value that was provided on create.
-func (u *SetupUpsertOne) UpdateBuilding() *SetupUpsertOne {
-	return u.Update(func(s *SetupUpsert) {
-		s.UpdateBuilding()
-	})
-}
-
-// ClearBuilding clears the value of the "building" field.
-func (u *SetupUpsertOne) ClearBuilding() *SetupUpsertOne {
-	return u.Update(func(s *SetupUpsert) {
-		s.ClearBuilding()
-	})
-}
-
-// SetArea sets the "area" field.
-func (u *SetupUpsertOne) SetArea(v string) *SetupUpsertOne {
-	return u.Update(func(s *SetupUpsert) {
-		s.SetArea(v)
-	})
-}
-
-// UpdateArea sets the "area" field to the value that was provided on create.
-func (u *SetupUpsertOne) UpdateArea() *SetupUpsertOne {
-	return u.Update(func(s *SetupUpsert) {
-		s.UpdateArea()
-	})
-}
-
-// ClearArea clears the value of the "area" field.
-func (u *SetupUpsertOne) ClearArea() *SetupUpsertOne {
-	return u.Update(func(s *SetupUpsert) {
-		s.ClearArea()
-	})
-}
-
-// SetNat sets the "nat" field.
-func (u *SetupUpsertOne) SetNat(v string) *SetupUpsertOne {
-	return u.Update(func(s *SetupUpsert) {
-		s.SetNat(v)
-	})
-}
-
-// UpdateNat sets the "nat" field to the value that was provided on create.
-func (u *SetupUpsertOne) UpdateNat() *SetupUpsertOne {
-	return u.Update(func(s *SetupUpsert) {
-		s.UpdateNat()
-	})
-}
-
-// ClearNat clears the value of the "nat" field.
-func (u *SetupUpsertOne) ClearNat() *SetupUpsertOne {
-	return u.Update(func(s *SetupUpsert) {
-		s.ClearNat()
+		s.UpdateLastTime()
 	})
 }
 
@@ -672,6 +558,34 @@ func (u *SetupUpsertOne) UpdatePwd() *SetupUpsertOne {
 func (u *SetupUpsertOne) ClearPwd() *SetupUpsertOne {
 	return u.Update(func(s *SetupUpsert) {
 		s.ClearPwd()
+	})
+}
+
+// SetUuid1 sets the "uuid1" field.
+func (u *SetupUpsertOne) SetUuid1(v string) *SetupUpsertOne {
+	return u.Update(func(s *SetupUpsert) {
+		s.SetUuid1(v)
+	})
+}
+
+// UpdateUuid1 sets the "uuid1" field to the value that was provided on create.
+func (u *SetupUpsertOne) UpdateUuid1() *SetupUpsertOne {
+	return u.Update(func(s *SetupUpsert) {
+		s.UpdateUuid1()
+	})
+}
+
+// SetUuid2 sets the "uuid2" field.
+func (u *SetupUpsertOne) SetUuid2(v string) *SetupUpsertOne {
+	return u.Update(func(s *SetupUpsert) {
+		s.SetUuid2(v)
+	})
+}
+
+// UpdateUuid2 sets the "uuid2" field to the value that was provided on create.
+func (u *SetupUpsertOne) UpdateUuid2() *SetupUpsertOne {
+	return u.Update(func(s *SetupUpsert) {
+		s.UpdateUuid2()
 	})
 }
 
@@ -857,9 +771,6 @@ func (u *SetupUpsertBulk) UpdateNewValues() *SetupUpsertBulk {
 			if _, exists := b.mutation.Sn(); exists {
 				s.SetIgnore(setup.FieldSn)
 			}
-			if _, exists := b.mutation.Pos(); exists {
-				s.SetIgnore(setup.FieldPos)
-			}
 		}
 	}))
 	return u
@@ -906,87 +817,31 @@ func (u *SetupUpsertBulk) UpdateUpdateTime() *SetupUpsertBulk {
 	})
 }
 
-// SetFloor sets the "floor" field.
-func (u *SetupUpsertBulk) SetFloor(v string) *SetupUpsertBulk {
+// SetIP sets the "ip" field.
+func (u *SetupUpsertBulk) SetIP(v string) *SetupUpsertBulk {
 	return u.Update(func(s *SetupUpsert) {
-		s.SetFloor(v)
+		s.SetIP(v)
 	})
 }
 
-// UpdateFloor sets the "floor" field to the value that was provided on create.
-func (u *SetupUpsertBulk) UpdateFloor() *SetupUpsertBulk {
+// UpdateIP sets the "ip" field to the value that was provided on create.
+func (u *SetupUpsertBulk) UpdateIP() *SetupUpsertBulk {
 	return u.Update(func(s *SetupUpsert) {
-		s.UpdateFloor()
+		s.UpdateIP()
 	})
 }
 
-// ClearFloor clears the value of the "floor" field.
-func (u *SetupUpsertBulk) ClearFloor() *SetupUpsertBulk {
+// SetLastTime sets the "last_time" field.
+func (u *SetupUpsertBulk) SetLastTime(v time.Time) *SetupUpsertBulk {
 	return u.Update(func(s *SetupUpsert) {
-		s.ClearFloor()
+		s.SetLastTime(v)
 	})
 }
 
-// SetBuilding sets the "building" field.
-func (u *SetupUpsertBulk) SetBuilding(v string) *SetupUpsertBulk {
+// UpdateLastTime sets the "last_time" field to the value that was provided on create.
+func (u *SetupUpsertBulk) UpdateLastTime() *SetupUpsertBulk {
 	return u.Update(func(s *SetupUpsert) {
-		s.SetBuilding(v)
-	})
-}
-
-// UpdateBuilding sets the "building" field to the value that was provided on create.
-func (u *SetupUpsertBulk) UpdateBuilding() *SetupUpsertBulk {
-	return u.Update(func(s *SetupUpsert) {
-		s.UpdateBuilding()
-	})
-}
-
-// ClearBuilding clears the value of the "building" field.
-func (u *SetupUpsertBulk) ClearBuilding() *SetupUpsertBulk {
-	return u.Update(func(s *SetupUpsert) {
-		s.ClearBuilding()
-	})
-}
-
-// SetArea sets the "area" field.
-func (u *SetupUpsertBulk) SetArea(v string) *SetupUpsertBulk {
-	return u.Update(func(s *SetupUpsert) {
-		s.SetArea(v)
-	})
-}
-
-// UpdateArea sets the "area" field to the value that was provided on create.
-func (u *SetupUpsertBulk) UpdateArea() *SetupUpsertBulk {
-	return u.Update(func(s *SetupUpsert) {
-		s.UpdateArea()
-	})
-}
-
-// ClearArea clears the value of the "area" field.
-func (u *SetupUpsertBulk) ClearArea() *SetupUpsertBulk {
-	return u.Update(func(s *SetupUpsert) {
-		s.ClearArea()
-	})
-}
-
-// SetNat sets the "nat" field.
-func (u *SetupUpsertBulk) SetNat(v string) *SetupUpsertBulk {
-	return u.Update(func(s *SetupUpsert) {
-		s.SetNat(v)
-	})
-}
-
-// UpdateNat sets the "nat" field to the value that was provided on create.
-func (u *SetupUpsertBulk) UpdateNat() *SetupUpsertBulk {
-	return u.Update(func(s *SetupUpsert) {
-		s.UpdateNat()
-	})
-}
-
-// ClearNat clears the value of the "nat" field.
-func (u *SetupUpsertBulk) ClearNat() *SetupUpsertBulk {
-	return u.Update(func(s *SetupUpsert) {
-		s.ClearNat()
+		s.UpdateLastTime()
 	})
 }
 
@@ -1029,6 +884,34 @@ func (u *SetupUpsertBulk) UpdatePwd() *SetupUpsertBulk {
 func (u *SetupUpsertBulk) ClearPwd() *SetupUpsertBulk {
 	return u.Update(func(s *SetupUpsert) {
 		s.ClearPwd()
+	})
+}
+
+// SetUuid1 sets the "uuid1" field.
+func (u *SetupUpsertBulk) SetUuid1(v string) *SetupUpsertBulk {
+	return u.Update(func(s *SetupUpsert) {
+		s.SetUuid1(v)
+	})
+}
+
+// UpdateUuid1 sets the "uuid1" field to the value that was provided on create.
+func (u *SetupUpsertBulk) UpdateUuid1() *SetupUpsertBulk {
+	return u.Update(func(s *SetupUpsert) {
+		s.UpdateUuid1()
+	})
+}
+
+// SetUuid2 sets the "uuid2" field.
+func (u *SetupUpsertBulk) SetUuid2(v string) *SetupUpsertBulk {
+	return u.Update(func(s *SetupUpsert) {
+		s.SetUuid2(v)
+	})
+}
+
+// UpdateUuid2 sets the "uuid2" field to the value that was provided on create.
+func (u *SetupUpsertBulk) UpdateUuid2() *SetupUpsertBulk {
+	return u.Update(func(s *SetupUpsert) {
+		s.UpdateUuid2()
 	})
 }
 

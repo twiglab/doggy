@@ -9,6 +9,18 @@ import (
 	"github.com/twiglab/doggy/orm/ent"
 )
 
+// The PosFunc type is an adapter to allow the use of ordinary
+// function as Pos mutator.
+type PosFunc func(context.Context, *ent.PosMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PosFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PosMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PosMutation", m)
+}
+
 // The SetupFunc type is an adapter to allow the use of ordinary
 // function as Setup mutator.
 type SetupFunc func(context.Context, *ent.SetupMutation) (ent.Value, error)
@@ -19,18 +31,6 @@ func (f SetupFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SetupMutation", m)
-}
-
-// The UploadFunc type is an adapter to allow the use of ordinary
-// function as Upload mutator.
-type UploadFunc func(context.Context, *ent.UploadMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f UploadFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.UploadMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UploadMutation", m)
 }
 
 // The UsingFunc type is an adapter to allow the use of ordinary

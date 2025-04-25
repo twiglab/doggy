@@ -23,20 +23,18 @@ type Setup struct {
 	UpdateTime time.Time `json:"update_time,omitempty"`
 	// Sn holds the value of the "sn" field.
 	Sn string `json:"sn,omitempty"`
-	// Pos holds the value of the "pos" field.
-	Pos string `json:"pos,omitempty"`
-	// Floor holds the value of the "floor" field.
-	Floor string `json:"floor,omitempty"`
-	// Building holds the value of the "building" field.
-	Building string `json:"building,omitempty"`
-	// Area holds the value of the "area" field.
-	Area string `json:"area,omitempty"`
-	// Nat holds the value of the "nat" field.
-	Nat string `json:"nat,omitempty"`
+	// IP holds the value of the "ip" field.
+	IP string `json:"ip,omitempty"`
+	// LastTime holds the value of the "last_time" field.
+	LastTime time.Time `json:"last_time,omitempty"`
 	// User holds the value of the "user" field.
 	User string `json:"user,omitempty"`
 	// Pwd holds the value of the "pwd" field.
-	Pwd          string `json:"pwd,omitempty"`
+	Pwd string `json:"pwd,omitempty"`
+	// Uuid1 holds the value of the "uuid1" field.
+	Uuid1 string `json:"uuid1,omitempty"`
+	// Uuid2 holds the value of the "uuid2" field.
+	Uuid2        string `json:"uuid2,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -47,9 +45,9 @@ func (*Setup) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case setup.FieldID:
 			values[i] = new(sql.NullInt64)
-		case setup.FieldSn, setup.FieldPos, setup.FieldFloor, setup.FieldBuilding, setup.FieldArea, setup.FieldNat, setup.FieldUser, setup.FieldPwd:
+		case setup.FieldSn, setup.FieldIP, setup.FieldUser, setup.FieldPwd, setup.FieldUuid1, setup.FieldUuid2:
 			values[i] = new(sql.NullString)
-		case setup.FieldCreateTime, setup.FieldUpdateTime:
+		case setup.FieldCreateTime, setup.FieldUpdateTime, setup.FieldLastTime:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -90,35 +88,17 @@ func (s *Setup) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				s.Sn = value.String
 			}
-		case setup.FieldPos:
+		case setup.FieldIP:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field pos", values[i])
+				return fmt.Errorf("unexpected type %T for field ip", values[i])
 			} else if value.Valid {
-				s.Pos = value.String
+				s.IP = value.String
 			}
-		case setup.FieldFloor:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field floor", values[i])
+		case setup.FieldLastTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field last_time", values[i])
 			} else if value.Valid {
-				s.Floor = value.String
-			}
-		case setup.FieldBuilding:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field building", values[i])
-			} else if value.Valid {
-				s.Building = value.String
-			}
-		case setup.FieldArea:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field area", values[i])
-			} else if value.Valid {
-				s.Area = value.String
-			}
-		case setup.FieldNat:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field nat", values[i])
-			} else if value.Valid {
-				s.Nat = value.String
+				s.LastTime = value.Time
 			}
 		case setup.FieldUser:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -131,6 +111,18 @@ func (s *Setup) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field pwd", values[i])
 			} else if value.Valid {
 				s.Pwd = value.String
+			}
+		case setup.FieldUuid1:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field uuid1", values[i])
+			} else if value.Valid {
+				s.Uuid1 = value.String
+			}
+		case setup.FieldUuid2:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field uuid2", values[i])
+			} else if value.Valid {
+				s.Uuid2 = value.String
 			}
 		default:
 			s.selectValues.Set(columns[i], values[i])
@@ -177,26 +169,23 @@ func (s *Setup) String() string {
 	builder.WriteString("sn=")
 	builder.WriteString(s.Sn)
 	builder.WriteString(", ")
-	builder.WriteString("pos=")
-	builder.WriteString(s.Pos)
+	builder.WriteString("ip=")
+	builder.WriteString(s.IP)
 	builder.WriteString(", ")
-	builder.WriteString("floor=")
-	builder.WriteString(s.Floor)
-	builder.WriteString(", ")
-	builder.WriteString("building=")
-	builder.WriteString(s.Building)
-	builder.WriteString(", ")
-	builder.WriteString("area=")
-	builder.WriteString(s.Area)
-	builder.WriteString(", ")
-	builder.WriteString("nat=")
-	builder.WriteString(s.Nat)
+	builder.WriteString("last_time=")
+	builder.WriteString(s.LastTime.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("user=")
 	builder.WriteString(s.User)
 	builder.WriteString(", ")
 	builder.WriteString("pwd=")
 	builder.WriteString(s.Pwd)
+	builder.WriteString(", ")
+	builder.WriteString("uuid1=")
+	builder.WriteString(s.Uuid1)
+	builder.WriteString(", ")
+	builder.WriteString("uuid2=")
+	builder.WriteString(s.Uuid2)
 	builder.WriteByte(')')
 	return builder.String()
 }

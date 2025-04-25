@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
@@ -28,47 +30,17 @@ func (Setup) Fields() []ent.Field {
 				dialect.SQLite:   "varchar(36)", // Override Postgres.
 			}),
 
-		field.String("pos").
-			MaxLen(64).
-			Immutable().
-			NotEmpty().
+		field.String("ip").
+			MaxLen(64).NotEmpty().
 			SchemaType(map[string]string{
 				dialect.MySQL:    "varchar(64)", // Override MySQL.
 				dialect.Postgres: "varchar(64)", // Override Postgres.
 				dialect.SQLite:   "varchar(64)", // Override Postgres.
 			}),
 
-		field.String("floor").
-			MaxLen(64).Optional().
-			SchemaType(map[string]string{
-				dialect.MySQL:    "varchar(64)", // Override MySQL.
-				dialect.Postgres: "varchar(64)", // Override Postgres.
-				dialect.SQLite:   "varchar(64)", // Override Postgres.
-			}),
-
-		field.String("building").
-			MaxLen(64).Optional().
-			SchemaType(map[string]string{
-				dialect.MySQL:    "varchar(64)", // Override MySQL.
-				dialect.Postgres: "varchar(64)", // Override Postgres.
-				dialect.SQLite:   "varchar(64)", // Override Postgres.
-			}),
-
-		field.String("area").
-			MaxLen(64).Optional().
-			SchemaType(map[string]string{
-				dialect.MySQL:    "varchar(64)", // Override MySQL.
-				dialect.Postgres: "varchar(64)", // Override Postgres.
-				dialect.SQLite:   "varchar(64)", // Override Postgres.
-			}),
-
-		field.String("nat").
-			MaxLen(64).Optional().
-			SchemaType(map[string]string{
-				dialect.MySQL:    "varchar(64)", // Override MySQL.
-				dialect.Postgres: "varchar(64)", // Override Postgres.
-				dialect.SQLite:   "varchar(64)", // Override Postgres.
-			}),
+		field.Time("last_time").
+			Default(time.Now).
+			UpdateDefault(time.Now),
 
 		field.String("user").
 			MaxLen(64).Optional().
@@ -84,6 +56,25 @@ func (Setup) Fields() []ent.Field {
 				dialect.MySQL:    "varchar(64)", // Override MySQL.
 				dialect.Postgres: "varchar(64)", // Override Postgres.
 				dialect.SQLite:   "varchar(64)", // Override Postgres.
+			}),
+		field.String("uuid1").
+			MaxLen(36).
+			NotEmpty().
+			Unique().
+			SchemaType(map[string]string{
+				dialect.MySQL:    "char(36)", // Override MySQL.
+				dialect.Postgres: "char(36)", // Override Postgres.
+				dialect.SQLite:   "char(36)", // Override Postgres.
+			}),
+
+		field.String("uuid2").
+			MaxLen(36).
+			NotEmpty().
+			Unique().
+			SchemaType(map[string]string{
+				dialect.MySQL:    "char(36)", // Override MySQL.
+				dialect.Postgres: "char(36)", // Override Postgres.
+				dialect.SQLite:   "char(36)", // Override Postgres.
 			}),
 	}
 }
@@ -102,6 +93,6 @@ func (Setup) Indexes() []ent.Index {
 
 func (Setup) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entsql.Annotation{Table: "camera_setup"},
+		entsql.Annotation{Table: "camera_upload"},
 	}
 }

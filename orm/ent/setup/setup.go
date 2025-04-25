@@ -19,22 +19,20 @@ const (
 	FieldUpdateTime = "update_time"
 	// FieldSn holds the string denoting the sn field in the database.
 	FieldSn = "sn"
-	// FieldPos holds the string denoting the pos field in the database.
-	FieldPos = "pos"
-	// FieldFloor holds the string denoting the floor field in the database.
-	FieldFloor = "floor"
-	// FieldBuilding holds the string denoting the building field in the database.
-	FieldBuilding = "building"
-	// FieldArea holds the string denoting the area field in the database.
-	FieldArea = "area"
-	// FieldNat holds the string denoting the nat field in the database.
-	FieldNat = "nat"
+	// FieldIP holds the string denoting the ip field in the database.
+	FieldIP = "ip"
+	// FieldLastTime holds the string denoting the last_time field in the database.
+	FieldLastTime = "last_time"
 	// FieldUser holds the string denoting the user field in the database.
 	FieldUser = "user"
 	// FieldPwd holds the string denoting the pwd field in the database.
 	FieldPwd = "pwd"
+	// FieldUuid1 holds the string denoting the uuid1 field in the database.
+	FieldUuid1 = "uuid1"
+	// FieldUuid2 holds the string denoting the uuid2 field in the database.
+	FieldUuid2 = "uuid2"
 	// Table holds the table name of the setup in the database.
-	Table = "camera_setup"
+	Table = "camera_upload"
 )
 
 // Columns holds all SQL columns for setup fields.
@@ -43,13 +41,12 @@ var Columns = []string{
 	FieldCreateTime,
 	FieldUpdateTime,
 	FieldSn,
-	FieldPos,
-	FieldFloor,
-	FieldBuilding,
-	FieldArea,
-	FieldNat,
+	FieldIP,
+	FieldLastTime,
 	FieldUser,
 	FieldPwd,
+	FieldUuid1,
+	FieldUuid2,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -71,20 +68,20 @@ var (
 	UpdateDefaultUpdateTime func() time.Time
 	// SnValidator is a validator for the "sn" field. It is called by the builders before save.
 	SnValidator func(string) error
-	// PosValidator is a validator for the "pos" field. It is called by the builders before save.
-	PosValidator func(string) error
-	// FloorValidator is a validator for the "floor" field. It is called by the builders before save.
-	FloorValidator func(string) error
-	// BuildingValidator is a validator for the "building" field. It is called by the builders before save.
-	BuildingValidator func(string) error
-	// AreaValidator is a validator for the "area" field. It is called by the builders before save.
-	AreaValidator func(string) error
-	// NatValidator is a validator for the "nat" field. It is called by the builders before save.
-	NatValidator func(string) error
+	// IPValidator is a validator for the "ip" field. It is called by the builders before save.
+	IPValidator func(string) error
+	// DefaultLastTime holds the default value on creation for the "last_time" field.
+	DefaultLastTime func() time.Time
+	// UpdateDefaultLastTime holds the default value on update for the "last_time" field.
+	UpdateDefaultLastTime func() time.Time
 	// UserValidator is a validator for the "user" field. It is called by the builders before save.
 	UserValidator func(string) error
 	// PwdValidator is a validator for the "pwd" field. It is called by the builders before save.
 	PwdValidator func(string) error
+	// Uuid1Validator is a validator for the "uuid1" field. It is called by the builders before save.
+	Uuid1Validator func(string) error
+	// Uuid2Validator is a validator for the "uuid2" field. It is called by the builders before save.
+	Uuid2Validator func(string) error
 )
 
 // OrderOption defines the ordering options for the Setup queries.
@@ -110,29 +107,14 @@ func BySn(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSn, opts...).ToFunc()
 }
 
-// ByPos orders the results by the pos field.
-func ByPos(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPos, opts...).ToFunc()
+// ByIP orders the results by the ip field.
+func ByIP(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIP, opts...).ToFunc()
 }
 
-// ByFloor orders the results by the floor field.
-func ByFloor(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldFloor, opts...).ToFunc()
-}
-
-// ByBuilding orders the results by the building field.
-func ByBuilding(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldBuilding, opts...).ToFunc()
-}
-
-// ByArea orders the results by the area field.
-func ByArea(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldArea, opts...).ToFunc()
-}
-
-// ByNat orders the results by the nat field.
-func ByNat(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldNat, opts...).ToFunc()
+// ByLastTime orders the results by the last_time field.
+func ByLastTime(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLastTime, opts...).ToFunc()
 }
 
 // ByUser orders the results by the user field.
@@ -143,4 +125,14 @@ func ByUser(opts ...sql.OrderTermOption) OrderOption {
 // ByPwd orders the results by the pwd field.
 func ByPwd(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPwd, opts...).ToFunc()
+}
+
+// ByUuid1 orders the results by the uuid1 field.
+func ByUuid1(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUuid1, opts...).ToFunc()
+}
+
+// ByUuid2 orders the results by the uuid2 field.
+func ByUuid2(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUuid2, opts...).ToFunc()
 }

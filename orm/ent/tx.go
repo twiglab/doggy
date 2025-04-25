@@ -14,10 +14,10 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
+	// Pos is the client for interacting with the Pos builders.
+	Pos *PosClient
 	// Setup is the client for interacting with the Setup builders.
 	Setup *SetupClient
-	// Upload is the client for interacting with the Upload builders.
-	Upload *UploadClient
 	// Using is the client for interacting with the Using builders.
 	Using *UsingClient
 
@@ -151,8 +151,8 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
+	tx.Pos = NewPosClient(tx.config)
 	tx.Setup = NewSetupClient(tx.config)
-	tx.Upload = NewUploadClient(tx.config)
 	tx.Using = NewUsingClient(tx.config)
 }
 
@@ -163,7 +163,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Setup.QueryXXX(), the query will be executed
+// applies a query, for example: Pos.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.
