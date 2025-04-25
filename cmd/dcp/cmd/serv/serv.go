@@ -7,7 +7,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"golang.org/x/telemetry"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -28,11 +27,13 @@ var ServCmd = &cobra.Command{
 		serv(cmd, args)
 	},
 
-	PreRun: func(cmd *cobra.Command, args []string) {
-		telemetry.Start(telemetry.Config{
-			ReportCrashes: true,
-		})
-	},
+	/*
+		PreRun: func(cmd *cobra.Command, args []string) {
+			telemetry.Start(telemetry.Config{
+				ReportCrashes: true,
+			})
+		},
+	*/
 }
 
 func init() {

@@ -11,7 +11,6 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
-	golang.org/x/telemetry v0.0.0-20250417124945-06ef541f3fa3
 	resty.dev/v3 v3.0.0-beta.2
 )
 
