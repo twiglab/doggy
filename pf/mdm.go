@@ -1,5 +1,7 @@
 package pf
 
+import "context"
+
 type CameraSetup struct {
 	SN     string
 	IpAddr string
@@ -12,7 +14,7 @@ type CameraSetup struct {
 	Pwd  string
 }
 
-type CameraPos struct {
+type CameraPoint struct {
 	SN       string
 	Pos      string // 图纸上标注的名称
 	Floor    string // 楼层
@@ -26,4 +28,12 @@ type CameraUsing struct {
 	AlgID string // 算法id， 15 过线，12 密度
 	Name  string // 用于显示的名称
 	BK    string // 业务Key(如果可能请设置成device_id), 业务code
+}
+
+type CameraUsingGetter interface {
+	GetCameraUsings(context.Context) map[string]CameraUsing
+}
+
+type CameraPosGetter interface {
+	GetCameraPoints(context.Context) map[string]CameraPoint
 }
