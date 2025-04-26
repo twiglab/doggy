@@ -24,6 +24,6 @@ type CameraUsing struct {
 	SN    string
 	UUID  string
 	AlgID string // 算法id， 15 过线，12 密度
-	BK    string // 业务Key(如果可能请设置成device_id), 业务code
 	Name  string // 用于显示的名称
+	BK    string // 业务Key(如果可能请设置成device_id), 业务code
 }

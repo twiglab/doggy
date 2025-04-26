@@ -4,13 +4,16 @@ import (
 	"context"
 	"errors"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/orm/ent"
+	"github.com/twiglab/doggy/orm/ent/upload"
+	"github.com/twiglab/doggy/pf"
 )
 
-type Config struct {
+type UploadConfig struct {
 	MetadataURL string
 	Address     string
 	Port        int
@@ -28,12 +31,20 @@ type CameraUpload struct {
 }
 
 type EntHandle struct {
-	Conf   Config
+	Conf   UploadConfig
 	client *ent.Client
+
+	m map[string]pf.CameraSetup
+
+	l sync.Mutex
 }
 
-func NewEntHandle(clent *ent.Client) *EntHandle {
-	return &EntHandle{client: clent}
+func NewEntHandle(conf UploadConfig, clent *ent.Client) *EntHandle {
+	return &EntHandle{
+		Conf:   conf,
+		client: clent,
+		m:      make(map[string]pf.CameraSetup),
+	}
 }
 
 func (h *EntHandle) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
@@ -56,7 +67,55 @@ func (h *EntHandle) AutoRegister(ctx context.Context, data holo.DeviceAutoRegist
 	})
 }
 
-func (h *EntHandle) handleUpload(cx context.Context, upload CameraUpload) error {
+func (h *EntHandle) handleUpload(ctx context.Context, u CameraUpload) error {
+	err := h.client.Upload.Create().
+		SetSn(u.SN).
+		SetIP(u.IpAddr).
+		SetLastTime(time.Now()).
+		SetID1(u.UUID1).
+		SetID2(u.UUID2).
+		OnConflictColumns(upload.FieldSn).
+		UpdateNewValues().
+		Exec(ctx)
+
+	if err != nil {
+		return err
+	}
+
+	h.l.Lock()
+	defer h.l.Unlock()
+
+	if _, ok := h.m[u.SN]; !ok {
+		h.m[u.SN] = pf.CameraSetup{
+			SN:     u.SN,
+			IpAddr: u.IpAddr,
+			UUID1:  u.UUID1,
+			UUID2:  u.UUID2,
+		}
+	}
+
+	return nil
+}
+
+func (h *EntHandle) Reload() error {
+	us, err := h.client.Upload.Query().All(context.Background())
+	if err != nil {
+		return err
+	}
+
+	h.l.Lock()
+	defer h.l.Unlock()
+
+	clear(h.m)
+	for _, u := range us {
+		h.m[u.Sn] = pf.CameraSetup{
+			SN:     u.Sn,
+			IpAddr: u.IP,
+			UUID1:  u.ID1,
+			UUID2:  u.ID2,
+		}
+	}
+
 	return nil
 }
 

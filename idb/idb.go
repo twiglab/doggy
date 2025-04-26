@@ -20,13 +20,6 @@ const (
 	MA_COUNTY  = "count"
 )
 
-type IdbConf struct {
-	URL    string
-	Token  string
-	Org    string
-	Bucket string
-}
-
 func hasHumanCount(data holo.HumanMix) bool {
 	if data.HumanCountIn == 0 && data.HumanCountOut == 0 {
 		return false

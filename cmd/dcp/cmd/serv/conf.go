@@ -5,16 +5,26 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/twiglab/doggy/idb"
 	"github.com/twiglab/doggy/orm"
 	"github.com/twiglab/doggy/orm/ent"
-	"github.com/twiglab/doggy/pf"
 )
 
-type PlatformConfig struct {
+type InfluxDBConf struct {
+	URL    string
+	Token  string
+	Org    string
+	Bucket string
+}
+
+type DbUploadConfig struct {
 	MetadataURL string `yaml:"metadata-url" mapstructure:"metadata-url"`
 	CameraUser  string `yaml:"camera-user" mapstructure:"camera-user"`
 	CameraPwd   string `yaml:"camera-pwd" mapstructure:"camera-pwd"`
+
+	IpAddr string
+	Port   int
+
+	DB DB `yaml:"db" mapstructure:"db"`
 }
 
 type ServerConfig struct {
@@ -29,27 +39,21 @@ type DB struct {
 }
 
 type AppConf struct {
-	ID             string         `yaml:"id" mapstructure:"id"`
-	PlatformConfig PlatformConfig `yaml:"platform" mapstructure:"platform"`
-	ServerConf     ServerConfig   `yaml:"server" mapstructure:"server"`
-	DB             DB             `yaml:"db" mapstructure:"db"`
-	IdbConf        idb.IdbConf
+	ID             string `yaml:"id" mapstructure:"id"`
+	DbUploadConfig DbUploadConfig
+	ServerConf     ServerConfig `yaml:"server" mapstructure:"server"`
+	IdbConf        InfluxDBConf
 }
 
-func MustPfConf(c PlatformConfig) pf.Config {
-	pc, err := NewPfConf(c)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return pc
-}
-
-func NewPfConf(c PlatformConfig) (pc pf.Config, err error) {
+func NewUploadConfx(c DbUploadConfig) (pc orm.UploadConfig, err error) {
 	var u *url.URL
 
 	if u, err = url.Parse(c.MetadataURL); err != nil {
 		return
 	}
+
+	pc.User = c.CameraUser
+	pc.Pwd = c.CameraPwd
 
 	pc.Address = u.Hostname()
 	pc.Port = 80

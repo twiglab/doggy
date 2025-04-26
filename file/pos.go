@@ -4,22 +4,21 @@ import (
 	"encoding/csv"
 	"io"
 	"os"
-	"time"
 
 	"github.com/twiglab/doggy/pf"
 )
 
-type CsvCameraUpload struct {
+type CsvCameraPos struct {
 	csvFileName string
-	cameraMap   map[string]pf.CameraUplaod
+	posMap      map[string]pf.CameraPos
 }
 
-func (r *CsvCameraUpload) Get(sn string) (camera pf.CameraUplaod, ok bool) {
-	camera, ok = r.cameraMap[sn]
+func (r *CsvCameraPos) Get(sn string) (camera pf.CameraPos, ok bool) {
+	camera, ok = r.posMap[sn]
 	return
 }
 
-func (r *CsvCameraUpload) Load() error {
+func (r *CsvCameraPos) Load() error {
 	f, err := os.Open(r.csvFileName)
 	if err != nil {
 		return err
@@ -42,10 +41,12 @@ func (r *CsvCameraUpload) Load() error {
 
 		l.reload(record)
 
-		r.cameraMap[l.Pos(0)] = pf.CameraUplaod{
-			SN:     l.Pos(0),
-			IpAddr: l.Pos(1),
-			Last:   time.Now(),
+		r.posMap[l.Pos(0)] = pf.CameraPos{
+			SN:       l.Pos(0),
+			Pos:      l.Pos(1),
+			Floor:    l.Pos(2),
+			Building: l.Pos(3),
+			Area:     l.Pos(4),
 		}
 	}
 	return nil

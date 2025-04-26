@@ -13,11 +13,6 @@ type CsvCameraUsing struct {
 	cameraMap   map[string]pf.CameraUsing
 }
 
-func (r *CsvCameraUsing) GetByBK(bk string) (u pf.CameraUsing, ok bool) {
-	u, ok = r.cameraMap[bk]
-	return
-}
-
 func (r *CsvCameraUsing) Load() error {
 	f, err := os.Open(r.csvFileName)
 	if err != nil {
@@ -46,8 +41,6 @@ func (r *CsvCameraUsing) Load() error {
 			UUID:  l.Pos(1),
 			AlgID: l.Pos(2),
 			Name:  l.Pos(3),
-			Memo:  l.Pos(4),
-			BK:    NewBK(l.Pos(2), l.Pos(3)),
 		}
 
 		r.cameraMap[u.BK] = u
