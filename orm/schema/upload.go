@@ -12,11 +12,11 @@ import (
 	"entgo.io/ent/schema/mixin"
 )
 
-type Setup struct {
+type Upload struct {
 	ent.Schema
 }
 
-func (Setup) Fields() []ent.Field {
+func (Upload) Fields() []ent.Field {
 	return []ent.Field{
 
 		field.String("sn").
@@ -42,35 +42,18 @@ func (Setup) Fields() []ent.Field {
 			Default(time.Now).
 			UpdateDefault(time.Now),
 
-		field.String("user").
-			MaxLen(64).Optional().
-			SchemaType(map[string]string{
-				dialect.MySQL:    "varchar(64)", // Override MySQL.
-				dialect.Postgres: "varchar(64)", // Override Postgres.
-				dialect.SQLite:   "varchar(64)", // Override Postgres.
-			}),
-
-		field.String("pwd").
-			MaxLen(64).Optional().
-			SchemaType(map[string]string{
-				dialect.MySQL:    "varchar(64)", // Override MySQL.
-				dialect.Postgres: "varchar(64)", // Override Postgres.
-				dialect.SQLite:   "varchar(64)", // Override Postgres.
-			}),
-		field.String("uuid1").
+		field.String("id_1").
 			MaxLen(36).
-			NotEmpty().
-			Unique().
+			Unique().Optional().
 			SchemaType(map[string]string{
 				dialect.MySQL:    "char(36)", // Override MySQL.
 				dialect.Postgres: "char(36)", // Override Postgres.
 				dialect.SQLite:   "char(36)", // Override Postgres.
 			}),
 
-		field.String("uuid2").
+		field.String("id_2").
 			MaxLen(36).
-			NotEmpty().
-			Unique().
+			Unique().Optional().
 			SchemaType(map[string]string{
 				dialect.MySQL:    "char(36)", // Override MySQL.
 				dialect.Postgres: "char(36)", // Override Postgres.
@@ -79,19 +62,19 @@ func (Setup) Fields() []ent.Field {
 	}
 }
 
-func (Setup) Mixin() []ent.Mixin {
+func (Upload) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixin.Time{},
 	}
 }
 
-func (Setup) Indexes() []ent.Index {
+func (Upload) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("sn"),
 	}
 }
 
-func (Setup) Annotations() []schema.Annotation {
+func (Upload) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "camera_upload"},
 	}

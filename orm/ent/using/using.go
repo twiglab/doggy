@@ -21,14 +21,10 @@ const (
 	FieldSn = "sn"
 	// FieldUUID holds the string denoting the uuid field in the database.
 	FieldUUID = "uuid"
-	// FieldDeviceID holds the string denoting the device_id field in the database.
-	FieldDeviceID = "device_id"
 	// FieldAlg holds the string denoting the alg field in the database.
 	FieldAlg = "alg"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldMemo holds the string denoting the memo field in the database.
-	FieldMemo = "memo"
 	// FieldBk holds the string denoting the bk field in the database.
 	FieldBk = "bk"
 	// Table holds the table name of the using in the database.
@@ -42,10 +38,8 @@ var Columns = []string{
 	FieldUpdateTime,
 	FieldSn,
 	FieldUUID,
-	FieldDeviceID,
 	FieldAlg,
 	FieldName,
-	FieldMemo,
 	FieldBk,
 }
 
@@ -70,14 +64,10 @@ var (
 	SnValidator func(string) error
 	// UUIDValidator is a validator for the "uuid" field. It is called by the builders before save.
 	UUIDValidator func(string) error
-	// DeviceIDValidator is a validator for the "device_id" field. It is called by the builders before save.
-	DeviceIDValidator func(string) error
 	// AlgValidator is a validator for the "alg" field. It is called by the builders before save.
 	AlgValidator func(string) error
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
-	// MemoValidator is a validator for the "memo" field. It is called by the builders before save.
-	MemoValidator func(string) error
 	// BkValidator is a validator for the "bk" field. It is called by the builders before save.
 	BkValidator func(string) error
 )
@@ -110,11 +100,6 @@ func ByUUID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUUID, opts...).ToFunc()
 }
 
-// ByDeviceID orders the results by the device_id field.
-func ByDeviceID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDeviceID, opts...).ToFunc()
-}
-
 // ByAlg orders the results by the alg field.
 func ByAlg(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAlg, opts...).ToFunc()
@@ -123,11 +108,6 @@ func ByAlg(opts ...sql.OrderTermOption) OrderOption {
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
-}
-
-// ByMemo orders the results by the memo field.
-func ByMemo(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldMemo, opts...).ToFunc()
 }
 
 // ByBk orders the results by the bk field.

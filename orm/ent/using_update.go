@@ -48,26 +48,6 @@ func (uu *UsingUpdate) SetNillableUUID(s *string) *UsingUpdate {
 	return uu
 }
 
-// SetDeviceID sets the "device_id" field.
-func (uu *UsingUpdate) SetDeviceID(s string) *UsingUpdate {
-	uu.mutation.SetDeviceID(s)
-	return uu
-}
-
-// SetNillableDeviceID sets the "device_id" field if the given value is not nil.
-func (uu *UsingUpdate) SetNillableDeviceID(s *string) *UsingUpdate {
-	if s != nil {
-		uu.SetDeviceID(*s)
-	}
-	return uu
-}
-
-// ClearDeviceID clears the value of the "device_id" field.
-func (uu *UsingUpdate) ClearDeviceID() *UsingUpdate {
-	uu.mutation.ClearDeviceID()
-	return uu
-}
-
 // SetAlg sets the "alg" field.
 func (uu *UsingUpdate) SetAlg(s string) *UsingUpdate {
 	uu.mutation.SetAlg(s)
@@ -99,26 +79,6 @@ func (uu *UsingUpdate) SetNillableName(s *string) *UsingUpdate {
 // ClearName clears the value of the "name" field.
 func (uu *UsingUpdate) ClearName() *UsingUpdate {
 	uu.mutation.ClearName()
-	return uu
-}
-
-// SetMemo sets the "memo" field.
-func (uu *UsingUpdate) SetMemo(s string) *UsingUpdate {
-	uu.mutation.SetMemo(s)
-	return uu
-}
-
-// SetNillableMemo sets the "memo" field if the given value is not nil.
-func (uu *UsingUpdate) SetNillableMemo(s *string) *UsingUpdate {
-	if s != nil {
-		uu.SetMemo(*s)
-	}
-	return uu
-}
-
-// ClearMemo clears the value of the "memo" field.
-func (uu *UsingUpdate) ClearMemo() *UsingUpdate {
-	uu.mutation.ClearMemo()
 	return uu
 }
 
@@ -170,11 +130,6 @@ func (uu *UsingUpdate) check() error {
 			return &ValidationError{Name: "uuid", err: fmt.Errorf(`ent: validator failed for field "Using.uuid": %w`, err)}
 		}
 	}
-	if v, ok := uu.mutation.DeviceID(); ok {
-		if err := using.DeviceIDValidator(v); err != nil {
-			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Using.device_id": %w`, err)}
-		}
-	}
 	if v, ok := uu.mutation.Alg(); ok {
 		if err := using.AlgValidator(v); err != nil {
 			return &ValidationError{Name: "alg", err: fmt.Errorf(`ent: validator failed for field "Using.alg": %w`, err)}
@@ -183,11 +138,6 @@ func (uu *UsingUpdate) check() error {
 	if v, ok := uu.mutation.Name(); ok {
 		if err := using.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Using.name": %w`, err)}
-		}
-	}
-	if v, ok := uu.mutation.Memo(); ok {
-		if err := using.MemoValidator(v); err != nil {
-			return &ValidationError{Name: "memo", err: fmt.Errorf(`ent: validator failed for field "Using.memo": %w`, err)}
 		}
 	}
 	return nil
@@ -211,12 +161,6 @@ func (uu *UsingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.UUID(); ok {
 		_spec.SetField(using.FieldUUID, field.TypeString, value)
 	}
-	if value, ok := uu.mutation.DeviceID(); ok {
-		_spec.SetField(using.FieldDeviceID, field.TypeString, value)
-	}
-	if uu.mutation.DeviceIDCleared() {
-		_spec.ClearField(using.FieldDeviceID, field.TypeString)
-	}
 	if value, ok := uu.mutation.Alg(); ok {
 		_spec.SetField(using.FieldAlg, field.TypeString, value)
 	}
@@ -225,12 +169,6 @@ func (uu *UsingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if uu.mutation.NameCleared() {
 		_spec.ClearField(using.FieldName, field.TypeString)
-	}
-	if value, ok := uu.mutation.Memo(); ok {
-		_spec.SetField(using.FieldMemo, field.TypeString, value)
-	}
-	if uu.mutation.MemoCleared() {
-		_spec.ClearField(using.FieldMemo, field.TypeString)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -272,26 +210,6 @@ func (uuo *UsingUpdateOne) SetNillableUUID(s *string) *UsingUpdateOne {
 	return uuo
 }
 
-// SetDeviceID sets the "device_id" field.
-func (uuo *UsingUpdateOne) SetDeviceID(s string) *UsingUpdateOne {
-	uuo.mutation.SetDeviceID(s)
-	return uuo
-}
-
-// SetNillableDeviceID sets the "device_id" field if the given value is not nil.
-func (uuo *UsingUpdateOne) SetNillableDeviceID(s *string) *UsingUpdateOne {
-	if s != nil {
-		uuo.SetDeviceID(*s)
-	}
-	return uuo
-}
-
-// ClearDeviceID clears the value of the "device_id" field.
-func (uuo *UsingUpdateOne) ClearDeviceID() *UsingUpdateOne {
-	uuo.mutation.ClearDeviceID()
-	return uuo
-}
-
 // SetAlg sets the "alg" field.
 func (uuo *UsingUpdateOne) SetAlg(s string) *UsingUpdateOne {
 	uuo.mutation.SetAlg(s)
@@ -323,26 +241,6 @@ func (uuo *UsingUpdateOne) SetNillableName(s *string) *UsingUpdateOne {
 // ClearName clears the value of the "name" field.
 func (uuo *UsingUpdateOne) ClearName() *UsingUpdateOne {
 	uuo.mutation.ClearName()
-	return uuo
-}
-
-// SetMemo sets the "memo" field.
-func (uuo *UsingUpdateOne) SetMemo(s string) *UsingUpdateOne {
-	uuo.mutation.SetMemo(s)
-	return uuo
-}
-
-// SetNillableMemo sets the "memo" field if the given value is not nil.
-func (uuo *UsingUpdateOne) SetNillableMemo(s *string) *UsingUpdateOne {
-	if s != nil {
-		uuo.SetMemo(*s)
-	}
-	return uuo
-}
-
-// ClearMemo clears the value of the "memo" field.
-func (uuo *UsingUpdateOne) ClearMemo() *UsingUpdateOne {
-	uuo.mutation.ClearMemo()
 	return uuo
 }
 
@@ -407,11 +305,6 @@ func (uuo *UsingUpdateOne) check() error {
 			return &ValidationError{Name: "uuid", err: fmt.Errorf(`ent: validator failed for field "Using.uuid": %w`, err)}
 		}
 	}
-	if v, ok := uuo.mutation.DeviceID(); ok {
-		if err := using.DeviceIDValidator(v); err != nil {
-			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Using.device_id": %w`, err)}
-		}
-	}
 	if v, ok := uuo.mutation.Alg(); ok {
 		if err := using.AlgValidator(v); err != nil {
 			return &ValidationError{Name: "alg", err: fmt.Errorf(`ent: validator failed for field "Using.alg": %w`, err)}
@@ -420,11 +313,6 @@ func (uuo *UsingUpdateOne) check() error {
 	if v, ok := uuo.mutation.Name(); ok {
 		if err := using.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Using.name": %w`, err)}
-		}
-	}
-	if v, ok := uuo.mutation.Memo(); ok {
-		if err := using.MemoValidator(v); err != nil {
-			return &ValidationError{Name: "memo", err: fmt.Errorf(`ent: validator failed for field "Using.memo": %w`, err)}
 		}
 	}
 	return nil
@@ -465,12 +353,6 @@ func (uuo *UsingUpdateOne) sqlSave(ctx context.Context) (_node *Using, err error
 	if value, ok := uuo.mutation.UUID(); ok {
 		_spec.SetField(using.FieldUUID, field.TypeString, value)
 	}
-	if value, ok := uuo.mutation.DeviceID(); ok {
-		_spec.SetField(using.FieldDeviceID, field.TypeString, value)
-	}
-	if uuo.mutation.DeviceIDCleared() {
-		_spec.ClearField(using.FieldDeviceID, field.TypeString)
-	}
 	if value, ok := uuo.mutation.Alg(); ok {
 		_spec.SetField(using.FieldAlg, field.TypeString, value)
 	}
@@ -479,12 +361,6 @@ func (uuo *UsingUpdateOne) sqlSave(ctx context.Context) (_node *Using, err error
 	}
 	if uuo.mutation.NameCleared() {
 		_spec.ClearField(using.FieldName, field.TypeString)
-	}
-	if value, ok := uuo.mutation.Memo(); ok {
-		_spec.SetField(using.FieldMemo, field.TypeString, value)
-	}
-	if uuo.mutation.MemoCleared() {
-		_spec.ClearField(using.FieldMemo, field.TypeString)
 	}
 	_node = &Using{config: uuo.config}
 	_spec.Assign = _node.assignValues

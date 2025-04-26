@@ -74,11 +74,6 @@ func UUID(v string) predicate.Using {
 	return predicate.Using(sql.FieldEQ(FieldUUID, v))
 }
 
-// DeviceID applies equality check predicate on the "device_id" field. It's identical to DeviceIDEQ.
-func DeviceID(v string) predicate.Using {
-	return predicate.Using(sql.FieldEQ(FieldDeviceID, v))
-}
-
 // Alg applies equality check predicate on the "alg" field. It's identical to AlgEQ.
 func Alg(v string) predicate.Using {
 	return predicate.Using(sql.FieldEQ(FieldAlg, v))
@@ -87,11 +82,6 @@ func Alg(v string) predicate.Using {
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.Using {
 	return predicate.Using(sql.FieldEQ(FieldName, v))
-}
-
-// Memo applies equality check predicate on the "memo" field. It's identical to MemoEQ.
-func Memo(v string) predicate.Using {
-	return predicate.Using(sql.FieldEQ(FieldMemo, v))
 }
 
 // Bk applies equality check predicate on the "bk" field. It's identical to BkEQ.
@@ -309,81 +299,6 @@ func UUIDContainsFold(v string) predicate.Using {
 	return predicate.Using(sql.FieldContainsFold(FieldUUID, v))
 }
 
-// DeviceIDEQ applies the EQ predicate on the "device_id" field.
-func DeviceIDEQ(v string) predicate.Using {
-	return predicate.Using(sql.FieldEQ(FieldDeviceID, v))
-}
-
-// DeviceIDNEQ applies the NEQ predicate on the "device_id" field.
-func DeviceIDNEQ(v string) predicate.Using {
-	return predicate.Using(sql.FieldNEQ(FieldDeviceID, v))
-}
-
-// DeviceIDIn applies the In predicate on the "device_id" field.
-func DeviceIDIn(vs ...string) predicate.Using {
-	return predicate.Using(sql.FieldIn(FieldDeviceID, vs...))
-}
-
-// DeviceIDNotIn applies the NotIn predicate on the "device_id" field.
-func DeviceIDNotIn(vs ...string) predicate.Using {
-	return predicate.Using(sql.FieldNotIn(FieldDeviceID, vs...))
-}
-
-// DeviceIDGT applies the GT predicate on the "device_id" field.
-func DeviceIDGT(v string) predicate.Using {
-	return predicate.Using(sql.FieldGT(FieldDeviceID, v))
-}
-
-// DeviceIDGTE applies the GTE predicate on the "device_id" field.
-func DeviceIDGTE(v string) predicate.Using {
-	return predicate.Using(sql.FieldGTE(FieldDeviceID, v))
-}
-
-// DeviceIDLT applies the LT predicate on the "device_id" field.
-func DeviceIDLT(v string) predicate.Using {
-	return predicate.Using(sql.FieldLT(FieldDeviceID, v))
-}
-
-// DeviceIDLTE applies the LTE predicate on the "device_id" field.
-func DeviceIDLTE(v string) predicate.Using {
-	return predicate.Using(sql.FieldLTE(FieldDeviceID, v))
-}
-
-// DeviceIDContains applies the Contains predicate on the "device_id" field.
-func DeviceIDContains(v string) predicate.Using {
-	return predicate.Using(sql.FieldContains(FieldDeviceID, v))
-}
-
-// DeviceIDHasPrefix applies the HasPrefix predicate on the "device_id" field.
-func DeviceIDHasPrefix(v string) predicate.Using {
-	return predicate.Using(sql.FieldHasPrefix(FieldDeviceID, v))
-}
-
-// DeviceIDHasSuffix applies the HasSuffix predicate on the "device_id" field.
-func DeviceIDHasSuffix(v string) predicate.Using {
-	return predicate.Using(sql.FieldHasSuffix(FieldDeviceID, v))
-}
-
-// DeviceIDIsNil applies the IsNil predicate on the "device_id" field.
-func DeviceIDIsNil() predicate.Using {
-	return predicate.Using(sql.FieldIsNull(FieldDeviceID))
-}
-
-// DeviceIDNotNil applies the NotNil predicate on the "device_id" field.
-func DeviceIDNotNil() predicate.Using {
-	return predicate.Using(sql.FieldNotNull(FieldDeviceID))
-}
-
-// DeviceIDEqualFold applies the EqualFold predicate on the "device_id" field.
-func DeviceIDEqualFold(v string) predicate.Using {
-	return predicate.Using(sql.FieldEqualFold(FieldDeviceID, v))
-}
-
-// DeviceIDContainsFold applies the ContainsFold predicate on the "device_id" field.
-func DeviceIDContainsFold(v string) predicate.Using {
-	return predicate.Using(sql.FieldContainsFold(FieldDeviceID, v))
-}
-
 // AlgEQ applies the EQ predicate on the "alg" field.
 func AlgEQ(v string) predicate.Using {
 	return predicate.Using(sql.FieldEQ(FieldAlg, v))
@@ -522,81 +437,6 @@ func NameEqualFold(v string) predicate.Using {
 // NameContainsFold applies the ContainsFold predicate on the "name" field.
 func NameContainsFold(v string) predicate.Using {
 	return predicate.Using(sql.FieldContainsFold(FieldName, v))
-}
-
-// MemoEQ applies the EQ predicate on the "memo" field.
-func MemoEQ(v string) predicate.Using {
-	return predicate.Using(sql.FieldEQ(FieldMemo, v))
-}
-
-// MemoNEQ applies the NEQ predicate on the "memo" field.
-func MemoNEQ(v string) predicate.Using {
-	return predicate.Using(sql.FieldNEQ(FieldMemo, v))
-}
-
-// MemoIn applies the In predicate on the "memo" field.
-func MemoIn(vs ...string) predicate.Using {
-	return predicate.Using(sql.FieldIn(FieldMemo, vs...))
-}
-
-// MemoNotIn applies the NotIn predicate on the "memo" field.
-func MemoNotIn(vs ...string) predicate.Using {
-	return predicate.Using(sql.FieldNotIn(FieldMemo, vs...))
-}
-
-// MemoGT applies the GT predicate on the "memo" field.
-func MemoGT(v string) predicate.Using {
-	return predicate.Using(sql.FieldGT(FieldMemo, v))
-}
-
-// MemoGTE applies the GTE predicate on the "memo" field.
-func MemoGTE(v string) predicate.Using {
-	return predicate.Using(sql.FieldGTE(FieldMemo, v))
-}
-
-// MemoLT applies the LT predicate on the "memo" field.
-func MemoLT(v string) predicate.Using {
-	return predicate.Using(sql.FieldLT(FieldMemo, v))
-}
-
-// MemoLTE applies the LTE predicate on the "memo" field.
-func MemoLTE(v string) predicate.Using {
-	return predicate.Using(sql.FieldLTE(FieldMemo, v))
-}
-
-// MemoContains applies the Contains predicate on the "memo" field.
-func MemoContains(v string) predicate.Using {
-	return predicate.Using(sql.FieldContains(FieldMemo, v))
-}
-
-// MemoHasPrefix applies the HasPrefix predicate on the "memo" field.
-func MemoHasPrefix(v string) predicate.Using {
-	return predicate.Using(sql.FieldHasPrefix(FieldMemo, v))
-}
-
-// MemoHasSuffix applies the HasSuffix predicate on the "memo" field.
-func MemoHasSuffix(v string) predicate.Using {
-	return predicate.Using(sql.FieldHasSuffix(FieldMemo, v))
-}
-
-// MemoIsNil applies the IsNil predicate on the "memo" field.
-func MemoIsNil() predicate.Using {
-	return predicate.Using(sql.FieldIsNull(FieldMemo))
-}
-
-// MemoNotNil applies the NotNil predicate on the "memo" field.
-func MemoNotNil() predicate.Using {
-	return predicate.Using(sql.FieldNotNull(FieldMemo))
-}
-
-// MemoEqualFold applies the EqualFold predicate on the "memo" field.
-func MemoEqualFold(v string) predicate.Using {
-	return predicate.Using(sql.FieldEqualFold(FieldMemo, v))
-}
-
-// MemoContainsFold applies the ContainsFold predicate on the "memo" field.
-func MemoContainsFold(v string) predicate.Using {
-	return predicate.Using(sql.FieldContainsFold(FieldMemo, v))
 }
 
 // BkEQ applies the EQ predicate on the "bk" field.

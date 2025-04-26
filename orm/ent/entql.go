@@ -4,7 +4,7 @@ package ent
 
 import (
 	"github.com/twiglab/doggy/orm/ent/pos"
-	"github.com/twiglab/doggy/orm/ent/setup"
+	"github.com/twiglab/doggy/orm/ent/upload"
 	"github.com/twiglab/doggy/orm/ent/using"
 
 	"entgo.io/ent/dialect/sql"
@@ -38,24 +38,22 @@ var schemaGraph = func() *sqlgraph.Schema {
 	}
 	graph.Nodes[1] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
-			Table:   setup.Table,
-			Columns: setup.Columns,
+			Table:   upload.Table,
+			Columns: upload.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
-				Column: setup.FieldID,
+				Column: upload.FieldID,
 			},
 		},
-		Type: "Setup",
+		Type: "Upload",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			setup.FieldCreateTime: {Type: field.TypeTime, Column: setup.FieldCreateTime},
-			setup.FieldUpdateTime: {Type: field.TypeTime, Column: setup.FieldUpdateTime},
-			setup.FieldSn:         {Type: field.TypeString, Column: setup.FieldSn},
-			setup.FieldIP:         {Type: field.TypeString, Column: setup.FieldIP},
-			setup.FieldLastTime:   {Type: field.TypeTime, Column: setup.FieldLastTime},
-			setup.FieldUser:       {Type: field.TypeString, Column: setup.FieldUser},
-			setup.FieldPwd:        {Type: field.TypeString, Column: setup.FieldPwd},
-			setup.FieldUuid1:      {Type: field.TypeString, Column: setup.FieldUuid1},
-			setup.FieldUuid2:      {Type: field.TypeString, Column: setup.FieldUuid2},
+			upload.FieldCreateTime: {Type: field.TypeTime, Column: upload.FieldCreateTime},
+			upload.FieldUpdateTime: {Type: field.TypeTime, Column: upload.FieldUpdateTime},
+			upload.FieldSn:         {Type: field.TypeString, Column: upload.FieldSn},
+			upload.FieldIP:         {Type: field.TypeString, Column: upload.FieldIP},
+			upload.FieldLastTime:   {Type: field.TypeTime, Column: upload.FieldLastTime},
+			upload.FieldID1:        {Type: field.TypeString, Column: upload.FieldID1},
+			upload.FieldID2:        {Type: field.TypeString, Column: upload.FieldID2},
 		},
 	}
 	graph.Nodes[2] = &sqlgraph.Node{
@@ -73,10 +71,8 @@ var schemaGraph = func() *sqlgraph.Schema {
 			using.FieldUpdateTime: {Type: field.TypeTime, Column: using.FieldUpdateTime},
 			using.FieldSn:         {Type: field.TypeString, Column: using.FieldSn},
 			using.FieldUUID:       {Type: field.TypeString, Column: using.FieldUUID},
-			using.FieldDeviceID:   {Type: field.TypeString, Column: using.FieldDeviceID},
 			using.FieldAlg:        {Type: field.TypeString, Column: using.FieldAlg},
 			using.FieldName:       {Type: field.TypeString, Column: using.FieldName},
-			using.FieldMemo:       {Type: field.TypeString, Column: using.FieldMemo},
 			using.FieldBk:         {Type: field.TypeString, Column: using.FieldBk},
 		},
 	}
@@ -165,33 +161,33 @@ func (f *PosFilter) WhereArea(p entql.StringP) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (sq *SetupQuery) addPredicate(pred func(s *sql.Selector)) {
-	sq.predicates = append(sq.predicates, pred)
+func (uq *UploadQuery) addPredicate(pred func(s *sql.Selector)) {
+	uq.predicates = append(uq.predicates, pred)
 }
 
-// Filter returns a Filter implementation to apply filters on the SetupQuery builder.
-func (sq *SetupQuery) Filter() *SetupFilter {
-	return &SetupFilter{config: sq.config, predicateAdder: sq}
+// Filter returns a Filter implementation to apply filters on the UploadQuery builder.
+func (uq *UploadQuery) Filter() *UploadFilter {
+	return &UploadFilter{config: uq.config, predicateAdder: uq}
 }
 
 // addPredicate implements the predicateAdder interface.
-func (m *SetupMutation) addPredicate(pred func(s *sql.Selector)) {
+func (m *UploadMutation) addPredicate(pred func(s *sql.Selector)) {
 	m.predicates = append(m.predicates, pred)
 }
 
-// Filter returns an entql.Where implementation to apply filters on the SetupMutation builder.
-func (m *SetupMutation) Filter() *SetupFilter {
-	return &SetupFilter{config: m.config, predicateAdder: m}
+// Filter returns an entql.Where implementation to apply filters on the UploadMutation builder.
+func (m *UploadMutation) Filter() *UploadFilter {
+	return &UploadFilter{config: m.config, predicateAdder: m}
 }
 
-// SetupFilter provides a generic filtering capability at runtime for SetupQuery.
-type SetupFilter struct {
+// UploadFilter provides a generic filtering capability at runtime for UploadQuery.
+type UploadFilter struct {
 	predicateAdder
 	config
 }
 
 // Where applies the entql predicate on the query filter.
-func (f *SetupFilter) Where(p entql.P) {
+func (f *UploadFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
 		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
 			s.AddError(err)
@@ -200,53 +196,43 @@ func (f *SetupFilter) Where(p entql.P) {
 }
 
 // WhereID applies the entql int predicate on the id field.
-func (f *SetupFilter) WhereID(p entql.IntP) {
-	f.Where(p.Field(setup.FieldID))
+func (f *UploadFilter) WhereID(p entql.IntP) {
+	f.Where(p.Field(upload.FieldID))
 }
 
 // WhereCreateTime applies the entql time.Time predicate on the create_time field.
-func (f *SetupFilter) WhereCreateTime(p entql.TimeP) {
-	f.Where(p.Field(setup.FieldCreateTime))
+func (f *UploadFilter) WhereCreateTime(p entql.TimeP) {
+	f.Where(p.Field(upload.FieldCreateTime))
 }
 
 // WhereUpdateTime applies the entql time.Time predicate on the update_time field.
-func (f *SetupFilter) WhereUpdateTime(p entql.TimeP) {
-	f.Where(p.Field(setup.FieldUpdateTime))
+func (f *UploadFilter) WhereUpdateTime(p entql.TimeP) {
+	f.Where(p.Field(upload.FieldUpdateTime))
 }
 
 // WhereSn applies the entql string predicate on the sn field.
-func (f *SetupFilter) WhereSn(p entql.StringP) {
-	f.Where(p.Field(setup.FieldSn))
+func (f *UploadFilter) WhereSn(p entql.StringP) {
+	f.Where(p.Field(upload.FieldSn))
 }
 
 // WhereIP applies the entql string predicate on the ip field.
-func (f *SetupFilter) WhereIP(p entql.StringP) {
-	f.Where(p.Field(setup.FieldIP))
+func (f *UploadFilter) WhereIP(p entql.StringP) {
+	f.Where(p.Field(upload.FieldIP))
 }
 
 // WhereLastTime applies the entql time.Time predicate on the last_time field.
-func (f *SetupFilter) WhereLastTime(p entql.TimeP) {
-	f.Where(p.Field(setup.FieldLastTime))
+func (f *UploadFilter) WhereLastTime(p entql.TimeP) {
+	f.Where(p.Field(upload.FieldLastTime))
 }
 
-// WhereUser applies the entql string predicate on the user field.
-func (f *SetupFilter) WhereUser(p entql.StringP) {
-	f.Where(p.Field(setup.FieldUser))
+// WhereID1 applies the entql string predicate on the id_1 field.
+func (f *UploadFilter) WhereID1(p entql.StringP) {
+	f.Where(p.Field(upload.FieldID1))
 }
 
-// WherePwd applies the entql string predicate on the pwd field.
-func (f *SetupFilter) WherePwd(p entql.StringP) {
-	f.Where(p.Field(setup.FieldPwd))
-}
-
-// WhereUuid1 applies the entql string predicate on the uuid1 field.
-func (f *SetupFilter) WhereUuid1(p entql.StringP) {
-	f.Where(p.Field(setup.FieldUuid1))
-}
-
-// WhereUuid2 applies the entql string predicate on the uuid2 field.
-func (f *SetupFilter) WhereUuid2(p entql.StringP) {
-	f.Where(p.Field(setup.FieldUuid2))
+// WhereID2 applies the entql string predicate on the id_2 field.
+func (f *UploadFilter) WhereID2(p entql.StringP) {
+	f.Where(p.Field(upload.FieldID2))
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -309,11 +295,6 @@ func (f *UsingFilter) WhereUUID(p entql.StringP) {
 	f.Where(p.Field(using.FieldUUID))
 }
 
-// WhereDeviceID applies the entql string predicate on the device_id field.
-func (f *UsingFilter) WhereDeviceID(p entql.StringP) {
-	f.Where(p.Field(using.FieldDeviceID))
-}
-
 // WhereAlg applies the entql string predicate on the alg field.
 func (f *UsingFilter) WhereAlg(p entql.StringP) {
 	f.Where(p.Field(using.FieldAlg))
@@ -322,11 +303,6 @@ func (f *UsingFilter) WhereAlg(p entql.StringP) {
 // WhereName applies the entql string predicate on the name field.
 func (f *UsingFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(using.FieldName))
-}
-
-// WhereMemo applies the entql string predicate on the memo field.
-func (f *UsingFilter) WhereMemo(p entql.StringP) {
-	f.Where(p.Field(using.FieldMemo))
 }
 
 // WhereBk applies the entql string predicate on the bk field.

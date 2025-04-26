@@ -26,14 +26,6 @@ var ServCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		serv(cmd, args)
 	},
-
-	/*
-		PreRun: func(cmd *cobra.Command, args []string) {
-			telemetry.Start(telemetry.Config{
-				ReportCrashes: true,
-			})
-		},
-	*/
 }
 
 func init() {
@@ -69,7 +61,6 @@ func initConfig() {
 
 func printConf(conf AppConf) {
 	fmt.Println("--------------------")
-	fmt.Println("( ͡° ᴥ ͡° ʋ)")
 	fmt.Println("--------------------")
 }
 
@@ -82,22 +73,14 @@ func serv(cmd *cobra.Command, args []string) {
 
 	printConf(conf)
 
-	process := pf.NewSimpleProcess(conf.PlatformConfig.CameraUser, conf.PlatformConfig.CameraPwd)
 	// eh := orm.NewEntHandle(MustClient(config.DB.DSN))
 
-	h := &pf.Handle{
-		Conf: MustPfConf(conf.PlatformConfig),
-
-		Resolver:       process,
-		Register:       process,
-		CountHandler:   process,
-		DensityHandler: process,
-	}
+	h := pf.NewHandle()
 
 	pfHandle := pf.PlatformHandle(h)
 
 	mux := chi.NewMux()
-	mux.Use( /* middleware.Logger, */ middleware.Recoverer)
+	mux.Use(middleware.Recoverer)
 	mux.Mount("/", pfHandle)
 	mux.Mount("/pf", pfHandle)
 

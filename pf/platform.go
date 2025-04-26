@@ -8,12 +8,6 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
-type Config struct {
-	MetadataURL string
-	Address     string
-	Port        int
-}
-
 type DeviceRegister interface {
 	// 对应 2.1.4 自动注册
 	AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error
@@ -29,93 +23,30 @@ type DensityHandler interface {
 	HandleDensity(ctx context.Context, common holo.Common, data holo.HumanMix) error
 }
 
+/*
 type DeviceResolver interface {
 	Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error)
 }
-
-type SimpleProcess struct {
-	Username string
-	Password string
-}
-
-func NewSimpleProcess(user, pwd string) *SimpleProcess {
-	return &SimpleProcess{Username: user, Password: pwd}
-}
-
-func (d *SimpleProcess) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	now := time.Now().Format(time.RFC3339Nano)
-	log.Printf("auto reg sn = %s, ip = %s, time = %s\n", data.SerialNumber, data.IpAddr, now)
-	return nil
-}
-
-func (d *SimpleProcess) Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error) {
-	return holo.OpenDevice(data.IpAddr, d.Username, d.Password)
-}
-
-func (d *SimpleProcess) HandleCount(ctx context.Context, common holo.Common, target holo.HumanMix) error {
-	start := holo.MilliToTime(target.StartTime, target.TimeZone).Format(time.RFC3339Nano)
-	end := holo.MilliToTime(target.EndTime, target.TimeZone).Format(time.RFC3339Nano)
-	log.Printf("count in = %d, out = %d, start = %s, end = %s, type = %d\n", target.HumanCountIn, target.HumanCountOut, start, end, target.TargetType)
-	return nil
-}
-
-func (d *SimpleProcess) HandleDensity(ctx context.Context, common holo.Common, target holo.HumanMix) error {
-	now := time.Now().Format(time.RFC3339Nano)
-	log.Printf("density count = %d, ration = %d, type = %d, time = %s\n", target.HumanCount, target.AreaRatio, target.TargetType, now)
-	return nil
-}
+*/
 
 type Handle struct {
-	Conf Config
-
-	Resolver       DeviceResolver
-	Register       DeviceRegister
 	CountHandler   CountHandler
 	DensityHandler DensityHandler
+	DeviceRegister DeviceRegister
 }
 
-func (h *Handle) metaAutoSub(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	device, err := h.Resolver.Resolve(ctx, data)
-	if err != nil {
-		return err
+func NewHandle() *Handle {
+	action := &cameraAction{}
+	return &Handle{
+		DeviceRegister: action,
+		CountHandler:   action,
+		DensityHandler: action,
 	}
-	defer device.Close()
-
-	subscriptions, err := device.GetMetadataSubscription(ctx)
-	if err != nil {
-		return err
-	}
-
-	if !subscriptions.IsEmpty() {
-		return nil
-	}
-
-	resp, err := device.PostMetadataSubscription(ctx, holo.SubscriptionReq{
-		Address:     h.Conf.Address,
-		Port:        h.Conf.Port,
-		TimeOut:     0,
-		HttpsEnable: 1,
-		MetadataURL: h.Conf.MetadataURL,
-	})
-
-	if err != nil {
-		return err
-	}
-
-	if resp.IsErr() {
-		return resp
-	}
-
-	return nil
 }
 
 func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	if err := h.Register.AutoRegister(ctx, data); err != nil {
-		return err
-	}
-
-	//return h.metaAutoSub(ctx, data)
-	return nil
+	log.Printf("auto reg sn = %s, ip = %s\n", data.SerialNumber, data.IpAddr)
+	return h.DeviceRegister.AutoRegister(ctx, data)
 }
 
 func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpload) error {
@@ -133,5 +64,25 @@ func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpl
 			log.Println("unsupport type ", target.TargetType)
 		}
 	}
+	return nil
+}
+
+type cameraAction struct {
+}
+
+func (d *cameraAction) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
+	return nil
+}
+
+func (d *cameraAction) HandleCount(ctx context.Context, common holo.Common, target holo.HumanMix) error {
+	start := holo.MilliToTime(target.StartTime, target.TimeZone).Format(time.RFC3339Nano)
+	end := holo.MilliToTime(target.EndTime, target.TimeZone).Format(time.RFC3339Nano)
+	log.Printf("count in = %d, out = %d, start = %s, end = %s, type = %d\n", target.HumanCountIn, target.HumanCountOut, start, end, target.TargetType)
+	return nil
+}
+
+func (d *cameraAction) HandleDensity(ctx context.Context, common holo.Common, target holo.HumanMix) error {
+	now := time.Now().Format(time.RFC3339Nano)
+	log.Printf("density count = %d, ration = %d, type = %d, time = %s\n", target.HumanCount, target.AreaRatio, target.TargetType, now)
 	return nil
 }
