@@ -21,7 +21,7 @@ type KeepLiveJob struct {
 	Port        int
 }
 
-func (x *KeepLiveJob) Job() {
+func (x *KeepLiveJob) Run() {
 	ctx := context.Background()
 
 	ds, err := x.DeviceLoader.All(ctx)
