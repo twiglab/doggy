@@ -21,6 +21,11 @@ func (c *CronWarp) AddJob(spec string, job Job) error {
 	return err
 }
 
+func (c *CronWarp) AddFunc(spec string, cmd func()) error {
+	_, err := c.cron.AddFunc(spec, cmd)
+	return err
+}
+
 func (c *CronWarp) Start() {
 	c.cron.Start()
 }
