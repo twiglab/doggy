@@ -92,7 +92,9 @@ func init() {
 
 func confCmd() {
 	conf := AppConf{
-		ID: "dcp",
+		ID:   "dcp",
+		Plan: 0,
+
 		ServerConf: ServerConf{
 			Addr:     "0.0.0.0:10005",
 			CertFile: "server.crt",
@@ -104,8 +106,26 @@ func confCmd() {
 			CameraPwd:  "Aaa1234%%",
 		},
 
-		JobConf:JobConf{
-			Keeplive:"10 * * * *",
+		AutoRegConf: AutoRegConf{
+			Addr:        "192.168.0.100",
+			Port:        10005,
+			MetadataURL: "https://192.168.0.100:10005/pf/MetadataEntry",
+		},
+
+		InfluxDBConf: InfluxDBConf{
+			URL:    "url",
+			Token:  "token",
+			Org:    "org",
+			Bucket: "bucket",
+		},
+
+		DBConf: DB{
+			Name: "sqlite3",
+			DSN:  "dcp.db",
+		},
+
+		JobConf: JobConf{
+			Keeplive: "10 * * * *",
 		},
 	}
 

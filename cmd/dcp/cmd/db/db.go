@@ -15,7 +15,7 @@ var DbCmd = &cobra.Command{
 	Short: "数据库操作",
 	Long:  `数据库操作`,
 	Run: func(cmd *cobra.Command, args []string) {
-		dbMigrate(cmd, args)
+		dbMigrate()
 	},
 	Example: "dcp db --addr 1.2.3.4",
 }
@@ -34,7 +34,7 @@ func init() {
 	DbCmd.Flags().StringVar(&dsn, "datasource", "dcp.db", "数据库dsn")
 }
 
-func dbMigrate(cmd *cobra.Command, args []string) {
+func dbMigrate() {
 	client, err := orm.OpenClient("sqlite3", "./db.db?_fk=1")
 
 	ctx := context.Background()
