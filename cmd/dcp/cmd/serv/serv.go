@@ -93,7 +93,7 @@ func servCmd() {
 			Port:        conf.AutoRegConf.Port,
 		}
 
-		crontab.AddJob("", keeplive)
+		crontab.AddJob(conf.JobConf.Keeplive, keeplive)
 
 		h = &pf.Handle{
 			DeviceRegister: &pf.AutoSub{

@@ -12,10 +12,14 @@ import (
 )
 
 type InfluxDBConf struct {
-	URL    string
-	Token  string
-	Org    string
-	Bucket string
+	URL    string `yaml:"url" mapstructure:"url"`
+	Token  string `yaml:"token" mapstructure:"token"`
+	Org    string `yaml:"org" mapstructure:"org"`
+	Bucket string `yaml:"bucket" mapstructure:"bucket"`
+}
+
+type JobConf struct {
+	Keeplive string `yaml:"keeplive" mapstructure:"keeplive"`
 }
 
 type AutoRegConf struct {
@@ -29,7 +33,7 @@ type FixUserConf struct {
 	CameraPwd  string `yaml:"camera-pwd" mapstructure:"camera-pwd"`
 }
 
-type ServerConfig struct {
+type ServerConf struct {
 	Addr     string `yaml:"addr" mapstructure:"addr"`
 	CertFile string `yaml:"cert-file" mapstructure:"cert-file"`
 	KeyFile  string `yaml:"key-file" mapstructure:"key-file"`
@@ -43,11 +47,12 @@ type DB struct {
 type AppConf struct {
 	ID           string       `yaml:"id" mapstructure:"id"`
 	Plan         int          `yaml:"plan" mapstructure:"plan"` // 启动方案 0 debug
-	ServerConf   ServerConfig `yaml:"server" mapstructure:"server"`
+	ServerConf   ServerConf   `yaml:"server" mapstructure:"server"`
 	InfluxDBConf InfluxDBConf `yaml:"influx-db" mapstructure:"influx-db"`
 	FixUserConf  FixUserConf  `yaml:"fix-user" mapstructure:"fix-user"`
 	AutoRegConf  AutoRegConf  `yaml:"auto-reg" mapstructure:"auto-reg"`
 	DBConf       DB           `yaml:"db" mapstructure:"db"`
+	JobConf      JobConf      `yaml:"job" mapstructure:"job"`
 }
 
 func MustEntClient(dbconf DB) *ent.Client {
@@ -86,7 +91,23 @@ func init() {
 }
 
 func confCmd() {
-	conf := AppConf{ID:"dcp"}
+	conf := AppConf{
+		ID: "dcp",
+		ServerConf: ServerConf{
+			Addr:     "0.0.0.0:10005",
+			CertFile: "server.crt",
+			KeyFile:  "server.key",
+		},
+
+		FixUserConf: FixUserConf{
+			CameraUser: "ApiAdmin",
+			CameraPwd:  "Aaa1234%%",
+		},
+
+		JobConf:JobConf{
+			Keeplive:"10 * * * *",
+		},
+	}
 
 	enc := yaml.NewEncoder(os.Stdout)
 	defer enc.Close()
