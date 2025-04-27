@@ -9,12 +9,6 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
-type AutoSubConf struct {
-	MetadataURL string
-	Addr        string
-	Port        int
-}
-
 type CameraUpload struct {
 	SN     string
 	IpAddr string
@@ -41,9 +35,12 @@ type UploadHandler interface {
 }
 
 type AutoSub struct {
-	Conf           AutoSubConf
 	DeviceResolver DeviceResolver
 	UploadHandler  UploadHandler
+
+	MetadataURL string
+	Addr        string
+	Port        int
 }
 
 func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
@@ -52,68 +49,40 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 	if err != nil {
 		return err
 	}
+	defer device.Close()
 
-	items, err := a.GetSubIDs(ctx, device)
+	subs, err := device.GetMetadataSubscription(ctx)
 	if err != nil {
 		return err
 	}
 
-	if len(items) == 0 {
-		if err := a.Sub(ctx, device); err != nil {
+	if len(subs.Subscripions) == 0 {
+		_, err := device.PostMetadataSubscription(ctx,
+			holo.SubscriptionReq{
+				Address:     a.Addr,
+				Port:        a.Port,
+				TimeOut:     0,
+				HttpsEnable: 1,
+				MetadataURL: a.MetadataURL,
+			})
+		if err != nil {
 			return err
 		}
 	}
 
-	ids, err := a.GetDeviceID(ctx, device)
+	ids, err := device.GetDeviceID(ctx)
 	if err != nil {
 		return err
+	}
+
+	if len(ids.IDs) <= 0 {
+		return errors.New("not found device ids")
 	}
 
 	return a.UploadHandler.HandleUpload(ctx, CameraUpload{
 		SN:     data.SerialNumber,
 		IpAddr: data.IpAddr,
 		Last:   time.Now(),
-		UUID1:  ids[0].UUID,
+		UUID1:  ids.IDs[0].UUID,
 	})
-}
-
-func (a *AutoSub) GetDeviceID(ctx context.Context, device *holo.Device) ([]holo.DeviceID, error) {
-	ids, err := device.GetDeviceID(ctx)
-	if err != nil {
-		return nil, err
-	}
-	if len(ids.IDs) <= 0 {
-		return ids.IDs, errors.New("not found ids")
-	}
-
-	return ids.IDs, nil
-}
-
-func (a *AutoSub) GetSubIDs(ctx context.Context, device *holo.Device) ([]holo.SubscripionItem, error) {
-	subs, err := device.GetMetadataSubscription(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return subs.Subscripions, nil
-}
-
-func (a *AutoSub) Sub(ctx context.Context, device *holo.Device) error {
-	resp, err := device.PostMetadataSubscription(ctx,
-		holo.SubscriptionReq{
-			Address:     a.Conf.Addr,
-			Port:        a.Conf.Port,
-			TimeOut:     0,
-			HttpsEnable: 1,
-			MetadataURL: a.Conf.MetadataURL,
-		})
-	if err != nil {
-		return err
-	}
-
-	if resp.IsErr() {
-		return resp
-	}
-
-	return nil
 }

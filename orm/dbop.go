@@ -31,3 +31,19 @@ func (h *EntHandle) HandleUpload(ctx context.Context, u pf.CameraUpload) error {
 		Exec(ctx)
 	return err
 }
+
+func (h *EntHandle) All(ctx context.Context) ([]pf.CameraUpload, error) {
+	us, err := h.client.Upload.Query().All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	uploads := make([]pf.CameraUpload, len(us))
+	for i, u := range us {
+		uploads[i] = pf.CameraUpload{
+			SN:     u.Sn,
+			IpAddr: u.IP,
+		}
+	}
+	return uploads, nil
+}
