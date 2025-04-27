@@ -27,6 +27,10 @@ const (
 	FieldID1 = "id_1"
 	// FieldID2 holds the string denoting the id_2 field in the database.
 	FieldID2 = "id_2"
+	// FieldUser holds the string denoting the user field in the database.
+	FieldUser = "user"
+	// FieldPwd holds the string denoting the pwd field in the database.
+	FieldPwd = "pwd"
 	// Table holds the table name of the upload in the database.
 	Table = "camera_upload"
 )
@@ -41,6 +45,8 @@ var Columns = []string{
 	FieldLastTime,
 	FieldID1,
 	FieldID2,
+	FieldUser,
+	FieldPwd,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -72,6 +78,10 @@ var (
 	ID1Validator func(string) error
 	// ID2Validator is a validator for the "id_2" field. It is called by the builders before save.
 	ID2Validator func(string) error
+	// UserValidator is a validator for the "user" field. It is called by the builders before save.
+	UserValidator func(string) error
+	// PwdValidator is a validator for the "pwd" field. It is called by the builders before save.
+	PwdValidator func(string) error
 )
 
 // OrderOption defines the ordering options for the Upload queries.
@@ -115,4 +125,14 @@ func ByID1(opts ...sql.OrderTermOption) OrderOption {
 // ByID2 orders the results by the id_2 field.
 func ByID2(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID2, opts...).ToFunc()
+}
+
+// ByUser orders the results by the user field.
+func ByUser(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUser, opts...).ToFunc()
+}
+
+// ByPwd orders the results by the pwd field.
+func ByPwd(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPwd, opts...).ToFunc()
 }

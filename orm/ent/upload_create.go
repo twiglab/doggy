@@ -104,6 +104,34 @@ func (uc *UploadCreate) SetNillableID2(s *string) *UploadCreate {
 	return uc
 }
 
+// SetUser sets the "user" field.
+func (uc *UploadCreate) SetUser(s string) *UploadCreate {
+	uc.mutation.SetUser(s)
+	return uc
+}
+
+// SetNillableUser sets the "user" field if the given value is not nil.
+func (uc *UploadCreate) SetNillableUser(s *string) *UploadCreate {
+	if s != nil {
+		uc.SetUser(*s)
+	}
+	return uc
+}
+
+// SetPwd sets the "pwd" field.
+func (uc *UploadCreate) SetPwd(s string) *UploadCreate {
+	uc.mutation.SetPwd(s)
+	return uc
+}
+
+// SetNillablePwd sets the "pwd" field if the given value is not nil.
+func (uc *UploadCreate) SetNillablePwd(s *string) *UploadCreate {
+	if s != nil {
+		uc.SetPwd(*s)
+	}
+	return uc
+}
+
 // Mutation returns the UploadMutation object of the builder.
 func (uc *UploadCreate) Mutation() *UploadMutation {
 	return uc.mutation
@@ -190,6 +218,16 @@ func (uc *UploadCreate) check() error {
 			return &ValidationError{Name: "id_2", err: fmt.Errorf(`ent: validator failed for field "Upload.id_2": %w`, err)}
 		}
 	}
+	if v, ok := uc.mutation.User(); ok {
+		if err := upload.UserValidator(v); err != nil {
+			return &ValidationError{Name: "user", err: fmt.Errorf(`ent: validator failed for field "Upload.user": %w`, err)}
+		}
+	}
+	if v, ok := uc.mutation.Pwd(); ok {
+		if err := upload.PwdValidator(v); err != nil {
+			return &ValidationError{Name: "pwd", err: fmt.Errorf(`ent: validator failed for field "Upload.pwd": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -244,6 +282,14 @@ func (uc *UploadCreate) createSpec() (*Upload, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.ID2(); ok {
 		_spec.SetField(upload.FieldID2, field.TypeString, value)
 		_node.ID2 = value
+	}
+	if value, ok := uc.mutation.User(); ok {
+		_spec.SetField(upload.FieldUser, field.TypeString, value)
+		_node.User = value
+	}
+	if value, ok := uc.mutation.Pwd(); ok {
+		_spec.SetField(upload.FieldPwd, field.TypeString, value)
+		_node.Pwd = value
 	}
 	return _node, _spec
 }
@@ -366,6 +412,42 @@ func (u *UploadUpsert) UpdateID2() *UploadUpsert {
 // ClearID2 clears the value of the "id_2" field.
 func (u *UploadUpsert) ClearID2() *UploadUpsert {
 	u.SetNull(upload.FieldID2)
+	return u
+}
+
+// SetUser sets the "user" field.
+func (u *UploadUpsert) SetUser(v string) *UploadUpsert {
+	u.Set(upload.FieldUser, v)
+	return u
+}
+
+// UpdateUser sets the "user" field to the value that was provided on create.
+func (u *UploadUpsert) UpdateUser() *UploadUpsert {
+	u.SetExcluded(upload.FieldUser)
+	return u
+}
+
+// ClearUser clears the value of the "user" field.
+func (u *UploadUpsert) ClearUser() *UploadUpsert {
+	u.SetNull(upload.FieldUser)
+	return u
+}
+
+// SetPwd sets the "pwd" field.
+func (u *UploadUpsert) SetPwd(v string) *UploadUpsert {
+	u.Set(upload.FieldPwd, v)
+	return u
+}
+
+// UpdatePwd sets the "pwd" field to the value that was provided on create.
+func (u *UploadUpsert) UpdatePwd() *UploadUpsert {
+	u.SetExcluded(upload.FieldPwd)
+	return u
+}
+
+// ClearPwd clears the value of the "pwd" field.
+func (u *UploadUpsert) ClearPwd() *UploadUpsert {
+	u.SetNull(upload.FieldPwd)
 	return u
 }
 
@@ -498,6 +580,48 @@ func (u *UploadUpsertOne) UpdateID2() *UploadUpsertOne {
 func (u *UploadUpsertOne) ClearID2() *UploadUpsertOne {
 	return u.Update(func(s *UploadUpsert) {
 		s.ClearID2()
+	})
+}
+
+// SetUser sets the "user" field.
+func (u *UploadUpsertOne) SetUser(v string) *UploadUpsertOne {
+	return u.Update(func(s *UploadUpsert) {
+		s.SetUser(v)
+	})
+}
+
+// UpdateUser sets the "user" field to the value that was provided on create.
+func (u *UploadUpsertOne) UpdateUser() *UploadUpsertOne {
+	return u.Update(func(s *UploadUpsert) {
+		s.UpdateUser()
+	})
+}
+
+// ClearUser clears the value of the "user" field.
+func (u *UploadUpsertOne) ClearUser() *UploadUpsertOne {
+	return u.Update(func(s *UploadUpsert) {
+		s.ClearUser()
+	})
+}
+
+// SetPwd sets the "pwd" field.
+func (u *UploadUpsertOne) SetPwd(v string) *UploadUpsertOne {
+	return u.Update(func(s *UploadUpsert) {
+		s.SetPwd(v)
+	})
+}
+
+// UpdatePwd sets the "pwd" field to the value that was provided on create.
+func (u *UploadUpsertOne) UpdatePwd() *UploadUpsertOne {
+	return u.Update(func(s *UploadUpsert) {
+		s.UpdatePwd()
+	})
+}
+
+// ClearPwd clears the value of the "pwd" field.
+func (u *UploadUpsertOne) ClearPwd() *UploadUpsertOne {
+	return u.Update(func(s *UploadUpsert) {
+		s.ClearPwd()
 	})
 }
 
@@ -796,6 +920,48 @@ func (u *UploadUpsertBulk) UpdateID2() *UploadUpsertBulk {
 func (u *UploadUpsertBulk) ClearID2() *UploadUpsertBulk {
 	return u.Update(func(s *UploadUpsert) {
 		s.ClearID2()
+	})
+}
+
+// SetUser sets the "user" field.
+func (u *UploadUpsertBulk) SetUser(v string) *UploadUpsertBulk {
+	return u.Update(func(s *UploadUpsert) {
+		s.SetUser(v)
+	})
+}
+
+// UpdateUser sets the "user" field to the value that was provided on create.
+func (u *UploadUpsertBulk) UpdateUser() *UploadUpsertBulk {
+	return u.Update(func(s *UploadUpsert) {
+		s.UpdateUser()
+	})
+}
+
+// ClearUser clears the value of the "user" field.
+func (u *UploadUpsertBulk) ClearUser() *UploadUpsertBulk {
+	return u.Update(func(s *UploadUpsert) {
+		s.ClearUser()
+	})
+}
+
+// SetPwd sets the "pwd" field.
+func (u *UploadUpsertBulk) SetPwd(v string) *UploadUpsertBulk {
+	return u.Update(func(s *UploadUpsert) {
+		s.SetPwd(v)
+	})
+}
+
+// UpdatePwd sets the "pwd" field to the value that was provided on create.
+func (u *UploadUpsertBulk) UpdatePwd() *UploadUpsertBulk {
+	return u.Update(func(s *UploadUpsert) {
+		s.UpdatePwd()
+	})
+}
+
+// ClearPwd clears the value of the "pwd" field.
+func (u *UploadUpsertBulk) ClearPwd() *UploadUpsertBulk {
+	return u.Update(func(s *UploadUpsert) {
+		s.ClearPwd()
 	})
 }
 

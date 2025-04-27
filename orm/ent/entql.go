@@ -54,6 +54,8 @@ var schemaGraph = func() *sqlgraph.Schema {
 			upload.FieldLastTime:   {Type: field.TypeTime, Column: upload.FieldLastTime},
 			upload.FieldID1:        {Type: field.TypeString, Column: upload.FieldID1},
 			upload.FieldID2:        {Type: field.TypeString, Column: upload.FieldID2},
+			upload.FieldUser:       {Type: field.TypeString, Column: upload.FieldUser},
+			upload.FieldPwd:        {Type: field.TypeString, Column: upload.FieldPwd},
 		},
 	}
 	graph.Nodes[2] = &sqlgraph.Node{
@@ -232,6 +234,16 @@ func (f *UploadFilter) WhereID1(p entql.StringP) {
 // WhereID2 applies the entql string predicate on the id_2 field.
 func (f *UploadFilter) WhereID2(p entql.StringP) {
 	f.Where(p.Field(upload.FieldID2))
+}
+
+// WhereUser applies the entql string predicate on the user field.
+func (f *UploadFilter) WhereUser(p entql.StringP) {
+	f.Where(p.Field(upload.FieldUser))
+}
+
+// WherePwd applies the entql string predicate on the pwd field.
+func (f *UploadFilter) WherePwd(p entql.StringP) {
+	f.Where(p.Field(upload.FieldPwd))
 }
 
 // addPredicate implements the predicateAdder interface.

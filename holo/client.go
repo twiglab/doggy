@@ -28,7 +28,9 @@ type Device struct {
 	client  *resty.Client
 	isClose bool
 
-	addr string
+	Addr string
+	User string
+	Pwd  string
 }
 
 func OpenDevice(addr, username, password string) (*Device, error) {
@@ -40,7 +42,9 @@ func OpenDevice(addr, username, password string) (*Device, error) {
 
 	return &Device{
 		client: c,
-		addr:   addr,
+		Addr:   addr,
+		User:   username,
+		Pwd:    password,
 	}, nil
 }
 
@@ -58,7 +62,7 @@ func (h *Device) PostMetadataSubscription(ctx context.Context, req SubscriptionR
 		SetBody(req).
 		SetResult(cr).
 		SetError(cr).
-		Post(cameraURL(h.addr, "/SDCAPI/V2.0/Metadata/Subscription"))
+		Post(cameraURL(h.Addr, "/SDCAPI/V2.0/Metadata/Subscription"))
 
 	if err != nil {
 		return cr, err
@@ -76,7 +80,7 @@ func (h *Device) GetMetadataSubscription(ctx context.Context) (*Subscripions, er
 
 	_, err := h.client.R().
 		SetResult(data).
-		Get(cameraURL(h.addr, "/SDCAPI/V2.0/Metadata/Subscription"))
+		Get(cameraURL(h.Addr, "/SDCAPI/V2.0/Metadata/Subscription"))
 
 	if err != nil {
 		return data, err
@@ -91,7 +95,7 @@ func (h *Device) Reboot(ctx context.Context) (*RebootResp, error) {
 	_, err := h.client.R().
 		SetResult(resp).
 		SetError(resp).
-		Post(cameraURL(h.addr, "/HSAPI/V1/System/Reboot"))
+		Post(cameraURL(h.Addr, "/HSAPI/V1/System/Reboot"))
 
 	if err != nil {
 		return resp, err
@@ -108,7 +112,7 @@ func (h *Device) GetDeviceID(ctx context.Context) (*DeviceIDList, error) {
 
 	_, err := h.client.R().
 		SetResult(ids).
-		Get(cameraURL(h.addr, "/SDCAPI/V1.0/Rest/DeviceID"))
+		Get(cameraURL(h.Addr, "/SDCAPI/V1.0/Rest/DeviceID"))
 
 	if err != nil {
 		return ids, err

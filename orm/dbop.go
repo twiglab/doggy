@@ -26,6 +26,8 @@ func (h *EntHandle) HandleUpload(ctx context.Context, u pf.CameraUpload) error {
 		SetLastTime(time.Now()).
 		SetID1(u.UUID1).
 		SetID2(u.UUID2).
+		SetUser(u.User).
+		SetPwd(u.Pwd).
 		OnConflictColumns(upload.FieldSn).
 		UpdateNewValues().
 		Exec(ctx)
@@ -43,6 +45,8 @@ func (h *EntHandle) All(ctx context.Context) ([]pf.CameraUpload, error) {
 		uploads[i] = pf.CameraUpload{
 			SN:     u.Sn,
 			IpAddr: u.IP,
+			User:   u.User,
+			Pwd:    u.Pwd,
 		}
 	}
 	return uploads, nil

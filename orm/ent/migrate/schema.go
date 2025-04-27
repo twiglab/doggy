@@ -43,6 +43,8 @@ var (
 		{Name: "last_time", Type: field.TypeTime},
 		{Name: "id_1", Type: field.TypeString, Unique: true, Nullable: true, Size: 36, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
 		{Name: "id_2", Type: field.TypeString, Unique: true, Nullable: true, Size: 36, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
+		{Name: "user", Type: field.TypeString, Nullable: true, Size: 36, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},
+		{Name: "pwd", Type: field.TypeString, Nullable: true, Size: 36, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},
 	}
 	// CameraUploadTable holds the schema information for the "camera_upload" table.
 	CameraUploadTable = &schema.Table{

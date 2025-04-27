@@ -94,6 +94,46 @@ func (uu *UploadUpdate) ClearID2() *UploadUpdate {
 	return uu
 }
 
+// SetUser sets the "user" field.
+func (uu *UploadUpdate) SetUser(s string) *UploadUpdate {
+	uu.mutation.SetUser(s)
+	return uu
+}
+
+// SetNillableUser sets the "user" field if the given value is not nil.
+func (uu *UploadUpdate) SetNillableUser(s *string) *UploadUpdate {
+	if s != nil {
+		uu.SetUser(*s)
+	}
+	return uu
+}
+
+// ClearUser clears the value of the "user" field.
+func (uu *UploadUpdate) ClearUser() *UploadUpdate {
+	uu.mutation.ClearUser()
+	return uu
+}
+
+// SetPwd sets the "pwd" field.
+func (uu *UploadUpdate) SetPwd(s string) *UploadUpdate {
+	uu.mutation.SetPwd(s)
+	return uu
+}
+
+// SetNillablePwd sets the "pwd" field if the given value is not nil.
+func (uu *UploadUpdate) SetNillablePwd(s *string) *UploadUpdate {
+	if s != nil {
+		uu.SetPwd(*s)
+	}
+	return uu
+}
+
+// ClearPwd clears the value of the "pwd" field.
+func (uu *UploadUpdate) ClearPwd() *UploadUpdate {
+	uu.mutation.ClearPwd()
+	return uu
+}
+
 // Mutation returns the UploadMutation object of the builder.
 func (uu *UploadUpdate) Mutation() *UploadMutation {
 	return uu.mutation
@@ -156,6 +196,16 @@ func (uu *UploadUpdate) check() error {
 			return &ValidationError{Name: "id_2", err: fmt.Errorf(`ent: validator failed for field "Upload.id_2": %w`, err)}
 		}
 	}
+	if v, ok := uu.mutation.User(); ok {
+		if err := upload.UserValidator(v); err != nil {
+			return &ValidationError{Name: "user", err: fmt.Errorf(`ent: validator failed for field "Upload.user": %w`, err)}
+		}
+	}
+	if v, ok := uu.mutation.Pwd(); ok {
+		if err := upload.PwdValidator(v); err != nil {
+			return &ValidationError{Name: "pwd", err: fmt.Errorf(`ent: validator failed for field "Upload.pwd": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -191,6 +241,18 @@ func (uu *UploadUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if uu.mutation.ID2Cleared() {
 		_spec.ClearField(upload.FieldID2, field.TypeString)
+	}
+	if value, ok := uu.mutation.User(); ok {
+		_spec.SetField(upload.FieldUser, field.TypeString, value)
+	}
+	if uu.mutation.UserCleared() {
+		_spec.ClearField(upload.FieldUser, field.TypeString)
+	}
+	if value, ok := uu.mutation.Pwd(); ok {
+		_spec.SetField(upload.FieldPwd, field.TypeString, value)
+	}
+	if uu.mutation.PwdCleared() {
+		_spec.ClearField(upload.FieldPwd, field.TypeString)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -278,6 +340,46 @@ func (uuo *UploadUpdateOne) ClearID2() *UploadUpdateOne {
 	return uuo
 }
 
+// SetUser sets the "user" field.
+func (uuo *UploadUpdateOne) SetUser(s string) *UploadUpdateOne {
+	uuo.mutation.SetUser(s)
+	return uuo
+}
+
+// SetNillableUser sets the "user" field if the given value is not nil.
+func (uuo *UploadUpdateOne) SetNillableUser(s *string) *UploadUpdateOne {
+	if s != nil {
+		uuo.SetUser(*s)
+	}
+	return uuo
+}
+
+// ClearUser clears the value of the "user" field.
+func (uuo *UploadUpdateOne) ClearUser() *UploadUpdateOne {
+	uuo.mutation.ClearUser()
+	return uuo
+}
+
+// SetPwd sets the "pwd" field.
+func (uuo *UploadUpdateOne) SetPwd(s string) *UploadUpdateOne {
+	uuo.mutation.SetPwd(s)
+	return uuo
+}
+
+// SetNillablePwd sets the "pwd" field if the given value is not nil.
+func (uuo *UploadUpdateOne) SetNillablePwd(s *string) *UploadUpdateOne {
+	if s != nil {
+		uuo.SetPwd(*s)
+	}
+	return uuo
+}
+
+// ClearPwd clears the value of the "pwd" field.
+func (uuo *UploadUpdateOne) ClearPwd() *UploadUpdateOne {
+	uuo.mutation.ClearPwd()
+	return uuo
+}
+
 // Mutation returns the UploadMutation object of the builder.
 func (uuo *UploadUpdateOne) Mutation() *UploadMutation {
 	return uuo.mutation
@@ -353,6 +455,16 @@ func (uuo *UploadUpdateOne) check() error {
 			return &ValidationError{Name: "id_2", err: fmt.Errorf(`ent: validator failed for field "Upload.id_2": %w`, err)}
 		}
 	}
+	if v, ok := uuo.mutation.User(); ok {
+		if err := upload.UserValidator(v); err != nil {
+			return &ValidationError{Name: "user", err: fmt.Errorf(`ent: validator failed for field "Upload.user": %w`, err)}
+		}
+	}
+	if v, ok := uuo.mutation.Pwd(); ok {
+		if err := upload.PwdValidator(v); err != nil {
+			return &ValidationError{Name: "pwd", err: fmt.Errorf(`ent: validator failed for field "Upload.pwd": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -405,6 +517,18 @@ func (uuo *UploadUpdateOne) sqlSave(ctx context.Context) (_node *Upload, err err
 	}
 	if uuo.mutation.ID2Cleared() {
 		_spec.ClearField(upload.FieldID2, field.TypeString)
+	}
+	if value, ok := uuo.mutation.User(); ok {
+		_spec.SetField(upload.FieldUser, field.TypeString, value)
+	}
+	if uuo.mutation.UserCleared() {
+		_spec.ClearField(upload.FieldUser, field.TypeString)
+	}
+	if value, ok := uuo.mutation.Pwd(); ok {
+		_spec.SetField(upload.FieldPwd, field.TypeString, value)
+	}
+	if uuo.mutation.PwdCleared() {
+		_spec.ClearField(upload.FieldPwd, field.TypeString)
 	}
 	_node = &Upload{config: uuo.config}
 	_spec.Assign = _node.assignValues

@@ -15,6 +15,9 @@ type CameraUpload struct {
 	Last   time.Time
 	UUID1  string
 	UUID2  string
+
+	User string
+	Pwd  string
 }
 
 type DeviceResolver interface {
@@ -84,5 +87,7 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 		IpAddr: data.IpAddr,
 		Last:   time.Now(),
 		UUID1:  ids.IDs[0].UUID,
+		User:   device.User,
+		Pwd:    device.Pwd,
 	})
 }

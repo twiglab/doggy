@@ -30,7 +30,11 @@ type Upload struct {
 	// ID1 holds the value of the "id_1" field.
 	ID1 string `json:"id_1,omitempty"`
 	// ID2 holds the value of the "id_2" field.
-	ID2          string `json:"id_2,omitempty"`
+	ID2 string `json:"id_2,omitempty"`
+	// User holds the value of the "user" field.
+	User string `json:"user,omitempty"`
+	// Pwd holds the value of the "pwd" field.
+	Pwd          string `json:"pwd,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -41,7 +45,7 @@ func (*Upload) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case upload.FieldID:
 			values[i] = new(sql.NullInt64)
-		case upload.FieldSn, upload.FieldIP, upload.FieldID1, upload.FieldID2:
+		case upload.FieldSn, upload.FieldIP, upload.FieldID1, upload.FieldID2, upload.FieldUser, upload.FieldPwd:
 			values[i] = new(sql.NullString)
 		case upload.FieldCreateTime, upload.FieldUpdateTime, upload.FieldLastTime:
 			values[i] = new(sql.NullTime)
@@ -108,6 +112,18 @@ func (u *Upload) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				u.ID2 = value.String
 			}
+		case upload.FieldUser:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field user", values[i])
+			} else if value.Valid {
+				u.User = value.String
+			}
+		case upload.FieldPwd:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field pwd", values[i])
+			} else if value.Valid {
+				u.Pwd = value.String
+			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
 		}
@@ -164,6 +180,12 @@ func (u *Upload) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("id_2=")
 	builder.WriteString(u.ID2)
+	builder.WriteString(", ")
+	builder.WriteString("user=")
+	builder.WriteString(u.User)
+	builder.WriteString(", ")
+	builder.WriteString("pwd=")
+	builder.WriteString(u.Pwd)
 	builder.WriteByte(')')
 	return builder.String()
 }

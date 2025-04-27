@@ -754,6 +754,8 @@ type UploadMutation struct {
 	last_time     *time.Time
 	id_1          *string
 	id_2          *string
+	user          *string
+	pwd           *string
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Upload, error)
@@ -1136,6 +1138,104 @@ func (m *UploadMutation) ResetID2() {
 	delete(m.clearedFields, upload.FieldID2)
 }
 
+// SetUser sets the "user" field.
+func (m *UploadMutation) SetUser(s string) {
+	m.user = &s
+}
+
+// User returns the value of the "user" field in the mutation.
+func (m *UploadMutation) User() (r string, exists bool) {
+	v := m.user
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUser returns the old "user" field's value of the Upload entity.
+// If the Upload object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UploadMutation) OldUser(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUser is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUser requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUser: %w", err)
+	}
+	return oldValue.User, nil
+}
+
+// ClearUser clears the value of the "user" field.
+func (m *UploadMutation) ClearUser() {
+	m.user = nil
+	m.clearedFields[upload.FieldUser] = struct{}{}
+}
+
+// UserCleared returns if the "user" field was cleared in this mutation.
+func (m *UploadMutation) UserCleared() bool {
+	_, ok := m.clearedFields[upload.FieldUser]
+	return ok
+}
+
+// ResetUser resets all changes to the "user" field.
+func (m *UploadMutation) ResetUser() {
+	m.user = nil
+	delete(m.clearedFields, upload.FieldUser)
+}
+
+// SetPwd sets the "pwd" field.
+func (m *UploadMutation) SetPwd(s string) {
+	m.pwd = &s
+}
+
+// Pwd returns the value of the "pwd" field in the mutation.
+func (m *UploadMutation) Pwd() (r string, exists bool) {
+	v := m.pwd
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPwd returns the old "pwd" field's value of the Upload entity.
+// If the Upload object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UploadMutation) OldPwd(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPwd is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPwd requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPwd: %w", err)
+	}
+	return oldValue.Pwd, nil
+}
+
+// ClearPwd clears the value of the "pwd" field.
+func (m *UploadMutation) ClearPwd() {
+	m.pwd = nil
+	m.clearedFields[upload.FieldPwd] = struct{}{}
+}
+
+// PwdCleared returns if the "pwd" field was cleared in this mutation.
+func (m *UploadMutation) PwdCleared() bool {
+	_, ok := m.clearedFields[upload.FieldPwd]
+	return ok
+}
+
+// ResetPwd resets all changes to the "pwd" field.
+func (m *UploadMutation) ResetPwd() {
+	m.pwd = nil
+	delete(m.clearedFields, upload.FieldPwd)
+}
+
 // Where appends a list predicates to the UploadMutation builder.
 func (m *UploadMutation) Where(ps ...predicate.Upload) {
 	m.predicates = append(m.predicates, ps...)
@@ -1170,7 +1270,7 @@ func (m *UploadMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UploadMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 9)
 	if m.create_time != nil {
 		fields = append(fields, upload.FieldCreateTime)
 	}
@@ -1191,6 +1291,12 @@ func (m *UploadMutation) Fields() []string {
 	}
 	if m.id_2 != nil {
 		fields = append(fields, upload.FieldID2)
+	}
+	if m.user != nil {
+		fields = append(fields, upload.FieldUser)
+	}
+	if m.pwd != nil {
+		fields = append(fields, upload.FieldPwd)
 	}
 	return fields
 }
@@ -1214,6 +1320,10 @@ func (m *UploadMutation) Field(name string) (ent.Value, bool) {
 		return m.ID1()
 	case upload.FieldID2:
 		return m.ID2()
+	case upload.FieldUser:
+		return m.User()
+	case upload.FieldPwd:
+		return m.Pwd()
 	}
 	return nil, false
 }
@@ -1237,6 +1347,10 @@ func (m *UploadMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldID1(ctx)
 	case upload.FieldID2:
 		return m.OldID2(ctx)
+	case upload.FieldUser:
+		return m.OldUser(ctx)
+	case upload.FieldPwd:
+		return m.OldPwd(ctx)
 	}
 	return nil, fmt.Errorf("unknown Upload field %s", name)
 }
@@ -1295,6 +1409,20 @@ func (m *UploadMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetID2(v)
 		return nil
+	case upload.FieldUser:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUser(v)
+		return nil
+	case upload.FieldPwd:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPwd(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Upload field %s", name)
 }
@@ -1331,6 +1459,12 @@ func (m *UploadMutation) ClearedFields() []string {
 	if m.FieldCleared(upload.FieldID2) {
 		fields = append(fields, upload.FieldID2)
 	}
+	if m.FieldCleared(upload.FieldUser) {
+		fields = append(fields, upload.FieldUser)
+	}
+	if m.FieldCleared(upload.FieldPwd) {
+		fields = append(fields, upload.FieldPwd)
+	}
 	return fields
 }
 
@@ -1350,6 +1484,12 @@ func (m *UploadMutation) ClearField(name string) error {
 		return nil
 	case upload.FieldID2:
 		m.ClearID2()
+		return nil
+	case upload.FieldUser:
+		m.ClearUser()
+		return nil
+	case upload.FieldPwd:
+		m.ClearPwd()
 		return nil
 	}
 	return fmt.Errorf("unknown Upload nullable field %s", name)
@@ -1379,6 +1519,12 @@ func (m *UploadMutation) ResetField(name string) error {
 		return nil
 	case upload.FieldID2:
 		m.ResetID2()
+		return nil
+	case upload.FieldUser:
+		m.ResetUser()
+		return nil
+	case upload.FieldPwd:
+		m.ResetPwd()
 		return nil
 	}
 	return fmt.Errorf("unknown Upload field %s", name)
