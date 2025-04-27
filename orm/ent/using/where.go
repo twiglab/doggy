@@ -84,11 +84,6 @@ func Name(v string) predicate.Using {
 	return predicate.Using(sql.FieldEQ(FieldName, v))
 }
 
-// Bk applies equality check predicate on the "bk" field. It's identical to BkEQ.
-func Bk(v string) predicate.Using {
-	return predicate.Using(sql.FieldEQ(FieldBk, v))
-}
-
 // CreateTimeEQ applies the EQ predicate on the "create_time" field.
 func CreateTimeEQ(v time.Time) predicate.Using {
 	return predicate.Using(sql.FieldEQ(FieldCreateTime, v))
@@ -437,71 +432,6 @@ func NameEqualFold(v string) predicate.Using {
 // NameContainsFold applies the ContainsFold predicate on the "name" field.
 func NameContainsFold(v string) predicate.Using {
 	return predicate.Using(sql.FieldContainsFold(FieldName, v))
-}
-
-// BkEQ applies the EQ predicate on the "bk" field.
-func BkEQ(v string) predicate.Using {
-	return predicate.Using(sql.FieldEQ(FieldBk, v))
-}
-
-// BkNEQ applies the NEQ predicate on the "bk" field.
-func BkNEQ(v string) predicate.Using {
-	return predicate.Using(sql.FieldNEQ(FieldBk, v))
-}
-
-// BkIn applies the In predicate on the "bk" field.
-func BkIn(vs ...string) predicate.Using {
-	return predicate.Using(sql.FieldIn(FieldBk, vs...))
-}
-
-// BkNotIn applies the NotIn predicate on the "bk" field.
-func BkNotIn(vs ...string) predicate.Using {
-	return predicate.Using(sql.FieldNotIn(FieldBk, vs...))
-}
-
-// BkGT applies the GT predicate on the "bk" field.
-func BkGT(v string) predicate.Using {
-	return predicate.Using(sql.FieldGT(FieldBk, v))
-}
-
-// BkGTE applies the GTE predicate on the "bk" field.
-func BkGTE(v string) predicate.Using {
-	return predicate.Using(sql.FieldGTE(FieldBk, v))
-}
-
-// BkLT applies the LT predicate on the "bk" field.
-func BkLT(v string) predicate.Using {
-	return predicate.Using(sql.FieldLT(FieldBk, v))
-}
-
-// BkLTE applies the LTE predicate on the "bk" field.
-func BkLTE(v string) predicate.Using {
-	return predicate.Using(sql.FieldLTE(FieldBk, v))
-}
-
-// BkContains applies the Contains predicate on the "bk" field.
-func BkContains(v string) predicate.Using {
-	return predicate.Using(sql.FieldContains(FieldBk, v))
-}
-
-// BkHasPrefix applies the HasPrefix predicate on the "bk" field.
-func BkHasPrefix(v string) predicate.Using {
-	return predicate.Using(sql.FieldHasPrefix(FieldBk, v))
-}
-
-// BkHasSuffix applies the HasSuffix predicate on the "bk" field.
-func BkHasSuffix(v string) predicate.Using {
-	return predicate.Using(sql.FieldHasSuffix(FieldBk, v))
-}
-
-// BkEqualFold applies the EqualFold predicate on the "bk" field.
-func BkEqualFold(v string) predicate.Using {
-	return predicate.Using(sql.FieldEqualFold(FieldBk, v))
-}
-
-// BkContainsFold applies the ContainsFold predicate on the "bk" field.
-func BkContainsFold(v string) predicate.Using {
-	return predicate.Using(sql.FieldContainsFold(FieldBk, v))
 }
 
 // And groups predicates with the AND operator between them.

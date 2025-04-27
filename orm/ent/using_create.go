@@ -82,12 +82,6 @@ func (uc *UsingCreate) SetNillableName(s *string) *UsingCreate {
 	return uc
 }
 
-// SetBk sets the "bk" field.
-func (uc *UsingCreate) SetBk(s string) *UsingCreate {
-	uc.mutation.SetBk(s)
-	return uc
-}
-
 // Mutation returns the UsingMutation object of the builder.
 func (uc *UsingCreate) Mutation() *UsingMutation {
 	return uc.mutation
@@ -170,14 +164,6 @@ func (uc *UsingCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Using.name": %w`, err)}
 		}
 	}
-	if _, ok := uc.mutation.Bk(); !ok {
-		return &ValidationError{Name: "bk", err: errors.New(`ent: missing required field "Using.bk"`)}
-	}
-	if v, ok := uc.mutation.Bk(); ok {
-		if err := using.BkValidator(v); err != nil {
-			return &ValidationError{Name: "bk", err: fmt.Errorf(`ent: validator failed for field "Using.bk": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -228,10 +214,6 @@ func (uc *UsingCreate) createSpec() (*Using, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.Name(); ok {
 		_spec.SetField(using.FieldName, field.TypeString, value)
 		_node.Name = value
-	}
-	if value, ok := uc.mutation.Bk(); ok {
-		_spec.SetField(using.FieldBk, field.TypeString, value)
-		_node.Bk = value
 	}
 	return _node, _spec
 }
@@ -355,9 +337,6 @@ func (u *UsingUpsertOne) UpdateNewValues() *UsingUpsertOne {
 		}
 		if _, exists := u.create.mutation.Sn(); exists {
 			s.SetIgnore(using.FieldSn)
-		}
-		if _, exists := u.create.mutation.Bk(); exists {
-			s.SetIgnore(using.FieldBk)
 		}
 	}))
 	return u
@@ -634,9 +613,6 @@ func (u *UsingUpsertBulk) UpdateNewValues() *UsingUpsertBulk {
 			}
 			if _, exists := b.mutation.Sn(); exists {
 				s.SetIgnore(using.FieldSn)
-			}
-			if _, exists := b.mutation.Bk(); exists {
-				s.SetIgnore(using.FieldBk)
 			}
 		}
 	}))

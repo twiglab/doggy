@@ -25,8 +25,6 @@ const (
 	FieldAlg = "alg"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldBk holds the string denoting the bk field in the database.
-	FieldBk = "bk"
 	// Table holds the table name of the using in the database.
 	Table = "camera_using"
 )
@@ -40,7 +38,6 @@ var Columns = []string{
 	FieldUUID,
 	FieldAlg,
 	FieldName,
-	FieldBk,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -68,8 +65,6 @@ var (
 	AlgValidator func(string) error
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
-	// BkValidator is a validator for the "bk" field. It is called by the builders before save.
-	BkValidator func(string) error
 )
 
 // OrderOption defines the ordering options for the Using queries.
@@ -108,9 +103,4 @@ func ByAlg(opts ...sql.OrderTermOption) OrderOption {
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
-}
-
-// ByBk orders the results by the bk field.
-func ByBk(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldBk, opts...).ToFunc()
 }

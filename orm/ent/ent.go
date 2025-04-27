@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/twiglab/doggy/orm/ent/pos"
+	"github.com/twiglab/doggy/orm/ent/point"
 	"github.com/twiglab/doggy/orm/ent/upload"
 	"github.com/twiglab/doggy/orm/ent/using"
 )
@@ -75,7 +75,7 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			pos.Table:    pos.ValidColumn,
+			point.Table:  point.ValidColumn,
 			upload.Table: upload.ValidColumn,
 			using.Table:  using.ValidColumn,
 		})

@@ -6,8 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Pos is the predicate function for pos builders.
-type Pos func(*sql.Selector)
+// Point is the predicate function for point builders.
+type Point func(*sql.Selector)
 
 // Upload is the predicate function for upload builders.
 type Upload func(*sql.Selector)

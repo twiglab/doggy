@@ -5,7 +5,7 @@ package ent
 import (
 	"time"
 
-	"github.com/twiglab/doggy/orm/ent/pos"
+	"github.com/twiglab/doggy/orm/ent/point"
 	"github.com/twiglab/doggy/orm/ent/upload"
 	"github.com/twiglab/doggy/orm/ent/using"
 	"github.com/twiglab/doggy/orm/schema"
@@ -15,26 +15,26 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	posMixin := schema.Pos{}.Mixin()
-	posMixinFields0 := posMixin[0].Fields()
-	_ = posMixinFields0
-	posFields := schema.Pos{}.Fields()
-	_ = posFields
-	// posDescCreateTime is the schema descriptor for create_time field.
-	posDescCreateTime := posMixinFields0[0].Descriptor()
-	// pos.DefaultCreateTime holds the default value on creation for the create_time field.
-	pos.DefaultCreateTime = posDescCreateTime.Default.(func() time.Time)
-	// posDescUpdateTime is the schema descriptor for update_time field.
-	posDescUpdateTime := posMixinFields0[1].Descriptor()
-	// pos.DefaultUpdateTime holds the default value on creation for the update_time field.
-	pos.DefaultUpdateTime = posDescUpdateTime.Default.(func() time.Time)
-	// pos.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
-	pos.UpdateDefaultUpdateTime = posDescUpdateTime.UpdateDefault.(func() time.Time)
-	// posDescSn is the schema descriptor for sn field.
-	posDescSn := posFields[0].Descriptor()
-	// pos.SnValidator is a validator for the "sn" field. It is called by the builders before save.
-	pos.SnValidator = func() func(string) error {
-		validators := posDescSn.Validators
+	pointMixin := schema.Point{}.Mixin()
+	pointMixinFields0 := pointMixin[0].Fields()
+	_ = pointMixinFields0
+	pointFields := schema.Point{}.Fields()
+	_ = pointFields
+	// pointDescCreateTime is the schema descriptor for create_time field.
+	pointDescCreateTime := pointMixinFields0[0].Descriptor()
+	// point.DefaultCreateTime holds the default value on creation for the create_time field.
+	point.DefaultCreateTime = pointDescCreateTime.Default.(func() time.Time)
+	// pointDescUpdateTime is the schema descriptor for update_time field.
+	pointDescUpdateTime := pointMixinFields0[1].Descriptor()
+	// point.DefaultUpdateTime holds the default value on creation for the update_time field.
+	point.DefaultUpdateTime = pointDescUpdateTime.Default.(func() time.Time)
+	// point.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
+	point.UpdateDefaultUpdateTime = pointDescUpdateTime.UpdateDefault.(func() time.Time)
+	// pointDescSn is the schema descriptor for sn field.
+	pointDescSn := pointFields[0].Descriptor()
+	// point.SnValidator is a validator for the "sn" field. It is called by the builders before save.
+	point.SnValidator = func() func(string) error {
+		validators := pointDescSn.Validators
 		fns := [...]func(string) error{
 			validators[0].(func(string) error),
 			validators[1].(func(string) error),
@@ -48,11 +48,11 @@ func init() {
 			return nil
 		}
 	}()
-	// posDescPos is the schema descriptor for pos field.
-	posDescPos := posFields[1].Descriptor()
-	// pos.PosValidator is a validator for the "pos" field. It is called by the builders before save.
-	pos.PosValidator = func() func(string) error {
-		validators := posDescPos.Validators
+	// pointDescPos is the schema descriptor for pos field.
+	pointDescPos := pointFields[1].Descriptor()
+	// point.PosValidator is a validator for the "pos" field. It is called by the builders before save.
+	point.PosValidator = func() func(string) error {
+		validators := pointDescPos.Validators
 		fns := [...]func(string) error{
 			validators[0].(func(string) error),
 			validators[1].(func(string) error),
@@ -66,18 +66,18 @@ func init() {
 			return nil
 		}
 	}()
-	// posDescFloor is the schema descriptor for floor field.
-	posDescFloor := posFields[2].Descriptor()
-	// pos.FloorValidator is a validator for the "floor" field. It is called by the builders before save.
-	pos.FloorValidator = posDescFloor.Validators[0].(func(string) error)
-	// posDescBuilding is the schema descriptor for building field.
-	posDescBuilding := posFields[3].Descriptor()
-	// pos.BuildingValidator is a validator for the "building" field. It is called by the builders before save.
-	pos.BuildingValidator = posDescBuilding.Validators[0].(func(string) error)
-	// posDescArea is the schema descriptor for area field.
-	posDescArea := posFields[4].Descriptor()
-	// pos.AreaValidator is a validator for the "area" field. It is called by the builders before save.
-	pos.AreaValidator = posDescArea.Validators[0].(func(string) error)
+	// pointDescFloor is the schema descriptor for floor field.
+	pointDescFloor := pointFields[2].Descriptor()
+	// point.FloorValidator is a validator for the "floor" field. It is called by the builders before save.
+	point.FloorValidator = pointDescFloor.Validators[0].(func(string) error)
+	// pointDescBuilding is the schema descriptor for building field.
+	pointDescBuilding := pointFields[3].Descriptor()
+	// point.BuildingValidator is a validator for the "building" field. It is called by the builders before save.
+	point.BuildingValidator = pointDescBuilding.Validators[0].(func(string) error)
+	// pointDescArea is the schema descriptor for area field.
+	pointDescArea := pointFields[4].Descriptor()
+	// point.AreaValidator is a validator for the "area" field. It is called by the builders before save.
+	point.AreaValidator = pointDescArea.Validators[0].(func(string) error)
 	uploadMixin := schema.Upload{}.Mixin()
 	uploadMixinFields0 := uploadMixin[0].Fields()
 	_ = uploadMixinFields0
@@ -216,22 +216,4 @@ func init() {
 	usingDescName := usingFields[3].Descriptor()
 	// using.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	using.NameValidator = usingDescName.Validators[0].(func(string) error)
-	// usingDescBk is the schema descriptor for bk field.
-	usingDescBk := usingFields[4].Descriptor()
-	// using.BkValidator is a validator for the "bk" field. It is called by the builders before save.
-	using.BkValidator = func() func(string) error {
-		validators := usingDescBk.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(bk string) error {
-			for _, fn := range fns {
-				if err := fn(bk); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
 }

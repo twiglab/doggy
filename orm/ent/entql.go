@@ -3,7 +3,7 @@
 package ent
 
 import (
-	"github.com/twiglab/doggy/orm/ent/pos"
+	"github.com/twiglab/doggy/orm/ent/point"
 	"github.com/twiglab/doggy/orm/ent/upload"
 	"github.com/twiglab/doggy/orm/ent/using"
 
@@ -18,22 +18,22 @@ var schemaGraph = func() *sqlgraph.Schema {
 	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 3)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
-			Table:   pos.Table,
-			Columns: pos.Columns,
+			Table:   point.Table,
+			Columns: point.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
-				Column: pos.FieldID,
+				Column: point.FieldID,
 			},
 		},
-		Type: "Pos",
+		Type: "Point",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			pos.FieldCreateTime: {Type: field.TypeTime, Column: pos.FieldCreateTime},
-			pos.FieldUpdateTime: {Type: field.TypeTime, Column: pos.FieldUpdateTime},
-			pos.FieldSn:         {Type: field.TypeString, Column: pos.FieldSn},
-			pos.FieldPos:        {Type: field.TypeString, Column: pos.FieldPos},
-			pos.FieldFloor:      {Type: field.TypeString, Column: pos.FieldFloor},
-			pos.FieldBuilding:   {Type: field.TypeString, Column: pos.FieldBuilding},
-			pos.FieldArea:       {Type: field.TypeString, Column: pos.FieldArea},
+			point.FieldCreateTime: {Type: field.TypeTime, Column: point.FieldCreateTime},
+			point.FieldUpdateTime: {Type: field.TypeTime, Column: point.FieldUpdateTime},
+			point.FieldSn:         {Type: field.TypeString, Column: point.FieldSn},
+			point.FieldPos:        {Type: field.TypeString, Column: point.FieldPos},
+			point.FieldFloor:      {Type: field.TypeString, Column: point.FieldFloor},
+			point.FieldBuilding:   {Type: field.TypeString, Column: point.FieldBuilding},
+			point.FieldArea:       {Type: field.TypeString, Column: point.FieldArea},
 		},
 	}
 	graph.Nodes[1] = &sqlgraph.Node{
@@ -73,7 +73,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			using.FieldUUID:       {Type: field.TypeString, Column: using.FieldUUID},
 			using.FieldAlg:        {Type: field.TypeString, Column: using.FieldAlg},
 			using.FieldName:       {Type: field.TypeString, Column: using.FieldName},
-			using.FieldBk:         {Type: field.TypeString, Column: using.FieldBk},
 		},
 	}
 	return graph
@@ -86,33 +85,33 @@ type predicateAdder interface {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (pq *PosQuery) addPredicate(pred func(s *sql.Selector)) {
+func (pq *PointQuery) addPredicate(pred func(s *sql.Selector)) {
 	pq.predicates = append(pq.predicates, pred)
 }
 
-// Filter returns a Filter implementation to apply filters on the PosQuery builder.
-func (pq *PosQuery) Filter() *PosFilter {
-	return &PosFilter{config: pq.config, predicateAdder: pq}
+// Filter returns a Filter implementation to apply filters on the PointQuery builder.
+func (pq *PointQuery) Filter() *PointFilter {
+	return &PointFilter{config: pq.config, predicateAdder: pq}
 }
 
 // addPredicate implements the predicateAdder interface.
-func (m *PosMutation) addPredicate(pred func(s *sql.Selector)) {
+func (m *PointMutation) addPredicate(pred func(s *sql.Selector)) {
 	m.predicates = append(m.predicates, pred)
 }
 
-// Filter returns an entql.Where implementation to apply filters on the PosMutation builder.
-func (m *PosMutation) Filter() *PosFilter {
-	return &PosFilter{config: m.config, predicateAdder: m}
+// Filter returns an entql.Where implementation to apply filters on the PointMutation builder.
+func (m *PointMutation) Filter() *PointFilter {
+	return &PointFilter{config: m.config, predicateAdder: m}
 }
 
-// PosFilter provides a generic filtering capability at runtime for PosQuery.
-type PosFilter struct {
+// PointFilter provides a generic filtering capability at runtime for PointQuery.
+type PointFilter struct {
 	predicateAdder
 	config
 }
 
 // Where applies the entql predicate on the query filter.
-func (f *PosFilter) Where(p entql.P) {
+func (f *PointFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
 		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
 			s.AddError(err)
@@ -121,43 +120,43 @@ func (f *PosFilter) Where(p entql.P) {
 }
 
 // WhereID applies the entql int predicate on the id field.
-func (f *PosFilter) WhereID(p entql.IntP) {
-	f.Where(p.Field(pos.FieldID))
+func (f *PointFilter) WhereID(p entql.IntP) {
+	f.Where(p.Field(point.FieldID))
 }
 
 // WhereCreateTime applies the entql time.Time predicate on the create_time field.
-func (f *PosFilter) WhereCreateTime(p entql.TimeP) {
-	f.Where(p.Field(pos.FieldCreateTime))
+func (f *PointFilter) WhereCreateTime(p entql.TimeP) {
+	f.Where(p.Field(point.FieldCreateTime))
 }
 
 // WhereUpdateTime applies the entql time.Time predicate on the update_time field.
-func (f *PosFilter) WhereUpdateTime(p entql.TimeP) {
-	f.Where(p.Field(pos.FieldUpdateTime))
+func (f *PointFilter) WhereUpdateTime(p entql.TimeP) {
+	f.Where(p.Field(point.FieldUpdateTime))
 }
 
 // WhereSn applies the entql string predicate on the sn field.
-func (f *PosFilter) WhereSn(p entql.StringP) {
-	f.Where(p.Field(pos.FieldSn))
+func (f *PointFilter) WhereSn(p entql.StringP) {
+	f.Where(p.Field(point.FieldSn))
 }
 
 // WherePos applies the entql string predicate on the pos field.
-func (f *PosFilter) WherePos(p entql.StringP) {
-	f.Where(p.Field(pos.FieldPos))
+func (f *PointFilter) WherePos(p entql.StringP) {
+	f.Where(p.Field(point.FieldPos))
 }
 
 // WhereFloor applies the entql string predicate on the floor field.
-func (f *PosFilter) WhereFloor(p entql.StringP) {
-	f.Where(p.Field(pos.FieldFloor))
+func (f *PointFilter) WhereFloor(p entql.StringP) {
+	f.Where(p.Field(point.FieldFloor))
 }
 
 // WhereBuilding applies the entql string predicate on the building field.
-func (f *PosFilter) WhereBuilding(p entql.StringP) {
-	f.Where(p.Field(pos.FieldBuilding))
+func (f *PointFilter) WhereBuilding(p entql.StringP) {
+	f.Where(p.Field(point.FieldBuilding))
 }
 
 // WhereArea applies the entql string predicate on the area field.
-func (f *PosFilter) WhereArea(p entql.StringP) {
-	f.Where(p.Field(pos.FieldArea))
+func (f *PointFilter) WhereArea(p entql.StringP) {
+	f.Where(p.Field(point.FieldArea))
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -303,9 +302,4 @@ func (f *UsingFilter) WhereAlg(p entql.StringP) {
 // WhereName applies the entql string predicate on the name field.
 func (f *UsingFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(using.FieldName))
-}
-
-// WhereBk applies the entql string predicate on the bk field.
-func (f *UsingFilter) WhereBk(p entql.StringP) {
-	f.Where(p.Field(using.FieldBk))
 }

@@ -23,12 +23,6 @@ type DensityHandler interface {
 	HandleDensity(ctx context.Context, common holo.Common, data holo.HumanMix) error
 }
 
-/*
-type DeviceResolver interface {
-	Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error)
-}
-*/
-
 type Handle struct {
 	CountHandler   CountHandler
 	DensityHandler DensityHandler
@@ -45,7 +39,6 @@ func NewHandle() *Handle {
 }
 
 func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	log.Printf("auto reg sn = %s, ip = %s\n", data.SerialNumber, data.IpAddr)
 	return h.DeviceRegister.AutoRegister(ctx, data)
 }
 
@@ -71,6 +64,7 @@ type cameraAction struct {
 }
 
 func (d *cameraAction) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
+	log.Printf("auto reg sn = %s, ip = %s\n", data.SerialNumber, data.IpAddr)
 	return nil
 }
 

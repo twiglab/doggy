@@ -11,68 +11,68 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/twiglab/doggy/orm/ent/pos"
+	"github.com/twiglab/doggy/orm/ent/point"
 	"github.com/twiglab/doggy/orm/ent/predicate"
 )
 
-// PosQuery is the builder for querying Pos entities.
-type PosQuery struct {
+// PointQuery is the builder for querying Point entities.
+type PointQuery struct {
 	config
 	ctx        *QueryContext
-	order      []pos.OrderOption
+	order      []point.OrderOption
 	inters     []Interceptor
-	predicates []predicate.Pos
+	predicates []predicate.Point
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the PosQuery builder.
-func (pq *PosQuery) Where(ps ...predicate.Pos) *PosQuery {
+// Where adds a new predicate for the PointQuery builder.
+func (pq *PointQuery) Where(ps ...predicate.Point) *PointQuery {
 	pq.predicates = append(pq.predicates, ps...)
 	return pq
 }
 
 // Limit the number of records to be returned by this query.
-func (pq *PosQuery) Limit(limit int) *PosQuery {
+func (pq *PointQuery) Limit(limit int) *PointQuery {
 	pq.ctx.Limit = &limit
 	return pq
 }
 
 // Offset to start from.
-func (pq *PosQuery) Offset(offset int) *PosQuery {
+func (pq *PointQuery) Offset(offset int) *PointQuery {
 	pq.ctx.Offset = &offset
 	return pq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (pq *PosQuery) Unique(unique bool) *PosQuery {
+func (pq *PointQuery) Unique(unique bool) *PointQuery {
 	pq.ctx.Unique = &unique
 	return pq
 }
 
 // Order specifies how the records should be ordered.
-func (pq *PosQuery) Order(o ...pos.OrderOption) *PosQuery {
+func (pq *PointQuery) Order(o ...point.OrderOption) *PointQuery {
 	pq.order = append(pq.order, o...)
 	return pq
 }
 
-// First returns the first Pos entity from the query.
-// Returns a *NotFoundError when no Pos was found.
-func (pq *PosQuery) First(ctx context.Context) (*Pos, error) {
+// First returns the first Point entity from the query.
+// Returns a *NotFoundError when no Point was found.
+func (pq *PointQuery) First(ctx context.Context) (*Point, error) {
 	nodes, err := pq.Limit(1).All(setContextOp(ctx, pq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{pos.Label}
+		return nil, &NotFoundError{point.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (pq *PosQuery) FirstX(ctx context.Context) *Pos {
+func (pq *PointQuery) FirstX(ctx context.Context) *Point {
 	node, err := pq.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -80,22 +80,22 @@ func (pq *PosQuery) FirstX(ctx context.Context) *Pos {
 	return node
 }
 
-// FirstID returns the first Pos ID from the query.
-// Returns a *NotFoundError when no Pos ID was found.
-func (pq *PosQuery) FirstID(ctx context.Context) (id int, err error) {
+// FirstID returns the first Point ID from the query.
+// Returns a *NotFoundError when no Point ID was found.
+func (pq *PointQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
 	if ids, err = pq.Limit(1).IDs(setContextOp(ctx, pq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{pos.Label}
+		err = &NotFoundError{point.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (pq *PosQuery) FirstIDX(ctx context.Context) int {
+func (pq *PointQuery) FirstIDX(ctx context.Context) int {
 	id, err := pq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -103,10 +103,10 @@ func (pq *PosQuery) FirstIDX(ctx context.Context) int {
 	return id
 }
 
-// Only returns a single Pos entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one Pos entity is found.
-// Returns a *NotFoundError when no Pos entities are found.
-func (pq *PosQuery) Only(ctx context.Context) (*Pos, error) {
+// Only returns a single Point entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one Point entity is found.
+// Returns a *NotFoundError when no Point entities are found.
+func (pq *PointQuery) Only(ctx context.Context) (*Point, error) {
 	nodes, err := pq.Limit(2).All(setContextOp(ctx, pq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
@@ -115,14 +115,14 @@ func (pq *PosQuery) Only(ctx context.Context) (*Pos, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{pos.Label}
+		return nil, &NotFoundError{point.Label}
 	default:
-		return nil, &NotSingularError{pos.Label}
+		return nil, &NotSingularError{point.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (pq *PosQuery) OnlyX(ctx context.Context) *Pos {
+func (pq *PointQuery) OnlyX(ctx context.Context) *Point {
 	node, err := pq.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -130,10 +130,10 @@ func (pq *PosQuery) OnlyX(ctx context.Context) *Pos {
 	return node
 }
 
-// OnlyID is like Only, but returns the only Pos ID in the query.
-// Returns a *NotSingularError when more than one Pos ID is found.
+// OnlyID is like Only, but returns the only Point ID in the query.
+// Returns a *NotSingularError when more than one Point ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (pq *PosQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (pq *PointQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
 	if ids, err = pq.Limit(2).IDs(setContextOp(ctx, pq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
@@ -142,15 +142,15 @@ func (pq *PosQuery) OnlyID(ctx context.Context) (id int, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{pos.Label}
+		err = &NotFoundError{point.Label}
 	default:
-		err = &NotSingularError{pos.Label}
+		err = &NotSingularError{point.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (pq *PosQuery) OnlyIDX(ctx context.Context) int {
+func (pq *PointQuery) OnlyIDX(ctx context.Context) int {
 	id, err := pq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -158,18 +158,18 @@ func (pq *PosQuery) OnlyIDX(ctx context.Context) int {
 	return id
 }
 
-// All executes the query and returns a list of PosSlice.
-func (pq *PosQuery) All(ctx context.Context) ([]*Pos, error) {
+// All executes the query and returns a list of Points.
+func (pq *PointQuery) All(ctx context.Context) ([]*Point, error) {
 	ctx = setContextOp(ctx, pq.ctx, ent.OpQueryAll)
 	if err := pq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	qr := querierAll[[]*Pos, *PosQuery]()
-	return withInterceptors[[]*Pos](ctx, pq, qr, pq.inters)
+	qr := querierAll[[]*Point, *PointQuery]()
+	return withInterceptors[[]*Point](ctx, pq, qr, pq.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (pq *PosQuery) AllX(ctx context.Context) []*Pos {
+func (pq *PointQuery) AllX(ctx context.Context) []*Point {
 	nodes, err := pq.All(ctx)
 	if err != nil {
 		panic(err)
@@ -177,20 +177,20 @@ func (pq *PosQuery) AllX(ctx context.Context) []*Pos {
 	return nodes
 }
 
-// IDs executes the query and returns a list of Pos IDs.
-func (pq *PosQuery) IDs(ctx context.Context) (ids []int, err error) {
+// IDs executes the query and returns a list of Point IDs.
+func (pq *PointQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if pq.ctx.Unique == nil && pq.path != nil {
 		pq.Unique(true)
 	}
 	ctx = setContextOp(ctx, pq.ctx, ent.OpQueryIDs)
-	if err = pq.Select(pos.FieldID).Scan(ctx, &ids); err != nil {
+	if err = pq.Select(point.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (pq *PosQuery) IDsX(ctx context.Context) []int {
+func (pq *PointQuery) IDsX(ctx context.Context) []int {
 	ids, err := pq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -199,16 +199,16 @@ func (pq *PosQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (pq *PosQuery) Count(ctx context.Context) (int, error) {
+func (pq *PointQuery) Count(ctx context.Context) (int, error) {
 	ctx = setContextOp(ctx, pq.ctx, ent.OpQueryCount)
 	if err := pq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, pq, querierCount[*PosQuery](), pq.inters)
+	return withInterceptors[int](ctx, pq, querierCount[*PointQuery](), pq.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (pq *PosQuery) CountX(ctx context.Context) int {
+func (pq *PointQuery) CountX(ctx context.Context) int {
 	count, err := pq.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -217,7 +217,7 @@ func (pq *PosQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (pq *PosQuery) Exist(ctx context.Context) (bool, error) {
+func (pq *PointQuery) Exist(ctx context.Context) (bool, error) {
 	ctx = setContextOp(ctx, pq.ctx, ent.OpQueryExist)
 	switch _, err := pq.FirstID(ctx); {
 	case IsNotFound(err):
@@ -230,7 +230,7 @@ func (pq *PosQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (pq *PosQuery) ExistX(ctx context.Context) bool {
+func (pq *PointQuery) ExistX(ctx context.Context) bool {
 	exist, err := pq.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -238,18 +238,18 @@ func (pq *PosQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the PosQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the PointQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (pq *PosQuery) Clone() *PosQuery {
+func (pq *PointQuery) Clone() *PointQuery {
 	if pq == nil {
 		return nil
 	}
-	return &PosQuery{
+	return &PointQuery{
 		config:     pq.config,
 		ctx:        pq.ctx.Clone(),
-		order:      append([]pos.OrderOption{}, pq.order...),
+		order:      append([]point.OrderOption{}, pq.order...),
 		inters:     append([]Interceptor{}, pq.inters...),
-		predicates: append([]predicate.Pos{}, pq.predicates...),
+		predicates: append([]predicate.Point{}, pq.predicates...),
 		// clone intermediate query.
 		sql:  pq.sql.Clone(),
 		path: pq.path,
@@ -266,15 +266,15 @@ func (pq *PosQuery) Clone() *PosQuery {
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.Pos.Query().
-//		GroupBy(pos.FieldCreateTime).
+//	client.Point.Query().
+//		GroupBy(point.FieldCreateTime).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (pq *PosQuery) GroupBy(field string, fields ...string) *PosGroupBy {
+func (pq *PointQuery) GroupBy(field string, fields ...string) *PointGroupBy {
 	pq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &PosGroupBy{build: pq}
+	grbuild := &PointGroupBy{build: pq}
 	grbuild.flds = &pq.ctx.Fields
-	grbuild.label = pos.Label
+	grbuild.label = point.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
 }
@@ -288,23 +288,23 @@ func (pq *PosQuery) GroupBy(field string, fields ...string) *PosGroupBy {
 //		CreateTime time.Time `json:"create_time,omitempty"`
 //	}
 //
-//	client.Pos.Query().
-//		Select(pos.FieldCreateTime).
+//	client.Point.Query().
+//		Select(point.FieldCreateTime).
 //		Scan(ctx, &v)
-func (pq *PosQuery) Select(fields ...string) *PosSelect {
+func (pq *PointQuery) Select(fields ...string) *PointSelect {
 	pq.ctx.Fields = append(pq.ctx.Fields, fields...)
-	sbuild := &PosSelect{PosQuery: pq}
-	sbuild.label = pos.Label
+	sbuild := &PointSelect{PointQuery: pq}
+	sbuild.label = point.Label
 	sbuild.flds, sbuild.scan = &pq.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
-// Aggregate returns a PosSelect configured with the given aggregations.
-func (pq *PosQuery) Aggregate(fns ...AggregateFunc) *PosSelect {
+// Aggregate returns a PointSelect configured with the given aggregations.
+func (pq *PointQuery) Aggregate(fns ...AggregateFunc) *PointSelect {
 	return pq.Select().Aggregate(fns...)
 }
 
-func (pq *PosQuery) prepareQuery(ctx context.Context) error {
+func (pq *PointQuery) prepareQuery(ctx context.Context) error {
 	for _, inter := range pq.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
@@ -316,7 +316,7 @@ func (pq *PosQuery) prepareQuery(ctx context.Context) error {
 		}
 	}
 	for _, f := range pq.ctx.Fields {
-		if !pos.ValidColumn(f) {
+		if !point.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -330,16 +330,16 @@ func (pq *PosQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (pq *PosQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pos, error) {
+func (pq *PointQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Point, error) {
 	var (
-		nodes = []*Pos{}
+		nodes = []*Point{}
 		_spec = pq.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
-		return (*Pos).scanValues(nil, columns)
+		return (*Point).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &Pos{config: pq.config}
+		node := &Point{config: pq.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
@@ -355,7 +355,7 @@ func (pq *PosQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pos, err
 	return nodes, nil
 }
 
-func (pq *PosQuery) sqlCount(ctx context.Context) (int, error) {
+func (pq *PointQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := pq.querySpec()
 	_spec.Node.Columns = pq.ctx.Fields
 	if len(pq.ctx.Fields) > 0 {
@@ -364,8 +364,8 @@ func (pq *PosQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, pq.driver, _spec)
 }
 
-func (pq *PosQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(pos.Table, pos.Columns, sqlgraph.NewFieldSpec(pos.FieldID, field.TypeInt))
+func (pq *PointQuery) querySpec() *sqlgraph.QuerySpec {
+	_spec := sqlgraph.NewQuerySpec(point.Table, point.Columns, sqlgraph.NewFieldSpec(point.FieldID, field.TypeInt))
 	_spec.From = pq.sql
 	if unique := pq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -374,9 +374,9 @@ func (pq *PosQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := pq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, pos.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, point.FieldID)
 		for i := range fields {
-			if fields[i] != pos.FieldID {
+			if fields[i] != point.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -404,12 +404,12 @@ func (pq *PosQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (pq *PosQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (pq *PointQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(pq.driver.Dialect())
-	t1 := builder.Table(pos.Table)
+	t1 := builder.Table(point.Table)
 	columns := pq.ctx.Fields
 	if len(columns) == 0 {
-		columns = pos.Columns
+		columns = point.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if pq.sql != nil {
@@ -436,28 +436,28 @@ func (pq *PosQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// PosGroupBy is the group-by builder for Pos entities.
-type PosGroupBy struct {
+// PointGroupBy is the group-by builder for Point entities.
+type PointGroupBy struct {
 	selector
-	build *PosQuery
+	build *PointQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (pgb *PosGroupBy) Aggregate(fns ...AggregateFunc) *PosGroupBy {
+func (pgb *PointGroupBy) Aggregate(fns ...AggregateFunc) *PointGroupBy {
 	pgb.fns = append(pgb.fns, fns...)
 	return pgb
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (pgb *PosGroupBy) Scan(ctx context.Context, v any) error {
+func (pgb *PointGroupBy) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, pgb.build.ctx, ent.OpQueryGroupBy)
 	if err := pgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*PosQuery, *PosGroupBy](ctx, pgb.build, pgb, pgb.build.inters, v)
+	return scanWithInterceptors[*PointQuery, *PointGroupBy](ctx, pgb.build, pgb, pgb.build.inters, v)
 }
 
-func (pgb *PosGroupBy) sqlScan(ctx context.Context, root *PosQuery, v any) error {
+func (pgb *PointGroupBy) sqlScan(ctx context.Context, root *PointQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
 	aggregation := make([]string, 0, len(pgb.fns))
 	for _, fn := range pgb.fns {
@@ -484,28 +484,28 @@ func (pgb *PosGroupBy) sqlScan(ctx context.Context, root *PosQuery, v any) error
 	return sql.ScanSlice(rows, v)
 }
 
-// PosSelect is the builder for selecting fields of Pos entities.
-type PosSelect struct {
-	*PosQuery
+// PointSelect is the builder for selecting fields of Point entities.
+type PointSelect struct {
+	*PointQuery
 	selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ps *PosSelect) Aggregate(fns ...AggregateFunc) *PosSelect {
+func (ps *PointSelect) Aggregate(fns ...AggregateFunc) *PointSelect {
 	ps.fns = append(ps.fns, fns...)
 	return ps
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ps *PosSelect) Scan(ctx context.Context, v any) error {
+func (ps *PointSelect) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, ps.ctx, ent.OpQuerySelect)
 	if err := ps.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*PosQuery, *PosSelect](ctx, ps.PosQuery, ps, ps.inters, v)
+	return scanWithInterceptors[*PointQuery, *PointSelect](ctx, ps.PointQuery, ps, ps.inters, v)
 }
 
-func (ps *PosSelect) sqlScan(ctx context.Context, root *PosQuery, v any) error {
+func (ps *PointSelect) sqlScan(ctx context.Context, root *PointQuery, v any) error {
 	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(ps.fns))
 	for _, fn := range ps.fns {

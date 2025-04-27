@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	// CameraSetupColumns holds the columns for the "camera_setup" table.
-	CameraSetupColumns = []*schema.Column{
+	// CameraPointColumns holds the columns for the "camera_point" table.
+	CameraPointColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
@@ -20,16 +20,16 @@ var (
 		{Name: "building", Type: field.TypeString, Nullable: true, Size: 64, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "area", Type: field.TypeString, Nullable: true, Size: 64, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 	}
-	// CameraSetupTable holds the schema information for the "camera_setup" table.
-	CameraSetupTable = &schema.Table{
-		Name:       "camera_setup",
-		Columns:    CameraSetupColumns,
-		PrimaryKey: []*schema.Column{CameraSetupColumns[0]},
+	// CameraPointTable holds the schema information for the "camera_point" table.
+	CameraPointTable = &schema.Table{
+		Name:       "camera_point",
+		Columns:    CameraPointColumns,
+		PrimaryKey: []*schema.Column{CameraPointColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "pos_sn",
+				Name:    "point_sn",
 				Unique:  false,
-				Columns: []*schema.Column{CameraSetupColumns[3]},
+				Columns: []*schema.Column{CameraPointColumns[3]},
 			},
 		},
 	}
@@ -66,7 +66,6 @@ var (
 		{Name: "uuid", Type: field.TypeString, Size: 36, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
 		{Name: "alg", Type: field.TypeString, Size: 16, SchemaType: map[string]string{"mysql": "varchar(16)", "postgres": "varchar(16)", "sqlite3": "varchar(16)"}},
 		{Name: "name", Type: field.TypeString, Nullable: true, Size: 64, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "bk", Type: field.TypeString, Unique: true, Size: 64, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 	}
 	// CameraUsingTable holds the schema information for the "camera_using" table.
 	CameraUsingTable = &schema.Table{
@@ -84,24 +83,19 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{CameraUsingColumns[3]},
 			},
-			{
-				Name:    "using_bk",
-				Unique:  false,
-				Columns: []*schema.Column{CameraUsingColumns[7]},
-			},
 		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		CameraSetupTable,
+		CameraPointTable,
 		CameraUploadTable,
 		CameraUsingTable,
 	}
 )
 
 func init() {
-	CameraSetupTable.Annotation = &entsql.Annotation{
-		Table: "camera_setup",
+	CameraPointTable.Annotation = &entsql.Annotation{
+		Table: "camera_point",
 	}
 	CameraUploadTable.Annotation = &entsql.Annotation{
 		Table: "camera_upload",

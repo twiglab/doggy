@@ -11,7 +11,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/doggy/orm/ent/pos"
+	"github.com/twiglab/doggy/orm/ent/point"
 	"github.com/twiglab/doggy/orm/ent/predicate"
 	"github.com/twiglab/doggy/orm/ent/upload"
 	"github.com/twiglab/doggy/orm/ent/using"
@@ -26,13 +26,13 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypePos    = "Pos"
+	TypePoint  = "Point"
 	TypeUpload = "Upload"
 	TypeUsing  = "Using"
 )
 
-// PosMutation represents an operation that mutates the Pos nodes in the graph.
-type PosMutation struct {
+// PointMutation represents an operation that mutates the Point nodes in the graph.
+type PointMutation struct {
 	config
 	op            Op
 	typ           string
@@ -46,21 +46,21 @@ type PosMutation struct {
 	area          *string
 	clearedFields map[string]struct{}
 	done          bool
-	oldValue      func(context.Context) (*Pos, error)
-	predicates    []predicate.Pos
+	oldValue      func(context.Context) (*Point, error)
+	predicates    []predicate.Point
 }
 
-var _ ent.Mutation = (*PosMutation)(nil)
+var _ ent.Mutation = (*PointMutation)(nil)
 
-// posOption allows management of the mutation configuration using functional options.
-type posOption func(*PosMutation)
+// pointOption allows management of the mutation configuration using functional options.
+type pointOption func(*PointMutation)
 
-// newPosMutation creates new mutation for the Pos entity.
-func newPosMutation(c config, op Op, opts ...posOption) *PosMutation {
-	m := &PosMutation{
+// newPointMutation creates new mutation for the Point entity.
+func newPointMutation(c config, op Op, opts ...pointOption) *PointMutation {
+	m := &PointMutation{
 		config:        c,
 		op:            op,
-		typ:           TypePos,
+		typ:           TypePoint,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -69,20 +69,20 @@ func newPosMutation(c config, op Op, opts ...posOption) *PosMutation {
 	return m
 }
 
-// withPosID sets the ID field of the mutation.
-func withPosID(id int) posOption {
-	return func(m *PosMutation) {
+// withPointID sets the ID field of the mutation.
+func withPointID(id int) pointOption {
+	return func(m *PointMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *Pos
+			value *Point
 		)
-		m.oldValue = func(ctx context.Context) (*Pos, error) {
+		m.oldValue = func(ctx context.Context) (*Point, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().Pos.Get(ctx, id)
+					value, err = m.Client().Point.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -91,10 +91,10 @@ func withPosID(id int) posOption {
 	}
 }
 
-// withPos sets the old Pos of the mutation.
-func withPos(node *Pos) posOption {
-	return func(m *PosMutation) {
-		m.oldValue = func(context.Context) (*Pos, error) {
+// withPoint sets the old Point of the mutation.
+func withPoint(node *Point) pointOption {
+	return func(m *PointMutation) {
+		m.oldValue = func(context.Context) (*Point, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -103,7 +103,7 @@ func withPos(node *Pos) posOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m PosMutation) Client() *Client {
+func (m PointMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -111,7 +111,7 @@ func (m PosMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m PosMutation) Tx() (*Tx, error) {
+func (m PointMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -122,7 +122,7 @@ func (m PosMutation) Tx() (*Tx, error) {
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *PosMutation) ID() (id int, exists bool) {
+func (m *PointMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -133,7 +133,7 @@ func (m *PosMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *PosMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *PointMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -142,19 +142,19 @@ func (m *PosMutation) IDs(ctx context.Context) ([]int, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().Pos.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().Point.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetCreateTime sets the "create_time" field.
-func (m *PosMutation) SetCreateTime(t time.Time) {
+func (m *PointMutation) SetCreateTime(t time.Time) {
 	m.create_time = &t
 }
 
 // CreateTime returns the value of the "create_time" field in the mutation.
-func (m *PosMutation) CreateTime() (r time.Time, exists bool) {
+func (m *PointMutation) CreateTime() (r time.Time, exists bool) {
 	v := m.create_time
 	if v == nil {
 		return
@@ -162,10 +162,10 @@ func (m *PosMutation) CreateTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreateTime returns the old "create_time" field's value of the Pos entity.
-// If the Pos object wasn't provided to the builder, the object is fetched from the database.
+// OldCreateTime returns the old "create_time" field's value of the Point entity.
+// If the Point object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PosMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
+func (m *PointMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreateTime is only allowed on UpdateOne operations")
 	}
@@ -180,17 +180,17 @@ func (m *PosMutation) OldCreateTime(ctx context.Context) (v time.Time, err error
 }
 
 // ResetCreateTime resets all changes to the "create_time" field.
-func (m *PosMutation) ResetCreateTime() {
+func (m *PointMutation) ResetCreateTime() {
 	m.create_time = nil
 }
 
 // SetUpdateTime sets the "update_time" field.
-func (m *PosMutation) SetUpdateTime(t time.Time) {
+func (m *PointMutation) SetUpdateTime(t time.Time) {
 	m.update_time = &t
 }
 
 // UpdateTime returns the value of the "update_time" field in the mutation.
-func (m *PosMutation) UpdateTime() (r time.Time, exists bool) {
+func (m *PointMutation) UpdateTime() (r time.Time, exists bool) {
 	v := m.update_time
 	if v == nil {
 		return
@@ -198,10 +198,10 @@ func (m *PosMutation) UpdateTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdateTime returns the old "update_time" field's value of the Pos entity.
-// If the Pos object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdateTime returns the old "update_time" field's value of the Point entity.
+// If the Point object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PosMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
+func (m *PointMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdateTime is only allowed on UpdateOne operations")
 	}
@@ -216,17 +216,17 @@ func (m *PosMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error
 }
 
 // ResetUpdateTime resets all changes to the "update_time" field.
-func (m *PosMutation) ResetUpdateTime() {
+func (m *PointMutation) ResetUpdateTime() {
 	m.update_time = nil
 }
 
 // SetSn sets the "sn" field.
-func (m *PosMutation) SetSn(s string) {
+func (m *PointMutation) SetSn(s string) {
 	m.sn = &s
 }
 
 // Sn returns the value of the "sn" field in the mutation.
-func (m *PosMutation) Sn() (r string, exists bool) {
+func (m *PointMutation) Sn() (r string, exists bool) {
 	v := m.sn
 	if v == nil {
 		return
@@ -234,10 +234,10 @@ func (m *PosMutation) Sn() (r string, exists bool) {
 	return *v, true
 }
 
-// OldSn returns the old "sn" field's value of the Pos entity.
-// If the Pos object wasn't provided to the builder, the object is fetched from the database.
+// OldSn returns the old "sn" field's value of the Point entity.
+// If the Point object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PosMutation) OldSn(ctx context.Context) (v string, err error) {
+func (m *PointMutation) OldSn(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSn is only allowed on UpdateOne operations")
 	}
@@ -252,17 +252,17 @@ func (m *PosMutation) OldSn(ctx context.Context) (v string, err error) {
 }
 
 // ResetSn resets all changes to the "sn" field.
-func (m *PosMutation) ResetSn() {
+func (m *PointMutation) ResetSn() {
 	m.sn = nil
 }
 
 // SetPos sets the "pos" field.
-func (m *PosMutation) SetPos(s string) {
+func (m *PointMutation) SetPos(s string) {
 	m.pos = &s
 }
 
 // Pos returns the value of the "pos" field in the mutation.
-func (m *PosMutation) Pos() (r string, exists bool) {
+func (m *PointMutation) Pos() (r string, exists bool) {
 	v := m.pos
 	if v == nil {
 		return
@@ -270,10 +270,10 @@ func (m *PosMutation) Pos() (r string, exists bool) {
 	return *v, true
 }
 
-// OldPos returns the old "pos" field's value of the Pos entity.
-// If the Pos object wasn't provided to the builder, the object is fetched from the database.
+// OldPos returns the old "pos" field's value of the Point entity.
+// If the Point object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PosMutation) OldPos(ctx context.Context) (v string, err error) {
+func (m *PointMutation) OldPos(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPos is only allowed on UpdateOne operations")
 	}
@@ -288,17 +288,17 @@ func (m *PosMutation) OldPos(ctx context.Context) (v string, err error) {
 }
 
 // ResetPos resets all changes to the "pos" field.
-func (m *PosMutation) ResetPos() {
+func (m *PointMutation) ResetPos() {
 	m.pos = nil
 }
 
 // SetFloor sets the "floor" field.
-func (m *PosMutation) SetFloor(s string) {
+func (m *PointMutation) SetFloor(s string) {
 	m.floor = &s
 }
 
 // Floor returns the value of the "floor" field in the mutation.
-func (m *PosMutation) Floor() (r string, exists bool) {
+func (m *PointMutation) Floor() (r string, exists bool) {
 	v := m.floor
 	if v == nil {
 		return
@@ -306,10 +306,10 @@ func (m *PosMutation) Floor() (r string, exists bool) {
 	return *v, true
 }
 
-// OldFloor returns the old "floor" field's value of the Pos entity.
-// If the Pos object wasn't provided to the builder, the object is fetched from the database.
+// OldFloor returns the old "floor" field's value of the Point entity.
+// If the Point object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PosMutation) OldFloor(ctx context.Context) (v string, err error) {
+func (m *PointMutation) OldFloor(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFloor is only allowed on UpdateOne operations")
 	}
@@ -324,30 +324,30 @@ func (m *PosMutation) OldFloor(ctx context.Context) (v string, err error) {
 }
 
 // ClearFloor clears the value of the "floor" field.
-func (m *PosMutation) ClearFloor() {
+func (m *PointMutation) ClearFloor() {
 	m.floor = nil
-	m.clearedFields[pos.FieldFloor] = struct{}{}
+	m.clearedFields[point.FieldFloor] = struct{}{}
 }
 
 // FloorCleared returns if the "floor" field was cleared in this mutation.
-func (m *PosMutation) FloorCleared() bool {
-	_, ok := m.clearedFields[pos.FieldFloor]
+func (m *PointMutation) FloorCleared() bool {
+	_, ok := m.clearedFields[point.FieldFloor]
 	return ok
 }
 
 // ResetFloor resets all changes to the "floor" field.
-func (m *PosMutation) ResetFloor() {
+func (m *PointMutation) ResetFloor() {
 	m.floor = nil
-	delete(m.clearedFields, pos.FieldFloor)
+	delete(m.clearedFields, point.FieldFloor)
 }
 
 // SetBuilding sets the "building" field.
-func (m *PosMutation) SetBuilding(s string) {
+func (m *PointMutation) SetBuilding(s string) {
 	m.building = &s
 }
 
 // Building returns the value of the "building" field in the mutation.
-func (m *PosMutation) Building() (r string, exists bool) {
+func (m *PointMutation) Building() (r string, exists bool) {
 	v := m.building
 	if v == nil {
 		return
@@ -355,10 +355,10 @@ func (m *PosMutation) Building() (r string, exists bool) {
 	return *v, true
 }
 
-// OldBuilding returns the old "building" field's value of the Pos entity.
-// If the Pos object wasn't provided to the builder, the object is fetched from the database.
+// OldBuilding returns the old "building" field's value of the Point entity.
+// If the Point object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PosMutation) OldBuilding(ctx context.Context) (v string, err error) {
+func (m *PointMutation) OldBuilding(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldBuilding is only allowed on UpdateOne operations")
 	}
@@ -373,30 +373,30 @@ func (m *PosMutation) OldBuilding(ctx context.Context) (v string, err error) {
 }
 
 // ClearBuilding clears the value of the "building" field.
-func (m *PosMutation) ClearBuilding() {
+func (m *PointMutation) ClearBuilding() {
 	m.building = nil
-	m.clearedFields[pos.FieldBuilding] = struct{}{}
+	m.clearedFields[point.FieldBuilding] = struct{}{}
 }
 
 // BuildingCleared returns if the "building" field was cleared in this mutation.
-func (m *PosMutation) BuildingCleared() bool {
-	_, ok := m.clearedFields[pos.FieldBuilding]
+func (m *PointMutation) BuildingCleared() bool {
+	_, ok := m.clearedFields[point.FieldBuilding]
 	return ok
 }
 
 // ResetBuilding resets all changes to the "building" field.
-func (m *PosMutation) ResetBuilding() {
+func (m *PointMutation) ResetBuilding() {
 	m.building = nil
-	delete(m.clearedFields, pos.FieldBuilding)
+	delete(m.clearedFields, point.FieldBuilding)
 }
 
 // SetArea sets the "area" field.
-func (m *PosMutation) SetArea(s string) {
+func (m *PointMutation) SetArea(s string) {
 	m.area = &s
 }
 
 // Area returns the value of the "area" field in the mutation.
-func (m *PosMutation) Area() (r string, exists bool) {
+func (m *PointMutation) Area() (r string, exists bool) {
 	v := m.area
 	if v == nil {
 		return
@@ -404,10 +404,10 @@ func (m *PosMutation) Area() (r string, exists bool) {
 	return *v, true
 }
 
-// OldArea returns the old "area" field's value of the Pos entity.
-// If the Pos object wasn't provided to the builder, the object is fetched from the database.
+// OldArea returns the old "area" field's value of the Point entity.
+// If the Point object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PosMutation) OldArea(ctx context.Context) (v string, err error) {
+func (m *PointMutation) OldArea(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldArea is only allowed on UpdateOne operations")
 	}
@@ -422,32 +422,32 @@ func (m *PosMutation) OldArea(ctx context.Context) (v string, err error) {
 }
 
 // ClearArea clears the value of the "area" field.
-func (m *PosMutation) ClearArea() {
+func (m *PointMutation) ClearArea() {
 	m.area = nil
-	m.clearedFields[pos.FieldArea] = struct{}{}
+	m.clearedFields[point.FieldArea] = struct{}{}
 }
 
 // AreaCleared returns if the "area" field was cleared in this mutation.
-func (m *PosMutation) AreaCleared() bool {
-	_, ok := m.clearedFields[pos.FieldArea]
+func (m *PointMutation) AreaCleared() bool {
+	_, ok := m.clearedFields[point.FieldArea]
 	return ok
 }
 
 // ResetArea resets all changes to the "area" field.
-func (m *PosMutation) ResetArea() {
+func (m *PointMutation) ResetArea() {
 	m.area = nil
-	delete(m.clearedFields, pos.FieldArea)
+	delete(m.clearedFields, point.FieldArea)
 }
 
-// Where appends a list predicates to the PosMutation builder.
-func (m *PosMutation) Where(ps ...predicate.Pos) {
+// Where appends a list predicates to the PointMutation builder.
+func (m *PointMutation) Where(ps ...predicate.Point) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the PosMutation builder. Using this method,
+// WhereP appends storage-level predicates to the PointMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *PosMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.Pos, len(ps))
+func (m *PointMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Point, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -455,45 +455,45 @@ func (m *PosMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *PosMutation) Op() Op {
+func (m *PointMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *PosMutation) SetOp(op Op) {
+func (m *PointMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (Pos).
-func (m *PosMutation) Type() string {
+// Type returns the node type of this mutation (Point).
+func (m *PointMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *PosMutation) Fields() []string {
+func (m *PointMutation) Fields() []string {
 	fields := make([]string, 0, 7)
 	if m.create_time != nil {
-		fields = append(fields, pos.FieldCreateTime)
+		fields = append(fields, point.FieldCreateTime)
 	}
 	if m.update_time != nil {
-		fields = append(fields, pos.FieldUpdateTime)
+		fields = append(fields, point.FieldUpdateTime)
 	}
 	if m.sn != nil {
-		fields = append(fields, pos.FieldSn)
+		fields = append(fields, point.FieldSn)
 	}
 	if m.pos != nil {
-		fields = append(fields, pos.FieldPos)
+		fields = append(fields, point.FieldPos)
 	}
 	if m.floor != nil {
-		fields = append(fields, pos.FieldFloor)
+		fields = append(fields, point.FieldFloor)
 	}
 	if m.building != nil {
-		fields = append(fields, pos.FieldBuilding)
+		fields = append(fields, point.FieldBuilding)
 	}
 	if m.area != nil {
-		fields = append(fields, pos.FieldArea)
+		fields = append(fields, point.FieldArea)
 	}
 	return fields
 }
@@ -501,21 +501,21 @@ func (m *PosMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *PosMutation) Field(name string) (ent.Value, bool) {
+func (m *PointMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case pos.FieldCreateTime:
+	case point.FieldCreateTime:
 		return m.CreateTime()
-	case pos.FieldUpdateTime:
+	case point.FieldUpdateTime:
 		return m.UpdateTime()
-	case pos.FieldSn:
+	case point.FieldSn:
 		return m.Sn()
-	case pos.FieldPos:
+	case point.FieldPos:
 		return m.Pos()
-	case pos.FieldFloor:
+	case point.FieldFloor:
 		return m.Floor()
-	case pos.FieldBuilding:
+	case point.FieldBuilding:
 		return m.Building()
-	case pos.FieldArea:
+	case point.FieldArea:
 		return m.Area()
 	}
 	return nil, false
@@ -524,74 +524,74 @@ func (m *PosMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *PosMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *PointMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case pos.FieldCreateTime:
+	case point.FieldCreateTime:
 		return m.OldCreateTime(ctx)
-	case pos.FieldUpdateTime:
+	case point.FieldUpdateTime:
 		return m.OldUpdateTime(ctx)
-	case pos.FieldSn:
+	case point.FieldSn:
 		return m.OldSn(ctx)
-	case pos.FieldPos:
+	case point.FieldPos:
 		return m.OldPos(ctx)
-	case pos.FieldFloor:
+	case point.FieldFloor:
 		return m.OldFloor(ctx)
-	case pos.FieldBuilding:
+	case point.FieldBuilding:
 		return m.OldBuilding(ctx)
-	case pos.FieldArea:
+	case point.FieldArea:
 		return m.OldArea(ctx)
 	}
-	return nil, fmt.Errorf("unknown Pos field %s", name)
+	return nil, fmt.Errorf("unknown Point field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *PosMutation) SetField(name string, value ent.Value) error {
+func (m *PointMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case pos.FieldCreateTime:
+	case point.FieldCreateTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreateTime(v)
 		return nil
-	case pos.FieldUpdateTime:
+	case point.FieldUpdateTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdateTime(v)
 		return nil
-	case pos.FieldSn:
+	case point.FieldSn:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSn(v)
 		return nil
-	case pos.FieldPos:
+	case point.FieldPos:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPos(v)
 		return nil
-	case pos.FieldFloor:
+	case point.FieldFloor:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFloor(v)
 		return nil
-	case pos.FieldBuilding:
+	case point.FieldBuilding:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetBuilding(v)
 		return nil
-	case pos.FieldArea:
+	case point.FieldArea:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -599,146 +599,146 @@ func (m *PosMutation) SetField(name string, value ent.Value) error {
 		m.SetArea(v)
 		return nil
 	}
-	return fmt.Errorf("unknown Pos field %s", name)
+	return fmt.Errorf("unknown Point field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *PosMutation) AddedFields() []string {
+func (m *PointMutation) AddedFields() []string {
 	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *PosMutation) AddedField(name string) (ent.Value, bool) {
+func (m *PointMutation) AddedField(name string) (ent.Value, bool) {
 	return nil, false
 }
 
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *PosMutation) AddField(name string, value ent.Value) error {
+func (m *PointMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	}
-	return fmt.Errorf("unknown Pos numeric field %s", name)
+	return fmt.Errorf("unknown Point numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *PosMutation) ClearedFields() []string {
+func (m *PointMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(pos.FieldFloor) {
-		fields = append(fields, pos.FieldFloor)
+	if m.FieldCleared(point.FieldFloor) {
+		fields = append(fields, point.FieldFloor)
 	}
-	if m.FieldCleared(pos.FieldBuilding) {
-		fields = append(fields, pos.FieldBuilding)
+	if m.FieldCleared(point.FieldBuilding) {
+		fields = append(fields, point.FieldBuilding)
 	}
-	if m.FieldCleared(pos.FieldArea) {
-		fields = append(fields, pos.FieldArea)
+	if m.FieldCleared(point.FieldArea) {
+		fields = append(fields, point.FieldArea)
 	}
 	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *PosMutation) FieldCleared(name string) bool {
+func (m *PointMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *PosMutation) ClearField(name string) error {
+func (m *PointMutation) ClearField(name string) error {
 	switch name {
-	case pos.FieldFloor:
+	case point.FieldFloor:
 		m.ClearFloor()
 		return nil
-	case pos.FieldBuilding:
+	case point.FieldBuilding:
 		m.ClearBuilding()
 		return nil
-	case pos.FieldArea:
+	case point.FieldArea:
 		m.ClearArea()
 		return nil
 	}
-	return fmt.Errorf("unknown Pos nullable field %s", name)
+	return fmt.Errorf("unknown Point nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *PosMutation) ResetField(name string) error {
+func (m *PointMutation) ResetField(name string) error {
 	switch name {
-	case pos.FieldCreateTime:
+	case point.FieldCreateTime:
 		m.ResetCreateTime()
 		return nil
-	case pos.FieldUpdateTime:
+	case point.FieldUpdateTime:
 		m.ResetUpdateTime()
 		return nil
-	case pos.FieldSn:
+	case point.FieldSn:
 		m.ResetSn()
 		return nil
-	case pos.FieldPos:
+	case point.FieldPos:
 		m.ResetPos()
 		return nil
-	case pos.FieldFloor:
+	case point.FieldFloor:
 		m.ResetFloor()
 		return nil
-	case pos.FieldBuilding:
+	case point.FieldBuilding:
 		m.ResetBuilding()
 		return nil
-	case pos.FieldArea:
+	case point.FieldArea:
 		m.ResetArea()
 		return nil
 	}
-	return fmt.Errorf("unknown Pos field %s", name)
+	return fmt.Errorf("unknown Point field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *PosMutation) AddedEdges() []string {
+func (m *PointMutation) AddedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *PosMutation) AddedIDs(name string) []ent.Value {
+func (m *PointMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *PosMutation) RemovedEdges() []string {
+func (m *PointMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *PosMutation) RemovedIDs(name string) []ent.Value {
+func (m *PointMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *PosMutation) ClearedEdges() []string {
+func (m *PointMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *PosMutation) EdgeCleared(name string) bool {
+func (m *PointMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *PosMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown Pos unique edge %s", name)
+func (m *PointMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Point unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *PosMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown Pos edge %s", name)
+func (m *PointMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Point edge %s", name)
 }
 
 // UploadMutation represents an operation that mutates the Upload nodes in the graph.
@@ -1444,7 +1444,6 @@ type UsingMutation struct {
 	uuid          *string
 	alg           *string
 	name          *string
-	bk            *string
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Using, error)
@@ -1778,42 +1777,6 @@ func (m *UsingMutation) ResetName() {
 	delete(m.clearedFields, using.FieldName)
 }
 
-// SetBk sets the "bk" field.
-func (m *UsingMutation) SetBk(s string) {
-	m.bk = &s
-}
-
-// Bk returns the value of the "bk" field in the mutation.
-func (m *UsingMutation) Bk() (r string, exists bool) {
-	v := m.bk
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldBk returns the old "bk" field's value of the Using entity.
-// If the Using object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UsingMutation) OldBk(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBk is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBk requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBk: %w", err)
-	}
-	return oldValue.Bk, nil
-}
-
-// ResetBk resets all changes to the "bk" field.
-func (m *UsingMutation) ResetBk() {
-	m.bk = nil
-}
-
 // Where appends a list predicates to the UsingMutation builder.
 func (m *UsingMutation) Where(ps ...predicate.Using) {
 	m.predicates = append(m.predicates, ps...)
@@ -1848,7 +1811,7 @@ func (m *UsingMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UsingMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 6)
 	if m.create_time != nil {
 		fields = append(fields, using.FieldCreateTime)
 	}
@@ -1866,9 +1829,6 @@ func (m *UsingMutation) Fields() []string {
 	}
 	if m.name != nil {
 		fields = append(fields, using.FieldName)
-	}
-	if m.bk != nil {
-		fields = append(fields, using.FieldBk)
 	}
 	return fields
 }
@@ -1890,8 +1850,6 @@ func (m *UsingMutation) Field(name string) (ent.Value, bool) {
 		return m.Alg()
 	case using.FieldName:
 		return m.Name()
-	case using.FieldBk:
-		return m.Bk()
 	}
 	return nil, false
 }
@@ -1913,8 +1871,6 @@ func (m *UsingMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldAlg(ctx)
 	case using.FieldName:
 		return m.OldName(ctx)
-	case using.FieldBk:
-		return m.OldBk(ctx)
 	}
 	return nil, fmt.Errorf("unknown Using field %s", name)
 }
@@ -1965,13 +1921,6 @@ func (m *UsingMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
-		return nil
-	case using.FieldBk:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetBk(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Using field %s", name)
@@ -2048,9 +1997,6 @@ func (m *UsingMutation) ResetField(name string) error {
 		return nil
 	case using.FieldName:
 		m.ResetName()
-		return nil
-	case using.FieldBk:
-		m.ResetBk()
 		return nil
 	}
 	return fmt.Errorf("unknown Using field %s", name)

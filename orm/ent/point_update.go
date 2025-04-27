@@ -11,37 +11,37 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/twiglab/doggy/orm/ent/pos"
+	"github.com/twiglab/doggy/orm/ent/point"
 	"github.com/twiglab/doggy/orm/ent/predicate"
 )
 
-// PosUpdate is the builder for updating Pos entities.
-type PosUpdate struct {
+// PointUpdate is the builder for updating Point entities.
+type PointUpdate struct {
 	config
 	hooks    []Hook
-	mutation *PosMutation
+	mutation *PointMutation
 }
 
-// Where appends a list predicates to the PosUpdate builder.
-func (pu *PosUpdate) Where(ps ...predicate.Pos) *PosUpdate {
+// Where appends a list predicates to the PointUpdate builder.
+func (pu *PointUpdate) Where(ps ...predicate.Point) *PointUpdate {
 	pu.mutation.Where(ps...)
 	return pu
 }
 
 // SetUpdateTime sets the "update_time" field.
-func (pu *PosUpdate) SetUpdateTime(t time.Time) *PosUpdate {
+func (pu *PointUpdate) SetUpdateTime(t time.Time) *PointUpdate {
 	pu.mutation.SetUpdateTime(t)
 	return pu
 }
 
 // SetFloor sets the "floor" field.
-func (pu *PosUpdate) SetFloor(s string) *PosUpdate {
+func (pu *PointUpdate) SetFloor(s string) *PointUpdate {
 	pu.mutation.SetFloor(s)
 	return pu
 }
 
 // SetNillableFloor sets the "floor" field if the given value is not nil.
-func (pu *PosUpdate) SetNillableFloor(s *string) *PosUpdate {
+func (pu *PointUpdate) SetNillableFloor(s *string) *PointUpdate {
 	if s != nil {
 		pu.SetFloor(*s)
 	}
@@ -49,19 +49,19 @@ func (pu *PosUpdate) SetNillableFloor(s *string) *PosUpdate {
 }
 
 // ClearFloor clears the value of the "floor" field.
-func (pu *PosUpdate) ClearFloor() *PosUpdate {
+func (pu *PointUpdate) ClearFloor() *PointUpdate {
 	pu.mutation.ClearFloor()
 	return pu
 }
 
 // SetBuilding sets the "building" field.
-func (pu *PosUpdate) SetBuilding(s string) *PosUpdate {
+func (pu *PointUpdate) SetBuilding(s string) *PointUpdate {
 	pu.mutation.SetBuilding(s)
 	return pu
 }
 
 // SetNillableBuilding sets the "building" field if the given value is not nil.
-func (pu *PosUpdate) SetNillableBuilding(s *string) *PosUpdate {
+func (pu *PointUpdate) SetNillableBuilding(s *string) *PointUpdate {
 	if s != nil {
 		pu.SetBuilding(*s)
 	}
@@ -69,19 +69,19 @@ func (pu *PosUpdate) SetNillableBuilding(s *string) *PosUpdate {
 }
 
 // ClearBuilding clears the value of the "building" field.
-func (pu *PosUpdate) ClearBuilding() *PosUpdate {
+func (pu *PointUpdate) ClearBuilding() *PointUpdate {
 	pu.mutation.ClearBuilding()
 	return pu
 }
 
 // SetArea sets the "area" field.
-func (pu *PosUpdate) SetArea(s string) *PosUpdate {
+func (pu *PointUpdate) SetArea(s string) *PointUpdate {
 	pu.mutation.SetArea(s)
 	return pu
 }
 
 // SetNillableArea sets the "area" field if the given value is not nil.
-func (pu *PosUpdate) SetNillableArea(s *string) *PosUpdate {
+func (pu *PointUpdate) SetNillableArea(s *string) *PointUpdate {
 	if s != nil {
 		pu.SetArea(*s)
 	}
@@ -89,24 +89,24 @@ func (pu *PosUpdate) SetNillableArea(s *string) *PosUpdate {
 }
 
 // ClearArea clears the value of the "area" field.
-func (pu *PosUpdate) ClearArea() *PosUpdate {
+func (pu *PointUpdate) ClearArea() *PointUpdate {
 	pu.mutation.ClearArea()
 	return pu
 }
 
-// Mutation returns the PosMutation object of the builder.
-func (pu *PosUpdate) Mutation() *PosMutation {
+// Mutation returns the PointMutation object of the builder.
+func (pu *PointUpdate) Mutation() *PointMutation {
 	return pu.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (pu *PosUpdate) Save(ctx context.Context) (int, error) {
+func (pu *PointUpdate) Save(ctx context.Context) (int, error) {
 	pu.defaults()
 	return withHooks(ctx, pu.sqlSave, pu.mutation, pu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (pu *PosUpdate) SaveX(ctx context.Context) int {
+func (pu *PointUpdate) SaveX(ctx context.Context) int {
 	affected, err := pu.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -115,51 +115,51 @@ func (pu *PosUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (pu *PosUpdate) Exec(ctx context.Context) error {
+func (pu *PointUpdate) Exec(ctx context.Context) error {
 	_, err := pu.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pu *PosUpdate) ExecX(ctx context.Context) {
+func (pu *PointUpdate) ExecX(ctx context.Context) {
 	if err := pu.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (pu *PosUpdate) defaults() {
+func (pu *PointUpdate) defaults() {
 	if _, ok := pu.mutation.UpdateTime(); !ok {
-		v := pos.UpdateDefaultUpdateTime()
+		v := point.UpdateDefaultUpdateTime()
 		pu.mutation.SetUpdateTime(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (pu *PosUpdate) check() error {
+func (pu *PointUpdate) check() error {
 	if v, ok := pu.mutation.Floor(); ok {
-		if err := pos.FloorValidator(v); err != nil {
-			return &ValidationError{Name: "floor", err: fmt.Errorf(`ent: validator failed for field "Pos.floor": %w`, err)}
+		if err := point.FloorValidator(v); err != nil {
+			return &ValidationError{Name: "floor", err: fmt.Errorf(`ent: validator failed for field "Point.floor": %w`, err)}
 		}
 	}
 	if v, ok := pu.mutation.Building(); ok {
-		if err := pos.BuildingValidator(v); err != nil {
-			return &ValidationError{Name: "building", err: fmt.Errorf(`ent: validator failed for field "Pos.building": %w`, err)}
+		if err := point.BuildingValidator(v); err != nil {
+			return &ValidationError{Name: "building", err: fmt.Errorf(`ent: validator failed for field "Point.building": %w`, err)}
 		}
 	}
 	if v, ok := pu.mutation.Area(); ok {
-		if err := pos.AreaValidator(v); err != nil {
-			return &ValidationError{Name: "area", err: fmt.Errorf(`ent: validator failed for field "Pos.area": %w`, err)}
+		if err := point.AreaValidator(v); err != nil {
+			return &ValidationError{Name: "area", err: fmt.Errorf(`ent: validator failed for field "Point.area": %w`, err)}
 		}
 	}
 	return nil
 }
 
-func (pu *PosUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (pu *PointUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := pu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(pos.Table, pos.Columns, sqlgraph.NewFieldSpec(pos.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(point.Table, point.Columns, sqlgraph.NewFieldSpec(point.FieldID, field.TypeInt))
 	if ps := pu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -168,29 +168,29 @@ func (pu *PosUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := pu.mutation.UpdateTime(); ok {
-		_spec.SetField(pos.FieldUpdateTime, field.TypeTime, value)
+		_spec.SetField(point.FieldUpdateTime, field.TypeTime, value)
 	}
 	if value, ok := pu.mutation.Floor(); ok {
-		_spec.SetField(pos.FieldFloor, field.TypeString, value)
+		_spec.SetField(point.FieldFloor, field.TypeString, value)
 	}
 	if pu.mutation.FloorCleared() {
-		_spec.ClearField(pos.FieldFloor, field.TypeString)
+		_spec.ClearField(point.FieldFloor, field.TypeString)
 	}
 	if value, ok := pu.mutation.Building(); ok {
-		_spec.SetField(pos.FieldBuilding, field.TypeString, value)
+		_spec.SetField(point.FieldBuilding, field.TypeString, value)
 	}
 	if pu.mutation.BuildingCleared() {
-		_spec.ClearField(pos.FieldBuilding, field.TypeString)
+		_spec.ClearField(point.FieldBuilding, field.TypeString)
 	}
 	if value, ok := pu.mutation.Area(); ok {
-		_spec.SetField(pos.FieldArea, field.TypeString, value)
+		_spec.SetField(point.FieldArea, field.TypeString, value)
 	}
 	if pu.mutation.AreaCleared() {
-		_spec.ClearField(pos.FieldArea, field.TypeString)
+		_spec.ClearField(point.FieldArea, field.TypeString)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{pos.Label}
+			err = &NotFoundError{point.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -200,28 +200,28 @@ func (pu *PosUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	return n, nil
 }
 
-// PosUpdateOne is the builder for updating a single Pos entity.
-type PosUpdateOne struct {
+// PointUpdateOne is the builder for updating a single Point entity.
+type PointUpdateOne struct {
 	config
 	fields   []string
 	hooks    []Hook
-	mutation *PosMutation
+	mutation *PointMutation
 }
 
 // SetUpdateTime sets the "update_time" field.
-func (puo *PosUpdateOne) SetUpdateTime(t time.Time) *PosUpdateOne {
+func (puo *PointUpdateOne) SetUpdateTime(t time.Time) *PointUpdateOne {
 	puo.mutation.SetUpdateTime(t)
 	return puo
 }
 
 // SetFloor sets the "floor" field.
-func (puo *PosUpdateOne) SetFloor(s string) *PosUpdateOne {
+func (puo *PointUpdateOne) SetFloor(s string) *PointUpdateOne {
 	puo.mutation.SetFloor(s)
 	return puo
 }
 
 // SetNillableFloor sets the "floor" field if the given value is not nil.
-func (puo *PosUpdateOne) SetNillableFloor(s *string) *PosUpdateOne {
+func (puo *PointUpdateOne) SetNillableFloor(s *string) *PointUpdateOne {
 	if s != nil {
 		puo.SetFloor(*s)
 	}
@@ -229,19 +229,19 @@ func (puo *PosUpdateOne) SetNillableFloor(s *string) *PosUpdateOne {
 }
 
 // ClearFloor clears the value of the "floor" field.
-func (puo *PosUpdateOne) ClearFloor() *PosUpdateOne {
+func (puo *PointUpdateOne) ClearFloor() *PointUpdateOne {
 	puo.mutation.ClearFloor()
 	return puo
 }
 
 // SetBuilding sets the "building" field.
-func (puo *PosUpdateOne) SetBuilding(s string) *PosUpdateOne {
+func (puo *PointUpdateOne) SetBuilding(s string) *PointUpdateOne {
 	puo.mutation.SetBuilding(s)
 	return puo
 }
 
 // SetNillableBuilding sets the "building" field if the given value is not nil.
-func (puo *PosUpdateOne) SetNillableBuilding(s *string) *PosUpdateOne {
+func (puo *PointUpdateOne) SetNillableBuilding(s *string) *PointUpdateOne {
 	if s != nil {
 		puo.SetBuilding(*s)
 	}
@@ -249,19 +249,19 @@ func (puo *PosUpdateOne) SetNillableBuilding(s *string) *PosUpdateOne {
 }
 
 // ClearBuilding clears the value of the "building" field.
-func (puo *PosUpdateOne) ClearBuilding() *PosUpdateOne {
+func (puo *PointUpdateOne) ClearBuilding() *PointUpdateOne {
 	puo.mutation.ClearBuilding()
 	return puo
 }
 
 // SetArea sets the "area" field.
-func (puo *PosUpdateOne) SetArea(s string) *PosUpdateOne {
+func (puo *PointUpdateOne) SetArea(s string) *PointUpdateOne {
 	puo.mutation.SetArea(s)
 	return puo
 }
 
 // SetNillableArea sets the "area" field if the given value is not nil.
-func (puo *PosUpdateOne) SetNillableArea(s *string) *PosUpdateOne {
+func (puo *PointUpdateOne) SetNillableArea(s *string) *PointUpdateOne {
 	if s != nil {
 		puo.SetArea(*s)
 	}
@@ -269,37 +269,37 @@ func (puo *PosUpdateOne) SetNillableArea(s *string) *PosUpdateOne {
 }
 
 // ClearArea clears the value of the "area" field.
-func (puo *PosUpdateOne) ClearArea() *PosUpdateOne {
+func (puo *PointUpdateOne) ClearArea() *PointUpdateOne {
 	puo.mutation.ClearArea()
 	return puo
 }
 
-// Mutation returns the PosMutation object of the builder.
-func (puo *PosUpdateOne) Mutation() *PosMutation {
+// Mutation returns the PointMutation object of the builder.
+func (puo *PointUpdateOne) Mutation() *PointMutation {
 	return puo.mutation
 }
 
-// Where appends a list predicates to the PosUpdate builder.
-func (puo *PosUpdateOne) Where(ps ...predicate.Pos) *PosUpdateOne {
+// Where appends a list predicates to the PointUpdate builder.
+func (puo *PointUpdateOne) Where(ps ...predicate.Point) *PointUpdateOne {
 	puo.mutation.Where(ps...)
 	return puo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (puo *PosUpdateOne) Select(field string, fields ...string) *PosUpdateOne {
+func (puo *PointUpdateOne) Select(field string, fields ...string) *PointUpdateOne {
 	puo.fields = append([]string{field}, fields...)
 	return puo
 }
 
-// Save executes the query and returns the updated Pos entity.
-func (puo *PosUpdateOne) Save(ctx context.Context) (*Pos, error) {
+// Save executes the query and returns the updated Point entity.
+func (puo *PointUpdateOne) Save(ctx context.Context) (*Point, error) {
 	puo.defaults()
 	return withHooks(ctx, puo.sqlSave, puo.mutation, puo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (puo *PosUpdateOne) SaveX(ctx context.Context) *Pos {
+func (puo *PointUpdateOne) SaveX(ctx context.Context) *Point {
 	node, err := puo.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -308,64 +308,64 @@ func (puo *PosUpdateOne) SaveX(ctx context.Context) *Pos {
 }
 
 // Exec executes the query on the entity.
-func (puo *PosUpdateOne) Exec(ctx context.Context) error {
+func (puo *PointUpdateOne) Exec(ctx context.Context) error {
 	_, err := puo.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (puo *PosUpdateOne) ExecX(ctx context.Context) {
+func (puo *PointUpdateOne) ExecX(ctx context.Context) {
 	if err := puo.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (puo *PosUpdateOne) defaults() {
+func (puo *PointUpdateOne) defaults() {
 	if _, ok := puo.mutation.UpdateTime(); !ok {
-		v := pos.UpdateDefaultUpdateTime()
+		v := point.UpdateDefaultUpdateTime()
 		puo.mutation.SetUpdateTime(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (puo *PosUpdateOne) check() error {
+func (puo *PointUpdateOne) check() error {
 	if v, ok := puo.mutation.Floor(); ok {
-		if err := pos.FloorValidator(v); err != nil {
-			return &ValidationError{Name: "floor", err: fmt.Errorf(`ent: validator failed for field "Pos.floor": %w`, err)}
+		if err := point.FloorValidator(v); err != nil {
+			return &ValidationError{Name: "floor", err: fmt.Errorf(`ent: validator failed for field "Point.floor": %w`, err)}
 		}
 	}
 	if v, ok := puo.mutation.Building(); ok {
-		if err := pos.BuildingValidator(v); err != nil {
-			return &ValidationError{Name: "building", err: fmt.Errorf(`ent: validator failed for field "Pos.building": %w`, err)}
+		if err := point.BuildingValidator(v); err != nil {
+			return &ValidationError{Name: "building", err: fmt.Errorf(`ent: validator failed for field "Point.building": %w`, err)}
 		}
 	}
 	if v, ok := puo.mutation.Area(); ok {
-		if err := pos.AreaValidator(v); err != nil {
-			return &ValidationError{Name: "area", err: fmt.Errorf(`ent: validator failed for field "Pos.area": %w`, err)}
+		if err := point.AreaValidator(v); err != nil {
+			return &ValidationError{Name: "area", err: fmt.Errorf(`ent: validator failed for field "Point.area": %w`, err)}
 		}
 	}
 	return nil
 }
 
-func (puo *PosUpdateOne) sqlSave(ctx context.Context) (_node *Pos, err error) {
+func (puo *PointUpdateOne) sqlSave(ctx context.Context) (_node *Point, err error) {
 	if err := puo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(pos.Table, pos.Columns, sqlgraph.NewFieldSpec(pos.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(point.Table, point.Columns, sqlgraph.NewFieldSpec(point.FieldID, field.TypeInt))
 	id, ok := puo.mutation.ID()
 	if !ok {
-		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Pos.id" for update`)}
+		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Point.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
 	if fields := puo.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, pos.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, point.FieldID)
 		for _, f := range fields {
-			if !pos.ValidColumn(f) {
+			if !point.ValidColumn(f) {
 				return nil, &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 			}
-			if f != pos.FieldID {
+			if f != point.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, f)
 			}
 		}
@@ -378,32 +378,32 @@ func (puo *PosUpdateOne) sqlSave(ctx context.Context) (_node *Pos, err error) {
 		}
 	}
 	if value, ok := puo.mutation.UpdateTime(); ok {
-		_spec.SetField(pos.FieldUpdateTime, field.TypeTime, value)
+		_spec.SetField(point.FieldUpdateTime, field.TypeTime, value)
 	}
 	if value, ok := puo.mutation.Floor(); ok {
-		_spec.SetField(pos.FieldFloor, field.TypeString, value)
+		_spec.SetField(point.FieldFloor, field.TypeString, value)
 	}
 	if puo.mutation.FloorCleared() {
-		_spec.ClearField(pos.FieldFloor, field.TypeString)
+		_spec.ClearField(point.FieldFloor, field.TypeString)
 	}
 	if value, ok := puo.mutation.Building(); ok {
-		_spec.SetField(pos.FieldBuilding, field.TypeString, value)
+		_spec.SetField(point.FieldBuilding, field.TypeString, value)
 	}
 	if puo.mutation.BuildingCleared() {
-		_spec.ClearField(pos.FieldBuilding, field.TypeString)
+		_spec.ClearField(point.FieldBuilding, field.TypeString)
 	}
 	if value, ok := puo.mutation.Area(); ok {
-		_spec.SetField(pos.FieldArea, field.TypeString, value)
+		_spec.SetField(point.FieldArea, field.TypeString, value)
 	}
 	if puo.mutation.AreaCleared() {
-		_spec.ClearField(pos.FieldArea, field.TypeString)
+		_spec.ClearField(point.FieldArea, field.TypeString)
 	}
-	_node = &Pos{config: puo.config}
+	_node = &Point{config: puo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
 	if err = sqlgraph.UpdateNode(ctx, puo.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{pos.Label}
+			err = &NotFoundError{point.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}

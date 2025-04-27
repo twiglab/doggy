@@ -11,25 +11,25 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/twiglab/doggy/orm/ent/pos"
+	"github.com/twiglab/doggy/orm/ent/point"
 )
 
-// PosCreate is the builder for creating a Pos entity.
-type PosCreate struct {
+// PointCreate is the builder for creating a Point entity.
+type PointCreate struct {
 	config
-	mutation *PosMutation
+	mutation *PointMutation
 	hooks    []Hook
 	conflict []sql.ConflictOption
 }
 
 // SetCreateTime sets the "create_time" field.
-func (pc *PosCreate) SetCreateTime(t time.Time) *PosCreate {
+func (pc *PointCreate) SetCreateTime(t time.Time) *PointCreate {
 	pc.mutation.SetCreateTime(t)
 	return pc
 }
 
 // SetNillableCreateTime sets the "create_time" field if the given value is not nil.
-func (pc *PosCreate) SetNillableCreateTime(t *time.Time) *PosCreate {
+func (pc *PointCreate) SetNillableCreateTime(t *time.Time) *PointCreate {
 	if t != nil {
 		pc.SetCreateTime(*t)
 	}
@@ -37,13 +37,13 @@ func (pc *PosCreate) SetNillableCreateTime(t *time.Time) *PosCreate {
 }
 
 // SetUpdateTime sets the "update_time" field.
-func (pc *PosCreate) SetUpdateTime(t time.Time) *PosCreate {
+func (pc *PointCreate) SetUpdateTime(t time.Time) *PointCreate {
 	pc.mutation.SetUpdateTime(t)
 	return pc
 }
 
 // SetNillableUpdateTime sets the "update_time" field if the given value is not nil.
-func (pc *PosCreate) SetNillableUpdateTime(t *time.Time) *PosCreate {
+func (pc *PointCreate) SetNillableUpdateTime(t *time.Time) *PointCreate {
 	if t != nil {
 		pc.SetUpdateTime(*t)
 	}
@@ -51,25 +51,25 @@ func (pc *PosCreate) SetNillableUpdateTime(t *time.Time) *PosCreate {
 }
 
 // SetSn sets the "sn" field.
-func (pc *PosCreate) SetSn(s string) *PosCreate {
+func (pc *PointCreate) SetSn(s string) *PointCreate {
 	pc.mutation.SetSn(s)
 	return pc
 }
 
 // SetPos sets the "pos" field.
-func (pc *PosCreate) SetPos(s string) *PosCreate {
+func (pc *PointCreate) SetPos(s string) *PointCreate {
 	pc.mutation.SetPos(s)
 	return pc
 }
 
 // SetFloor sets the "floor" field.
-func (pc *PosCreate) SetFloor(s string) *PosCreate {
+func (pc *PointCreate) SetFloor(s string) *PointCreate {
 	pc.mutation.SetFloor(s)
 	return pc
 }
 
 // SetNillableFloor sets the "floor" field if the given value is not nil.
-func (pc *PosCreate) SetNillableFloor(s *string) *PosCreate {
+func (pc *PointCreate) SetNillableFloor(s *string) *PointCreate {
 	if s != nil {
 		pc.SetFloor(*s)
 	}
@@ -77,13 +77,13 @@ func (pc *PosCreate) SetNillableFloor(s *string) *PosCreate {
 }
 
 // SetBuilding sets the "building" field.
-func (pc *PosCreate) SetBuilding(s string) *PosCreate {
+func (pc *PointCreate) SetBuilding(s string) *PointCreate {
 	pc.mutation.SetBuilding(s)
 	return pc
 }
 
 // SetNillableBuilding sets the "building" field if the given value is not nil.
-func (pc *PosCreate) SetNillableBuilding(s *string) *PosCreate {
+func (pc *PointCreate) SetNillableBuilding(s *string) *PointCreate {
 	if s != nil {
 		pc.SetBuilding(*s)
 	}
@@ -91,32 +91,32 @@ func (pc *PosCreate) SetNillableBuilding(s *string) *PosCreate {
 }
 
 // SetArea sets the "area" field.
-func (pc *PosCreate) SetArea(s string) *PosCreate {
+func (pc *PointCreate) SetArea(s string) *PointCreate {
 	pc.mutation.SetArea(s)
 	return pc
 }
 
 // SetNillableArea sets the "area" field if the given value is not nil.
-func (pc *PosCreate) SetNillableArea(s *string) *PosCreate {
+func (pc *PointCreate) SetNillableArea(s *string) *PointCreate {
 	if s != nil {
 		pc.SetArea(*s)
 	}
 	return pc
 }
 
-// Mutation returns the PosMutation object of the builder.
-func (pc *PosCreate) Mutation() *PosMutation {
+// Mutation returns the PointMutation object of the builder.
+func (pc *PointCreate) Mutation() *PointMutation {
 	return pc.mutation
 }
 
-// Save creates the Pos in the database.
-func (pc *PosCreate) Save(ctx context.Context) (*Pos, error) {
+// Save creates the Point in the database.
+func (pc *PointCreate) Save(ctx context.Context) (*Point, error) {
 	pc.defaults()
 	return withHooks(ctx, pc.sqlSave, pc.mutation, pc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (pc *PosCreate) SaveX(ctx context.Context) *Pos {
+func (pc *PointCreate) SaveX(ctx context.Context) *Point {
 	v, err := pc.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -125,73 +125,73 @@ func (pc *PosCreate) SaveX(ctx context.Context) *Pos {
 }
 
 // Exec executes the query.
-func (pc *PosCreate) Exec(ctx context.Context) error {
+func (pc *PointCreate) Exec(ctx context.Context) error {
 	_, err := pc.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pc *PosCreate) ExecX(ctx context.Context) {
+func (pc *PointCreate) ExecX(ctx context.Context) {
 	if err := pc.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (pc *PosCreate) defaults() {
+func (pc *PointCreate) defaults() {
 	if _, ok := pc.mutation.CreateTime(); !ok {
-		v := pos.DefaultCreateTime()
+		v := point.DefaultCreateTime()
 		pc.mutation.SetCreateTime(v)
 	}
 	if _, ok := pc.mutation.UpdateTime(); !ok {
-		v := pos.DefaultUpdateTime()
+		v := point.DefaultUpdateTime()
 		pc.mutation.SetUpdateTime(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (pc *PosCreate) check() error {
+func (pc *PointCreate) check() error {
 	if _, ok := pc.mutation.CreateTime(); !ok {
-		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "Pos.create_time"`)}
+		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "Point.create_time"`)}
 	}
 	if _, ok := pc.mutation.UpdateTime(); !ok {
-		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "Pos.update_time"`)}
+		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "Point.update_time"`)}
 	}
 	if _, ok := pc.mutation.Sn(); !ok {
-		return &ValidationError{Name: "sn", err: errors.New(`ent: missing required field "Pos.sn"`)}
+		return &ValidationError{Name: "sn", err: errors.New(`ent: missing required field "Point.sn"`)}
 	}
 	if v, ok := pc.mutation.Sn(); ok {
-		if err := pos.SnValidator(v); err != nil {
-			return &ValidationError{Name: "sn", err: fmt.Errorf(`ent: validator failed for field "Pos.sn": %w`, err)}
+		if err := point.SnValidator(v); err != nil {
+			return &ValidationError{Name: "sn", err: fmt.Errorf(`ent: validator failed for field "Point.sn": %w`, err)}
 		}
 	}
 	if _, ok := pc.mutation.Pos(); !ok {
-		return &ValidationError{Name: "pos", err: errors.New(`ent: missing required field "Pos.pos"`)}
+		return &ValidationError{Name: "pos", err: errors.New(`ent: missing required field "Point.pos"`)}
 	}
 	if v, ok := pc.mutation.Pos(); ok {
-		if err := pos.PosValidator(v); err != nil {
-			return &ValidationError{Name: "pos", err: fmt.Errorf(`ent: validator failed for field "Pos.pos": %w`, err)}
+		if err := point.PosValidator(v); err != nil {
+			return &ValidationError{Name: "pos", err: fmt.Errorf(`ent: validator failed for field "Point.pos": %w`, err)}
 		}
 	}
 	if v, ok := pc.mutation.Floor(); ok {
-		if err := pos.FloorValidator(v); err != nil {
-			return &ValidationError{Name: "floor", err: fmt.Errorf(`ent: validator failed for field "Pos.floor": %w`, err)}
+		if err := point.FloorValidator(v); err != nil {
+			return &ValidationError{Name: "floor", err: fmt.Errorf(`ent: validator failed for field "Point.floor": %w`, err)}
 		}
 	}
 	if v, ok := pc.mutation.Building(); ok {
-		if err := pos.BuildingValidator(v); err != nil {
-			return &ValidationError{Name: "building", err: fmt.Errorf(`ent: validator failed for field "Pos.building": %w`, err)}
+		if err := point.BuildingValidator(v); err != nil {
+			return &ValidationError{Name: "building", err: fmt.Errorf(`ent: validator failed for field "Point.building": %w`, err)}
 		}
 	}
 	if v, ok := pc.mutation.Area(); ok {
-		if err := pos.AreaValidator(v); err != nil {
-			return &ValidationError{Name: "area", err: fmt.Errorf(`ent: validator failed for field "Pos.area": %w`, err)}
+		if err := point.AreaValidator(v); err != nil {
+			return &ValidationError{Name: "area", err: fmt.Errorf(`ent: validator failed for field "Point.area": %w`, err)}
 		}
 	}
 	return nil
 }
 
-func (pc *PosCreate) sqlSave(ctx context.Context) (*Pos, error) {
+func (pc *PointCreate) sqlSave(ctx context.Context) (*Point, error) {
 	if err := pc.check(); err != nil {
 		return nil, err
 	}
@@ -209,38 +209,38 @@ func (pc *PosCreate) sqlSave(ctx context.Context) (*Pos, error) {
 	return _node, nil
 }
 
-func (pc *PosCreate) createSpec() (*Pos, *sqlgraph.CreateSpec) {
+func (pc *PointCreate) createSpec() (*Point, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Pos{config: pc.config}
-		_spec = sqlgraph.NewCreateSpec(pos.Table, sqlgraph.NewFieldSpec(pos.FieldID, field.TypeInt))
+		_node = &Point{config: pc.config}
+		_spec = sqlgraph.NewCreateSpec(point.Table, sqlgraph.NewFieldSpec(point.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = pc.conflict
 	if value, ok := pc.mutation.CreateTime(); ok {
-		_spec.SetField(pos.FieldCreateTime, field.TypeTime, value)
+		_spec.SetField(point.FieldCreateTime, field.TypeTime, value)
 		_node.CreateTime = value
 	}
 	if value, ok := pc.mutation.UpdateTime(); ok {
-		_spec.SetField(pos.FieldUpdateTime, field.TypeTime, value)
+		_spec.SetField(point.FieldUpdateTime, field.TypeTime, value)
 		_node.UpdateTime = value
 	}
 	if value, ok := pc.mutation.Sn(); ok {
-		_spec.SetField(pos.FieldSn, field.TypeString, value)
+		_spec.SetField(point.FieldSn, field.TypeString, value)
 		_node.Sn = value
 	}
 	if value, ok := pc.mutation.Pos(); ok {
-		_spec.SetField(pos.FieldPos, field.TypeString, value)
+		_spec.SetField(point.FieldPos, field.TypeString, value)
 		_node.Pos = value
 	}
 	if value, ok := pc.mutation.Floor(); ok {
-		_spec.SetField(pos.FieldFloor, field.TypeString, value)
+		_spec.SetField(point.FieldFloor, field.TypeString, value)
 		_node.Floor = value
 	}
 	if value, ok := pc.mutation.Building(); ok {
-		_spec.SetField(pos.FieldBuilding, field.TypeString, value)
+		_spec.SetField(point.FieldBuilding, field.TypeString, value)
 		_node.Building = value
 	}
 	if value, ok := pc.mutation.Area(); ok {
-		_spec.SetField(pos.FieldArea, field.TypeString, value)
+		_spec.SetField(point.FieldArea, field.TypeString, value)
 		_node.Area = value
 	}
 	return _node, _spec
@@ -249,7 +249,7 @@ func (pc *PosCreate) createSpec() (*Pos, *sqlgraph.CreateSpec) {
 // OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
 // of the `INSERT` statement. For example:
 //
-//	client.Pos.Create().
+//	client.Point.Create().
 //		SetCreateTime(v).
 //		OnConflict(
 //			// Update the row with the new values
@@ -258,13 +258,13 @@ func (pc *PosCreate) createSpec() (*Pos, *sqlgraph.CreateSpec) {
 //		).
 //		// Override some of the fields with custom
 //		// update values.
-//		Update(func(u *ent.PosUpsert) {
+//		Update(func(u *ent.PointUpsert) {
 //			SetCreateTime(v+v).
 //		}).
 //		Exec(ctx)
-func (pc *PosCreate) OnConflict(opts ...sql.ConflictOption) *PosUpsertOne {
+func (pc *PointCreate) OnConflict(opts ...sql.ConflictOption) *PointUpsertOne {
 	pc.conflict = opts
-	return &PosUpsertOne{
+	return &PointUpsertOne{
 		create: pc,
 	}
 }
@@ -272,114 +272,114 @@ func (pc *PosCreate) OnConflict(opts ...sql.ConflictOption) *PosUpsertOne {
 // OnConflictColumns calls `OnConflict` and configures the columns
 // as conflict target. Using this option is equivalent to using:
 //
-//	client.Pos.Create().
+//	client.Point.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (pc *PosCreate) OnConflictColumns(columns ...string) *PosUpsertOne {
+func (pc *PointCreate) OnConflictColumns(columns ...string) *PointUpsertOne {
 	pc.conflict = append(pc.conflict, sql.ConflictColumns(columns...))
-	return &PosUpsertOne{
+	return &PointUpsertOne{
 		create: pc,
 	}
 }
 
 type (
-	// PosUpsertOne is the builder for "upsert"-ing
-	//  one Pos node.
-	PosUpsertOne struct {
-		create *PosCreate
+	// PointUpsertOne is the builder for "upsert"-ing
+	//  one Point node.
+	PointUpsertOne struct {
+		create *PointCreate
 	}
 
-	// PosUpsert is the "OnConflict" setter.
-	PosUpsert struct {
+	// PointUpsert is the "OnConflict" setter.
+	PointUpsert struct {
 		*sql.UpdateSet
 	}
 )
 
 // SetUpdateTime sets the "update_time" field.
-func (u *PosUpsert) SetUpdateTime(v time.Time) *PosUpsert {
-	u.Set(pos.FieldUpdateTime, v)
+func (u *PointUpsert) SetUpdateTime(v time.Time) *PointUpsert {
+	u.Set(point.FieldUpdateTime, v)
 	return u
 }
 
 // UpdateUpdateTime sets the "update_time" field to the value that was provided on create.
-func (u *PosUpsert) UpdateUpdateTime() *PosUpsert {
-	u.SetExcluded(pos.FieldUpdateTime)
+func (u *PointUpsert) UpdateUpdateTime() *PointUpsert {
+	u.SetExcluded(point.FieldUpdateTime)
 	return u
 }
 
 // SetFloor sets the "floor" field.
-func (u *PosUpsert) SetFloor(v string) *PosUpsert {
-	u.Set(pos.FieldFloor, v)
+func (u *PointUpsert) SetFloor(v string) *PointUpsert {
+	u.Set(point.FieldFloor, v)
 	return u
 }
 
 // UpdateFloor sets the "floor" field to the value that was provided on create.
-func (u *PosUpsert) UpdateFloor() *PosUpsert {
-	u.SetExcluded(pos.FieldFloor)
+func (u *PointUpsert) UpdateFloor() *PointUpsert {
+	u.SetExcluded(point.FieldFloor)
 	return u
 }
 
 // ClearFloor clears the value of the "floor" field.
-func (u *PosUpsert) ClearFloor() *PosUpsert {
-	u.SetNull(pos.FieldFloor)
+func (u *PointUpsert) ClearFloor() *PointUpsert {
+	u.SetNull(point.FieldFloor)
 	return u
 }
 
 // SetBuilding sets the "building" field.
-func (u *PosUpsert) SetBuilding(v string) *PosUpsert {
-	u.Set(pos.FieldBuilding, v)
+func (u *PointUpsert) SetBuilding(v string) *PointUpsert {
+	u.Set(point.FieldBuilding, v)
 	return u
 }
 
 // UpdateBuilding sets the "building" field to the value that was provided on create.
-func (u *PosUpsert) UpdateBuilding() *PosUpsert {
-	u.SetExcluded(pos.FieldBuilding)
+func (u *PointUpsert) UpdateBuilding() *PointUpsert {
+	u.SetExcluded(point.FieldBuilding)
 	return u
 }
 
 // ClearBuilding clears the value of the "building" field.
-func (u *PosUpsert) ClearBuilding() *PosUpsert {
-	u.SetNull(pos.FieldBuilding)
+func (u *PointUpsert) ClearBuilding() *PointUpsert {
+	u.SetNull(point.FieldBuilding)
 	return u
 }
 
 // SetArea sets the "area" field.
-func (u *PosUpsert) SetArea(v string) *PosUpsert {
-	u.Set(pos.FieldArea, v)
+func (u *PointUpsert) SetArea(v string) *PointUpsert {
+	u.Set(point.FieldArea, v)
 	return u
 }
 
 // UpdateArea sets the "area" field to the value that was provided on create.
-func (u *PosUpsert) UpdateArea() *PosUpsert {
-	u.SetExcluded(pos.FieldArea)
+func (u *PointUpsert) UpdateArea() *PointUpsert {
+	u.SetExcluded(point.FieldArea)
 	return u
 }
 
 // ClearArea clears the value of the "area" field.
-func (u *PosUpsert) ClearArea() *PosUpsert {
-	u.SetNull(pos.FieldArea)
+func (u *PointUpsert) ClearArea() *PointUpsert {
+	u.SetNull(point.FieldArea)
 	return u
 }
 
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
-//	client.Pos.Create().
+//	client.Point.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
 //		).
 //		Exec(ctx)
-func (u *PosUpsertOne) UpdateNewValues() *PosUpsertOne {
+func (u *PointUpsertOne) UpdateNewValues() *PointUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.CreateTime(); exists {
-			s.SetIgnore(pos.FieldCreateTime)
+			s.SetIgnore(point.FieldCreateTime)
 		}
 		if _, exists := u.create.mutation.Sn(); exists {
-			s.SetIgnore(pos.FieldSn)
+			s.SetIgnore(point.FieldSn)
 		}
 		if _, exists := u.create.mutation.Pos(); exists {
-			s.SetIgnore(pos.FieldPos)
+			s.SetIgnore(point.FieldPos)
 		}
 	}))
 	return u
@@ -388,124 +388,124 @@ func (u *PosUpsertOne) UpdateNewValues() *PosUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//	client.Pos.Create().
+//	client.Point.Create().
 //	    OnConflict(sql.ResolveWithIgnore()).
 //	    Exec(ctx)
-func (u *PosUpsertOne) Ignore() *PosUpsertOne {
+func (u *PointUpsertOne) Ignore() *PointUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
 }
 
 // DoNothing configures the conflict_action to `DO NOTHING`.
 // Supported only by SQLite and PostgreSQL.
-func (u *PosUpsertOne) DoNothing() *PosUpsertOne {
+func (u *PointUpsertOne) DoNothing() *PointUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.DoNothing())
 	return u
 }
 
-// Update allows overriding fields `UPDATE` values. See the PosCreate.OnConflict
+// Update allows overriding fields `UPDATE` values. See the PointCreate.OnConflict
 // documentation for more info.
-func (u *PosUpsertOne) Update(set func(*PosUpsert)) *PosUpsertOne {
+func (u *PointUpsertOne) Update(set func(*PointUpsert)) *PointUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
-		set(&PosUpsert{UpdateSet: update})
+		set(&PointUpsert{UpdateSet: update})
 	}))
 	return u
 }
 
 // SetUpdateTime sets the "update_time" field.
-func (u *PosUpsertOne) SetUpdateTime(v time.Time) *PosUpsertOne {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertOne) SetUpdateTime(v time.Time) *PointUpsertOne {
+	return u.Update(func(s *PointUpsert) {
 		s.SetUpdateTime(v)
 	})
 }
 
 // UpdateUpdateTime sets the "update_time" field to the value that was provided on create.
-func (u *PosUpsertOne) UpdateUpdateTime() *PosUpsertOne {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertOne) UpdateUpdateTime() *PointUpsertOne {
+	return u.Update(func(s *PointUpsert) {
 		s.UpdateUpdateTime()
 	})
 }
 
 // SetFloor sets the "floor" field.
-func (u *PosUpsertOne) SetFloor(v string) *PosUpsertOne {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertOne) SetFloor(v string) *PointUpsertOne {
+	return u.Update(func(s *PointUpsert) {
 		s.SetFloor(v)
 	})
 }
 
 // UpdateFloor sets the "floor" field to the value that was provided on create.
-func (u *PosUpsertOne) UpdateFloor() *PosUpsertOne {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertOne) UpdateFloor() *PointUpsertOne {
+	return u.Update(func(s *PointUpsert) {
 		s.UpdateFloor()
 	})
 }
 
 // ClearFloor clears the value of the "floor" field.
-func (u *PosUpsertOne) ClearFloor() *PosUpsertOne {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertOne) ClearFloor() *PointUpsertOne {
+	return u.Update(func(s *PointUpsert) {
 		s.ClearFloor()
 	})
 }
 
 // SetBuilding sets the "building" field.
-func (u *PosUpsertOne) SetBuilding(v string) *PosUpsertOne {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertOne) SetBuilding(v string) *PointUpsertOne {
+	return u.Update(func(s *PointUpsert) {
 		s.SetBuilding(v)
 	})
 }
 
 // UpdateBuilding sets the "building" field to the value that was provided on create.
-func (u *PosUpsertOne) UpdateBuilding() *PosUpsertOne {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertOne) UpdateBuilding() *PointUpsertOne {
+	return u.Update(func(s *PointUpsert) {
 		s.UpdateBuilding()
 	})
 }
 
 // ClearBuilding clears the value of the "building" field.
-func (u *PosUpsertOne) ClearBuilding() *PosUpsertOne {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertOne) ClearBuilding() *PointUpsertOne {
+	return u.Update(func(s *PointUpsert) {
 		s.ClearBuilding()
 	})
 }
 
 // SetArea sets the "area" field.
-func (u *PosUpsertOne) SetArea(v string) *PosUpsertOne {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertOne) SetArea(v string) *PointUpsertOne {
+	return u.Update(func(s *PointUpsert) {
 		s.SetArea(v)
 	})
 }
 
 // UpdateArea sets the "area" field to the value that was provided on create.
-func (u *PosUpsertOne) UpdateArea() *PosUpsertOne {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertOne) UpdateArea() *PointUpsertOne {
+	return u.Update(func(s *PointUpsert) {
 		s.UpdateArea()
 	})
 }
 
 // ClearArea clears the value of the "area" field.
-func (u *PosUpsertOne) ClearArea() *PosUpsertOne {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertOne) ClearArea() *PointUpsertOne {
+	return u.Update(func(s *PointUpsert) {
 		s.ClearArea()
 	})
 }
 
 // Exec executes the query.
-func (u *PosUpsertOne) Exec(ctx context.Context) error {
+func (u *PointUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
-		return errors.New("ent: missing options for PosCreate.OnConflict")
+		return errors.New("ent: missing options for PointCreate.OnConflict")
 	}
 	return u.create.Exec(ctx)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (u *PosUpsertOne) ExecX(ctx context.Context) {
+func (u *PointUpsertOne) ExecX(ctx context.Context) {
 	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *PosUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *PointUpsertOne) ID(ctx context.Context) (id int, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -514,7 +514,7 @@ func (u *PosUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *PosUpsertOne) IDX(ctx context.Context) int {
+func (u *PointUpsertOne) IDX(ctx context.Context) int {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -522,28 +522,28 @@ func (u *PosUpsertOne) IDX(ctx context.Context) int {
 	return id
 }
 
-// PosCreateBulk is the builder for creating many Pos entities in bulk.
-type PosCreateBulk struct {
+// PointCreateBulk is the builder for creating many Point entities in bulk.
+type PointCreateBulk struct {
 	config
 	err      error
-	builders []*PosCreate
+	builders []*PointCreate
 	conflict []sql.ConflictOption
 }
 
-// Save creates the Pos entities in the database.
-func (pcb *PosCreateBulk) Save(ctx context.Context) ([]*Pos, error) {
+// Save creates the Point entities in the database.
+func (pcb *PointCreateBulk) Save(ctx context.Context) ([]*Point, error) {
 	if pcb.err != nil {
 		return nil, pcb.err
 	}
 	specs := make([]*sqlgraph.CreateSpec, len(pcb.builders))
-	nodes := make([]*Pos, len(pcb.builders))
+	nodes := make([]*Point, len(pcb.builders))
 	mutators := make([]Mutator, len(pcb.builders))
 	for i := range pcb.builders {
 		func(i int, root context.Context) {
 			builder := pcb.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-				mutation, ok := m.(*PosMutation)
+				mutation, ok := m.(*PointMutation)
 				if !ok {
 					return nil, fmt.Errorf("unexpected mutation type %T", m)
 				}
@@ -591,7 +591,7 @@ func (pcb *PosCreateBulk) Save(ctx context.Context) ([]*Pos, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (pcb *PosCreateBulk) SaveX(ctx context.Context) []*Pos {
+func (pcb *PointCreateBulk) SaveX(ctx context.Context) []*Point {
 	v, err := pcb.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -600,13 +600,13 @@ func (pcb *PosCreateBulk) SaveX(ctx context.Context) []*Pos {
 }
 
 // Exec executes the query.
-func (pcb *PosCreateBulk) Exec(ctx context.Context) error {
+func (pcb *PointCreateBulk) Exec(ctx context.Context) error {
 	_, err := pcb.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pcb *PosCreateBulk) ExecX(ctx context.Context) {
+func (pcb *PointCreateBulk) ExecX(ctx context.Context) {
 	if err := pcb.Exec(ctx); err != nil {
 		panic(err)
 	}
@@ -615,7 +615,7 @@ func (pcb *PosCreateBulk) ExecX(ctx context.Context) {
 // OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
 // of the `INSERT` statement. For example:
 //
-//	client.Pos.CreateBulk(builders...).
+//	client.Point.CreateBulk(builders...).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -623,13 +623,13 @@ func (pcb *PosCreateBulk) ExecX(ctx context.Context) {
 //		).
 //		// Override some of the fields with custom
 //		// update values.
-//		Update(func(u *ent.PosUpsert) {
+//		Update(func(u *ent.PointUpsert) {
 //			SetCreateTime(v+v).
 //		}).
 //		Exec(ctx)
-func (pcb *PosCreateBulk) OnConflict(opts ...sql.ConflictOption) *PosUpsertBulk {
+func (pcb *PointCreateBulk) OnConflict(opts ...sql.ConflictOption) *PointUpsertBulk {
 	pcb.conflict = opts
-	return &PosUpsertBulk{
+	return &PointUpsertBulk{
 		create: pcb,
 	}
 }
@@ -637,42 +637,42 @@ func (pcb *PosCreateBulk) OnConflict(opts ...sql.ConflictOption) *PosUpsertBulk 
 // OnConflictColumns calls `OnConflict` and configures the columns
 // as conflict target. Using this option is equivalent to using:
 //
-//	client.Pos.Create().
+//	client.Point.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (pcb *PosCreateBulk) OnConflictColumns(columns ...string) *PosUpsertBulk {
+func (pcb *PointCreateBulk) OnConflictColumns(columns ...string) *PointUpsertBulk {
 	pcb.conflict = append(pcb.conflict, sql.ConflictColumns(columns...))
-	return &PosUpsertBulk{
+	return &PointUpsertBulk{
 		create: pcb,
 	}
 }
 
-// PosUpsertBulk is the builder for "upsert"-ing
-// a bulk of Pos nodes.
-type PosUpsertBulk struct {
-	create *PosCreateBulk
+// PointUpsertBulk is the builder for "upsert"-ing
+// a bulk of Point nodes.
+type PointUpsertBulk struct {
+	create *PointCreateBulk
 }
 
 // UpdateNewValues updates the mutable fields using the new values that
 // were set on create. Using this option is equivalent to using:
 //
-//	client.Pos.Create().
+//	client.Point.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
 //		).
 //		Exec(ctx)
-func (u *PosUpsertBulk) UpdateNewValues() *PosUpsertBulk {
+func (u *PointUpsertBulk) UpdateNewValues() *PointUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
 			if _, exists := b.mutation.CreateTime(); exists {
-				s.SetIgnore(pos.FieldCreateTime)
+				s.SetIgnore(point.FieldCreateTime)
 			}
 			if _, exists := b.mutation.Sn(); exists {
-				s.SetIgnore(pos.FieldSn)
+				s.SetIgnore(point.FieldSn)
 			}
 			if _, exists := b.mutation.Pos(); exists {
-				s.SetIgnore(pos.FieldPos)
+				s.SetIgnore(point.FieldPos)
 			}
 		}
 	}))
@@ -682,125 +682,125 @@ func (u *PosUpsertBulk) UpdateNewValues() *PosUpsertBulk {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//	client.Pos.Create().
+//	client.Point.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-func (u *PosUpsertBulk) Ignore() *PosUpsertBulk {
+func (u *PointUpsertBulk) Ignore() *PointUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
 }
 
 // DoNothing configures the conflict_action to `DO NOTHING`.
 // Supported only by SQLite and PostgreSQL.
-func (u *PosUpsertBulk) DoNothing() *PosUpsertBulk {
+func (u *PointUpsertBulk) DoNothing() *PointUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.DoNothing())
 	return u
 }
 
-// Update allows overriding fields `UPDATE` values. See the PosCreateBulk.OnConflict
+// Update allows overriding fields `UPDATE` values. See the PointCreateBulk.OnConflict
 // documentation for more info.
-func (u *PosUpsertBulk) Update(set func(*PosUpsert)) *PosUpsertBulk {
+func (u *PointUpsertBulk) Update(set func(*PointUpsert)) *PointUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
-		set(&PosUpsert{UpdateSet: update})
+		set(&PointUpsert{UpdateSet: update})
 	}))
 	return u
 }
 
 // SetUpdateTime sets the "update_time" field.
-func (u *PosUpsertBulk) SetUpdateTime(v time.Time) *PosUpsertBulk {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertBulk) SetUpdateTime(v time.Time) *PointUpsertBulk {
+	return u.Update(func(s *PointUpsert) {
 		s.SetUpdateTime(v)
 	})
 }
 
 // UpdateUpdateTime sets the "update_time" field to the value that was provided on create.
-func (u *PosUpsertBulk) UpdateUpdateTime() *PosUpsertBulk {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertBulk) UpdateUpdateTime() *PointUpsertBulk {
+	return u.Update(func(s *PointUpsert) {
 		s.UpdateUpdateTime()
 	})
 }
 
 // SetFloor sets the "floor" field.
-func (u *PosUpsertBulk) SetFloor(v string) *PosUpsertBulk {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertBulk) SetFloor(v string) *PointUpsertBulk {
+	return u.Update(func(s *PointUpsert) {
 		s.SetFloor(v)
 	})
 }
 
 // UpdateFloor sets the "floor" field to the value that was provided on create.
-func (u *PosUpsertBulk) UpdateFloor() *PosUpsertBulk {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertBulk) UpdateFloor() *PointUpsertBulk {
+	return u.Update(func(s *PointUpsert) {
 		s.UpdateFloor()
 	})
 }
 
 // ClearFloor clears the value of the "floor" field.
-func (u *PosUpsertBulk) ClearFloor() *PosUpsertBulk {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertBulk) ClearFloor() *PointUpsertBulk {
+	return u.Update(func(s *PointUpsert) {
 		s.ClearFloor()
 	})
 }
 
 // SetBuilding sets the "building" field.
-func (u *PosUpsertBulk) SetBuilding(v string) *PosUpsertBulk {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertBulk) SetBuilding(v string) *PointUpsertBulk {
+	return u.Update(func(s *PointUpsert) {
 		s.SetBuilding(v)
 	})
 }
 
 // UpdateBuilding sets the "building" field to the value that was provided on create.
-func (u *PosUpsertBulk) UpdateBuilding() *PosUpsertBulk {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertBulk) UpdateBuilding() *PointUpsertBulk {
+	return u.Update(func(s *PointUpsert) {
 		s.UpdateBuilding()
 	})
 }
 
 // ClearBuilding clears the value of the "building" field.
-func (u *PosUpsertBulk) ClearBuilding() *PosUpsertBulk {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertBulk) ClearBuilding() *PointUpsertBulk {
+	return u.Update(func(s *PointUpsert) {
 		s.ClearBuilding()
 	})
 }
 
 // SetArea sets the "area" field.
-func (u *PosUpsertBulk) SetArea(v string) *PosUpsertBulk {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertBulk) SetArea(v string) *PointUpsertBulk {
+	return u.Update(func(s *PointUpsert) {
 		s.SetArea(v)
 	})
 }
 
 // UpdateArea sets the "area" field to the value that was provided on create.
-func (u *PosUpsertBulk) UpdateArea() *PosUpsertBulk {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertBulk) UpdateArea() *PointUpsertBulk {
+	return u.Update(func(s *PointUpsert) {
 		s.UpdateArea()
 	})
 }
 
 // ClearArea clears the value of the "area" field.
-func (u *PosUpsertBulk) ClearArea() *PosUpsertBulk {
-	return u.Update(func(s *PosUpsert) {
+func (u *PointUpsertBulk) ClearArea() *PointUpsertBulk {
+	return u.Update(func(s *PointUpsert) {
 		s.ClearArea()
 	})
 }
 
 // Exec executes the query.
-func (u *PosUpsertBulk) Exec(ctx context.Context) error {
+func (u *PointUpsertBulk) Exec(ctx context.Context) error {
 	if u.create.err != nil {
 		return u.create.err
 	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
-			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the PosCreateBulk instead", i)
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the PointCreateBulk instead", i)
 		}
 	}
 	if len(u.create.conflict) == 0 {
-		return errors.New("ent: missing options for PosCreateBulk.OnConflict")
+		return errors.New("ent: missing options for PointCreateBulk.OnConflict")
 	}
 	return u.create.Exec(ctx)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (u *PosUpsertBulk) ExecX(ctx context.Context) {
+func (u *PointUpsertBulk) ExecX(ctx context.Context) {
 	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}

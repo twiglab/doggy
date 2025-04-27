@@ -10,11 +10,11 @@ import (
 	"entgo.io/ent/schema/mixin"
 )
 
-type Pos struct {
+type Point struct {
 	ent.Schema
 }
 
-func (Pos) Fields() []ent.Field {
+func (Point) Fields() []ent.Field {
 	return []ent.Field{
 
 		field.String("sn").
@@ -64,20 +64,20 @@ func (Pos) Fields() []ent.Field {
 	}
 }
 
-func (Pos) Mixin() []ent.Mixin {
+func (Point) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixin.Time{},
 	}
 }
 
-func (Pos) Indexes() []ent.Index {
+func (Point) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("sn"),
 	}
 }
 
-func (Pos) Annotations() []schema.Annotation {
+func (Point) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entsql.Annotation{Table: "camera_setup"},
+		entsql.Annotation{Table: "camera_point"},
 	}
 }

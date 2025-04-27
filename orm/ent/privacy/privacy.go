@@ -111,28 +111,28 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
-// The PosQueryRuleFunc type is an adapter to allow the use of ordinary
+// The PointQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type PosQueryRuleFunc func(context.Context, *ent.PosQuery) error
+type PointQueryRuleFunc func(context.Context, *ent.PointQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f PosQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.PosQuery); ok {
+func (f PointQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.PointQuery); ok {
 		return f(ctx, q)
 	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.PosQuery", q)
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.PointQuery", q)
 }
 
-// The PosMutationRuleFunc type is an adapter to allow the use of ordinary
+// The PointMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type PosMutationRuleFunc func(context.Context, *ent.PosMutation) error
+type PointMutationRuleFunc func(context.Context, *ent.PointMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f PosMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.PosMutation); ok {
+func (f PointMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.PointMutation); ok {
 		return f(ctx, m)
 	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.PosMutation", m)
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.PointMutation", m)
 }
 
 // The UploadQueryRuleFunc type is an adapter to allow the use of ordinary
@@ -218,7 +218,7 @@ var _ QueryMutationRule = FilterFunc(nil)
 
 func queryFilter(q ent.Query) (Filter, error) {
 	switch q := q.(type) {
-	case *ent.PosQuery:
+	case *ent.PointQuery:
 		return q.Filter(), nil
 	case *ent.UploadQuery:
 		return q.Filter(), nil
@@ -231,7 +231,7 @@ func queryFilter(q ent.Query) (Filter, error) {
 
 func mutationFilter(m ent.Mutation) (Filter, error) {
 	switch m := m.(type) {
-	case *ent.PosMutation:
+	case *ent.PointMutation:
 		return m.Filter(), nil
 	case *ent.UploadMutation:
 		return m.Filter(), nil

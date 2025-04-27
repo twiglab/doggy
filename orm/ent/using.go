@@ -28,9 +28,7 @@ type Using struct {
 	// Alg holds the value of the "alg" field.
 	Alg string `json:"alg,omitempty"`
 	// Name holds the value of the "name" field.
-	Name string `json:"name,omitempty"`
-	// Bk holds the value of the "bk" field.
-	Bk           string `json:"bk,omitempty"`
+	Name         string `json:"name,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -41,7 +39,7 @@ func (*Using) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case using.FieldID:
 			values[i] = new(sql.NullInt64)
-		case using.FieldSn, using.FieldUUID, using.FieldAlg, using.FieldName, using.FieldBk:
+		case using.FieldSn, using.FieldUUID, using.FieldAlg, using.FieldName:
 			values[i] = new(sql.NullString)
 		case using.FieldCreateTime, using.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
@@ -102,12 +100,6 @@ func (u *Using) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				u.Name = value.String
 			}
-		case using.FieldBk:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field bk", values[i])
-			} else if value.Valid {
-				u.Bk = value.String
-			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
 		}
@@ -161,9 +153,6 @@ func (u *Using) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(u.Name)
-	builder.WriteString(", ")
-	builder.WriteString("bk=")
-	builder.WriteString(u.Bk)
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -9,11 +9,11 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/doggy/orm/ent/pos"
+	"github.com/twiglab/doggy/orm/ent/point"
 )
 
-// Pos is the model entity for the Pos schema.
-type Pos struct {
+// Point is the model entity for the Point schema.
+type Point struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
@@ -35,15 +35,15 @@ type Pos struct {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*Pos) scanValues(columns []string) ([]any, error) {
+func (*Point) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case pos.FieldID:
+		case point.FieldID:
 			values[i] = new(sql.NullInt64)
-		case pos.FieldSn, pos.FieldPos, pos.FieldFloor, pos.FieldBuilding, pos.FieldArea:
+		case point.FieldSn, point.FieldPos, point.FieldFloor, point.FieldBuilding, point.FieldArea:
 			values[i] = new(sql.NullString)
-		case pos.FieldCreateTime, pos.FieldUpdateTime:
+		case point.FieldCreateTime, point.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -53,56 +53,56 @@ func (*Pos) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the Pos fields.
-func (po *Pos) assignValues(columns []string, values []any) error {
+// to the Point fields.
+func (po *Point) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case pos.FieldID:
+		case point.FieldID:
 			value, ok := values[i].(*sql.NullInt64)
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			po.ID = int(value.Int64)
-		case pos.FieldCreateTime:
+		case point.FieldCreateTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field create_time", values[i])
 			} else if value.Valid {
 				po.CreateTime = value.Time
 			}
-		case pos.FieldUpdateTime:
+		case point.FieldUpdateTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field update_time", values[i])
 			} else if value.Valid {
 				po.UpdateTime = value.Time
 			}
-		case pos.FieldSn:
+		case point.FieldSn:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field sn", values[i])
 			} else if value.Valid {
 				po.Sn = value.String
 			}
-		case pos.FieldPos:
+		case point.FieldPos:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field pos", values[i])
 			} else if value.Valid {
 				po.Pos = value.String
 			}
-		case pos.FieldFloor:
+		case point.FieldFloor:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field floor", values[i])
 			} else if value.Valid {
 				po.Floor = value.String
 			}
-		case pos.FieldBuilding:
+		case point.FieldBuilding:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field building", values[i])
 			} else if value.Valid {
 				po.Building = value.String
 			}
-		case pos.FieldArea:
+		case point.FieldArea:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field area", values[i])
 			} else if value.Valid {
@@ -115,34 +115,34 @@ func (po *Pos) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the Pos.
+// Value returns the ent.Value that was dynamically selected and assigned to the Point.
 // This includes values selected through modifiers, order, etc.
-func (po *Pos) Value(name string) (ent.Value, error) {
+func (po *Point) Value(name string) (ent.Value, error) {
 	return po.selectValues.Get(name)
 }
 
-// Update returns a builder for updating this Pos.
-// Note that you need to call Pos.Unwrap() before calling this method if this Pos
+// Update returns a builder for updating this Point.
+// Note that you need to call Point.Unwrap() before calling this method if this Point
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (po *Pos) Update() *PosUpdateOne {
-	return NewPosClient(po.config).UpdateOne(po)
+func (po *Point) Update() *PointUpdateOne {
+	return NewPointClient(po.config).UpdateOne(po)
 }
 
-// Unwrap unwraps the Pos entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the Point entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (po *Pos) Unwrap() *Pos {
+func (po *Point) Unwrap() *Point {
 	_tx, ok := po.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: Pos is not a transactional entity")
+		panic("ent: Point is not a transactional entity")
 	}
 	po.config.driver = _tx.drv
 	return po
 }
 
 // String implements the fmt.Stringer.
-func (po *Pos) String() string {
+func (po *Point) String() string {
 	var builder strings.Builder
-	builder.WriteString("Pos(")
+	builder.WriteString("Point(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", po.ID))
 	builder.WriteString("create_time=")
 	builder.WriteString(po.CreateTime.Format(time.ANSIC))
@@ -168,5 +168,5 @@ func (po *Pos) String() string {
 	return builder.String()
 }
 
-// PosSlice is a parsable slice of Pos.
-type PosSlice []*Pos
+// Points is a parsable slice of Point.
+type Points []*Point

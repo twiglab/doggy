@@ -8,30 +8,30 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/twiglab/doggy/orm/ent/pos"
+	"github.com/twiglab/doggy/orm/ent/point"
 	"github.com/twiglab/doggy/orm/ent/predicate"
 )
 
-// PosDelete is the builder for deleting a Pos entity.
-type PosDelete struct {
+// PointDelete is the builder for deleting a Point entity.
+type PointDelete struct {
 	config
 	hooks    []Hook
-	mutation *PosMutation
+	mutation *PointMutation
 }
 
-// Where appends a list predicates to the PosDelete builder.
-func (pd *PosDelete) Where(ps ...predicate.Pos) *PosDelete {
+// Where appends a list predicates to the PointDelete builder.
+func (pd *PointDelete) Where(ps ...predicate.Point) *PointDelete {
 	pd.mutation.Where(ps...)
 	return pd
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (pd *PosDelete) Exec(ctx context.Context) (int, error) {
+func (pd *PointDelete) Exec(ctx context.Context) (int, error) {
 	return withHooks(ctx, pd.sqlExec, pd.mutation, pd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pd *PosDelete) ExecX(ctx context.Context) int {
+func (pd *PointDelete) ExecX(ctx context.Context) int {
 	n, err := pd.Exec(ctx)
 	if err != nil {
 		panic(err)
@@ -39,8 +39,8 @@ func (pd *PosDelete) ExecX(ctx context.Context) int {
 	return n
 }
 
-func (pd *PosDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(pos.Table, sqlgraph.NewFieldSpec(pos.FieldID, field.TypeInt))
+func (pd *PointDelete) sqlExec(ctx context.Context) (int, error) {
+	_spec := sqlgraph.NewDeleteSpec(point.Table, sqlgraph.NewFieldSpec(point.FieldID, field.TypeInt))
 	if ps := pd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -56,32 +56,32 @@ func (pd *PosDelete) sqlExec(ctx context.Context) (int, error) {
 	return affected, err
 }
 
-// PosDeleteOne is the builder for deleting a single Pos entity.
-type PosDeleteOne struct {
-	pd *PosDelete
+// PointDeleteOne is the builder for deleting a single Point entity.
+type PointDeleteOne struct {
+	pd *PointDelete
 }
 
-// Where appends a list predicates to the PosDelete builder.
-func (pdo *PosDeleteOne) Where(ps ...predicate.Pos) *PosDeleteOne {
+// Where appends a list predicates to the PointDelete builder.
+func (pdo *PointDeleteOne) Where(ps ...predicate.Point) *PointDeleteOne {
 	pdo.pd.mutation.Where(ps...)
 	return pdo
 }
 
 // Exec executes the deletion query.
-func (pdo *PosDeleteOne) Exec(ctx context.Context) error {
+func (pdo *PointDeleteOne) Exec(ctx context.Context) error {
 	n, err := pdo.pd.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{pos.Label}
+		return &NotFoundError{point.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pdo *PosDeleteOne) ExecX(ctx context.Context) {
+func (pdo *PointDeleteOne) ExecX(ctx context.Context) {
 	if err := pdo.Exec(ctx); err != nil {
 		panic(err)
 	}

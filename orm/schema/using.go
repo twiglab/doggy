@@ -51,14 +51,6 @@ func (Using) Fields() []ent.Field {
 				dialect.Postgres: "varchar(64)", // Override Postgres.
 				dialect.SQLite:   "varchar(64)", // Override Postgres.
 			}),
-
-		field.String("bk").
-			MaxLen(64).NotEmpty().Unique().Immutable().
-			SchemaType(map[string]string{
-				dialect.MySQL:    "varchar(64)", // Override MySQL.
-				dialect.Postgres: "varchar(64)", // Override Postgres.
-				dialect.SQLite:   "varchar(64)", // Override Postgres.
-			}),
 	}
 }
 
@@ -72,7 +64,6 @@ func (Using) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("uuid"),
 		index.Fields("sn"),
-		index.Fields("bk"),
 	}
 }
 
