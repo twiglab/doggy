@@ -2,10 +2,13 @@ package serv
 
 import (
 	"log"
+	"os"
 
 	"github.com/InfluxCommunity/influxdb3-go/v2/influxdb3"
+	"github.com/spf13/cobra"
 	"github.com/twiglab/doggy/orm"
 	"github.com/twiglab/doggy/orm/ent"
+	"gopkg.in/yaml.v3"
 )
 
 type InfluxDBConf struct {
@@ -66,4 +69,27 @@ func MustIdb(conf InfluxDBConf) *influxdb3.Client {
 		log.Fatal(err)
 	}
 	return client
+}
+
+var ConfCmd = &cobra.Command{
+	Use:   "config",
+	Short: "生成配置文件",
+	Long:  `生成配置文件`,
+	Run: func(cmd *cobra.Command, args []string) {
+		confCmd()
+	},
+	Example: "dcp serv config",
+}
+
+func init() {
+	ServCmd.AddCommand(ConfCmd)
+}
+
+func confCmd() {
+	conf := AppConf{ID:"dcp"}
+
+	enc := yaml.NewEncoder(os.Stdout)
+	defer enc.Close()
+	enc.SetIndent(2)
+	enc.Encode(conf)
 }

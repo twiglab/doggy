@@ -28,7 +28,7 @@ var ServCmd = &cobra.Command{
 	Short: "启动dcp服务",
 	Long:  `使用配置文件启动dcp服务`,
 	Run: func(cmd *cobra.Command, args []string) {
-		serv(cmd, args)
+		servCmd()
 	},
 }
 
@@ -44,13 +44,7 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	} else {
 
-		// Find home directory.
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
 		// Search config in home directory with name "dcp" (without extension).
-		viper.AddConfigPath(".")
-		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
 		viper.SetConfigName("dcp")
 	}
@@ -72,7 +66,7 @@ func printConf(conf AppConf) {
 	fmt.Println("--------------------")
 }
 
-func serv(_ *cobra.Command, _ []string) {
+func servCmd() {
 	conf := AppConf{}
 
 	if err := viper.Unmarshal(&conf); err != nil {
@@ -85,8 +79,6 @@ func serv(_ *cobra.Command, _ []string) {
 	crontab := job.NewCron()
 
 	switch conf.Plan {
-	case 0:
-		h = pf.NewHandle()
 	case 1:
 		idb3 := idb.NewIdb3(MustIdb(conf.InfluxDBConf))
 		eh := orm.NewEntHandle(MustEntClient(conf.DBConf))
@@ -121,6 +113,8 @@ func serv(_ *cobra.Command, _ []string) {
 			CountHandler:   idb3,
 			DensityHandler: idb3,
 		}
+	default:
+		h = pf.NewHandle()
 	}
 
 	pfHandle := pf.PlatformHandle(h)
