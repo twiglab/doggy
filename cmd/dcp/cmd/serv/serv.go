@@ -7,11 +7,15 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"gopkg.in/yaml.v3"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
 	"github.com/twiglab/doggy/hx"
+	"github.com/twiglab/doggy/idb"
+	"github.com/twiglab/doggy/job"
+	"github.com/twiglab/doggy/orm"
 
 	"github.com/twiglab/doggy/pf"
 )
@@ -61,10 +65,14 @@ func initConfig() {
 
 func printConf(conf AppConf) {
 	fmt.Println("--------------------")
+	enc := yaml.NewEncoder(os.Stdout)
+	enc.SetIndent(2)
+	enc.Encode(conf)
+	enc.Close()
 	fmt.Println("--------------------")
 }
 
-func serv(cmd *cobra.Command, args []string) {
+func serv(_ *cobra.Command, _ []string) {
 	conf := AppConf{}
 
 	if err := viper.Unmarshal(&conf); err != nil {
@@ -73,9 +81,47 @@ func serv(cmd *cobra.Command, args []string) {
 
 	printConf(conf)
 
-	// eh := orm.NewEntHandle(MustClient(config.DB.DSN))
+	var h *pf.Handle
+	crontab := job.NewCron()
 
-	h := pf.NewHandle()
+	switch conf.Plan {
+	case 0:
+		h = pf.NewHandle()
+	case 1:
+		idb3 := idb.NewIdb3(MustIdb(conf.InfluxDBConf))
+		eh := orm.NewEntHandle(MustEntClient(conf.DBConf))
+		fixUser := &pf.FixUserDeviceResolve{User: conf.FixUserConf.CameraUser, Pwd: conf.FixUserConf.CameraPwd}
+
+		keeplive := &job.KeepLiveJob{
+			DeviceLoader:   eh,
+			DeviceResolver: fixUser,
+
+			MetadataURL: conf.AutoRegConf.MetadataURL,
+			Addr:        conf.AutoRegConf.Addr,
+			Port:        conf.AutoRegConf.Port,
+		}
+
+		crontab.AddJob("", keeplive)
+
+		h = &pf.Handle{
+			DeviceRegister: &pf.AutoSub{
+				DeviceResolver: fixUser,
+				UploadHandler:  eh,
+
+				MetadataURL: conf.AutoRegConf.MetadataURL,
+				Addr:        conf.AutoRegConf.Addr,
+				Port:        conf.AutoRegConf.Port,
+			},
+			CountHandler:   idb3,
+			DensityHandler: idb3,
+		}
+	case 2:
+		idb3 := idb.NewIdb3(MustIdb(conf.InfluxDBConf))
+		h = &pf.Handle{
+			CountHandler:   idb3,
+			DensityHandler: idb3,
+		}
+	}
 
 	pfHandle := pf.PlatformHandle(h)
 
@@ -83,6 +129,8 @@ func serv(cmd *cobra.Command, args []string) {
 	mux.Use(middleware.Recoverer)
 	mux.Mount("/", pfHandle)
 	mux.Mount("/pf", pfHandle)
+
+	crontab.Start()
 
 	svr := hx.NewServ().SetAddr(conf.ServerConf.Addr).SetHandler(mux)
 	if err := runSvr(svr, conf.ServerConf.CertFile, conf.ServerConf.KeyFile); err != nil {
