@@ -7,7 +7,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"gopkg.in/yaml.v3"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -32,9 +31,12 @@ var ServCmd = &cobra.Command{
 	},
 }
 
+var plan int = -1
+
 func init() {
 	cobra.OnInitialize(initConfig)
 	ServCmd.Flags().StringVarP(&cfgFile, "config", "c", "", "config file (default is dcp.yaml)")
+	ServCmd.Flags().IntVar(&plan, "plan", -1, "指定方案")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -59,10 +61,7 @@ func initConfig() {
 
 func printConf(conf AppConf) {
 	fmt.Println("--------------------")
-	enc := yaml.NewEncoder(os.Stdout)
-	enc.SetIndent(2)
-	enc.Encode(conf)
-	enc.Close()
+	fmt.Println(plan)
 	fmt.Println("--------------------")
 }
 
@@ -77,6 +76,10 @@ func servCmd() {
 
 	var h *pf.Handle
 	crontab := job.NewCron()
+
+	if plan > 0 {
+		conf.Plan = plan
+	}
 
 	switch conf.Plan {
 	case 1:
