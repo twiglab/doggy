@@ -32,7 +32,7 @@ func init() {
 func metaPost(_ *cobra.Command, _ []string) {
 	var (
 		err  error
-		port int = 80
+		port = 80
 		url  *url.URL
 	)
 

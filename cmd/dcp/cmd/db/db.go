@@ -21,24 +21,22 @@ var DbCmd = &cobra.Command{
 }
 
 var (
-	user string
-	pwd  string
-	addr string
-
 	dsn    string
 	dbname string
 )
 
 func init() {
 	DbCmd.Flags().StringVar(&dbname, "driver", "sqlite3", "数据库名称")
-	DbCmd.Flags().StringVar(&dsn, "datasource", "dcp.db", "数据库dsn")
+	DbCmd.Flags().StringVar(&dsn, "datasource", "dcp.db?_fk=1", "数据库dsn")
 }
 
 func dbMigrate() {
-	client, err := orm.OpenClient("sqlite3", "./db.db?_fk=1")
+	client, err := orm.OpenClient(dbname, dsn)
+	if err!=nil{
+		log.Fatal(err)
+	}
 
 	ctx := context.Background()
-	// Run migration.
 	err = client.Schema.Create(
 		ctx,
 		migrate.WithDropIndex(true),
