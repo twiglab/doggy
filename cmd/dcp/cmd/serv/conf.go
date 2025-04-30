@@ -34,9 +34,10 @@ type FixUserConf struct {
 }
 
 type ServerConf struct {
-	Addr     string `yaml:"addr" mapstructure:"addr"`
-	CertFile string `yaml:"cert-file" mapstructure:"cert-file"`
-	KeyFile  string `yaml:"key-file" mapstructure:"key-file"`
+	Addr       string `yaml:"addr" mapstructure:"addr"`
+	CertFile   string `yaml:"cert-file" mapstructure:"cert-file"`
+	KeyFile    string `yaml:"key-file" mapstructure:"key-file"`
+	ForceHttps int    `yaml:"force-https" mapstructure:"force-https"`
 }
 
 type DB struct {

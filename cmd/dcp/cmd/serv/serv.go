@@ -1,6 +1,7 @@
 package serv
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -130,14 +131,17 @@ func servCmd() {
 	crontab.Start()
 
 	svr := hx.NewServ().SetAddr(conf.ServerConf.Addr).SetHandler(mux)
-	if err := runSvr(svr, conf.ServerConf.CertFile, conf.ServerConf.KeyFile); err != nil {
+	if err := runSvr(svr, conf.ServerConf); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func runSvr(s *hx.Svr, cert, key string) error {
-	if cert == "" || key == "" {
+func runSvr(s *hx.Svr, sc ServerConf) error {
+	if sc.ForceHttps == 0 {
 		return s.Run()
 	}
-	return s.RunTLS(cert, key)
+	if sc.CertFile == "" || sc.KeyFile == "" {
+		return errors.New("no cert and key file")
+	}
+	return s.RunTLS(sc.CertFile, sc.KeyFile)
 }
