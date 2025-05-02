@@ -36,20 +36,25 @@ func (h *EntHandle) HandleUpload(ctx context.Context, u pf.CameraUpload) error {
 	return err
 }
 
-func (h *EntHandle) All(ctx context.Context) ([]pf.CameraUpload, error) {
-	us, err := h.client.Upload.Query().All(ctx)
+func (h *EntHandle) All(ctx context.Context) (uploads []pf.CameraUpload, err error) {
+	var us []*ent.Upload
+	us, err = h.client.Upload.Query().All(ctx)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	uploads := make([]pf.CameraUpload, len(us))
-	for i, u := range us {
-		uploads[i] = pf.CameraUpload{
+	for _, u := range us {
+		uploads = append(uploads, pf.CameraUpload{
 			SN:     u.Sn,
 			IpAddr: u.IP,
+			Last:   u.LastTime,
+			UUID1:  u.ID1,
+			Code1:  u.Code1,
+			UUID2:  u.ID2,
+			Code2:  u.Code2,
 			User:   u.User,
 			Pwd:    u.Pwd,
-		}
+		})
 	}
-	return uploads, nil
+	return
 }
