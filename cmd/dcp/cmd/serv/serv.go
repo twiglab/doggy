@@ -127,6 +127,7 @@ func servCmd() {
 	mux.Use(middleware.Recoverer)
 	mux.Mount("/", pfHandle)
 	mux.Mount("/pf", pfHandle)
+	mux.Mount("/debug", middleware.Profiler())
 
 	crontab.Start()
 
