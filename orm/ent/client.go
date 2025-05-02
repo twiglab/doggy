@@ -14,7 +14,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/doggy/orm/ent/point"
 	"github.com/twiglab/doggy/orm/ent/upload"
 	"github.com/twiglab/doggy/orm/ent/using"
 
@@ -26,8 +25,6 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// Point is the client for interacting with the Point builders.
-	Point *PointClient
 	// Upload is the client for interacting with the Upload builders.
 	Upload *UploadClient
 	// Using is the client for interacting with the Using builders.
@@ -43,7 +40,6 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.Point = NewPointClient(c.config)
 	c.Upload = NewUploadClient(c.config)
 	c.Using = NewUsingClient(c.config)
 }
@@ -138,7 +134,6 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
-		Point:  NewPointClient(cfg),
 		Upload: NewUploadClient(cfg),
 		Using:  NewUsingClient(cfg),
 	}, nil
@@ -160,7 +155,6 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
-		Point:  NewPointClient(cfg),
 		Upload: NewUploadClient(cfg),
 		Using:  NewUsingClient(cfg),
 	}, nil
@@ -169,7 +163,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Point.
+//		Upload.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -191,7 +185,6 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Point.Use(hooks...)
 	c.Upload.Use(hooks...)
 	c.Using.Use(hooks...)
 }
@@ -199,7 +192,6 @@ func (c *Client) Use(hooks ...Hook) {
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.Point.Intercept(interceptors...)
 	c.Upload.Intercept(interceptors...)
 	c.Using.Intercept(interceptors...)
 }
@@ -207,147 +199,12 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *PointMutation:
-		return c.Point.mutate(ctx, m)
 	case *UploadMutation:
 		return c.Upload.mutate(ctx, m)
 	case *UsingMutation:
 		return c.Using.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
-	}
-}
-
-// PointClient is a client for the Point schema.
-type PointClient struct {
-	config
-}
-
-// NewPointClient returns a client for the Point from the given config.
-func NewPointClient(c config) *PointClient {
-	return &PointClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `point.Hooks(f(g(h())))`.
-func (c *PointClient) Use(hooks ...Hook) {
-	c.hooks.Point = append(c.hooks.Point, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `point.Intercept(f(g(h())))`.
-func (c *PointClient) Intercept(interceptors ...Interceptor) {
-	c.inters.Point = append(c.inters.Point, interceptors...)
-}
-
-// Create returns a builder for creating a Point entity.
-func (c *PointClient) Create() *PointCreate {
-	mutation := newPointMutation(c.config, OpCreate)
-	return &PointCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of Point entities.
-func (c *PointClient) CreateBulk(builders ...*PointCreate) *PointCreateBulk {
-	return &PointCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *PointClient) MapCreateBulk(slice any, setFunc func(*PointCreate, int)) *PointCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &PointCreateBulk{err: fmt.Errorf("calling to PointClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*PointCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &PointCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for Point.
-func (c *PointClient) Update() *PointUpdate {
-	mutation := newPointMutation(c.config, OpUpdate)
-	return &PointUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *PointClient) UpdateOne(po *Point) *PointUpdateOne {
-	mutation := newPointMutation(c.config, OpUpdateOne, withPoint(po))
-	return &PointUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *PointClient) UpdateOneID(id int) *PointUpdateOne {
-	mutation := newPointMutation(c.config, OpUpdateOne, withPointID(id))
-	return &PointUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Point.
-func (c *PointClient) Delete() *PointDelete {
-	mutation := newPointMutation(c.config, OpDelete)
-	return &PointDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *PointClient) DeleteOne(po *Point) *PointDeleteOne {
-	return c.DeleteOneID(po.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *PointClient) DeleteOneID(id int) *PointDeleteOne {
-	builder := c.Delete().Where(point.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &PointDeleteOne{builder}
-}
-
-// Query returns a query builder for Point.
-func (c *PointClient) Query() *PointQuery {
-	return &PointQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypePoint},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a Point entity by its id.
-func (c *PointClient) Get(ctx context.Context, id int) (*Point, error) {
-	return c.Query().Where(point.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *PointClient) GetX(ctx context.Context, id int) *Point {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// Hooks returns the client hooks.
-func (c *PointClient) Hooks() []Hook {
-	return c.hooks.Point
-}
-
-// Interceptors returns the client interceptors.
-func (c *PointClient) Interceptors() []Interceptor {
-	return c.inters.Point
-}
-
-func (c *PointClient) mutate(ctx context.Context, m *PointMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&PointCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&PointUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&PointUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&PointDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown Point mutation op: %q", m.Op())
 	}
 }
 
@@ -620,10 +477,10 @@ func (c *UsingClient) mutate(ctx context.Context, m *UsingMutation) (Value, erro
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Point, Upload, Using []ent.Hook
+		Upload, Using []ent.Hook
 	}
 	inters struct {
-		Point, Upload, Using []ent.Interceptor
+		Upload, Using []ent.Interceptor
 	}
 )
 

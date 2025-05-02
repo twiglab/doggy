@@ -25,7 +25,9 @@ func (h *EntHandle) HandleUpload(ctx context.Context, u pf.CameraUpload) error {
 		SetIP(u.IpAddr).
 		SetLastTime(time.Now()).
 		SetID1(u.UUID1).
+		SetCode1(u.Code1).
 		SetID2(u.UUID2).
+		SetCode2(u.Code2).
 		SetUser(u.User).
 		SetPwd(u.Pwd).
 		OnConflictColumns(upload.FieldSn).

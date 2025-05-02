@@ -84,9 +84,19 @@ func ID1(v string) predicate.Upload {
 	return predicate.Upload(sql.FieldEQ(FieldID1, v))
 }
 
+// Code1 applies equality check predicate on the "code_1" field. It's identical to Code1EQ.
+func Code1(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldEQ(FieldCode1, v))
+}
+
 // ID2 applies equality check predicate on the "id_2" field. It's identical to ID2EQ.
 func ID2(v string) predicate.Upload {
 	return predicate.Upload(sql.FieldEQ(FieldID2, v))
+}
+
+// Code2 applies equality check predicate on the "code_2" field. It's identical to Code2EQ.
+func Code2(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldEQ(FieldCode2, v))
 }
 
 // User applies equality check predicate on the "user" field. It's identical to UserEQ.
@@ -424,6 +434,81 @@ func ID1ContainsFold(v string) predicate.Upload {
 	return predicate.Upload(sql.FieldContainsFold(FieldID1, v))
 }
 
+// Code1EQ applies the EQ predicate on the "code_1" field.
+func Code1EQ(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldEQ(FieldCode1, v))
+}
+
+// Code1NEQ applies the NEQ predicate on the "code_1" field.
+func Code1NEQ(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldNEQ(FieldCode1, v))
+}
+
+// Code1In applies the In predicate on the "code_1" field.
+func Code1In(vs ...string) predicate.Upload {
+	return predicate.Upload(sql.FieldIn(FieldCode1, vs...))
+}
+
+// Code1NotIn applies the NotIn predicate on the "code_1" field.
+func Code1NotIn(vs ...string) predicate.Upload {
+	return predicate.Upload(sql.FieldNotIn(FieldCode1, vs...))
+}
+
+// Code1GT applies the GT predicate on the "code_1" field.
+func Code1GT(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldGT(FieldCode1, v))
+}
+
+// Code1GTE applies the GTE predicate on the "code_1" field.
+func Code1GTE(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldGTE(FieldCode1, v))
+}
+
+// Code1LT applies the LT predicate on the "code_1" field.
+func Code1LT(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldLT(FieldCode1, v))
+}
+
+// Code1LTE applies the LTE predicate on the "code_1" field.
+func Code1LTE(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldLTE(FieldCode1, v))
+}
+
+// Code1Contains applies the Contains predicate on the "code_1" field.
+func Code1Contains(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldContains(FieldCode1, v))
+}
+
+// Code1HasPrefix applies the HasPrefix predicate on the "code_1" field.
+func Code1HasPrefix(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldHasPrefix(FieldCode1, v))
+}
+
+// Code1HasSuffix applies the HasSuffix predicate on the "code_1" field.
+func Code1HasSuffix(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldHasSuffix(FieldCode1, v))
+}
+
+// Code1IsNil applies the IsNil predicate on the "code_1" field.
+func Code1IsNil() predicate.Upload {
+	return predicate.Upload(sql.FieldIsNull(FieldCode1))
+}
+
+// Code1NotNil applies the NotNil predicate on the "code_1" field.
+func Code1NotNil() predicate.Upload {
+	return predicate.Upload(sql.FieldNotNull(FieldCode1))
+}
+
+// Code1EqualFold applies the EqualFold predicate on the "code_1" field.
+func Code1EqualFold(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldEqualFold(FieldCode1, v))
+}
+
+// Code1ContainsFold applies the ContainsFold predicate on the "code_1" field.
+func Code1ContainsFold(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldContainsFold(FieldCode1, v))
+}
+
 // ID2EQ applies the EQ predicate on the "id_2" field.
 func ID2EQ(v string) predicate.Upload {
 	return predicate.Upload(sql.FieldEQ(FieldID2, v))
@@ -497,6 +582,81 @@ func ID2EqualFold(v string) predicate.Upload {
 // ID2ContainsFold applies the ContainsFold predicate on the "id_2" field.
 func ID2ContainsFold(v string) predicate.Upload {
 	return predicate.Upload(sql.FieldContainsFold(FieldID2, v))
+}
+
+// Code2EQ applies the EQ predicate on the "code_2" field.
+func Code2EQ(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldEQ(FieldCode2, v))
+}
+
+// Code2NEQ applies the NEQ predicate on the "code_2" field.
+func Code2NEQ(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldNEQ(FieldCode2, v))
+}
+
+// Code2In applies the In predicate on the "code_2" field.
+func Code2In(vs ...string) predicate.Upload {
+	return predicate.Upload(sql.FieldIn(FieldCode2, vs...))
+}
+
+// Code2NotIn applies the NotIn predicate on the "code_2" field.
+func Code2NotIn(vs ...string) predicate.Upload {
+	return predicate.Upload(sql.FieldNotIn(FieldCode2, vs...))
+}
+
+// Code2GT applies the GT predicate on the "code_2" field.
+func Code2GT(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldGT(FieldCode2, v))
+}
+
+// Code2GTE applies the GTE predicate on the "code_2" field.
+func Code2GTE(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldGTE(FieldCode2, v))
+}
+
+// Code2LT applies the LT predicate on the "code_2" field.
+func Code2LT(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldLT(FieldCode2, v))
+}
+
+// Code2LTE applies the LTE predicate on the "code_2" field.
+func Code2LTE(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldLTE(FieldCode2, v))
+}
+
+// Code2Contains applies the Contains predicate on the "code_2" field.
+func Code2Contains(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldContains(FieldCode2, v))
+}
+
+// Code2HasPrefix applies the HasPrefix predicate on the "code_2" field.
+func Code2HasPrefix(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldHasPrefix(FieldCode2, v))
+}
+
+// Code2HasSuffix applies the HasSuffix predicate on the "code_2" field.
+func Code2HasSuffix(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldHasSuffix(FieldCode2, v))
+}
+
+// Code2IsNil applies the IsNil predicate on the "code_2" field.
+func Code2IsNil() predicate.Upload {
+	return predicate.Upload(sql.FieldIsNull(FieldCode2))
+}
+
+// Code2NotNil applies the NotNil predicate on the "code_2" field.
+func Code2NotNil() predicate.Upload {
+	return predicate.Upload(sql.FieldNotNull(FieldCode2))
+}
+
+// Code2EqualFold applies the EqualFold predicate on the "code_2" field.
+func Code2EqualFold(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldEqualFold(FieldCode2, v))
+}
+
+// Code2ContainsFold applies the ContainsFold predicate on the "code_2" field.
+func Code2ContainsFold(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldContainsFold(FieldCode2, v))
 }
 
 // UserEQ applies the EQ predicate on the "user" field.

@@ -3,7 +3,6 @@
 package ent
 
 import (
-	"github.com/twiglab/doggy/orm/ent/point"
 	"github.com/twiglab/doggy/orm/ent/upload"
 	"github.com/twiglab/doggy/orm/ent/using"
 
@@ -15,28 +14,8 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 3)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 2)}
 	graph.Nodes[0] = &sqlgraph.Node{
-		NodeSpec: sqlgraph.NodeSpec{
-			Table:   point.Table,
-			Columns: point.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: point.FieldID,
-			},
-		},
-		Type: "Point",
-		Fields: map[string]*sqlgraph.FieldSpec{
-			point.FieldCreateTime: {Type: field.TypeTime, Column: point.FieldCreateTime},
-			point.FieldUpdateTime: {Type: field.TypeTime, Column: point.FieldUpdateTime},
-			point.FieldSn:         {Type: field.TypeString, Column: point.FieldSn},
-			point.FieldPos:        {Type: field.TypeString, Column: point.FieldPos},
-			point.FieldFloor:      {Type: field.TypeString, Column: point.FieldFloor},
-			point.FieldBuilding:   {Type: field.TypeString, Column: point.FieldBuilding},
-			point.FieldArea:       {Type: field.TypeString, Column: point.FieldArea},
-		},
-	}
-	graph.Nodes[1] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   upload.Table,
 			Columns: upload.Columns,
@@ -53,12 +32,14 @@ var schemaGraph = func() *sqlgraph.Schema {
 			upload.FieldIP:         {Type: field.TypeString, Column: upload.FieldIP},
 			upload.FieldLastTime:   {Type: field.TypeTime, Column: upload.FieldLastTime},
 			upload.FieldID1:        {Type: field.TypeString, Column: upload.FieldID1},
+			upload.FieldCode1:      {Type: field.TypeString, Column: upload.FieldCode1},
 			upload.FieldID2:        {Type: field.TypeString, Column: upload.FieldID2},
+			upload.FieldCode2:      {Type: field.TypeString, Column: upload.FieldCode2},
 			upload.FieldUser:       {Type: field.TypeString, Column: upload.FieldUser},
 			upload.FieldPwd:        {Type: field.TypeString, Column: upload.FieldPwd},
 		},
 	}
-	graph.Nodes[2] = &sqlgraph.Node{
+	graph.Nodes[1] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   using.Table,
 			Columns: using.Columns,
@@ -73,6 +54,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			using.FieldUpdateTime: {Type: field.TypeTime, Column: using.FieldUpdateTime},
 			using.FieldSn:         {Type: field.TypeString, Column: using.FieldSn},
 			using.FieldUUID:       {Type: field.TypeString, Column: using.FieldUUID},
+			using.FieldDeviceID:   {Type: field.TypeString, Column: using.FieldDeviceID},
 			using.FieldAlg:        {Type: field.TypeString, Column: using.FieldAlg},
 			using.FieldName:       {Type: field.TypeString, Column: using.FieldName},
 		},
@@ -84,81 +66,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 // All update, update-one and query builders implement this interface.
 type predicateAdder interface {
 	addPredicate(func(s *sql.Selector))
-}
-
-// addPredicate implements the predicateAdder interface.
-func (pq *PointQuery) addPredicate(pred func(s *sql.Selector)) {
-	pq.predicates = append(pq.predicates, pred)
-}
-
-// Filter returns a Filter implementation to apply filters on the PointQuery builder.
-func (pq *PointQuery) Filter() *PointFilter {
-	return &PointFilter{config: pq.config, predicateAdder: pq}
-}
-
-// addPredicate implements the predicateAdder interface.
-func (m *PointMutation) addPredicate(pred func(s *sql.Selector)) {
-	m.predicates = append(m.predicates, pred)
-}
-
-// Filter returns an entql.Where implementation to apply filters on the PointMutation builder.
-func (m *PointMutation) Filter() *PointFilter {
-	return &PointFilter{config: m.config, predicateAdder: m}
-}
-
-// PointFilter provides a generic filtering capability at runtime for PointQuery.
-type PointFilter struct {
-	predicateAdder
-	config
-}
-
-// Where applies the entql predicate on the query filter.
-func (f *PointFilter) Where(p entql.P) {
-	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
-			s.AddError(err)
-		}
-	})
-}
-
-// WhereID applies the entql int predicate on the id field.
-func (f *PointFilter) WhereID(p entql.IntP) {
-	f.Where(p.Field(point.FieldID))
-}
-
-// WhereCreateTime applies the entql time.Time predicate on the create_time field.
-func (f *PointFilter) WhereCreateTime(p entql.TimeP) {
-	f.Where(p.Field(point.FieldCreateTime))
-}
-
-// WhereUpdateTime applies the entql time.Time predicate on the update_time field.
-func (f *PointFilter) WhereUpdateTime(p entql.TimeP) {
-	f.Where(p.Field(point.FieldUpdateTime))
-}
-
-// WhereSn applies the entql string predicate on the sn field.
-func (f *PointFilter) WhereSn(p entql.StringP) {
-	f.Where(p.Field(point.FieldSn))
-}
-
-// WherePos applies the entql string predicate on the pos field.
-func (f *PointFilter) WherePos(p entql.StringP) {
-	f.Where(p.Field(point.FieldPos))
-}
-
-// WhereFloor applies the entql string predicate on the floor field.
-func (f *PointFilter) WhereFloor(p entql.StringP) {
-	f.Where(p.Field(point.FieldFloor))
-}
-
-// WhereBuilding applies the entql string predicate on the building field.
-func (f *PointFilter) WhereBuilding(p entql.StringP) {
-	f.Where(p.Field(point.FieldBuilding))
-}
-
-// WhereArea applies the entql string predicate on the area field.
-func (f *PointFilter) WhereArea(p entql.StringP) {
-	f.Where(p.Field(point.FieldArea))
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -190,7 +97,7 @@ type UploadFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *UploadFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -231,9 +138,19 @@ func (f *UploadFilter) WhereID1(p entql.StringP) {
 	f.Where(p.Field(upload.FieldID1))
 }
 
+// WhereCode1 applies the entql string predicate on the code_1 field.
+func (f *UploadFilter) WhereCode1(p entql.StringP) {
+	f.Where(p.Field(upload.FieldCode1))
+}
+
 // WhereID2 applies the entql string predicate on the id_2 field.
 func (f *UploadFilter) WhereID2(p entql.StringP) {
 	f.Where(p.Field(upload.FieldID2))
+}
+
+// WhereCode2 applies the entql string predicate on the code_2 field.
+func (f *UploadFilter) WhereCode2(p entql.StringP) {
+	f.Where(p.Field(upload.FieldCode2))
 }
 
 // WhereUser applies the entql string predicate on the user field.
@@ -275,7 +192,7 @@ type UsingFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *UsingFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -304,6 +221,11 @@ func (f *UsingFilter) WhereSn(p entql.StringP) {
 // WhereUUID applies the entql string predicate on the uuid field.
 func (f *UsingFilter) WhereUUID(p entql.StringP) {
 	f.Where(p.Field(using.FieldUUID))
+}
+
+// WhereDeviceID applies the entql string predicate on the device_id field.
+func (f *UsingFilter) WhereDeviceID(p entql.StringP) {
+	f.Where(p.Field(using.FieldDeviceID))
 }
 
 // WhereAlg applies the entql string predicate on the alg field.

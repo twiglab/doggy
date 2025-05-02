@@ -13,8 +13,11 @@ type CameraUpload struct {
 	SN     string
 	IpAddr string
 	Last   time.Time
-	UUID1  string
-	UUID2  string
+
+	UUID1 string
+	Code1 string
+	UUID2 string
+	Code2 string
 
 	User string
 	Pwd  string
@@ -54,6 +57,15 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 	}
 	defer device.Close()
 
+	ids, err := device.GetDeviceID(ctx)
+	if err != nil {
+		return err
+	}
+
+	if len(ids.IDs) <= 0 {
+		return errors.New("not found device ids")
+	}
+
 	subs, err := device.GetMetadataSubscription(ctx)
 	if err != nil {
 		return err
@@ -73,20 +85,12 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 		}
 	}
 
-	ids, err := device.GetDeviceID(ctx)
-	if err != nil {
-		return err
-	}
-
-	if len(ids.IDs) <= 0 {
-		return errors.New("not found device ids")
-	}
-
 	return a.UploadHandler.HandleUpload(ctx, CameraUpload{
 		SN:     data.SerialNumber,
 		IpAddr: data.IpAddr,
 		Last:   time.Now(),
 		UUID1:  ids.IDs[0].UUID,
+		Code1:  ids.IDs[0].DeviceID,
 		User:   device.User,
 		Pwd:    device.Pwd,
 	})

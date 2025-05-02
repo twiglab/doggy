@@ -25,6 +25,8 @@ type Using struct {
 	Sn string `json:"sn,omitempty"`
 	// UUID holds the value of the "uuid" field.
 	UUID string `json:"uuid,omitempty"`
+	// DeviceID holds the value of the "device_id" field.
+	DeviceID string `json:"device_id,omitempty"`
 	// Alg holds the value of the "alg" field.
 	Alg string `json:"alg,omitempty"`
 	// Name holds the value of the "name" field.
@@ -39,7 +41,7 @@ func (*Using) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case using.FieldID:
 			values[i] = new(sql.NullInt64)
-		case using.FieldSn, using.FieldUUID, using.FieldAlg, using.FieldName:
+		case using.FieldSn, using.FieldUUID, using.FieldDeviceID, using.FieldAlg, using.FieldName:
 			values[i] = new(sql.NullString)
 		case using.FieldCreateTime, using.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
@@ -87,6 +89,12 @@ func (u *Using) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field uuid", values[i])
 			} else if value.Valid {
 				u.UUID = value.String
+			}
+		case using.FieldDeviceID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field device_id", values[i])
+			} else if value.Valid {
+				u.DeviceID = value.String
 			}
 		case using.FieldAlg:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -147,6 +155,9 @@ func (u *Using) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("uuid=")
 	builder.WriteString(u.UUID)
+	builder.WriteString(", ")
+	builder.WriteString("device_id=")
+	builder.WriteString(u.DeviceID)
 	builder.WriteString(", ")
 	builder.WriteString("alg=")
 	builder.WriteString(u.Alg)

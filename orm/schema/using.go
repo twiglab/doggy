@@ -36,6 +36,15 @@ func (Using) Fields() []ent.Field {
 				dialect.SQLite:   "char(36)", // Override Postgres.
 			}),
 
+		field.String("device_id").
+			MaxLen(64).
+			NotEmpty().
+			SchemaType(map[string]string{
+				dialect.MySQL:    "varchar(64)", // Override MySQL.
+				dialect.Postgres: "varchar(64)", // Override Postgres.
+				dialect.SQLite:   "varchar(64)", // Override Postgres.
+			}),
+
 		field.String("alg").
 			MaxLen(16).NotEmpty().
 			SchemaType(map[string]string{

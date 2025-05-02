@@ -5,7 +5,6 @@ package ent
 import (
 	"time"
 
-	"github.com/twiglab/doggy/orm/ent/point"
 	"github.com/twiglab/doggy/orm/ent/upload"
 	"github.com/twiglab/doggy/orm/ent/using"
 	"github.com/twiglab/doggy/orm/schema"
@@ -15,69 +14,6 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	pointMixin := schema.Point{}.Mixin()
-	pointMixinFields0 := pointMixin[0].Fields()
-	_ = pointMixinFields0
-	pointFields := schema.Point{}.Fields()
-	_ = pointFields
-	// pointDescCreateTime is the schema descriptor for create_time field.
-	pointDescCreateTime := pointMixinFields0[0].Descriptor()
-	// point.DefaultCreateTime holds the default value on creation for the create_time field.
-	point.DefaultCreateTime = pointDescCreateTime.Default.(func() time.Time)
-	// pointDescUpdateTime is the schema descriptor for update_time field.
-	pointDescUpdateTime := pointMixinFields0[1].Descriptor()
-	// point.DefaultUpdateTime holds the default value on creation for the update_time field.
-	point.DefaultUpdateTime = pointDescUpdateTime.Default.(func() time.Time)
-	// point.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
-	point.UpdateDefaultUpdateTime = pointDescUpdateTime.UpdateDefault.(func() time.Time)
-	// pointDescSn is the schema descriptor for sn field.
-	pointDescSn := pointFields[0].Descriptor()
-	// point.SnValidator is a validator for the "sn" field. It is called by the builders before save.
-	point.SnValidator = func() func(string) error {
-		validators := pointDescSn.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(sn string) error {
-			for _, fn := range fns {
-				if err := fn(sn); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// pointDescPos is the schema descriptor for pos field.
-	pointDescPos := pointFields[1].Descriptor()
-	// point.PosValidator is a validator for the "pos" field. It is called by the builders before save.
-	point.PosValidator = func() func(string) error {
-		validators := pointDescPos.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(pos string) error {
-			for _, fn := range fns {
-				if err := fn(pos); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// pointDescFloor is the schema descriptor for floor field.
-	pointDescFloor := pointFields[2].Descriptor()
-	// point.FloorValidator is a validator for the "floor" field. It is called by the builders before save.
-	point.FloorValidator = pointDescFloor.Validators[0].(func(string) error)
-	// pointDescBuilding is the schema descriptor for building field.
-	pointDescBuilding := pointFields[3].Descriptor()
-	// point.BuildingValidator is a validator for the "building" field. It is called by the builders before save.
-	point.BuildingValidator = pointDescBuilding.Validators[0].(func(string) error)
-	// pointDescArea is the schema descriptor for area field.
-	pointDescArea := pointFields[4].Descriptor()
-	// point.AreaValidator is a validator for the "area" field. It is called by the builders before save.
-	point.AreaValidator = pointDescArea.Validators[0].(func(string) error)
 	uploadMixin := schema.Upload{}.Mixin()
 	uploadMixinFields0 := uploadMixin[0].Fields()
 	_ = uploadMixinFields0
@@ -139,16 +75,24 @@ func init() {
 	uploadDescID1 := uploadFields[3].Descriptor()
 	// upload.ID1Validator is a validator for the "id_1" field. It is called by the builders before save.
 	upload.ID1Validator = uploadDescID1.Validators[0].(func(string) error)
+	// uploadDescCode1 is the schema descriptor for code_1 field.
+	uploadDescCode1 := uploadFields[4].Descriptor()
+	// upload.Code1Validator is a validator for the "code_1" field. It is called by the builders before save.
+	upload.Code1Validator = uploadDescCode1.Validators[0].(func(string) error)
 	// uploadDescID2 is the schema descriptor for id_2 field.
-	uploadDescID2 := uploadFields[4].Descriptor()
+	uploadDescID2 := uploadFields[5].Descriptor()
 	// upload.ID2Validator is a validator for the "id_2" field. It is called by the builders before save.
 	upload.ID2Validator = uploadDescID2.Validators[0].(func(string) error)
+	// uploadDescCode2 is the schema descriptor for code_2 field.
+	uploadDescCode2 := uploadFields[6].Descriptor()
+	// upload.Code2Validator is a validator for the "code_2" field. It is called by the builders before save.
+	upload.Code2Validator = uploadDescCode2.Validators[0].(func(string) error)
 	// uploadDescUser is the schema descriptor for user field.
-	uploadDescUser := uploadFields[5].Descriptor()
+	uploadDescUser := uploadFields[7].Descriptor()
 	// upload.UserValidator is a validator for the "user" field. It is called by the builders before save.
 	upload.UserValidator = uploadDescUser.Validators[0].(func(string) error)
 	// uploadDescPwd is the schema descriptor for pwd field.
-	uploadDescPwd := uploadFields[6].Descriptor()
+	uploadDescPwd := uploadFields[8].Descriptor()
 	// upload.PwdValidator is a validator for the "pwd" field. It is called by the builders before save.
 	upload.PwdValidator = uploadDescPwd.Validators[0].(func(string) error)
 	usingMixin := schema.Using{}.Mixin()
@@ -202,8 +146,26 @@ func init() {
 			return nil
 		}
 	}()
+	// usingDescDeviceID is the schema descriptor for device_id field.
+	usingDescDeviceID := usingFields[2].Descriptor()
+	// using.DeviceIDValidator is a validator for the "device_id" field. It is called by the builders before save.
+	using.DeviceIDValidator = func() func(string) error {
+		validators := usingDescDeviceID.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(device_id string) error {
+			for _, fn := range fns {
+				if err := fn(device_id); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// usingDescAlg is the schema descriptor for alg field.
-	usingDescAlg := usingFields[2].Descriptor()
+	usingDescAlg := usingFields[3].Descriptor()
 	// using.AlgValidator is a validator for the "alg" field. It is called by the builders before save.
 	using.AlgValidator = func() func(string) error {
 		validators := usingDescAlg.Validators
@@ -221,7 +183,7 @@ func init() {
 		}
 	}()
 	// usingDescName is the schema descriptor for name field.
-	usingDescName := usingFields[3].Descriptor()
+	usingDescName := usingFields[4].Descriptor()
 	// using.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	using.NameValidator = usingDescName.Validators[0].(func(string) error)
 }

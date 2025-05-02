@@ -48,6 +48,20 @@ func (uu *UsingUpdate) SetNillableUUID(s *string) *UsingUpdate {
 	return uu
 }
 
+// SetDeviceID sets the "device_id" field.
+func (uu *UsingUpdate) SetDeviceID(s string) *UsingUpdate {
+	uu.mutation.SetDeviceID(s)
+	return uu
+}
+
+// SetNillableDeviceID sets the "device_id" field if the given value is not nil.
+func (uu *UsingUpdate) SetNillableDeviceID(s *string) *UsingUpdate {
+	if s != nil {
+		uu.SetDeviceID(*s)
+	}
+	return uu
+}
+
 // SetAlg sets the "alg" field.
 func (uu *UsingUpdate) SetAlg(s string) *UsingUpdate {
 	uu.mutation.SetAlg(s)
@@ -130,6 +144,11 @@ func (uu *UsingUpdate) check() error {
 			return &ValidationError{Name: "uuid", err: fmt.Errorf(`ent: validator failed for field "Using.uuid": %w`, err)}
 		}
 	}
+	if v, ok := uu.mutation.DeviceID(); ok {
+		if err := using.DeviceIDValidator(v); err != nil {
+			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Using.device_id": %w`, err)}
+		}
+	}
 	if v, ok := uu.mutation.Alg(); ok {
 		if err := using.AlgValidator(v); err != nil {
 			return &ValidationError{Name: "alg", err: fmt.Errorf(`ent: validator failed for field "Using.alg": %w`, err)}
@@ -160,6 +179,9 @@ func (uu *UsingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := uu.mutation.UUID(); ok {
 		_spec.SetField(using.FieldUUID, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.DeviceID(); ok {
+		_spec.SetField(using.FieldDeviceID, field.TypeString, value)
 	}
 	if value, ok := uu.mutation.Alg(); ok {
 		_spec.SetField(using.FieldAlg, field.TypeString, value)
@@ -206,6 +228,20 @@ func (uuo *UsingUpdateOne) SetUUID(s string) *UsingUpdateOne {
 func (uuo *UsingUpdateOne) SetNillableUUID(s *string) *UsingUpdateOne {
 	if s != nil {
 		uuo.SetUUID(*s)
+	}
+	return uuo
+}
+
+// SetDeviceID sets the "device_id" field.
+func (uuo *UsingUpdateOne) SetDeviceID(s string) *UsingUpdateOne {
+	uuo.mutation.SetDeviceID(s)
+	return uuo
+}
+
+// SetNillableDeviceID sets the "device_id" field if the given value is not nil.
+func (uuo *UsingUpdateOne) SetNillableDeviceID(s *string) *UsingUpdateOne {
+	if s != nil {
+		uuo.SetDeviceID(*s)
 	}
 	return uuo
 }
@@ -305,6 +341,11 @@ func (uuo *UsingUpdateOne) check() error {
 			return &ValidationError{Name: "uuid", err: fmt.Errorf(`ent: validator failed for field "Using.uuid": %w`, err)}
 		}
 	}
+	if v, ok := uuo.mutation.DeviceID(); ok {
+		if err := using.DeviceIDValidator(v); err != nil {
+			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Using.device_id": %w`, err)}
+		}
+	}
 	if v, ok := uuo.mutation.Alg(); ok {
 		if err := using.AlgValidator(v); err != nil {
 			return &ValidationError{Name: "alg", err: fmt.Errorf(`ent: validator failed for field "Using.alg": %w`, err)}
@@ -352,6 +393,9 @@ func (uuo *UsingUpdateOne) sqlSave(ctx context.Context) (_node *Using, err error
 	}
 	if value, ok := uuo.mutation.UUID(); ok {
 		_spec.SetField(using.FieldUUID, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.DeviceID(); ok {
+		_spec.SetField(using.FieldDeviceID, field.TypeString, value)
 	}
 	if value, ok := uuo.mutation.Alg(); ok {
 		_spec.SetField(using.FieldAlg, field.TypeString, value)

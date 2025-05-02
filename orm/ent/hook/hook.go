@@ -9,18 +9,6 @@ import (
 	"github.com/twiglab/doggy/orm/ent"
 )
 
-// The PointFunc type is an adapter to allow the use of ordinary
-// function as Point mutator.
-type PointFunc func(context.Context, *ent.PointMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f PointFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.PointMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PointMutation", m)
-}
-
 // The UploadFunc type is an adapter to allow the use of ordinary
 // function as Upload mutator.
 type UploadFunc func(context.Context, *ent.UploadMutation) (ent.Value, error)

@@ -74,6 +74,11 @@ func UUID(v string) predicate.Using {
 	return predicate.Using(sql.FieldEQ(FieldUUID, v))
 }
 
+// DeviceID applies equality check predicate on the "device_id" field. It's identical to DeviceIDEQ.
+func DeviceID(v string) predicate.Using {
+	return predicate.Using(sql.FieldEQ(FieldDeviceID, v))
+}
+
 // Alg applies equality check predicate on the "alg" field. It's identical to AlgEQ.
 func Alg(v string) predicate.Using {
 	return predicate.Using(sql.FieldEQ(FieldAlg, v))
@@ -292,6 +297,71 @@ func UUIDEqualFold(v string) predicate.Using {
 // UUIDContainsFold applies the ContainsFold predicate on the "uuid" field.
 func UUIDContainsFold(v string) predicate.Using {
 	return predicate.Using(sql.FieldContainsFold(FieldUUID, v))
+}
+
+// DeviceIDEQ applies the EQ predicate on the "device_id" field.
+func DeviceIDEQ(v string) predicate.Using {
+	return predicate.Using(sql.FieldEQ(FieldDeviceID, v))
+}
+
+// DeviceIDNEQ applies the NEQ predicate on the "device_id" field.
+func DeviceIDNEQ(v string) predicate.Using {
+	return predicate.Using(sql.FieldNEQ(FieldDeviceID, v))
+}
+
+// DeviceIDIn applies the In predicate on the "device_id" field.
+func DeviceIDIn(vs ...string) predicate.Using {
+	return predicate.Using(sql.FieldIn(FieldDeviceID, vs...))
+}
+
+// DeviceIDNotIn applies the NotIn predicate on the "device_id" field.
+func DeviceIDNotIn(vs ...string) predicate.Using {
+	return predicate.Using(sql.FieldNotIn(FieldDeviceID, vs...))
+}
+
+// DeviceIDGT applies the GT predicate on the "device_id" field.
+func DeviceIDGT(v string) predicate.Using {
+	return predicate.Using(sql.FieldGT(FieldDeviceID, v))
+}
+
+// DeviceIDGTE applies the GTE predicate on the "device_id" field.
+func DeviceIDGTE(v string) predicate.Using {
+	return predicate.Using(sql.FieldGTE(FieldDeviceID, v))
+}
+
+// DeviceIDLT applies the LT predicate on the "device_id" field.
+func DeviceIDLT(v string) predicate.Using {
+	return predicate.Using(sql.FieldLT(FieldDeviceID, v))
+}
+
+// DeviceIDLTE applies the LTE predicate on the "device_id" field.
+func DeviceIDLTE(v string) predicate.Using {
+	return predicate.Using(sql.FieldLTE(FieldDeviceID, v))
+}
+
+// DeviceIDContains applies the Contains predicate on the "device_id" field.
+func DeviceIDContains(v string) predicate.Using {
+	return predicate.Using(sql.FieldContains(FieldDeviceID, v))
+}
+
+// DeviceIDHasPrefix applies the HasPrefix predicate on the "device_id" field.
+func DeviceIDHasPrefix(v string) predicate.Using {
+	return predicate.Using(sql.FieldHasPrefix(FieldDeviceID, v))
+}
+
+// DeviceIDHasSuffix applies the HasSuffix predicate on the "device_id" field.
+func DeviceIDHasSuffix(v string) predicate.Using {
+	return predicate.Using(sql.FieldHasSuffix(FieldDeviceID, v))
+}
+
+// DeviceIDEqualFold applies the EqualFold predicate on the "device_id" field.
+func DeviceIDEqualFold(v string) predicate.Using {
+	return predicate.Using(sql.FieldEqualFold(FieldDeviceID, v))
+}
+
+// DeviceIDContainsFold applies the ContainsFold predicate on the "device_id" field.
+func DeviceIDContainsFold(v string) predicate.Using {
+	return predicate.Using(sql.FieldContainsFold(FieldDeviceID, v))
 }
 
 // AlgEQ applies the EQ predicate on the "alg" field.
