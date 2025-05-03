@@ -63,6 +63,7 @@ func initConfig() {
 func printConf(conf AppConf) {
 	fmt.Println("--------------------")
 	fmt.Println(plan)
+	fmt.Println("conf.Plan ", conf.Plan)
 	fmt.Println("--------------------")
 }
 
