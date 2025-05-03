@@ -106,13 +106,17 @@ func servCmd() {
 			Addr:        conf.AutoRegConf.Addr,
 			Port:        conf.AutoRegConf.Port,
 		}
-		h = pf.NewHandle().
-			SetCountHandler(idb3).
-			SetDensityHandler(idb3).
-			SetRegisterHandler(autoSub)
+		h = pf.NewHandle(
+			pf.SetCountHandler(idb3),
+			pf.SetDensityHandler(idb3),
+			pf.SetDeviceRegister(autoSub),
+		)
 	case 2:
 		idb3 := idb.NewIdb3(MustIdb(conf.InfluxDBConf))
-		h = pf.NewHandle().SetCountHandler(idb3).SetDensityHandler(idb3)
+		h = pf.NewHandle(
+			pf.SetCountHandler(idb3),
+			pf.SetDensityHandler(idb3),
+		)
 	default:
 		h = pf.NewHandle()
 	}

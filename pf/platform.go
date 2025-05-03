@@ -24,48 +24,43 @@ type DensityHandler interface {
 }
 
 type Handle struct {
-	CountHandler   CountHandler
-	DensityHandler DensityHandler
-	DeviceRegister DeviceRegister
+	countHandler   CountHandler
+	densityHandler DensityHandler
+	deviceRegister DeviceRegister
+
 }
 
-func NewHandle() *Handle {
+func NewHandle(opts ...Option) *Handle {
 	action := &cameraAction{}
+	c := &hc{
+		countHandler:   action,
+		densityHandler: action,
+		deviceRegister: action,
+	}
+
+	for _, opt := range opts {
+		opt(c)
+	}
 	return &Handle{
-		DeviceRegister: action,
-		CountHandler:   action,
-		DensityHandler: action,
+		deviceRegister: c.deviceRegister,
+		countHandler:   c.countHandler,
+		densityHandler: c.densityHandler,
 	}
 }
 
-func (h *Handle) SetCountHandler(ch CountHandler) *Handle {
-	h.CountHandler = ch
-	return h
-}
-
-func (h *Handle) SetDensityHandler(ch DensityHandler) *Handle {
-	h.DensityHandler = ch
-	return h
-}
-
-func (h *Handle) SetRegisterHandler(ch DeviceRegister) *Handle {
-	h.DeviceRegister = ch
-	return h
-}
-
 func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	return h.DeviceRegister.AutoRegister(ctx, data)
+	return h.deviceRegister.AutoRegister(ctx, data)
 }
 
 func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpload) error {
 	for _, target := range data.MetadataObject.TargetList {
 		switch target.TargetType {
 		case holo.HUMMAN_DENSITY:
-			if err := h.DensityHandler.HandleDensity(ctx, data.MetadataObject.Common, target); err != nil {
+			if err := h.densityHandler.HandleDensity(ctx, data.MetadataObject.Common, target); err != nil {
 				log.Println(err)
 			}
 		case holo.HUMMAN_COUNT:
-			if err := h.CountHandler.HandleCount(ctx, data.MetadataObject.Common, target); err != nil {
+			if err := h.countHandler.HandleCount(ctx, data.MetadataObject.Common, target); err != nil {
 				log.Println(err)
 			}
 		default:
