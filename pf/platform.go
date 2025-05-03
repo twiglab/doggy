@@ -38,6 +38,21 @@ func NewHandle() *Handle {
 	}
 }
 
+func (h *Handle) SetCountHandler(ch CountHandler) *Handle {
+	h.CountHandler = ch
+	return h
+}
+
+func (h *Handle) SetDensityHandler(ch DensityHandler) *Handle {
+	h.DensityHandler = ch
+	return h
+}
+
+func (h *Handle) SetRegisterHandler(ch DeviceRegister) *Handle {
+	h.DeviceRegister = ch
+	return h
+}
+
 func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
 	return h.DeviceRegister.AutoRegister(ctx, data)
 }

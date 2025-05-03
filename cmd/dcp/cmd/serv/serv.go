@@ -98,25 +98,21 @@ func servCmd() {
 		}
 
 		crontab.AddJob(conf.JobConf.Keeplive, keeplive)
+		autoSub := &pf.AutoSub{
+			DeviceResolver: fixUser,
+			UploadHandler:  eh,
 
-		h = &pf.Handle{
-			DeviceRegister: &pf.AutoSub{
-				DeviceResolver: fixUser,
-				UploadHandler:  eh,
-
-				MetadataURL: conf.AutoRegConf.MetadataURL,
-				Addr:        conf.AutoRegConf.Addr,
-				Port:        conf.AutoRegConf.Port,
-			},
-			CountHandler:   idb3,
-			DensityHandler: idb3,
+			MetadataURL: conf.AutoRegConf.MetadataURL,
+			Addr:        conf.AutoRegConf.Addr,
+			Port:        conf.AutoRegConf.Port,
 		}
+		h = pf.NewHandle().
+			SetCountHandler(idb3).
+			SetDensityHandler(idb3).
+			SetRegisterHandler(autoSub)
 	case 2:
 		idb3 := idb.NewIdb3(MustIdb(conf.InfluxDBConf))
-		h = &pf.Handle{
-			CountHandler:   idb3,
-			DensityHandler: idb3,
-		}
+		h = pf.NewHandle().SetCountHandler(idb3).SetDensityHandler(idb3)
 	default:
 		h = pf.NewHandle()
 	}
