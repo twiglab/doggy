@@ -78,7 +78,7 @@ func servCmd() {
 	var h *pf.Handle
 	crontab := job.NewCron()
 
-	if plan > 0 {
+	if plan >= 0 {
 		conf.Plan = plan
 	}
 
