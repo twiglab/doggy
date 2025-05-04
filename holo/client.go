@@ -17,13 +17,6 @@ func cameraURL(addr, path string) string {
 	return url
 }
 
-const (
-// metadata_subscription = "/SDCAPI/V2.0/Metadata/Subscription"
-)
-
-type PlatformInfo struct {
-}
-
 type Device struct {
 	client  *resty.Client
 	isClose bool
@@ -118,4 +111,22 @@ func (h *Device) GetDeviceID(ctx context.Context) (*DeviceIDList, error) {
 		return ids, err
 	}
 	return ids, nil
+}
+
+func (h *Device) PutDeviceID(ctx context.Context, idList DeviceIDList) (*CommonResponse, error) {
+	resp := &CommonResponse{}
+
+	_, err := h.client.R().
+		SetBody(idList).
+		SetResult(resp).
+		Put(cameraURL(h.Addr, "/SDCAPI/V1.0/Rest/DeviceID"))
+
+	if err != nil {
+		return resp, err
+	}
+
+	if resp.IsErr() {
+		return resp, resp
+	}
+	return resp, nil
 }
