@@ -85,7 +85,7 @@ func servCmd() {
 
 	switch conf.Plan {
 	case 1:
-		idb3 := idb.NewIdb3(MustIdb(conf.InfluxDBConf))
+		idb3 := idb.NewIdbPoint(MustIdb(conf.InfluxDBConf))
 		eh := orm.NewEntHandle(MustEntClient(conf.DBConf))
 		fixUser := &pf.FixUserDeviceResolve{User: conf.FixUserConf.CameraUser, Pwd: conf.FixUserConf.CameraPwd}
 
@@ -113,7 +113,7 @@ func servCmd() {
 			pf.SetDeviceRegister(autoSub),
 		)
 	case 2:
-		idb3 := idb.NewIdb3(MustIdb(conf.InfluxDBConf))
+		idb3 := idb.NewIdbPoint(MustIdb(conf.InfluxDBConf))
 		h = pf.NewHandle(
 			pf.SetCountHandler(idb3),
 			pf.SetDensityHandler(idb3),
