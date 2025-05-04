@@ -23,29 +23,44 @@ type DensityHandler interface {
 	HandleDensity(ctx context.Context, common holo.Common, data holo.HumanMix) error
 }
 
+type Option func(*Handle)
+
+func WithCountHandler(h CountHandler) Option {
+	return func(c *Handle) {
+		c.countHandler = h
+	}
+}
+
+func WithDensityHandler(h DensityHandler) Option {
+	return func(c *Handle) {
+		c.densityHandler = h
+	}
+}
+
+func WithDeviceRegister(h DeviceRegister) Option {
+	return func(c *Handle) {
+		c.deviceRegister = h
+	}
+}
+
 type Handle struct {
 	countHandler   CountHandler
 	densityHandler DensityHandler
 	deviceRegister DeviceRegister
-
 }
 
 func NewHandle(opts ...Option) *Handle {
 	action := &cameraAction{}
-	c := &hc{
+	h := &Handle{
 		countHandler:   action,
 		densityHandler: action,
 		deviceRegister: action,
 	}
 
-	for _, opt := range opts {
-		opt(c)
+	for _, o := range opts {
+		o(h)
 	}
-	return &Handle{
-		deviceRegister: c.deviceRegister,
-		countHandler:   c.countHandler,
-		densityHandler: c.densityHandler,
-	}
+	return h
 }
 
 func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
