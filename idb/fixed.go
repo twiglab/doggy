@@ -71,6 +71,3 @@ func (f *fixed) emitPoints() []*influxdb3.Point {
 	f.size = 0
 	return points
 }
-
-func main() {
-}
