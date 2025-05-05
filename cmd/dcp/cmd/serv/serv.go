@@ -89,7 +89,7 @@ func servCmd() {
 		eh := orm.NewEntHandle(MustEntClient(conf.DBConf))
 		fixUser := &pf.FixUserDeviceResolve{User: conf.FixUserConf.CameraUser, Pwd: conf.FixUserConf.CameraPwd}
 
-		keeplive := &job.KeepLiveJob{
+		keeplive := &pf.KeepLiveJob{
 			DeviceLoader:   eh,
 			DeviceResolver: fixUser,
 

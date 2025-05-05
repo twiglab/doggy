@@ -1,20 +1,19 @@
-package job
+package pf
 
 import (
 	"context"
 	"log"
 
 	"github.com/twiglab/doggy/holo"
-	"github.com/twiglab/doggy/pf"
 )
 
 type DeviceLoader interface {
-	All(context.Context) ([]pf.CameraUpload, error)
+	All(context.Context) ([]CameraUpload, error)
 }
 
 type KeepLiveJob struct {
 	DeviceLoader   DeviceLoader
-	DeviceResolver pf.DeviceResolver
+	DeviceResolver DeviceResolver
 
 	MetadataURL string
 	Addr        string
@@ -34,7 +33,7 @@ func (x *KeepLiveJob) Run() {
 	}
 }
 
-func (x *KeepLiveJob) Ping(ctx context.Context, data pf.CameraUpload) {
+func (x *KeepLiveJob) Ping(ctx context.Context, data CameraUpload) {
 	device, err := x.DeviceResolver.Resolve(ctx,
 		holo.DeviceAutoRegisterData{
 			SerialNumber: data.SN,
