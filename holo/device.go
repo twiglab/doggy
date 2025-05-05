@@ -35,6 +35,20 @@ type DeviceID struct {
 	UUID     string `json:"UUID"`
 	DeviceID string `json:"deviceID"`
 }
+
 type DeviceIDList struct {
 	IDs []DeviceID `json:"IDs"`
+}
+
+type SysBaseInfo struct {
+	PlatformType string `json:"platformType"` // 设备平台
+	BarCode      string `json:"barCode"`      // 设备BarCode
+	BomCode      string `json:"bomCode"`      // 设备BomCode
+	DrvCode      string `json:"drvCode"`      // 设备款型名
+
+	Manufacturer  string `json:"manufacturer"`  // 厂商名称。SDC 11.1.0版本新增
+	SoftVersion   string `json:"softVersion"`   // 软件包版本信息
+	KernelVersion string `json:"kernelVersion"` // 内核版本，SDC 11.1.0版本新增
+	HardVersion   string `json:"hardVersion"`   // 硬件版本，SDC 11.1.0版本新增
+	FullDeviceType string `json:"fullDeviceType"` // 完整设备型号
 }

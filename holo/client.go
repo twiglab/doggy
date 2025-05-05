@@ -130,3 +130,13 @@ func (h *Device) PutDeviceID(ctx context.Context, idList DeviceIDList) (*CommonR
 	}
 	return resp, nil
 }
+
+func (h *Device) GetSysBaseInfo(ctx context.Context) (info *SysBaseInfo, err error) {
+	info = new(SysBaseInfo)
+
+	_, err = h.client.R().
+		SetResult(info).
+		Get(cameraURL(h.Addr, "/SDCAPI/V1.0/MiscIaas/System"))
+
+	return
+}
