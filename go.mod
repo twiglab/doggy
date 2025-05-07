@@ -6,7 +6,6 @@ require (
 	entgo.io/ent v0.14.4
 	github.com/InfluxCommunity/influxdb3-go/v2 v2.6.0
 	github.com/go-chi/chi/v5 v5.2.1
-	github.com/go-sql-driver/mysql v1.9.2
 	github.com/jackc/pgx/v5 v5.7.4
 	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/spf13/cobra v1.9.1
@@ -17,7 +16,6 @@ require (
 
 require (
 	ariga.io/atlas v0.31.1-0.20250212144724-069be8033e83 // indirect
-	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/apache/arrow/go/v15 v15.0.2 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect

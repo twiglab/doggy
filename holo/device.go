@@ -1,7 +1,5 @@
 package holo
 
-import "fmt"
-
 type DeviceAutoRegisterData struct {
 	DeviceName    string            `json:"DeviceName"`
 	Manufacturer  string            `json:"Manufacturer"`
@@ -16,19 +14,6 @@ type DeviceVersionData struct {
 	Uboot    string `json:"Uboot"`
 	Kernel   string `json:"Kernel"`
 	Hardware string `json:"Hardware"`
-}
-
-type RebootResp struct {
-	Code int    `json:"HSErrorCode"`
-	Msg  string `json:"HSErrorMsg"`
-}
-
-func (r RebootResp) Error() string {
-	return fmt.Sprintf("code = %d, msg = %s", r.Code, r.Msg)
-}
-
-func (r RebootResp) IsErr() bool {
-	return r.Code != 0
 }
 
 type DeviceID struct {
@@ -46,9 +31,9 @@ type SysBaseInfo struct {
 	BomCode      string `json:"bomCode"`      // 设备BomCode
 	DrvCode      string `json:"drvCode"`      // 设备款型名
 
-	Manufacturer  string `json:"manufacturer"`  // 厂商名称。SDC 11.1.0版本新增
-	SoftVersion   string `json:"softVersion"`   // 软件包版本信息
-	KernelVersion string `json:"kernelVersion"` // 内核版本，SDC 11.1.0版本新增
-	HardVersion   string `json:"hardVersion"`   // 硬件版本，SDC 11.1.0版本新增
+	Manufacturer   string `json:"manufacturer"`   // 厂商名称。SDC 11.1.0版本新增
+	SoftVersion    string `json:"softVersion"`    // 软件包版本信息
+	KernelVersion  string `json:"kernelVersion"`  // 内核版本，SDC 11.1.0版本新增
+	HardVersion    string `json:"hardVersion"`    // 硬件版本，SDC 11.1.0版本新增
 	FullDeviceType string `json:"fullDeviceType"` // 完整设备型号
 }

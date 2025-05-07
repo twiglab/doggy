@@ -1,28 +1,56 @@
 package holo
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // 1.2.5
-type CommonResponse struct {
+type ResponseStatus struct {
 	RequestUrl   string `json:"RequestURL"`
 	StatusCode   int    `json:"StatusCode"`
 	StatusString string `json:"StatusString"`
+	ID           int    `json:"ID,omitempty"` // for 2.6.x
 }
 
-func (r CommonResponse) Error() string {
-	return fmt.Sprintf("url = %s, code = %d, msg = %s", r.RequestUrl, r.StatusCode, r.StatusString)
+type CommonResponse struct {
+	ResponseStatus ResponseStatus `json:"ResponseStatus"`
 }
 
-func (r CommonResponse) String() string {
-	return fmt.Sprintf("url = %s, code = %d, msg = %s", r.RequestUrl, r.StatusCode, r.StatusString)
+func (c CommonResponse) Err() error {
+	if c.ResponseStatus.StatusCode == 0 {
+		return nil
+	}
+
+	return &CommonError{
+		Code: c.ResponseStatus.StatusCode,
+		Text: c.ResponseStatus.StatusString,
+	}
 }
 
-func (r CommonResponse) IsErr() bool {
-	// 5.2 响应码
-	return r.StatusCode != 0
+func NewCommonResponse(url string, code int, str string) *CommonResponse {
+	return &CommonResponse{
+		ResponseStatus: ResponseStatus{
+			RequestUrl:   url,
+			StatusCode:   code,
+			StatusString: str,
+		},
+	}
 }
 
-type CommonResponseID struct {
-	CommonResponse
-	ID int `json:"ID,omitempty"`
+func CommonResponseOK(url string) *CommonResponse {
+	return NewCommonResponse(url, 0, "OK")
+}
+
+func CommonResponseFailed(url string) *CommonResponse {
+	return NewCommonResponse(url, -1, "FAILED")
+}
+
+type CommonError struct {
+	Code int
+	Text string
+	error
+}
+
+func (ce *CommonError) Error() string {
+	return fmt.Sprintf("code = %d, text = %s", ce.Code, ce.Text)
 }

@@ -2,8 +2,10 @@ package camera
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -26,7 +28,7 @@ func init() {
 }
 
 func fromString(s string) holo.DeviceID {
-	uuid, deviceID, ok := strings.Cut(s, ",")
+	uuid, deviceID, ok := strings.Cut(s, "=")
 	if !ok {
 		log.Fatal("param error")
 	}
@@ -47,6 +49,11 @@ func setid(args []string) {
 	}
 
 	idList := holo.DeviceIDList{IDs: ids}
+	enc0 := json.NewEncoder(os.Stdout)
+	enc0.SetIndent("", "  ")
+	enc0.Encode(idList)
+
+	fmt.Println("-------------------------------------------")
 
 	resp, err := dev.PutDeviceID(context.Background(), idList)
 
@@ -54,6 +61,7 @@ func setid(args []string) {
 		log.Fatal(err)
 	}
 
-	fmt.Println(resp.StatusString)
-
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "  ")
+	enc.Encode(resp)
 }

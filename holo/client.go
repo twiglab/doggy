@@ -2,6 +2,8 @@ package holo
 
 import (
 	"context"
+	"crypto/tls"
+	"net/http"
 	"time"
 
 	"resty.dev/v3"
@@ -27,11 +29,17 @@ type Device struct {
 }
 
 func OpenDevice(addr, username, password string) (*Device, error) {
-	c := resty.NewWithTransportSettings(
-		&resty.TransportSettings{
-			DialerTimeout:   10 * time.Second,
-			IdleConnTimeout: 20 * time.Second,
-		}).SetDigestAuth(username, password)
+	c := resty.NewWithClient(&http.Client{
+		Timeout: 10 * time.Second,
+		Transport: &http.Transport{
+			TLSClientConfig:     &tls.Config{InsecureSkipVerify: true},
+			IdleConnTimeout:     20 * time.Second,
+			DisableKeepAlives:   true,
+			MaxIdleConns:        3,
+			TLSHandshakeTimeout: 5 * time.Second,
+			DisableCompression:  true,
+		},
+	}).SetDigestAuth(username, password)
 
 	return &Device{
 		client: c,
@@ -41,6 +49,10 @@ func OpenDevice(addr, username, password string) (*Device, error) {
 	}, nil
 }
 
+func (h *Device) EnableDebug() {
+	h.client.SetDebug(true)
+}
+
 func (h *Device) Close() error {
 	if !h.isClose {
 		return h.client.Close()
@@ -48,24 +60,17 @@ func (h *Device) Close() error {
 	return nil
 }
 
-func (h *Device) PostMetadataSubscription(ctx context.Context, req SubscriptionReq) (*CommonResponseID, error) {
-	cr := &CommonResponseID{}
+func (h *Device) PostMetadataSubscription(ctx context.Context, req SubscriptionReq) (resp *CommonResponse, err error) {
+	cr := new(CommonError)
 
-	_, err := h.client.R().
+	_, err = h.client.R().
+		SetContext(ctx).
 		SetBody(req).
 		SetResult(cr).
 		SetError(cr).
 		Post(cameraURL(h.Addr, "/SDCAPI/V2.0/Metadata/Subscription"))
 
-	if err != nil {
-		return cr, err
-	}
-
-	if cr.IsErr() {
-		return cr, cr
-	}
-
-	return cr, nil
+	return
 }
 
 func (h *Device) GetMetadataSubscription(ctx context.Context) (*Subscripions, error) {
@@ -82,61 +87,40 @@ func (h *Device) GetMetadataSubscription(ctx context.Context) (*Subscripions, er
 	return data, nil
 }
 
-func (h *Device) Reboot(ctx context.Context) (*RebootResp, error) {
-	resp := &RebootResp{}
-
-	_, err := h.client.R().
+func (h *Device) Reboot(ctx context.Context) (resp *CommonResponse, err error) {
+	resp = new(CommonResponse)
+	_, err = h.client.R().
+		SetContext(ctx).
 		SetResult(resp).
 		SetError(resp).
-		Post(cameraURL(h.Addr, "/HSAPI/V1/System/Reboot"))
-
-	if err != nil {
-		return resp, err
-	}
-
-	if resp.IsErr() {
-		return resp, resp
-	}
-	return resp, nil
+		Post(cameraURL(h.Addr, "/SDCAPI/V1.0/System/Reboot"))
+	return
 }
 
-func (h *Device) GetDeviceID(ctx context.Context) (*DeviceIDList, error) {
-	ids := &DeviceIDList{}
-
-	_, err := h.client.R().
-		SetResult(ids).
+func (h *Device) GetDeviceID(ctx context.Context) (idList *DeviceIDList, err error) {
+	idList = new(DeviceIDList)
+	_, err = h.client.R().
+		SetContext(ctx).
+		SetResult(&idList).
 		Get(cameraURL(h.Addr, "/SDCAPI/V1.0/Rest/DeviceID"))
-
-	if err != nil {
-		return ids, err
-	}
-	return ids, nil
+	return
 }
 
-func (h *Device) PutDeviceID(ctx context.Context, idList DeviceIDList) (*CommonResponse, error) {
-	resp := &CommonResponse{}
-
-	_, err := h.client.R().
+func (h *Device) PutDeviceID(ctx context.Context, idList DeviceIDList) (resp *CommonResponse, err error) {
+	resp = new(CommonResponse)
+	_, err = h.client.R().
+		SetContext(ctx).
 		SetBody(idList).
 		SetResult(resp).
+		SetError(resp).
 		Put(cameraURL(h.Addr, "/SDCAPI/V1.0/Rest/DeviceID"))
-
-	if err != nil {
-		return resp, err
-	}
-
-	if resp.IsErr() {
-		return resp, resp
-	}
-	return resp, nil
+	return
 }
 
 func (h *Device) GetSysBaseInfo(ctx context.Context) (info *SysBaseInfo, err error) {
 	info = new(SysBaseInfo)
-
 	_, err = h.client.R().
 		SetResult(info).
 		Get(cameraURL(h.Addr, "/SDCAPI/V1.0/MiscIaas/System"))
-
 	return
 }

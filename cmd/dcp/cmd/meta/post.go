@@ -2,9 +2,10 @@ package meta
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"log"
 	"net/url"
+	"os"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -49,7 +50,7 @@ func metaPost(_ *cobra.Command, _ []string) {
 		}
 	}
 
-	var resp *holo.CommonResponseID
+	var resp *holo.CommonResponse
 	resp, err = dev.PostMetadataSubscription(context.Background(), holo.SubscriptionReq{
 		Address:     url.Hostname(),
 		Port:        port,
@@ -62,5 +63,7 @@ func metaPost(_ *cobra.Command, _ []string) {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("ID: %d, code: %d, str: %s\n", resp.ID, resp.CommonResponse.StatusCode, resp.CommonResponse.StatusString)
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "  ")
+	enc.Encode(resp)
 }

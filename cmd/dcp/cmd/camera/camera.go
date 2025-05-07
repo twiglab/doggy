@@ -26,5 +26,5 @@ var (
 func init() {
 	CameraCmd.PersistentFlags().StringVarP(&user, "user", "u", "ApiAdmin", "用户名")
 	CameraCmd.PersistentFlags().StringVarP(&pwd, "pwd", "p", "Aaa1234%%", "密码")
-	CameraCmd.PersistentFlags().StringVar(&addr, "addr", "", "相机地址(ip:port)")
+	CameraCmd.PersistentFlags().StringVar(&addr, "addr", "127.0.0.1:10007", "相机地址(ip:port)")
 }

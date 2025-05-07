@@ -2,8 +2,10 @@ package camera
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/twiglab/doggy/holo"
@@ -39,4 +41,9 @@ func getid() {
 		fmt.Printf("---------------\n")
 		fmt.Printf("%s = %s\n", id.UUID, id.DeviceID)
 	}
+		fmt.Printf("---------------\n")
+
+		enc:=json.NewEncoder(os.Stdout)
+		enc.SetIndent("","  ")
+		enc.Encode(resp)
 }

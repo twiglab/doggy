@@ -12,12 +12,9 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var data holo.DeviceAutoRegisterData
-		if err := hx.Bind(r, &data); err != nil {
-			_ = hx.JsonTo(http.StatusInternalServerError, &holo.CommonResponse{
-				RequestUrl:   r.URL.Path,
-				StatusCode:   -1,
-				StatusString: err.Error(),
-			}, w)
+		if err := hx.BindAndClose(r, &data); err != nil {
+			_ = hx.JsonTo(http.StatusInternalServerError,
+				holo.CommonResponseFailed(r.URL.Path), w)
 			return
 		}
 
@@ -29,35 +26,29 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 		}
 
 		if err := h.HandleAutoRegister(r.Context(), data); err != nil {
-			_ = hx.JsonTo(http.StatusInternalServerError, &holo.CommonResponse{
-				RequestUrl:   r.URL.Path,
-				StatusCode:   -1,
-				StatusString: err.Error(),
-			}, w)
+			_ = hx.JsonTo(http.StatusInternalServerError,
+				holo.CommonResponseFailed(r.URL.Path), w)
 			return
 		}
 
-		_ = hx.JsonTo(http.StatusOK, &holo.CommonResponse{
-			RequestUrl:   r.URL.Path,
-			StatusCode:   0,
-			StatusString: "OK",
-		}, w)
+		_ = hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
 	}
 }
 
 func MetadataEntryUpload(h *Handle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		var data holo.MetadataObjectUpload
-		if err := hx.Bind(r, &data); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		if err := hx.BindAndClose(r, &data); err != nil {
+			_ = hx.JsonTo(http.StatusInternalServerError,
+				holo.CommonResponseFailed(r.URL.Path), w)
 			return
 		}
 
 		if err := h.HandleMetadata(r.Context(), data); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			_ = hx.JsonTo(http.StatusInternalServerError,
+				holo.CommonResponseFailed(r.URL.Path), w)
+			return
 		}
-
-		w.WriteHeader(http.StatusOK)
+		_ = hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
 	}
 }

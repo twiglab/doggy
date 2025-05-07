@@ -2,8 +2,9 @@ package camera
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"log"
+	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/twiglab/doggy/holo"
@@ -35,5 +36,7 @@ func reboot(_ *cobra.Command, _ []string) {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("success, code: %d, msg: %s\n", resp.Code, resp.Msg)
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "  ")
+	enc.Encode(resp)
 }

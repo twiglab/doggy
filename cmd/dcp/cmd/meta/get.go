@@ -2,8 +2,9 @@ package meta
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"log"
+	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/twiglab/doggy/holo"
@@ -33,7 +34,7 @@ func metaGet(_ *cobra.Command, _ []string) {
 		log.Fatal(err)
 	}
 
-	for _, sub := range subs.Subscripions {
-		fmt.Printf("ID: %d, url: %s", sub.ID, sub.MetadataURL)
-	}
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "  ")
+	enc.Encode(subs)
 }
