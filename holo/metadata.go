@@ -41,19 +41,19 @@ type MetadataObjectUpload struct {
 
 // 2.6.4
 
-type SubscripionItem struct {
+type SubscriptionItem struct {
 	ID          int    `json:"id"`
 	MetadataURL string `json:"metadataURL"`
 }
 
 type Subscripions struct {
-	Subscripions []SubscripionItem `json:"subscriptions"`
+	Subscriptions []SubscriptionItem `json:"subscriptions,omitempty"`
 }
 
 func (s Subscripions) IsEmpty() bool {
-	return len(s.Subscripions) == 0
+	return len(s.Subscriptions) == 0
 }
 
 func (s Subscripions) Size() int {
-	return len(s.Subscripions)
+	return len(s.Subscriptions)
 }

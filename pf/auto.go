@@ -71,7 +71,7 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 		return err
 	}
 
-	if len(subs.Subscripions) == 0 {
+	if len(subs.Subscriptions) == 0 {
 		_, err := device.PostMetadataSubscription(ctx,
 			holo.SubscriptionReq{
 				Address:     a.Addr,

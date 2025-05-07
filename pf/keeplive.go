@@ -48,7 +48,7 @@ func (x *KeepLiveJob) Ping(ctx context.Context, data CameraUpload) {
 		return
 	}
 
-	l := len(subs.Subscripions)
+	l := len(subs.Subscriptions)
 	if l != 0 {
 		if l > 1 {
 			log.Printf("%s %s %d too many subs", data.SN, data.IpAddr, l)

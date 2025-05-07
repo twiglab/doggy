@@ -12,7 +12,7 @@ var MetaCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		metaGet(cmd, args)
 	},
-	Example: "dcp meta --addr 1.2.3.4",
+	Example: "dcp meta --addr 127.0.0.1",
 }
 
 var (
@@ -24,5 +24,5 @@ var (
 func init() {
 	MetaCmd.PersistentFlags().StringVarP(&user, "user", "u", "ApiAdmin", "用户名")
 	MetaCmd.PersistentFlags().StringVarP(&pwd, "pwd", "p", "Aaa1234%%", "密码")
-	MetaCmd.PersistentFlags().StringVar(&addr, "addr", "", "像机地址(ip:port)")
+	MetaCmd.PersistentFlags().StringVar(&addr, "addr", "127.0.0.1:10007", "相机地址(ip:port)")
 }
