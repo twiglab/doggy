@@ -14,7 +14,7 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 		var data holo.DeviceAutoRegisterData
 		if err := hx.BindAndClose(r, &data); err != nil {
 			_ = hx.JsonTo(http.StatusInternalServerError,
-				holo.CommonResponseFailed(r.URL.Path), w)
+				holo.CommonResponseFailedError(r.URL.Path, err), w)
 			return
 		}
 
@@ -27,7 +27,7 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 
 		if err := h.HandleAutoRegister(r.Context(), data); err != nil {
 			_ = hx.JsonTo(http.StatusInternalServerError,
-				holo.CommonResponseFailed(r.URL.Path), w)
+				holo.CommonResponseFailedError(r.URL.Path, err), w)
 			return
 		}
 

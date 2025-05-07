@@ -45,6 +45,14 @@ func CommonResponseFailed(url string) *CommonResponse {
 	return NewCommonResponse(url, -1, "FAILED")
 }
 
+func CommonResponseFailedText(url, text string) *CommonResponse {
+	return NewCommonResponse(url, -1, text)
+}
+
+func CommonResponseFailedError(url string, err error) *CommonResponse {
+	return NewCommonResponse(url, -1, err.Error())
+}
+
 type CommonError struct {
 	Code int
 	Text string

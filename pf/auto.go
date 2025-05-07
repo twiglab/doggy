@@ -50,7 +50,7 @@ type AutoSub struct {
 }
 
 func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	log.Printf("auto reg sn = %s, ip = %s\n", data.SerialNumber, data.IpAddr)
+	log.Printf("auto sub reg sn = %s, ip = %s\n", data.SerialNumber, data.IpAddr)
 	device, err := a.DeviceResolver.Resolve(ctx, data)
 	if err != nil {
 		return err

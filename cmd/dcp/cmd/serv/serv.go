@@ -118,6 +118,31 @@ func servCmd() {
 			pf.WithCountHandler(idb3),
 			pf.WithDensityHandler(idb3),
 		)
+	case 5:
+		eh := orm.NewEntHandle(MustEntClient(conf.DBConf))
+		fixUser := &pf.FixUserDeviceResolve{User: conf.FixUserConf.CameraUser, Pwd: conf.FixUserConf.CameraPwd}
+
+		keeplive := &pf.KeepLiveJob{
+			DeviceLoader:   eh,
+			DeviceResolver: fixUser,
+
+			MetadataURL: conf.AutoRegConf.MetadataURL,
+			Addr:        conf.AutoRegConf.Addr,
+			Port:        conf.AutoRegConf.Port,
+		}
+
+		crontab.AddJob(conf.JobConf.Keeplive, keeplive)
+		autoSub := &pf.AutoSub{
+			DeviceResolver: fixUser,
+			UploadHandler:  eh,
+
+			MetadataURL: conf.AutoRegConf.MetadataURL,
+			Addr:        conf.AutoRegConf.Addr,
+			Port:        conf.AutoRegConf.Port,
+		}
+		h = pf.NewHandle(
+			pf.WithDeviceRegister(autoSub),
+		)
 	default:
 		h = pf.NewHandle()
 	}

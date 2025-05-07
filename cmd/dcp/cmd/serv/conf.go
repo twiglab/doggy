@@ -110,7 +110,7 @@ func confCmd() {
 		AutoRegConf: AutoRegConf{
 			Addr:        "127.0.0.1",
 			Port:        10007,
-			MetadataURL: "https://127.0.0.1:10007/pf/MetadataEntry",
+			MetadataURL: "https://127.0.0.1:10005/pf/MetadataEntry",
 		},
 
 		InfluxDBConf: InfluxDBConf{
