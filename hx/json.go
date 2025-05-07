@@ -2,8 +2,6 @@ package hx
 
 import (
 	"encoding/json"
-	"errors"
-	"io"
 	"net/http"
 )
 
@@ -18,11 +16,6 @@ func BindAndClose(r *http.Request, p any) error {
 	defer r.Body.Close()
 	dec := json.NewDecoder(r.Body)
 	if err := dec.Decode(p); err != nil {
-		/*
-			if errors.Is(err, io.EOF) {
-				return nil
-			}
-		*/
 		return err
 	}
 	return nil
@@ -31,9 +24,6 @@ func BindAndClose(r *http.Request, p any) error {
 func Bind(r *http.Request, p any) error {
 	dec := json.NewDecoder(r.Body)
 	if err := dec.Decode(p); err != nil {
-		if errors.Is(err, io.EOF) {
-			return nil
-		}
 		return err
 	}
 	return nil
