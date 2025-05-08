@@ -132,6 +132,7 @@ func servCmd() {
 		}
 
 		crontab.AddJob("@every 5s", keeplive)
+
 		autoSub := &pf.AutoSub{
 			DeviceResolver: fixUser,
 			UploadHandler:  eh,

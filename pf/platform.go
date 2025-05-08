@@ -8,6 +8,16 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
+type DeviceLoader interface {
+	All(context.Context) ([]CameraUpload, error)
+}
+
+type emptyDeviceLoad struct{}
+
+func (*emptyDeviceLoad) All(ctx context.Context) (cameras []CameraUpload, err error) { return }
+
+var EmptyDeviceLoad = &emptyDeviceLoad{}
+
 type DeviceRegister interface {
 	// 对应 2.1.4 自动注册
 	AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error

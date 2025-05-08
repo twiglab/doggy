@@ -7,10 +7,6 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
-type DeviceLoader interface {
-	All(context.Context) ([]CameraUpload, error)
-}
-
 type KeepLiveJob struct {
 	DeviceLoader   DeviceLoader
 	DeviceResolver DeviceResolver
