@@ -63,5 +63,4 @@ func (x *KeepLiveJob) Ping(ctx context.Context, data CameraUpload) {
 		HttpsEnable: 1,
 		MetadataURL: x.MetadataURL,
 	})
-
 }

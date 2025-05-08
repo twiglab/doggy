@@ -131,7 +131,7 @@ func servCmd() {
 			Port:        conf.AutoRegConf.Port,
 		}
 
-		crontab.AddJob(conf.JobConf.Keeplive, keeplive)
+		crontab.AddJob("@every 5s", keeplive)
 		autoSub := &pf.AutoSub{
 			DeviceResolver: fixUser,
 			UploadHandler:  eh,
