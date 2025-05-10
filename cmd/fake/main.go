@@ -1,0 +1,187 @@
+package main
+
+import (
+	"log"
+	"net/http"
+	"time"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/imroc/req/v3"
+	"github.com/twiglab/doggy/holo"
+	"github.com/twiglab/doggy/hx"
+	"github.com/twiglab/doggy/job"
+)
+
+type Camera struct {
+	DeviceAutoRegisterData holo.DeviceAutoRegisterData
+	IDList                 holo.DeviceIDList
+	SubMap                 map[string]holo.SubscriptionReq
+
+	// ---------------------------------------------
+	isAutoReg bool
+}
+
+var camera = &Camera{
+	DeviceAutoRegisterData: holo.DeviceAutoRegisterData{
+		SerialNumber: "ABCDEFGHIJKLMN",
+		IpAddr:       "127.0.0.1:10007",
+		DeviceName:   "kake SDC",
+		Manufacturer: "fake",
+		DeviceType:   "fake type",
+	},
+
+	IDList: holo.DeviceIDList{IDs: []holo.DeviceID{
+		{UUID: "5a6f2bc1-6980-4b7f-81c4-d45f09446973", DeviceID: "1234567890"},
+	}},
+	SubMap: make(map[string]holo.SubscriptionReq),
+}
+
+var client = req.C().EnableInsecureSkipVerify()
+
+func main() {
+	cron := job.NewCron()
+	cron.AddFunc("@every 5s", func() {
+		if !camera.isAutoReg {
+			var resp holo.CommonResponse
+
+			_, err := client.R().
+				SetBody(camera.DeviceAutoRegisterData).
+				SetSuccessResult(&resp).
+				SetErrorResult(&resp).
+				Put("https://127.0.0.1:10005/pf/nat")
+
+			if err != nil {
+				log.Println("auto reg failet", err)
+				return
+			}
+			if err = resp.Err(); err != nil {
+				log.Println("-----", err)
+				return
+			}
+			log.Println("auto reg ok")
+			camera.isAutoReg = true
+		}
+	})
+
+	cron.AddFunc("@every 1s", func() {
+		var resp holo.CommonResponse
+		data := holo.MetadataObjectUpload{
+			MetadataObject: holo.MetadataObject{
+				Common: holo.Common{
+					UUID:     camera.IDList.IDs[0].UUID,
+					DeviceID: camera.IDList.IDs[0].DeviceID,
+				},
+				TargetList: []holo.HumanMix{
+					{
+						TargetType: holo.HUMMAN_DENSITY,
+						HumanCount: 1,
+						AreaRatio:  1,
+					},
+				},
+			},
+		}
+		for _, v := range camera.SubMap {
+			_, err := client.R().
+				SetBody(data).
+				SetSuccessResult(&resp).
+				SetErrorResult(&resp).
+				Post(v.MetadataURL)
+
+			if err != nil {
+				log.Println("-----", err)
+				return
+			}
+		}
+	})
+
+	cron.AddFunc("@every 10s", func() {
+		var resp holo.CommonResponse
+		data := holo.MetadataObjectUpload{
+			MetadataObject: holo.MetadataObject{
+				Common: holo.Common{
+					UUID:     camera.IDList.IDs[0].UUID,
+					DeviceID: camera.IDList.IDs[0].DeviceID,
+				},
+				TargetList: []holo.HumanMix{
+					{
+						TargetType:    holo.HUMMAN_COUNT,
+						HumanCountIn:  1,
+						HumanCountOut: 0,
+						StartTime:     time.Now().Add(-10 * time.Second).UnixMilli(),
+						EndTime:       time.Now().UnixMilli(),
+						TimeZone:      0, // for testing
+					},
+				},
+			},
+		}
+		for _, v := range camera.SubMap {
+			_, err := client.R().
+				SetBody(data).
+				SetSuccessResult(&resp).
+				SetErrorResult(&resp).
+				Post(v.MetadataURL)
+
+			if err != nil {
+				log.Println("-----", err)
+				return
+			}
+		}
+	})
+
+	cron.Start()
+
+	mux := chi.NewMux()
+	mux.Use(middleware.Logger, middleware.Recoverer)
+
+	sdcapi := chi.NewRouter()
+	sdcapi.Post("/V1.0/System/Reboot", func(w http.ResponseWriter, r *http.Request) {
+		clear(camera.SubMap)
+		camera.isAutoReg = false
+		hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
+	})
+
+	sdcapi.Get("/V1.0/Rest/DeviceID", func(w http.ResponseWriter, r *http.Request) {
+		hx.JsonTo(http.StatusOK, camera.IDList, w)
+	})
+
+	sdcapi.Put("/V1.0/Rest/DeviceID", func(w http.ResponseWriter, r *http.Request) {
+		var idList holo.DeviceIDList
+		if err := hx.BindAndClose(r, &idList); err != nil {
+			hx.JsonTo(http.StatusInternalServerError,
+				holo.NewCommonResponse(r.URL.Path, -1, err.Error()), w)
+			return
+		}
+
+		if len(idList.IDs) > 0 {
+			camera.IDList = idList
+		}
+
+		hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
+	})
+
+	sdcapi.Get("/V2.0/Metadata/Subscription", func(w http.ResponseWriter, r *http.Request) {
+		var data holo.Subscripions
+
+		for _, v := range camera.SubMap {
+			data.Subscriptions = append(data.Subscriptions, holo.SubscriptionItem{ID: 0, MetadataURL: v.MetadataURL})
+		}
+		hx.JsonTo(http.StatusOK, data, w)
+	})
+
+	sdcapi.Post("/V2.0/Metadata/Subscription", func(w http.ResponseWriter, r *http.Request) {
+		var data holo.SubscriptionReq
+		if err := hx.BindAndClose(r, &data); err != nil {
+			hx.JsonTo(http.StatusInternalServerError,
+				holo.NewCommonResponse(r.URL.Path, -1, err.Error()), w)
+			return
+		}
+		camera.SubMap[data.MetadataURL] = data
+
+		hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
+	})
+
+	mux.Mount("/SDCAPI", sdcapi)
+
+	http.ListenAndServeTLS(":10007", "config/server.crt", "config/server.key", mux)
+}
