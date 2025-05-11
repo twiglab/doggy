@@ -69,7 +69,10 @@ func servCmd() {
 	mux.Mount("/", pfTestHandle())
 	mux.Mount("/pf", pfHandle(ctx, conf))
 	mux.Mount("/admin", pageHandle(ctx, conf))
-	mux.Mount("/profile", middleware.Profiler())
+
+	mux.Mount("/debug", middleware.Profiler())
+
+	mux.Mount("/out", outHandle(ctx, conf))
 
 	svr := hx.NewServ().SetAddr(conf.ServerConf.Addr).SetHandler(mux)
 	if err := runSvr(svr, conf.ServerConf); err != nil {
