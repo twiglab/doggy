@@ -37,19 +37,25 @@ type Option func(*Handle)
 
 func WithCountHandler(h CountHandler) Option {
 	return func(c *Handle) {
-		c.countHandler = h
+		if h != nil {
+			c.countHandler = h
+		}
 	}
 }
 
 func WithDensityHandler(h DensityHandler) Option {
 	return func(c *Handle) {
-		c.densityHandler = h
+		if h != nil {
+			c.densityHandler = h
+		}
 	}
 }
 
 func WithDeviceRegister(h DeviceRegister) Option {
 	return func(c *Handle) {
-		c.deviceRegister = h
+		if h != nil {
+			c.deviceRegister = h
+		}
 	}
 }
 
@@ -69,6 +75,27 @@ func NewHandle(opts ...Option) *Handle {
 
 	for _, o := range opts {
 		o(h)
+	}
+	return h
+}
+
+func (h *Handle) SetCountHandler(ch CountHandler) *Handle {
+	if ch != nil {
+		h.countHandler = ch
+	}
+	return h
+}
+
+func (h *Handle) SetDensityHandler(dh DensityHandler) *Handle {
+	if dh != nil {
+		h.densityHandler = dh
+	}
+	return h
+}
+
+func (h *Handle) SetDeviceRegister(dr DeviceRegister) *Handle {
+	if dr != nil {
+		h.deviceRegister = dr
 	}
 	return h
 }

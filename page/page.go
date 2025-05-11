@@ -1,25 +1,21 @@
-package pf
+package page
 
 import (
 	"html/template"
 	"net/http"
 
-	"embed"
-
 	"github.com/go-chi/chi/v5"
+	"github.com/twiglab/doggy/pf"
 )
 
-//go:embed tpl
-var tplFS embed.FS
-
 type Page struct {
-	Tpl          *template.Template
-	deviceLoader DeviceLoader
+	tpl          *template.Template
+	deviceLoader pf.DeviceLoader
 }
 
-func NewPage(loader DeviceLoader) *Page {
+func NewPage(loader pf.DeviceLoader) *Page {
 	return &Page{
-		Tpl:          template.Must(template.ParseFS(tplFS, "tpl/*.tpl")),
+		tpl:          template.Must(template.ParseFS(tplFS, "tpl/*.tpl")),
 		deviceLoader: loader,
 	}
 }
@@ -32,9 +28,9 @@ func ListPage(page *Page) http.HandlerFunc {
 		}
 
 		root := make(map[string]any)
-		root["devices"] = devices
+		root["Devices"] = devices
 
-		page.Tpl.ExecuteTemplate(w, "list", root)
+		page.tpl.ExecuteTemplate(w, "list.tpl", root)
 	}
 }
 

@@ -18,6 +18,11 @@ type InfluxDBConf struct {
 	Bucket string `yaml:"bucket" mapstructure:"bucket"`
 }
 
+type BackendConf struct {
+	NoBackend    bool         `yaml:"no-backend" mapstructure:"no-backend"` // 启动方案 0 debug
+	InfluxDBConf InfluxDBConf `yaml:"influx-db" mapstructure:"influx-db"`
+}
+
 type JobConf struct {
 	Keeplive string `yaml:"keeplive" mapstructure:"keeplive"`
 }
@@ -46,20 +51,19 @@ type DB struct {
 }
 
 type AppConf struct {
-	ID           string       `yaml:"id" mapstructure:"id"`
-	Plan         int          `yaml:"plan" mapstructure:"plan"` // 启动方案 0 debug
-	ServerConf   ServerConf   `yaml:"server" mapstructure:"server"`
-	InfluxDBConf InfluxDBConf `yaml:"influx-db" mapstructure:"influx-db"`
-	FixUserConf  FixUserConf  `yaml:"fix-user" mapstructure:"fix-user"`
-	AutoRegConf  AutoRegConf  `yaml:"auto-reg" mapstructure:"auto-reg"`
-	DBConf       DB           `yaml:"db" mapstructure:"db"`
-	JobConf      JobConf      `yaml:"job" mapstructure:"job"`
+	ID          string      `yaml:"id" mapstructure:"id"`
+	ServerConf  ServerConf  `yaml:"server" mapstructure:"server"`
+	BackendConf BackendConf `yaml:"backend" mapstructure:"backend"`
+	FixUserConf FixUserConf `yaml:"fix-user" mapstructure:"fix-user"`
+	AutoRegConf AutoRegConf `yaml:"auto-reg" mapstructure:"auto-reg"`
+	DBConf      DB          `yaml:"db" mapstructure:"db"`
+	JobConf     JobConf     `yaml:"job" mapstructure:"job"`
 }
 
 func MustEntClient(dbconf DB) *ent.Client {
 	c, err := orm.OpenClient(dbconf.Name, dbconf.DSN)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("ent client create error: ", err)
 	}
 	return c
 }
@@ -72,7 +76,7 @@ func MustIdb(conf InfluxDBConf) *influxdb3.Client {
 		Database:     conf.Bucket,
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("idb create error: ", err)
 	}
 	return client
 }
@@ -93,13 +97,12 @@ func init() {
 
 func confCmd() {
 	conf := AppConf{
-		ID:   "dcp",
-		Plan: 0,
+		ID: "dcp",
 
 		ServerConf: ServerConf{
 			Addr:     "0.0.0.0:10005",
-			CertFile: "server.crt",
-			KeyFile:  "server.key",
+			CertFile: "repo/server.crt",
+			KeyFile:  "repo/server.key",
 		},
 
 		FixUserConf: FixUserConf{
@@ -110,19 +113,21 @@ func confCmd() {
 		AutoRegConf: AutoRegConf{
 			Addr:        "127.0.0.1",
 			Port:        10007,
-			MetadataURL: "https://127.0.0.1:10005/pf/MetadataEntry",
+			MetadataURL: "https://127.0.0.1:10005/pf/upload",
 		},
 
-		InfluxDBConf: InfluxDBConf{
-			URL:    "url",
-			Token:  "token",
-			Org:    "org",
-			Bucket: "bucket",
+		BackendConf: BackendConf{
+			InfluxDBConf: InfluxDBConf{
+				URL:    "url",
+				Token:  "token",
+				Org:    "org",
+				Bucket: "bucket",
+			},
 		},
 
 		DBConf: DB{
 			Name: "sqlite3",
-			DSN:  "dcp.db",
+			DSN:  "repo/dcp.db",
 		},
 
 		JobConf: JobConf{
