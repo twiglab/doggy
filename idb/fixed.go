@@ -4,48 +4,25 @@ import (
 	"sync"
 
 	"github.com/InfluxCommunity/influxdb3-go/v2/influxdb3"
-	"github.com/InfluxCommunity/influxdb3-go/v2/influxdb3/batching"
 )
 
 const DefaultCapacity = 128
 
 type fixed struct {
-	size          int
-	capacity      int
-	callbackReady func()
-	callbackEmit  func([]*influxdb3.Point)
+	size         int
+	capacity     int
+	callbackEmit func([]*influxdb3.Point)
 
 	points []*influxdb3.Point
 	mu     sync.Mutex
 }
 
-func NewFixed(opts ...batching.Option) *fixed {
+func NewFixed(size int) *fixed {
 	f := &fixed{
-		capacity:      DefaultCapacity,
-		callbackReady: func() {},
-		callbackEmit:  func([]*influxdb3.Point) {},
+		capacity: size,
+		points:   make([]*influxdb3.Point, 0, size),
 	}
-
-	for _, o := range opts {
-		o(f)
-	}
-
-	f.points = make([]*influxdb3.Point, 0, f.capacity)
-
 	return f
-
-}
-
-func (f *fixed) SetSize(s int) {
-
-}
-
-func (f *fixed) SetCapacity(s int) {
-	f.capacity = s
-}
-
-func (f *fixed) SetReadyCallback(rct func()) {
-	f.callbackReady = rct
 }
 
 func (f *fixed) SetEmitCallback(callback func([]*influxdb3.Point)) {

@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/InfluxCommunity/influxdb3-go/v2/influxdb3"
-	"github.com/InfluxCommunity/influxdb3-go/v2/influxdb3/batching"
 	"github.com/twiglab/doggy/holo"
 )
 
@@ -21,7 +20,9 @@ func emitCallbackFn(client *influxdb3.Client) func([]*influxdb3.Point) {
 }
 
 func NewIdbPoint(client *influxdb3.Client) *IdbPoint {
-	batch := NewFixed(batching.WithEmitCallback(emitCallbackFn(client)))
+	batch := NewFixed(DefaultCapacity)
+	batch.SetEmitCallback(emitCallbackFn(client))
+
 	return &IdbPoint{client: client, batcher: batch}
 }
 
