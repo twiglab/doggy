@@ -66,13 +66,37 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 		return errors.New("not found device ids")
 	}
 
+	id := ids.IDs[0]
+	if device.DeviceID != "" {
+		if device.DeviceID != id.DeviceID {
+			// 下发 DeviceID
+			res, err := device.PutDeviceID(ctx,
+				holo.DeviceIDList{
+					IDs: []holo.DeviceID{
+						{UUID: id.UUID, DeviceID: device.DeviceID},
+					},
+				})
+
+			if err != nil {
+				return err
+			}
+			if err := res.Err(); err != nil {
+				return err
+			}
+		}
+	} else {
+		device.DeviceID = id.DeviceID
+		device.UUID = id.UUID
+	}
+
 	subs, err := device.GetMetadataSubscription(ctx)
 	if err != nil {
 		return err
 	}
 
 	if len(subs.Subscriptions) == 0 {
-		_, err := device.PostMetadataSubscription(ctx,
+		// 下发元数据订阅参数
+		res, err := device.PostMetadataSubscription(ctx,
 			holo.SubscriptionReq{
 				Address:     a.Addr,
 				Port:        a.Port,
@@ -83,14 +107,17 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 		if err != nil {
 			return err
 		}
+		if err := res.Err(); err != nil {
+			return err
+		}
 	}
 
 	return a.UploadHandler.HandleUpload(ctx, CameraUpload{
 		SN:     data.SerialNumber,
 		IpAddr: data.IpAddr,
 		Last:   time.Now(),
-		UUID1:  ids.IDs[0].UUID,
-		Code1:  ids.IDs[0].DeviceID,
+		UUID1:  device.UUID,
+		Code1:  device.DeviceID,
 		User:   device.User,
 		Pwd:    device.Pwd,
 	})

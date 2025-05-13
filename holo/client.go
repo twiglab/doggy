@@ -18,12 +18,14 @@ func cameraURL(addr, path string) string {
 
 type Device struct {
 	isClose bool
+	address string
+	client  *req.Client
 
-	Addr string
-	User string
-	Pwd  string
-
-	client *req.Client
+	SN       string
+	UUID     string
+	DeviceID string
+	User     string
+	Pwd      string
 }
 
 func OpenDevice(addr, username, password string) (*Device, error) {
@@ -34,10 +36,10 @@ func OpenDevice(addr, username, password string) (*Device, error) {
 		SetCommonDigestAuth(username, password)
 
 	return &Device{
-		client: c,
-		Addr:   addr,
-		User:   username,
-		Pwd:    password,
+		client:  c,
+		address: addr,
+		User:    username,
+		Pwd:     password,
 	}, nil
 }
 
@@ -54,14 +56,14 @@ func (h *Device) PostMetadataSubscription(ctx context.Context, req SubscriptionR
 		SetBody(req).
 		SetSuccessResult(&resp).
 		SetErrorResult(&resp).
-		Post(cameraURL(h.Addr, "/SDCAPI/V2.0/Metadata/Subscription"))
+		Post(cameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription"))
 	return
 }
 
 func (h *Device) GetMetadataSubscription(ctx context.Context) (data *Subscripions, err error) {
 	_, err = h.client.R().
 		SetSuccessResult(&data).
-		Get(cameraURL(h.Addr, "/SDCAPI/V2.0/Metadata/Subscription"))
+		Get(cameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription"))
 	return
 }
 
@@ -70,7 +72,7 @@ func (h *Device) Reboot(ctx context.Context) (resp *CommonResponse, err error) {
 		SetContext(ctx).
 		SetSuccessResult(&resp).
 		SetErrorResult(&resp).
-		Post(cameraURL(h.Addr, "/SDCAPI/V1.0/System/Reboot"))
+		Post(cameraURL(h.address, "/SDCAPI/V1.0/System/Reboot"))
 	return
 }
 
@@ -78,7 +80,7 @@ func (h *Device) GetDeviceID(ctx context.Context) (idList *DeviceIDList, err err
 	_, err = h.client.R().
 		SetContext(ctx).
 		SetSuccessResult(&idList).
-		Get(cameraURL(h.Addr, "/SDCAPI/V1.0/Rest/DeviceID"))
+		Get(cameraURL(h.address, "/SDCAPI/V1.0/Rest/DeviceID"))
 	return
 }
 
@@ -88,7 +90,7 @@ func (h *Device) PutDeviceID(ctx context.Context, idList DeviceIDList) (resp *Co
 		SetBody(idList).
 		SetSuccessResult(&resp).
 		SetErrorResult(&resp).
-		Put(cameraURL(h.Addr, "/SDCAPI/V1.0/Rest/DeviceID"))
+		Put(cameraURL(h.address, "/SDCAPI/V1.0/Rest/DeviceID"))
 	return
 }
 
@@ -96,6 +98,6 @@ func (h *Device) GetSysBaseInfo(ctx context.Context) (info *SysBaseInfo, err err
 	info = new(SysBaseInfo)
 	_, err = h.client.R().
 		SetSuccessResult(&info).
-		Get(cameraURL(h.Addr, "/SDCAPI/V1.0/MiscIaas/System"))
+		Get(cameraURL(h.address, "/SDCAPI/V1.0/MiscIaas/System"))
 	return
 }
