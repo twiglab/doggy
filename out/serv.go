@@ -3,21 +3,12 @@ package out
 import (
 	"context"
 	"net/http"
+
+	"github.com/twiglab/doggy/pkg/oc"
 )
 
 type Accumulator interface {
-	SumOf(context.Context, *SumArgs, *SumReply) error
-}
-
-type SumArgs struct {
-	Table string   `json:"table"`
-	Start int64    `json:"starte"`
-	End   int64    `json:"end"`
-	IDs   []string `json:"ids"`
-}
-
-type SumReply struct {
-	Total int64 `json:"total"`
+	SumOf(context.Context, *oc.SumArgs, *oc.SumReply) error
 }
 
 type OutServ struct {
@@ -28,6 +19,6 @@ func NewOutServ() *OutServ {
 	return &OutServ{}
 }
 
-func (h *OutServ) Sum(r *http.Request, args *SumArgs, reply *SumReply) error {
+func (h *OutServ) Sum(r *http.Request, args *oc.SumArgs, reply *oc.SumReply) error {
 	return h.Accumulator.SumOf(r.Context(), args, reply)
 }

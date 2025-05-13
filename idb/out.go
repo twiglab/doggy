@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/InfluxCommunity/influxdb3-go/v2/influxdb3"
-	"github.com/twiglab/doggy/out"
+	"github.com/twiglab/doggy/pkg/oc"
 )
 
 type SumTotal struct {
@@ -60,7 +60,7 @@ func NewIdbOut(p *IdbPoint) *IdbOut {
 	return &IdbOut{Point: p}
 }
 
-func (p *IdbOut) SumOf(ctx context.Context, in *out.SumArgs, out *out.SumReply) error {
+func (p *IdbOut) SumOf(ctx context.Context, in *oc.SumArgs, out *oc.SumReply) error {
 	result, err := p.Point.SumOfPoints(ctx, SumParam{
 		Start:  in.Start,
 		End:    in.End,
