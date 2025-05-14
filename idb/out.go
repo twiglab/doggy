@@ -12,9 +12,9 @@ type SumTotal struct {
 }
 
 type SumParam struct {
-	Start  int64
-	End    int64
-	Tables []string
+	Start int64
+	End   int64
+	IDs   []string
 }
 
 func (h *IdbPoint) SumOfPoints(ctx context.Context, param SumParam) (total SumTotal, err error) {
@@ -23,7 +23,7 @@ func (h *IdbPoint) SumOfPoints(ctx context.Context, param SumParam) (total SumTo
 		pv   *influxdb3.PointValues
 	)
 
-	sql := sumOfPointsSQL(param.Tables)
+	sql := sumOfPointsSQL(param.IDs)
 
 	iter, err = h.client.QueryPointValueWithParameters(ctx, sql,
 		influxdb3.QueryParameters{
@@ -62,9 +62,9 @@ func NewIdbOut(p *IdbPoint) *IdbOut {
 
 func (p *IdbOut) SumOf(ctx context.Context, in *oc.SumArgs, out *oc.SumReply) error {
 	result, err := p.Point.SumOfPoints(ctx, SumParam{
-		Start:  in.Start,
-		End:    in.End,
-		Tables: in.IDs,
+		Start: in.Start,
+		End:   in.End,
+		IDs:   in.IDs,
 	})
 	if err != nil {
 		return err
