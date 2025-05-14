@@ -15,8 +15,10 @@ type OutServ struct {
 	Accumulator Accumulator
 }
 
-func NewOutServ() *OutServ {
-	return &OutServ{}
+func NewOutServ(acc Accumulator) *OutServ {
+	return &OutServ{
+		Accumulator: acc,
+	}
 }
 
 func (h *OutServ) Sum(r *http.Request, args *oc.SumArgs, reply *oc.SumReply) error {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"math/rand/v2"
 	"net/http"
 	"time"
 
@@ -12,6 +13,10 @@ import (
 	"github.com/twiglab/doggy/hx"
 	"github.com/twiglab/doggy/job"
 )
+
+func rnd() int {
+	return rand.IntN(100)
+}
 
 type Camera struct {
 	DeviceAutoRegisterData holo.DeviceAutoRegisterData
@@ -75,8 +80,8 @@ func main() {
 				TargetList: []holo.HumanMix{
 					{
 						TargetType: holo.HUMMAN_DENSITY,
-						HumanCount: 1,
-						AreaRatio:  1,
+						HumanCount: rnd(),
+						AreaRatio:  rnd(),
 					},
 				},
 			},
@@ -106,8 +111,8 @@ func main() {
 				TargetList: []holo.HumanMix{
 					{
 						TargetType:    holo.HUMMAN_COUNT,
-						HumanCountIn:  1,
-						HumanCountOut: 0,
+						HumanCountIn:  rnd(),
+						HumanCountOut: rnd(),
 						StartTime:     time.Now().Add(-10 * time.Second).UnixMilli(),
 						EndTime:       time.Now().UnixMilli(),
 						TimeZone:      0, // for testing
