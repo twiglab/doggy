@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/twiglab/doggy/cmd/dcp/cmd/camera"
+	"github.com/twiglab/doggy/cmd/dcp/cmd/fake"
 	"github.com/twiglab/doggy/cmd/dcp/cmd/meta"
 	"github.com/twiglab/doggy/cmd/dcp/cmd/serv"
 	"github.com/twiglab/doggy/cmd/dcp/cmd/sqlite"
@@ -36,4 +37,5 @@ func init() {
 	rootCmd.AddCommand(camera.CameraCmd)
 	rootCmd.AddCommand(sqlite.SqliteCmd)
 	rootCmd.AddCommand(version.VersionCmd)
+	rootCmd.AddCommand(fake.FakeCmd)
 }

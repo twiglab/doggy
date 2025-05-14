@@ -1,4 +1,4 @@
-package main
+package d3252
 
 import (
 	"log"
@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/imroc/req/v3"
+	"github.com/spf13/cobra"
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/hx"
 	"github.com/twiglab/doggy/job"
@@ -44,7 +45,7 @@ var camera = &Camera{
 
 var client = req.C().EnableInsecureSkipVerify()
 
-func main() {
+func d3252() {
 	cron := job.NewCron()
 	cron.AddFunc("@every 5s", func() {
 		if !camera.isAutoReg {
@@ -61,7 +62,6 @@ func main() {
 				return
 			}
 			if err = resp.Err(); err != nil {
-				log.Println("-----", err)
 				return
 			}
 			log.Println("auto reg ok")
@@ -188,5 +188,18 @@ func main() {
 
 	mux.Mount("/SDCAPI", sdcapi)
 
-	http.ListenAndServeTLS(":10007", "config/server.crt", "config/server.key", mux)
+	if err := http.ListenAndServeTLS(":10007", "repo/server.crt", "repo/server.key", mux); err != nil {
+		log.Fatal(err)
+	}
+}
+
+var D3252Cmd = &cobra.Command{
+	Use:   "D3252",
+	Short: "D3252模拟器",
+	Long:  `D3252模拟器`,
+	Run: func(cmd *cobra.Command, args []string) {
+		d3252()
+	},
+
+	Example: "dcp fake D3252",
 }
