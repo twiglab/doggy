@@ -24,7 +24,7 @@
 					<td>{{.UUID1 }}</td>
 					<td>{{.Code1 }}</td>
 					<td>{{.Last }}</td>
-					<td><a href="">open</a></td>
+					<td><a href="http://{{ .Ipaddr }}">open</a></td>
 				</tr>
 				{{end}}
 			</tbody>
