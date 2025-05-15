@@ -46,8 +46,12 @@ var camera = &Camera{
 var client = req.C().EnableInsecureSkipVerify()
 
 func d3252() {
-	cron := job.NewCron()
-	cron.AddFunc("@every 5s", func() {
+	cron, err := job.NewCron()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	cron.AddDurationFunc(5*time.Second, func() {
 		if !camera.isAutoReg {
 			var resp holo.CommonResponse
 
@@ -69,7 +73,7 @@ func d3252() {
 		}
 	})
 
-	cron.AddFunc("@every 1s", func() {
+	cron.AddDurationFunc(time.Second, func() {
 		var resp holo.CommonResponse
 		data := holo.MetadataObjectUpload{
 			MetadataObject: holo.MetadataObject{
@@ -100,7 +104,7 @@ func d3252() {
 		}
 	})
 
-	cron.AddFunc("@every 10s", func() {
+	cron.AddDurationFunc(10*time.Second, func() {
 		var resp holo.CommonResponse
 		data := holo.MetadataObjectUpload{
 			MetadataObject: holo.MetadataObject{

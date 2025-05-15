@@ -1,35 +1,66 @@
 package job
 
-import "github.com/twiglab/doggy/internal/cron"
+import (
+	"time"
+
+	"github.com/go-co-op/gocron/v2"
+)
 
 type Job interface {
-	cron.Job
+	Run()
+}
+
+type JobDefinition interface {
+	gocron.JobDefinition
 }
 
 type CronWarp struct {
-	cron *cron.Cron
+	scheduler gocron.Scheduler
 }
 
-func NewCron() *CronWarp {
-	return &CronWarp{
-		cron: cron.New(),
+func NewCron() (*CronWarp, error) {
+	s, err := gocron.NewScheduler()
+	if err != nil {
+		return nil, err
 	}
+	return &CronWarp{scheduler: s}, nil
 }
 
-func (c *CronWarp) AddJob(spec string, job Job) error {
-	_, err := c.cron.AddJob(spec, job)
+func (c *CronWarp) AddCronJob(crontab string, job Job) error {
+	return c.AddJob(gocron.CronJob(crontab, false), job)
+}
+
+func (c *CronWarp) AddDurationJob(d time.Duration, job Job) error {
+	return c.AddJob(gocron.DurationJob(d), job)
+}
+
+func (c *CronWarp) AddJob(spec JobDefinition, job Job) error {
+	return c.AddFunc(spec, JobFunc(job))
+}
+
+func (c *CronWarp) AddFunc(spec JobDefinition, cmd func()) error {
+	_, err := c.scheduler.NewJob(spec, gocron.NewTask(cmd))
 	return err
 }
 
-func (c *CronWarp) AddFunc(spec string, cmd func()) error {
-	_, err := c.cron.AddFunc(spec, cmd)
-	return err
+func (c *CronWarp) AddDurationFunc(d time.Duration, cmd func()) error {
+	return c.AddFunc(gocron.DurationJob(d), cmd)
+}
+
+func (c *CronWarp) AddCronFunc(crontab string, cmd func()) error {
+	return c.AddFunc(gocron.CronJob(crontab, false), cmd)
 }
 
 func (c *CronWarp) Start() {
-	c.cron.Start()
+	c.scheduler.Start()
 }
 
-func (c *CronWarp) Stop() {
-	c.cron.Stop()
+func (c *CronWarp) Stop() error {
+	return c.scheduler.Shutdown()
+}
+
+func JobFunc(job Job) func() {
+	return func() {
+		job.Run()
+	}
 }
