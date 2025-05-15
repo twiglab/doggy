@@ -190,6 +190,10 @@ func d3252() {
 
 		hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
 	})
+	sdcapi.Delete("/V2.0/Metadata/Subscription", func(w http.ResponseWriter, r *http.Request) {
+		clear(camera.SubMap)
+		hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
+	})
 
 	mux.Mount("/SDCAPI", sdcapi)
 

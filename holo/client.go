@@ -60,6 +60,15 @@ func (h *Device) PostMetadataSubscription(ctx context.Context, req SubscriptionR
 	return
 }
 
+func (h *Device) DeleteMetadataSubscription(ctx context.Context) (resp *CommonResponse, err error) {
+	_, err = h.client.R().
+		SetContext(ctx).
+		SetSuccessResult(&resp).
+		SetErrorResult(&resp).
+		Delete(cameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription"))
+	return
+}
+
 func (h *Device) GetMetadataSubscription(ctx context.Context) (data *Subscripions, err error) {
 	_, err = h.client.R().
 		SetSuccessResult(&data).
