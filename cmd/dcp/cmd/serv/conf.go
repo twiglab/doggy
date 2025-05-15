@@ -19,7 +19,7 @@ type InfluxDBConf struct {
 }
 
 type BackendConf struct {
-	NoBackend    bool         `yaml:"no-backend" mapstructure:"no-backend"` // 启动方案 0 debug
+	NoBackend    bool         `yaml:"no-backend" mapstructure:"no-backend"`
 	InfluxDBConf InfluxDBConf `yaml:"influx-db" mapstructure:"influx-db"`
 }
 
@@ -33,9 +33,14 @@ type AutoRegConf struct {
 	Port        int    `yaml:"port" mapstructure:"port"`
 }
 
-type FixUserConf struct {
+type CameraDBConf struct {
+	CsvCameraDB CsvCameraDB `yaml:"csvdb" mapstructure:"csvdb"`
+}
+
+type CsvCameraDB struct {
 	CameraUser string `yaml:"camera-user" mapstructure:"camera-user"`
 	CameraPwd  string `yaml:"camera-pwd" mapstructure:"camera-pwd"`
+	CsvFile    string `yaml:"csv-file" mapstructure:"csv-file"`
 }
 
 type ServerConf struct {
@@ -45,22 +50,22 @@ type ServerConf struct {
 	ForceHttps int    `yaml:"force-https" mapstructure:"force-https"`
 }
 
-type DB struct {
+type DBConf struct {
 	Name string `yaml:"name" mapstructure:"name"`
 	DSN  string `yaml:"dsn" mapstructure:"dsn"`
 }
 
 type AppConf struct {
-	ID          string      `yaml:"id" mapstructure:"id"`
-	ServerConf  ServerConf  `yaml:"server" mapstructure:"server"`
-	BackendConf BackendConf `yaml:"backend" mapstructure:"backend"`
-	FixUserConf FixUserConf `yaml:"fix-user" mapstructure:"fix-user"`
-	AutoRegConf AutoRegConf `yaml:"auto-reg" mapstructure:"auto-reg"`
-	DBConf      DB          `yaml:"db" mapstructure:"db"`
-	JobConf     JobConf     `yaml:"job" mapstructure:"job"`
+	ID           string       `yaml:"id" mapstructure:"id"`
+	ServerConf   ServerConf   `yaml:"server" mapstructure:"server"`
+	BackendConf  BackendConf  `yaml:"backend" mapstructure:"backend"`
+	CameraDBConf CameraDBConf `yaml:"camera-db" mapstructure:"camera-db"`
+	AutoRegConf  AutoRegConf  `yaml:"auto-reg" mapstructure:"auto-reg"`
+	DBConf       DBConf       `yaml:"db" mapstructure:"db"`
+	JobConf      JobConf      `yaml:"job" mapstructure:"job"`
 }
 
-func MustEntClient(dbconf DB) *ent.Client {
+func MustEntClient(dbconf DBConf) *ent.Client {
 	c, err := orm.OpenClient(dbconf.Name, dbconf.DSN)
 	if err != nil {
 		log.Fatal("ent client create error: ", err)
@@ -100,14 +105,18 @@ func confCmd() {
 		ID: "dcp",
 
 		ServerConf: ServerConf{
-			Addr:     "0.0.0.0:10005",
-			CertFile: "repo/server.crt",
-			KeyFile:  "repo/server.key",
+			Addr:       "0.0.0.0:10005",
+			CertFile:   "repo/server.crt",
+			KeyFile:    "repo/server.key",
+			ForceHttps: 1,
 		},
 
-		FixUserConf: FixUserConf{
-			CameraUser: "ApiAdmin",
-			CameraPwd:  "Aaa1234%%",
+		CameraDBConf: CameraDBConf{
+			CsvCameraDB: CsvCameraDB{
+				CameraUser: "ApiAdmin",
+				CameraPwd:  "Aaa1234%%",
+				CsvFile:    "repo/cameradb.csv",
+			},
 		},
 
 		AutoRegConf: AutoRegConf{
@@ -125,7 +134,7 @@ func confCmd() {
 			},
 		},
 
-		DBConf: DB{
+		DBConf: DBConf{
 			Name: "sqlite3",
 			DSN:  "repo/dcp.db",
 		},

@@ -143,6 +143,11 @@ func d3252() {
 	sdcapi.Post("/V1.0/System/Reboot", func(w http.ResponseWriter, r *http.Request) {
 		clear(camera.SubMap)
 		camera.isAutoReg = false
+
+		camera.IDList = holo.DeviceIDList{IDs: []holo.DeviceID{
+			{UUID: "5a6f2bc1-6980-4b7f-81c4-d45f09446973", DeviceID: "1234567890"},
+		}}
+
 		hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
 	})
 

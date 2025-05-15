@@ -6,12 +6,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 
 	"github.com/twiglab/doggy/holo"
 )
 
-type deviceData struct {
+type cameraData struct {
 	sn       string
 	uuid     string
 	deviceID string
@@ -20,35 +21,40 @@ type deviceData struct {
 	pwd  string
 }
 
-func buildDev(rows []string) deviceData {
-	return deviceData{
+func buildCamera(rows []string) cameraData {
+	return cameraData{
 		sn:       rows[0],
 		uuid:     rows[1],
 		deviceID: rows[2],
 	}
 }
 
-type CsvResolve struct {
+type CsvCameraDB struct {
 	User string
 	Pwd  string
 
 	csvFile    string
-	deviceConf map[string]deviceData
+	deviceConf map[string]cameraData
 
 	strict bool
 }
 
-func NewCsvConfDeviceResolve(csvFile, user, pwd string) *CsvResolve {
-	return &CsvResolve{
+func NewCsvCameraDB(csvFile, user, pwd string) *CsvCameraDB {
+	return &CsvCameraDB{
 		User:       user,
 		Pwd:        pwd,
 		csvFile:    csvFile,
-		deviceConf: make(map[string]deviceData),
+		deviceConf: make(map[string]cameraData),
 	}
 }
 
-func (r *CsvResolve) Init() error {
+func (r *CsvCameraDB) Load() error {
 	clear(r.deviceConf)
+
+	if r.csvFile == "" {
+		log.Println("no csv file")
+		return nil
+	}
 
 	file, err := os.Open(r.csvFile)
 	if err != nil {
@@ -66,13 +72,14 @@ func (r *CsvResolve) Init() error {
 		if err != nil {
 			return err
 		}
-		device := buildDev(rows)
+		device := buildCamera(rows)
 		r.deviceConf[device.sn] = device
 	}
+	log.Println("cameradb size ", len(r.deviceConf))
 	return nil
 }
 
-func (r *CsvResolve) Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error) {
+func (r *CsvCameraDB) Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error) {
 	if dev, ok := r.deviceConf[data.SerialNumber]; ok {
 		device, err := holo.OpenDevice(data.IpAddr, r.User, r.Pwd)
 		if err != nil {

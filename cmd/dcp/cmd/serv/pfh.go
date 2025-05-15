@@ -2,6 +2,7 @@ package serv
 
 import (
 	"context"
+	"log"
 	"net/http"
 
 	"github.com/twiglab/doggy/idb"
@@ -22,7 +23,14 @@ func buildCtx(conf AppConf) context.Context {
 	eh := orm.NewEntHandle(MustEntClient(conf.DBConf))
 	box = context.WithValue(box, key_eh, eh)
 
-	fixUser := &pf.FixUserDeviceResolve{User: conf.FixUserConf.CameraUser, Pwd: conf.FixUserConf.CameraPwd}
+	fixUser := pf.NewCsvCameraDB(
+		conf.CameraDBConf.CsvCameraDB.CsvFile,
+		conf.CameraDBConf.CsvCameraDB.CameraUser,
+		conf.CameraDBConf.CsvCameraDB.CameraPwd,
+	)
+	if err := fixUser.Load(); err != nil {
+		log.Fatal(err)
+	}
 	box = context.WithValue(box, key_resolve, fixUser)
 
 	var idb3 *idb.IdbPoint

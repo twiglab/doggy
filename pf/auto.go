@@ -27,15 +27,6 @@ type DeviceResolver interface {
 	Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error)
 }
 
-type FixUserDeviceResolve struct {
-	User string
-	Pwd  string
-}
-
-func (d *FixUserDeviceResolve) Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error) {
-	return holo.OpenDevice(data.IpAddr, d.User, d.Pwd)
-}
-
 type UploadHandler interface {
 	HandleUpload(ctx context.Context, u CameraUpload) error
 }

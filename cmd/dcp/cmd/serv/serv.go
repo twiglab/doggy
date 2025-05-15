@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"gopkg.in/yaml.v3"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -49,7 +50,11 @@ func initConfig() {
 }
 
 func printConf(conf AppConf) {
+	enc := yaml.NewEncoder(os.Stdout)
+	defer enc.Close()
+	enc.SetIndent(2)
 	fmt.Println("--------------------")
+	enc.Encode(conf)
 	fmt.Println("--------------------")
 }
 
