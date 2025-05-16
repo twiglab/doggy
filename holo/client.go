@@ -30,8 +30,8 @@ type Device struct {
 
 func OpenDevice(addr, username, password string) (*Device, error) {
 	c := req.C().
+		SetUserAgent("doggy").
 		EnableInsecureSkipVerify().
-		SetCommonRetryCount(3).
 		DisableCompression().
 		SetCommonDigestAuth(username, password)
 
@@ -44,6 +44,7 @@ func OpenDevice(addr, username, password string) (*Device, error) {
 }
 
 func (h *Device) EnableDebug() {
+	h.client.EnableDumpAll()
 }
 
 func (h *Device) Close() error {
@@ -104,7 +105,6 @@ func (h *Device) PutDeviceID(ctx context.Context, idList DeviceIDList) (resp *Co
 }
 
 func (h *Device) GetSysBaseInfo(ctx context.Context) (info *SysBaseInfo, err error) {
-	info = new(SysBaseInfo)
 	_, err = h.client.R().
 		SetSuccessResult(&info).
 		Get(cameraURL(h.address, "/SDCAPI/V1.0/MiscIaas/System"))
