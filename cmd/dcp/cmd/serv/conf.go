@@ -114,7 +114,7 @@ func confCmd() {
 		CameraDBConf: CameraDBConf{
 			CsvCameraDB: CsvCameraDB{
 				CameraUser: "ApiAdmin",
-				CameraPwd:  "Aaa1234%%",
+				CameraPwd:  "AAaa1234%%",
 				CsvFile:    "repo/cameradb.csv",
 			},
 		},
