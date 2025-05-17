@@ -6,16 +6,6 @@ import (
 	"github.com/imroc/req/v3"
 )
 
-const (
-	HUMMAN_DENSITY = 12
-	HUMMAN_COUNT   = 15
-)
-
-func cameraURL(addr, path string) string {
-	url := "https://" + addr + path
-	return url
-}
-
 type Device struct {
 	isClose bool
 	address string
@@ -71,9 +61,14 @@ func (h *Device) DeleteMetadataSubscription(ctx context.Context) (resp *CommonRe
 }
 
 func (h *Device) GetMetadataSubscription(ctx context.Context) (data *Subscripions, err error) {
-	_, err = h.client.R().
+	var resp *req.Response
+	resp, err = h.client.R().
 		SetSuccessResult(&data).
 		Get(cameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription"))
+
+	if resp.IsErrorState() {
+		err = NewApiError(resp.StatusCode, resp.Status)
+	}
 	return
 }
 
@@ -87,10 +82,15 @@ func (h *Device) Reboot(ctx context.Context) (resp *CommonResponse, err error) {
 }
 
 func (h *Device) GetDeviceID(ctx context.Context) (idList *DeviceIDList, err error) {
-	_, err = h.client.R().
+	var resp *req.Response
+	resp, err = h.client.R().
 		SetContext(ctx).
 		SetSuccessResult(&idList).
 		Get(cameraURL(h.address, "/SDCAPI/V1.0/Rest/DeviceID"))
+
+	if resp.IsErrorState() {
+		err = NewApiError(resp.StatusCode, resp.Status)
+	}
 	return
 }
 

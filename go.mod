@@ -6,7 +6,7 @@ require (
 	entgo.io/ent v0.14.4
 	github.com/InfluxCommunity/influxdb3-go/v2 v2.6.0
 	github.com/go-chi/chi/v5 v5.2.1
-	github.com/imroc/req/v3 v3.51.0
+	github.com/imroc/req/v3 v3.52.0
 	github.com/jackc/pgx/v5 v5.7.4
 	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/spf13/cobra v1.9.1
@@ -38,6 +38,7 @@ require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/hcl/v2 v2.13.0 // indirect
+	github.com/icholy/digest v1.1.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/influxdata/line-protocol/v2 v2.2.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
