@@ -1,15 +1,23 @@
 package holo
 
 import (
+	"bytes"
 	"context"
+	"crypto/tls"
+	"encoding/json"
+	"net/http"
 
-	"github.com/imroc/req/v3"
+	"github.com/icholy/digest"
 )
 
+type Doer interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 type Device struct {
-	isClose bool
+	doer Doer
+
 	address string
-	client  *req.Client
 
 	SN       string
 	UUID     string
@@ -18,95 +26,218 @@ type Device struct {
 	Pwd      string
 }
 
-func OpenDevice(addr, username, password string) (*Device, error) {
-	c := req.C().
-		SetUserAgent("doggy").
-		EnableInsecureSkipVerify().
-		DisableCompression().
-		SetCommonDigestAuth(username, password)
+func OpenDevice(addr, user, pwd string) (*Device, error) {
+	c := &http.Client{
+		Transport: &digest.Transport{
+			Username: user,
+			Password: pwd,
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{
+					InsecureSkipVerify: true,
+				},
+			},
+		},
+	}
 
 	return &Device{
-		client:  c,
+		doer:    c,
 		address: addr,
-		User:    username,
-		Pwd:     password,
+		User:    user,
+		Pwd:     pwd,
 	}, nil
 }
 
-func (h *Device) EnableDebug() {
-	h.client.EnableDumpAll()
+func (h *Device) PostMetadataSubscription(ctx context.Context, sub SubscriptionReq) (*CommonResponse, error) {
+	buf := &bytes.Buffer{}
+
+	enc := json.NewEncoder(buf)
+	if err := enc.Encode(sub); err != nil {
+		return nil, err
+	}
+
+	url := cameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription")
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, buf)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := h.doer.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, NewApiError(resp.StatusCode, resp.Status)
+	}
+
+	comm := &CommonResponse{}
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(comm); err != nil {
+		return nil, err
+	}
+	return comm, nil
+}
+
+func (h *Device) DeleteMetadataSubscription(ctx context.Context) (*CommonResponse, error) {
+	url := cameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription")
+	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := h.doer.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, NewApiError(resp.StatusCode, resp.Status)
+	}
+
+	comm := &CommonResponse{}
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(comm); err != nil {
+		return nil, err
+	}
+	return comm, nil
+}
+
+func (h *Device) GetMetadataSubscription(ctx context.Context) (*Subscripions, error) {
+	url := cameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription")
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := h.doer.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, NewApiError(resp.StatusCode, resp.Status)
+	}
+
+	sub := &Subscripions{}
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(sub); err != nil {
+		return nil, err
+	}
+	return sub, nil
+}
+
+func (h *Device) Reboot(ctx context.Context) (*CommonResponse, error) {
+	url := cameraURL(h.address, "/SDCAPI/V1.0/System/Reboot")
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := h.doer.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, NewApiError(resp.StatusCode, resp.Status)
+	}
+
+	comm := &CommonResponse{}
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(comm); err != nil {
+		return nil, err
+	}
+	return comm, nil
+}
+
+func (h *Device) GetDeviceID(ctx context.Context) (*DeviceIDList, error) {
+	url := cameraURL(h.address, "/SDCAPI/V1.0/Rest/DeviceID")
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := h.doer.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, NewApiError(resp.StatusCode, resp.Status)
+	}
+
+	r := &DeviceIDList{}
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+func (h *Device) PutDeviceID(ctx context.Context, idList DeviceIDList) (*CommonResponse, error) {
+	url := cameraURL(h.address, "/SDCAPI/V1.0/Rest/DeviceID")
+
+	buf := &bytes.Buffer{}
+
+	enc := json.NewEncoder(buf)
+	if err := enc.Encode(idList); err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPut, url, buf)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := h.doer.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, NewApiError(resp.StatusCode, resp.Status)
+	}
+
+	comm := &CommonResponse{}
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(comm); err != nil {
+		return nil, err
+	}
+	return comm, nil
+}
+
+func (h *Device) GetSysBaseInfo(ctx context.Context) (info *SysBaseInfo, err error) {
+	url := cameraURL(h.address, "/SDCAPI/V1.0/MiscIaas/System")
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := h.doer.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, NewApiError(resp.StatusCode, resp.Status)
+	}
+
+	r := &SysBaseInfo{}
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(r); err != nil {
+		return nil, err
+	}
+	return r, nil
 }
 
 func (h *Device) Close() error {
 	return nil
-}
-
-func (h *Device) PostMetadataSubscription(ctx context.Context, req SubscriptionReq) (resp *CommonResponse, err error) {
-	_, err = h.client.R().
-		SetContext(ctx).
-		SetBody(req).
-		SetSuccessResult(&resp).
-		SetErrorResult(&resp).
-		Post(cameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription"))
-	return
-}
-
-func (h *Device) DeleteMetadataSubscription(ctx context.Context) (resp *CommonResponse, err error) {
-	_, err = h.client.R().
-		SetContext(ctx).
-		SetSuccessResult(&resp).
-		SetErrorResult(&resp).
-		Delete(cameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription"))
-	return
-}
-
-func (h *Device) GetMetadataSubscription(ctx context.Context) (data *Subscripions, err error) {
-	var resp *req.Response
-	resp, err = h.client.R().
-		SetSuccessResult(&data).
-		Get(cameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription"))
-
-	if resp.IsErrorState() {
-		err = NewApiError(resp.StatusCode, resp.Status)
-	}
-	return
-}
-
-func (h *Device) Reboot(ctx context.Context) (resp *CommonResponse, err error) {
-	_, err = h.client.R().
-		SetContext(ctx).
-		SetSuccessResult(&resp).
-		SetErrorResult(&resp).
-		Post(cameraURL(h.address, "/SDCAPI/V1.0/System/Reboot"))
-	return
-}
-
-func (h *Device) GetDeviceID(ctx context.Context) (idList *DeviceIDList, err error) {
-	var resp *req.Response
-	resp, err = h.client.R().
-		SetContext(ctx).
-		SetSuccessResult(&idList).
-		Get(cameraURL(h.address, "/SDCAPI/V1.0/Rest/DeviceID"))
-
-	if resp.IsErrorState() {
-		err = NewApiError(resp.StatusCode, resp.Status)
-	}
-	return
-}
-
-func (h *Device) PutDeviceID(ctx context.Context, idList DeviceIDList) (resp *CommonResponse, err error) {
-	_, err = h.client.R().
-		SetContext(ctx).
-		SetBody(idList).
-		SetSuccessResult(&resp).
-		SetErrorResult(&resp).
-		Put(cameraURL(h.address, "/SDCAPI/V1.0/Rest/DeviceID"))
-	return
-}
-
-func (h *Device) GetSysBaseInfo(ctx context.Context) (info *SysBaseInfo, err error) {
-	_, err = h.client.R().
-		SetSuccessResult(&info).
-		Get(cameraURL(h.address, "/SDCAPI/V1.0/MiscIaas/System"))
-	return
 }
