@@ -77,7 +77,7 @@ func servCmd() {
 
 	mux.Mount("/debug", middleware.Profiler())
 
-	mux.Mount("/out", outHandle(ctx, conf))
+	mux.Mount("/jsonrpc", outHandle(ctx, conf))
 
 	svr := hx.NewServ().SetAddr(conf.ServerConf.Addr).SetHandler(mux)
 	if err := runSvr(svr, conf.ServerConf); err != nil {
