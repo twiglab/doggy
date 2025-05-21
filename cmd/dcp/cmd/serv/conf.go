@@ -11,6 +11,11 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type LoggerConf struct {
+	Level   string `yaml:"level" mapstructure:"level"`
+	LogFile string `yaml:"log-file" mapstructure:"log-file"`
+}
+
 type InfluxDBConf struct {
 	URL    string `yaml:"url" mapstructure:"url"`
 	Token  string `yaml:"token" mapstructure:"token"`
@@ -57,6 +62,7 @@ type DBConf struct {
 
 type AppConf struct {
 	ID           string       `yaml:"id" mapstructure:"id"`
+	LoggerConf   LoggerConf   `yaml:"debug" mapstructure:"debug"`
 	ServerConf   ServerConf   `yaml:"server" mapstructure:"server"`
 	BackendConf  BackendConf  `yaml:"backend" mapstructure:"backend"`
 	CameraDBConf CameraDBConf `yaml:"camera-db" mapstructure:"camera-db"`
@@ -104,6 +110,11 @@ func confCmd() {
 	conf := AppConf{
 		ID: "dcp",
 
+		LoggerConf: LoggerConf{
+			Level:   "INFO",
+			LogFile: "dcp.log",
+		},
+
 		ServerConf: ServerConf{
 			Addr:       "0.0.0.0:10005",
 			CertFile:   "repo/server.crt",
@@ -121,7 +132,7 @@ func confCmd() {
 
 		AutoRegConf: AutoRegConf{
 			Addr:        "127.0.0.1",
-			Port:        10007,
+			Port:        10005,
 			MetadataURL: "https://127.0.0.1:10005/pf/upload",
 		},
 

@@ -18,6 +18,8 @@ const (
 
 func buildCtx(conf AppConf) context.Context {
 
+	BuildRootLog(conf)
+
 	box := context.Background()
 
 	eh := orm.NewEntHandle(MustEntClient(conf.DBConf))
@@ -28,7 +30,7 @@ func buildCtx(conf AppConf) context.Context {
 		conf.CameraDBConf.CsvCameraDB.CameraUser,
 		conf.CameraDBConf.CsvCameraDB.CameraPwd,
 	)
-	if err := fixUser.Load(); err != nil {
+	if err := fixUser.Load(box); err != nil {
 		log.Fatal(err)
 	}
 	box = context.WithValue(box, key_resolve, fixUser)

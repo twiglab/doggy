@@ -29,7 +29,6 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 		if err := h.HandleAutoRegister(r.Context(), data); err != nil {
 			_ = hx.JsonTo(http.StatusInternalServerError,
 				holo.CommonResponseFailedError(r.URL.Path, err), w)
-			log.Println(err)
 			return
 		}
 

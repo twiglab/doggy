@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"os"
 
 	"github.com/twiglab/doggy/holo"
@@ -48,11 +48,11 @@ func NewCsvCameraDB(csvFile, user, pwd string) *CsvCameraDB {
 	}
 }
 
-func (r *CsvCameraDB) Load() error {
+func (r *CsvCameraDB) Load(ctx context.Context) error {
 	clear(r.deviceConf)
 
 	if r.csvFile == "" {
-		log.Println("no csv file")
+		slog.InfoContext(ctx, "cameradb load", "csvfile", "<no csv file>")
 		return nil
 	}
 
@@ -75,7 +75,8 @@ func (r *CsvCameraDB) Load() error {
 		device := buildCamera(rows)
 		r.deviceConf[device.sn] = device
 	}
-	log.Println("cameradb size ", len(r.deviceConf))
+
+	slog.InfoContext(ctx, "cameradb", slog.Int("size", len(r.deviceConf)))
 	return nil
 }
 

@@ -17,6 +17,7 @@ require (
 	github.com/xen0n/go-workwx/v2 v2.0.0-20250512044836-ae8c900c575c
 	github.com/ybbus/jsonrpc/v3 v3.1.6
 	google.golang.org/grpc v1.70.0
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/yaml.v3 v3.0.1
 )
 
