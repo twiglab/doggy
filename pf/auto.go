@@ -16,8 +16,6 @@ type CameraUpload struct {
 
 	UUID1 string
 	Code1 string
-	UUID2 string
-	Code2 string
 
 	User string
 	Pwd  string
