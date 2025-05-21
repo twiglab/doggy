@@ -7,14 +7,14 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-func RootLog(logFile string, level slog.Level) *slog.Logger {
+func RootLog(id string, logFile string, level slog.Level) *slog.Logger {
 	out := &lumberjack.Logger{
 		Filename:   logFile,
 		MaxSize:    10, // megabytes
 		MaxBackups: 3,
 		MaxAge:     10, //days
 	}
-	h := slog.NewJSONHandler(out, &slog.HandlerOptions{Level: level})
+	h := slog.NewJSONHandler(out, &slog.HandlerOptions{Level: level}).WithAttrs([]slog.Attr{slog.String("id", id)})
 	logger := slog.New(h)
 	slog.SetDefault(logger)
 	return logger
@@ -40,5 +40,5 @@ func BuildRootLog(conf AppConf) *slog.Logger {
 		level = slog.LevelInfo
 	}
 
-	return RootLog(logFile, level)
+	return RootLog(conf.ID, logFile, level)
 }
