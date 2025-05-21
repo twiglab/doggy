@@ -1,6 +1,7 @@
 package pf
 
 import (
+	"log"
 	"net"
 	"net/http"
 
@@ -28,9 +29,11 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 		if err := h.HandleAutoRegister(r.Context(), data); err != nil {
 			_ = hx.JsonTo(http.StatusInternalServerError,
 				holo.CommonResponseFailedError(r.URL.Path, err), w)
+			log.Println(err)
 			return
 		}
 
+		log.Println("register device ok, sn = ", data.SerialNumber)
 		_ = hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
 	}
 }

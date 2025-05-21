@@ -31,10 +31,6 @@ type Upload struct {
 	ID1 string `json:"id_1,omitempty"`
 	// Code1 holds the value of the "code_1" field.
 	Code1 string `json:"code_1,omitempty"`
-	// ID2 holds the value of the "id_2" field.
-	ID2 string `json:"id_2,omitempty"`
-	// Code2 holds the value of the "code_2" field.
-	Code2 string `json:"code_2,omitempty"`
 	// User holds the value of the "user" field.
 	User string `json:"user,omitempty"`
 	// Pwd holds the value of the "pwd" field.
@@ -49,7 +45,7 @@ func (*Upload) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case upload.FieldID:
 			values[i] = new(sql.NullInt64)
-		case upload.FieldSn, upload.FieldIP, upload.FieldID1, upload.FieldCode1, upload.FieldID2, upload.FieldCode2, upload.FieldUser, upload.FieldPwd:
+		case upload.FieldSn, upload.FieldIP, upload.FieldID1, upload.FieldCode1, upload.FieldUser, upload.FieldPwd:
 			values[i] = new(sql.NullString)
 		case upload.FieldCreateTime, upload.FieldUpdateTime, upload.FieldLastTime:
 			values[i] = new(sql.NullTime)
@@ -115,18 +111,6 @@ func (u *Upload) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field code_1", values[i])
 			} else if value.Valid {
 				u.Code1 = value.String
-			}
-		case upload.FieldID2:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field id_2", values[i])
-			} else if value.Valid {
-				u.ID2 = value.String
-			}
-		case upload.FieldCode2:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field code_2", values[i])
-			} else if value.Valid {
-				u.Code2 = value.String
 			}
 		case upload.FieldUser:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -196,12 +180,6 @@ func (u *Upload) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("code_1=")
 	builder.WriteString(u.Code1)
-	builder.WriteString(", ")
-	builder.WriteString("id_2=")
-	builder.WriteString(u.ID2)
-	builder.WriteString(", ")
-	builder.WriteString("code_2=")
-	builder.WriteString(u.Code2)
 	builder.WriteString(", ")
 	builder.WriteString("user=")
 	builder.WriteString(u.User)

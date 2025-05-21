@@ -33,8 +33,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			upload.FieldLastTime:   {Type: field.TypeTime, Column: upload.FieldLastTime},
 			upload.FieldID1:        {Type: field.TypeString, Column: upload.FieldID1},
 			upload.FieldCode1:      {Type: field.TypeString, Column: upload.FieldCode1},
-			upload.FieldID2:        {Type: field.TypeString, Column: upload.FieldID2},
-			upload.FieldCode2:      {Type: field.TypeString, Column: upload.FieldCode2},
 			upload.FieldUser:       {Type: field.TypeString, Column: upload.FieldUser},
 			upload.FieldPwd:        {Type: field.TypeString, Column: upload.FieldPwd},
 		},
@@ -141,16 +139,6 @@ func (f *UploadFilter) WhereID1(p entql.StringP) {
 // WhereCode1 applies the entql string predicate on the code_1 field.
 func (f *UploadFilter) WhereCode1(p entql.StringP) {
 	f.Where(p.Field(upload.FieldCode1))
-}
-
-// WhereID2 applies the entql string predicate on the id_2 field.
-func (f *UploadFilter) WhereID2(p entql.StringP) {
-	f.Where(p.Field(upload.FieldID2))
-}
-
-// WhereCode2 applies the entql string predicate on the code_2 field.
-func (f *UploadFilter) WhereCode2(p entql.StringP) {
-	f.Where(p.Field(upload.FieldCode2))
 }
 
 // WhereUser applies the entql string predicate on the user field.

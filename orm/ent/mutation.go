@@ -42,8 +42,6 @@ type UploadMutation struct {
 	last_time     *time.Time
 	id_1          *string
 	code_1        *string
-	id_2          *string
-	code_2        *string
 	user          *string
 	pwd           *string
 	clearedFields map[string]struct{}
@@ -428,104 +426,6 @@ func (m *UploadMutation) ResetCode1() {
 	delete(m.clearedFields, upload.FieldCode1)
 }
 
-// SetID2 sets the "id_2" field.
-func (m *UploadMutation) SetID2(s string) {
-	m.id_2 = &s
-}
-
-// ID2 returns the value of the "id_2" field in the mutation.
-func (m *UploadMutation) ID2() (r string, exists bool) {
-	v := m.id_2
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldID2 returns the old "id_2" field's value of the Upload entity.
-// If the Upload object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UploadMutation) OldID2(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldID2 is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldID2 requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldID2: %w", err)
-	}
-	return oldValue.ID2, nil
-}
-
-// ClearID2 clears the value of the "id_2" field.
-func (m *UploadMutation) ClearID2() {
-	m.id_2 = nil
-	m.clearedFields[upload.FieldID2] = struct{}{}
-}
-
-// ID2Cleared returns if the "id_2" field was cleared in this mutation.
-func (m *UploadMutation) ID2Cleared() bool {
-	_, ok := m.clearedFields[upload.FieldID2]
-	return ok
-}
-
-// ResetID2 resets all changes to the "id_2" field.
-func (m *UploadMutation) ResetID2() {
-	m.id_2 = nil
-	delete(m.clearedFields, upload.FieldID2)
-}
-
-// SetCode2 sets the "code_2" field.
-func (m *UploadMutation) SetCode2(s string) {
-	m.code_2 = &s
-}
-
-// Code2 returns the value of the "code_2" field in the mutation.
-func (m *UploadMutation) Code2() (r string, exists bool) {
-	v := m.code_2
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCode2 returns the old "code_2" field's value of the Upload entity.
-// If the Upload object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UploadMutation) OldCode2(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCode2 is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCode2 requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCode2: %w", err)
-	}
-	return oldValue.Code2, nil
-}
-
-// ClearCode2 clears the value of the "code_2" field.
-func (m *UploadMutation) ClearCode2() {
-	m.code_2 = nil
-	m.clearedFields[upload.FieldCode2] = struct{}{}
-}
-
-// Code2Cleared returns if the "code_2" field was cleared in this mutation.
-func (m *UploadMutation) Code2Cleared() bool {
-	_, ok := m.clearedFields[upload.FieldCode2]
-	return ok
-}
-
-// ResetCode2 resets all changes to the "code_2" field.
-func (m *UploadMutation) ResetCode2() {
-	m.code_2 = nil
-	delete(m.clearedFields, upload.FieldCode2)
-}
-
 // SetUser sets the "user" field.
 func (m *UploadMutation) SetUser(s string) {
 	m.user = &s
@@ -658,7 +558,7 @@ func (m *UploadMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UploadMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 9)
 	if m.create_time != nil {
 		fields = append(fields, upload.FieldCreateTime)
 	}
@@ -679,12 +579,6 @@ func (m *UploadMutation) Fields() []string {
 	}
 	if m.code_1 != nil {
 		fields = append(fields, upload.FieldCode1)
-	}
-	if m.id_2 != nil {
-		fields = append(fields, upload.FieldID2)
-	}
-	if m.code_2 != nil {
-		fields = append(fields, upload.FieldCode2)
 	}
 	if m.user != nil {
 		fields = append(fields, upload.FieldUser)
@@ -714,10 +608,6 @@ func (m *UploadMutation) Field(name string) (ent.Value, bool) {
 		return m.ID1()
 	case upload.FieldCode1:
 		return m.Code1()
-	case upload.FieldID2:
-		return m.ID2()
-	case upload.FieldCode2:
-		return m.Code2()
 	case upload.FieldUser:
 		return m.User()
 	case upload.FieldPwd:
@@ -745,10 +635,6 @@ func (m *UploadMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldID1(ctx)
 	case upload.FieldCode1:
 		return m.OldCode1(ctx)
-	case upload.FieldID2:
-		return m.OldID2(ctx)
-	case upload.FieldCode2:
-		return m.OldCode2(ctx)
 	case upload.FieldUser:
 		return m.OldUser(ctx)
 	case upload.FieldPwd:
@@ -811,20 +697,6 @@ func (m *UploadMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCode1(v)
 		return nil
-	case upload.FieldID2:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetID2(v)
-		return nil
-	case upload.FieldCode2:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCode2(v)
-		return nil
 	case upload.FieldUser:
 		v, ok := value.(string)
 		if !ok {
@@ -875,12 +747,6 @@ func (m *UploadMutation) ClearedFields() []string {
 	if m.FieldCleared(upload.FieldCode1) {
 		fields = append(fields, upload.FieldCode1)
 	}
-	if m.FieldCleared(upload.FieldID2) {
-		fields = append(fields, upload.FieldID2)
-	}
-	if m.FieldCleared(upload.FieldCode2) {
-		fields = append(fields, upload.FieldCode2)
-	}
 	if m.FieldCleared(upload.FieldUser) {
 		fields = append(fields, upload.FieldUser)
 	}
@@ -906,12 +772,6 @@ func (m *UploadMutation) ClearField(name string) error {
 		return nil
 	case upload.FieldCode1:
 		m.ClearCode1()
-		return nil
-	case upload.FieldID2:
-		m.ClearID2()
-		return nil
-	case upload.FieldCode2:
-		m.ClearCode2()
 		return nil
 	case upload.FieldUser:
 		m.ClearUser()
@@ -947,12 +807,6 @@ func (m *UploadMutation) ResetField(name string) error {
 		return nil
 	case upload.FieldCode1:
 		m.ResetCode1()
-		return nil
-	case upload.FieldID2:
-		m.ResetID2()
-		return nil
-	case upload.FieldCode2:
-		m.ResetCode2()
 		return nil
 	case upload.FieldUser:
 		m.ResetUser()

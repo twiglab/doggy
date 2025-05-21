@@ -94,46 +94,6 @@ func (uu *UploadUpdate) ClearCode1() *UploadUpdate {
 	return uu
 }
 
-// SetID2 sets the "id_2" field.
-func (uu *UploadUpdate) SetID2(s string) *UploadUpdate {
-	uu.mutation.SetID2(s)
-	return uu
-}
-
-// SetNillableID2 sets the "id_2" field if the given value is not nil.
-func (uu *UploadUpdate) SetNillableID2(s *string) *UploadUpdate {
-	if s != nil {
-		uu.SetID2(*s)
-	}
-	return uu
-}
-
-// ClearID2 clears the value of the "id_2" field.
-func (uu *UploadUpdate) ClearID2() *UploadUpdate {
-	uu.mutation.ClearID2()
-	return uu
-}
-
-// SetCode2 sets the "code_2" field.
-func (uu *UploadUpdate) SetCode2(s string) *UploadUpdate {
-	uu.mutation.SetCode2(s)
-	return uu
-}
-
-// SetNillableCode2 sets the "code_2" field if the given value is not nil.
-func (uu *UploadUpdate) SetNillableCode2(s *string) *UploadUpdate {
-	if s != nil {
-		uu.SetCode2(*s)
-	}
-	return uu
-}
-
-// ClearCode2 clears the value of the "code_2" field.
-func (uu *UploadUpdate) ClearCode2() *UploadUpdate {
-	uu.mutation.ClearCode2()
-	return uu
-}
-
 // SetUser sets the "user" field.
 func (uu *UploadUpdate) SetUser(s string) *UploadUpdate {
 	uu.mutation.SetUser(s)
@@ -236,16 +196,6 @@ func (uu *UploadUpdate) check() error {
 			return &ValidationError{Name: "code_1", err: fmt.Errorf(`ent: validator failed for field "Upload.code_1": %w`, err)}
 		}
 	}
-	if v, ok := uu.mutation.ID2(); ok {
-		if err := upload.ID2Validator(v); err != nil {
-			return &ValidationError{Name: "id_2", err: fmt.Errorf(`ent: validator failed for field "Upload.id_2": %w`, err)}
-		}
-	}
-	if v, ok := uu.mutation.Code2(); ok {
-		if err := upload.Code2Validator(v); err != nil {
-			return &ValidationError{Name: "code_2", err: fmt.Errorf(`ent: validator failed for field "Upload.code_2": %w`, err)}
-		}
-	}
 	if v, ok := uu.mutation.User(); ok {
 		if err := upload.UserValidator(v); err != nil {
 			return &ValidationError{Name: "user", err: fmt.Errorf(`ent: validator failed for field "Upload.user": %w`, err)}
@@ -291,18 +241,6 @@ func (uu *UploadUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if uu.mutation.Code1Cleared() {
 		_spec.ClearField(upload.FieldCode1, field.TypeString)
-	}
-	if value, ok := uu.mutation.ID2(); ok {
-		_spec.SetField(upload.FieldID2, field.TypeString, value)
-	}
-	if uu.mutation.ID2Cleared() {
-		_spec.ClearField(upload.FieldID2, field.TypeString)
-	}
-	if value, ok := uu.mutation.Code2(); ok {
-		_spec.SetField(upload.FieldCode2, field.TypeString, value)
-	}
-	if uu.mutation.Code2Cleared() {
-		_spec.ClearField(upload.FieldCode2, field.TypeString)
 	}
 	if value, ok := uu.mutation.User(); ok {
 		_spec.SetField(upload.FieldUser, field.TypeString, value)
@@ -399,46 +337,6 @@ func (uuo *UploadUpdateOne) SetNillableCode1(s *string) *UploadUpdateOne {
 // ClearCode1 clears the value of the "code_1" field.
 func (uuo *UploadUpdateOne) ClearCode1() *UploadUpdateOne {
 	uuo.mutation.ClearCode1()
-	return uuo
-}
-
-// SetID2 sets the "id_2" field.
-func (uuo *UploadUpdateOne) SetID2(s string) *UploadUpdateOne {
-	uuo.mutation.SetID2(s)
-	return uuo
-}
-
-// SetNillableID2 sets the "id_2" field if the given value is not nil.
-func (uuo *UploadUpdateOne) SetNillableID2(s *string) *UploadUpdateOne {
-	if s != nil {
-		uuo.SetID2(*s)
-	}
-	return uuo
-}
-
-// ClearID2 clears the value of the "id_2" field.
-func (uuo *UploadUpdateOne) ClearID2() *UploadUpdateOne {
-	uuo.mutation.ClearID2()
-	return uuo
-}
-
-// SetCode2 sets the "code_2" field.
-func (uuo *UploadUpdateOne) SetCode2(s string) *UploadUpdateOne {
-	uuo.mutation.SetCode2(s)
-	return uuo
-}
-
-// SetNillableCode2 sets the "code_2" field if the given value is not nil.
-func (uuo *UploadUpdateOne) SetNillableCode2(s *string) *UploadUpdateOne {
-	if s != nil {
-		uuo.SetCode2(*s)
-	}
-	return uuo
-}
-
-// ClearCode2 clears the value of the "code_2" field.
-func (uuo *UploadUpdateOne) ClearCode2() *UploadUpdateOne {
-	uuo.mutation.ClearCode2()
 	return uuo
 }
 
@@ -557,16 +455,6 @@ func (uuo *UploadUpdateOne) check() error {
 			return &ValidationError{Name: "code_1", err: fmt.Errorf(`ent: validator failed for field "Upload.code_1": %w`, err)}
 		}
 	}
-	if v, ok := uuo.mutation.ID2(); ok {
-		if err := upload.ID2Validator(v); err != nil {
-			return &ValidationError{Name: "id_2", err: fmt.Errorf(`ent: validator failed for field "Upload.id_2": %w`, err)}
-		}
-	}
-	if v, ok := uuo.mutation.Code2(); ok {
-		if err := upload.Code2Validator(v); err != nil {
-			return &ValidationError{Name: "code_2", err: fmt.Errorf(`ent: validator failed for field "Upload.code_2": %w`, err)}
-		}
-	}
 	if v, ok := uuo.mutation.User(); ok {
 		if err := upload.UserValidator(v); err != nil {
 			return &ValidationError{Name: "user", err: fmt.Errorf(`ent: validator failed for field "Upload.user": %w`, err)}
@@ -629,18 +517,6 @@ func (uuo *UploadUpdateOne) sqlSave(ctx context.Context) (_node *Upload, err err
 	}
 	if uuo.mutation.Code1Cleared() {
 		_spec.ClearField(upload.FieldCode1, field.TypeString)
-	}
-	if value, ok := uuo.mutation.ID2(); ok {
-		_spec.SetField(upload.FieldID2, field.TypeString, value)
-	}
-	if uuo.mutation.ID2Cleared() {
-		_spec.ClearField(upload.FieldID2, field.TypeString)
-	}
-	if value, ok := uuo.mutation.Code2(); ok {
-		_spec.SetField(upload.FieldCode2, field.TypeString, value)
-	}
-	if uuo.mutation.Code2Cleared() {
-		_spec.ClearField(upload.FieldCode2, field.TypeString)
 	}
 	if value, ok := uuo.mutation.User(); ok {
 		_spec.SetField(upload.FieldUser, field.TypeString, value)

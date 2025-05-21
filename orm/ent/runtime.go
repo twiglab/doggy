@@ -79,20 +79,12 @@ func init() {
 	uploadDescCode1 := uploadFields[4].Descriptor()
 	// upload.Code1Validator is a validator for the "code_1" field. It is called by the builders before save.
 	upload.Code1Validator = uploadDescCode1.Validators[0].(func(string) error)
-	// uploadDescID2 is the schema descriptor for id_2 field.
-	uploadDescID2 := uploadFields[5].Descriptor()
-	// upload.ID2Validator is a validator for the "id_2" field. It is called by the builders before save.
-	upload.ID2Validator = uploadDescID2.Validators[0].(func(string) error)
-	// uploadDescCode2 is the schema descriptor for code_2 field.
-	uploadDescCode2 := uploadFields[6].Descriptor()
-	// upload.Code2Validator is a validator for the "code_2" field. It is called by the builders before save.
-	upload.Code2Validator = uploadDescCode2.Validators[0].(func(string) error)
 	// uploadDescUser is the schema descriptor for user field.
-	uploadDescUser := uploadFields[7].Descriptor()
+	uploadDescUser := uploadFields[5].Descriptor()
 	// upload.UserValidator is a validator for the "user" field. It is called by the builders before save.
 	upload.UserValidator = uploadDescUser.Validators[0].(func(string) error)
 	// uploadDescPwd is the schema descriptor for pwd field.
-	uploadDescPwd := uploadFields[8].Descriptor()
+	uploadDescPwd := uploadFields[6].Descriptor()
 	// upload.PwdValidator is a validator for the "pwd" field. It is called by the builders before save.
 	upload.PwdValidator = uploadDescPwd.Validators[0].(func(string) error)
 	usingMixin := schema.Using{}.Mixin()

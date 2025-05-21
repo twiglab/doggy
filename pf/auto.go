@@ -60,7 +60,9 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 	id := ids.IDs[0]
 	if device.DeviceID != "" {
 		if device.DeviceID != id.DeviceID {
-			// 下发 DeviceID
+
+			log.Println("下发DeviceID ", device.DeviceID)
+
 			res, err := device.PutDeviceID(ctx,
 				holo.DeviceIDList{
 					IDs: []holo.DeviceID{
@@ -86,7 +88,9 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 	}
 
 	if len(subs.Subscriptions) == 0 {
-		// 下发元数据订阅参数
+
+		log.Println("下发元数据订阅参数", a.MetadataURL)
+
 		res, err := device.PostMetadataSubscription(ctx,
 			holo.SubscriptionReq{
 				Address:     a.Addr,

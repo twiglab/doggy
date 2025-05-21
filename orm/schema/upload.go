@@ -53,27 +53,9 @@ func (Upload) Fields() []ent.Field {
 
 		field.String("code_1").
 			MaxLen(64).
-			Unique().Optional().
+			Optional().
 			SchemaType(map[string]string{
 
-				dialect.MySQL:    "varchar(64)", // Override MySQL.
-				dialect.Postgres: "varchar(64)", // Override Postgres.
-				dialect.SQLite:   "varchar(64)", // Override Postgres.
-			}),
-
-		field.String("id_2").
-			MaxLen(36).
-			Unique().Optional().
-			SchemaType(map[string]string{
-				dialect.MySQL:    "char(36)", // Override MySQL.
-				dialect.Postgres: "char(36)", // Override Postgres.
-				dialect.SQLite:   "char(36)", // Override Postgres.
-			}),
-
-		field.String("code_2").
-			MaxLen(64).
-			Unique().Optional().
-			SchemaType(map[string]string{
 				dialect.MySQL:    "varchar(64)", // Override MySQL.
 				dialect.Postgres: "varchar(64)", // Override Postgres.
 				dialect.SQLite:   "varchar(64)", // Override Postgres.

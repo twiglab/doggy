@@ -27,10 +27,6 @@ const (
 	FieldID1 = "id_1"
 	// FieldCode1 holds the string denoting the code_1 field in the database.
 	FieldCode1 = "code_1"
-	// FieldID2 holds the string denoting the id_2 field in the database.
-	FieldID2 = "id_2"
-	// FieldCode2 holds the string denoting the code_2 field in the database.
-	FieldCode2 = "code_2"
 	// FieldUser holds the string denoting the user field in the database.
 	FieldUser = "user"
 	// FieldPwd holds the string denoting the pwd field in the database.
@@ -49,8 +45,6 @@ var Columns = []string{
 	FieldLastTime,
 	FieldID1,
 	FieldCode1,
-	FieldID2,
-	FieldCode2,
 	FieldUser,
 	FieldPwd,
 }
@@ -84,10 +78,6 @@ var (
 	ID1Validator func(string) error
 	// Code1Validator is a validator for the "code_1" field. It is called by the builders before save.
 	Code1Validator func(string) error
-	// ID2Validator is a validator for the "id_2" field. It is called by the builders before save.
-	ID2Validator func(string) error
-	// Code2Validator is a validator for the "code_2" field. It is called by the builders before save.
-	Code2Validator func(string) error
 	// UserValidator is a validator for the "user" field. It is called by the builders before save.
 	UserValidator func(string) error
 	// PwdValidator is a validator for the "pwd" field. It is called by the builders before save.
@@ -135,16 +125,6 @@ func ByID1(opts ...sql.OrderTermOption) OrderOption {
 // ByCode1 orders the results by the code_1 field.
 func ByCode1(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCode1, opts...).ToFunc()
-}
-
-// ByID2 orders the results by the id_2 field.
-func ByID2(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldID2, opts...).ToFunc()
-}
-
-// ByCode2 orders the results by the code_2 field.
-func ByCode2(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCode2, opts...).ToFunc()
 }
 
 // ByUser orders the results by the user field.

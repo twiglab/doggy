@@ -104,34 +104,6 @@ func (uc *UploadCreate) SetNillableCode1(s *string) *UploadCreate {
 	return uc
 }
 
-// SetID2 sets the "id_2" field.
-func (uc *UploadCreate) SetID2(s string) *UploadCreate {
-	uc.mutation.SetID2(s)
-	return uc
-}
-
-// SetNillableID2 sets the "id_2" field if the given value is not nil.
-func (uc *UploadCreate) SetNillableID2(s *string) *UploadCreate {
-	if s != nil {
-		uc.SetID2(*s)
-	}
-	return uc
-}
-
-// SetCode2 sets the "code_2" field.
-func (uc *UploadCreate) SetCode2(s string) *UploadCreate {
-	uc.mutation.SetCode2(s)
-	return uc
-}
-
-// SetNillableCode2 sets the "code_2" field if the given value is not nil.
-func (uc *UploadCreate) SetNillableCode2(s *string) *UploadCreate {
-	if s != nil {
-		uc.SetCode2(*s)
-	}
-	return uc
-}
-
 // SetUser sets the "user" field.
 func (uc *UploadCreate) SetUser(s string) *UploadCreate {
 	uc.mutation.SetUser(s)
@@ -246,16 +218,6 @@ func (uc *UploadCreate) check() error {
 			return &ValidationError{Name: "code_1", err: fmt.Errorf(`ent: validator failed for field "Upload.code_1": %w`, err)}
 		}
 	}
-	if v, ok := uc.mutation.ID2(); ok {
-		if err := upload.ID2Validator(v); err != nil {
-			return &ValidationError{Name: "id_2", err: fmt.Errorf(`ent: validator failed for field "Upload.id_2": %w`, err)}
-		}
-	}
-	if v, ok := uc.mutation.Code2(); ok {
-		if err := upload.Code2Validator(v); err != nil {
-			return &ValidationError{Name: "code_2", err: fmt.Errorf(`ent: validator failed for field "Upload.code_2": %w`, err)}
-		}
-	}
 	if v, ok := uc.mutation.User(); ok {
 		if err := upload.UserValidator(v); err != nil {
 			return &ValidationError{Name: "user", err: fmt.Errorf(`ent: validator failed for field "Upload.user": %w`, err)}
@@ -320,14 +282,6 @@ func (uc *UploadCreate) createSpec() (*Upload, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.Code1(); ok {
 		_spec.SetField(upload.FieldCode1, field.TypeString, value)
 		_node.Code1 = value
-	}
-	if value, ok := uc.mutation.ID2(); ok {
-		_spec.SetField(upload.FieldID2, field.TypeString, value)
-		_node.ID2 = value
-	}
-	if value, ok := uc.mutation.Code2(); ok {
-		_spec.SetField(upload.FieldCode2, field.TypeString, value)
-		_node.Code2 = value
 	}
 	if value, ok := uc.mutation.User(); ok {
 		_spec.SetField(upload.FieldUser, field.TypeString, value)
@@ -458,42 +412,6 @@ func (u *UploadUpsert) UpdateCode1() *UploadUpsert {
 // ClearCode1 clears the value of the "code_1" field.
 func (u *UploadUpsert) ClearCode1() *UploadUpsert {
 	u.SetNull(upload.FieldCode1)
-	return u
-}
-
-// SetID2 sets the "id_2" field.
-func (u *UploadUpsert) SetID2(v string) *UploadUpsert {
-	u.Set(upload.FieldID2, v)
-	return u
-}
-
-// UpdateID2 sets the "id_2" field to the value that was provided on create.
-func (u *UploadUpsert) UpdateID2() *UploadUpsert {
-	u.SetExcluded(upload.FieldID2)
-	return u
-}
-
-// ClearID2 clears the value of the "id_2" field.
-func (u *UploadUpsert) ClearID2() *UploadUpsert {
-	u.SetNull(upload.FieldID2)
-	return u
-}
-
-// SetCode2 sets the "code_2" field.
-func (u *UploadUpsert) SetCode2(v string) *UploadUpsert {
-	u.Set(upload.FieldCode2, v)
-	return u
-}
-
-// UpdateCode2 sets the "code_2" field to the value that was provided on create.
-func (u *UploadUpsert) UpdateCode2() *UploadUpsert {
-	u.SetExcluded(upload.FieldCode2)
-	return u
-}
-
-// ClearCode2 clears the value of the "code_2" field.
-func (u *UploadUpsert) ClearCode2() *UploadUpsert {
-	u.SetNull(upload.FieldCode2)
 	return u
 }
 
@@ -662,48 +580,6 @@ func (u *UploadUpsertOne) UpdateCode1() *UploadUpsertOne {
 func (u *UploadUpsertOne) ClearCode1() *UploadUpsertOne {
 	return u.Update(func(s *UploadUpsert) {
 		s.ClearCode1()
-	})
-}
-
-// SetID2 sets the "id_2" field.
-func (u *UploadUpsertOne) SetID2(v string) *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.SetID2(v)
-	})
-}
-
-// UpdateID2 sets the "id_2" field to the value that was provided on create.
-func (u *UploadUpsertOne) UpdateID2() *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.UpdateID2()
-	})
-}
-
-// ClearID2 clears the value of the "id_2" field.
-func (u *UploadUpsertOne) ClearID2() *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.ClearID2()
-	})
-}
-
-// SetCode2 sets the "code_2" field.
-func (u *UploadUpsertOne) SetCode2(v string) *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.SetCode2(v)
-	})
-}
-
-// UpdateCode2 sets the "code_2" field to the value that was provided on create.
-func (u *UploadUpsertOne) UpdateCode2() *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.UpdateCode2()
-	})
-}
-
-// ClearCode2 clears the value of the "code_2" field.
-func (u *UploadUpsertOne) ClearCode2() *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.ClearCode2()
 	})
 }
 
@@ -1044,48 +920,6 @@ func (u *UploadUpsertBulk) UpdateCode1() *UploadUpsertBulk {
 func (u *UploadUpsertBulk) ClearCode1() *UploadUpsertBulk {
 	return u.Update(func(s *UploadUpsert) {
 		s.ClearCode1()
-	})
-}
-
-// SetID2 sets the "id_2" field.
-func (u *UploadUpsertBulk) SetID2(v string) *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.SetID2(v)
-	})
-}
-
-// UpdateID2 sets the "id_2" field to the value that was provided on create.
-func (u *UploadUpsertBulk) UpdateID2() *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.UpdateID2()
-	})
-}
-
-// ClearID2 clears the value of the "id_2" field.
-func (u *UploadUpsertBulk) ClearID2() *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.ClearID2()
-	})
-}
-
-// SetCode2 sets the "code_2" field.
-func (u *UploadUpsertBulk) SetCode2(v string) *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.SetCode2(v)
-	})
-}
-
-// UpdateCode2 sets the "code_2" field to the value that was provided on create.
-func (u *UploadUpsertBulk) UpdateCode2() *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.UpdateCode2()
-	})
-}
-
-// ClearCode2 clears the value of the "code_2" field.
-func (u *UploadUpsertBulk) ClearCode2() *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.ClearCode2()
 	})
 }
 
