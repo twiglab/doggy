@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>hahah</title>
+		<title>Camera List</title>
 	</head>
 	<body>
 		<table border="1">
@@ -23,7 +23,7 @@
 					<td>{{.IpAddr }}</td>
 					<td>{{.UUID1 }}</td>
 					<td>{{.Code1 }}</td>
-					<td>{{.Last }}</td>
+					<td>{{.Last.Format "2006-01-02T15:04:05Z07:00" }}</td>
 					<td>
 						<a href="https://{{ .IpAddr }}" target="_blank">open</a> |
 					</td>
