@@ -42,7 +42,7 @@ func buildCmdb(ctx context.Context, conf AppConf) (*pf.CsvCameraDB, context.Cont
 func buildIDB(ctx context.Context, conf AppConf) (*idb.IdbPoint, context.Context) {
 	var idb3 *idb.IdbPoint
 
-	if !conf.BackendConf.NoBackend {
+	if !conf.BackendConf.Disable {
 		idb3 = idb.NewIdbPoint(MustIdb(conf.BackendConf.InfluxDBConf))
 		return idb3, context.WithValue(ctx, key_idb3, idb3)
 	}

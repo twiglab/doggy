@@ -70,6 +70,11 @@ func servCmd() {
 
 	mux := MainHandler(ctx, conf)
 
+	if !conf.JobConf.Disable {
+		s := buildAllJob(ctx, conf)
+		s.Start()
+	}
+
 	svr := hx.NewServ().SetAddr(conf.ServerConf.Addr).SetHandler(mux)
 	if err := runSvr(svr, conf.ServerConf); err != nil {
 		log.Fatal(err)

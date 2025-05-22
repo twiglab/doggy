@@ -42,7 +42,7 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	}
 	h := pf.NewHandle(pf.WithDeviceRegister(autoSub))
 
-	if !conf.BackendConf.NoBackend {
+	if !conf.BackendConf.Disable {
 		idb3 := ctx.Value(key_idb3).(*idb.IdbPoint)
 		h.SetCountHandler(idb3)
 		h.SetDensityHandler(idb3)

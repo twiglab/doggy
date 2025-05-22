@@ -11,6 +11,14 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type KeepliveJobConf struct {
+	Crontab string `yaml:"crontab" mapstructure:"crontab"`
+
+	MetadataURL string `yaml:"metadata-url" mapstructure:"metadata-url"`
+	Addr        string `yaml:"addr" mapstructure:"addr"`
+	Port        int    `yaml:"port" mapstructure:"port"`
+}
+
 type LoggerConf struct {
 	Level   string `yaml:"level" mapstructure:"level"`
 	LogFile string `yaml:"log-file" mapstructure:"log-file"`
@@ -24,12 +32,13 @@ type InfluxDBConf struct {
 }
 
 type BackendConf struct {
-	NoBackend    bool         `yaml:"no-backend" mapstructure:"no-backend"`
+	Disable      bool         `yaml:"disable" mapstructure:"disable"`
 	InfluxDBConf InfluxDBConf `yaml:"influx-db" mapstructure:"influx-db"`
 }
 
 type JobConf struct {
-	Keeplive string `yaml:"keeplive" mapstructure:"keeplive"`
+	Disable  bool            `yaml:"disable" mapstructure:"disable"`
+	Keeplive KeepliveJobConf `yaml:"keeplive" mapstructure:"keeplive"`
 }
 
 type AutoRegConf struct {
@@ -137,6 +146,7 @@ func confCmd() {
 		},
 
 		BackendConf: BackendConf{
+			Disable: false,
 			InfluxDBConf: InfluxDBConf{
 				URL:    "url",
 				Token:  "token",
@@ -151,7 +161,12 @@ func confCmd() {
 		},
 
 		JobConf: JobConf{
-			Keeplive: "10 * * * *",
+			Keeplive: KeepliveJobConf{
+				Crontab:     "*/10 * * * *",
+				Addr:        "127.0.0.1",
+				Port:        10005,
+				MetadataURL: "https://127.0.0.1:10005/pf/upload",
+			},
 		},
 	}
 
