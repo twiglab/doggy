@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Camera List</title>
+		<title>Doggy</title>
 	</head>
 	<body>
 		<table border="1">
@@ -26,6 +26,7 @@
 					<td>{{.Last.Format "2006-01-02T15:04:05Z07:00" }}</td>
 					<td>
 						<a href="https://{{ .IpAddr }}" target="_blank">open</a> |
+						Ping | Reboot
 					</td>
 				</tr>
 				{{end}}
