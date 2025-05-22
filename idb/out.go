@@ -5,21 +5,7 @@ import (
 
 	"github.com/InfluxCommunity/influxdb3-go/v2/influxdb3"
 	"github.com/twiglab/doggy/pkg/oc"
-	"google.golang.org/grpc"
 )
-
-type MyAuth struct {
-}
-
-// GetRequestMetadata 定义授权信息的具体存放形式，最终会按这个格式存放到 metadata map 中。
-func (a *MyAuth) GetRequestMetadata(context.Context, ...string) (map[string]string, error) {
-	return nil, nil
-}
-
-// RequireTransportSecurity 是否需要基于 TLS 加密连接进行安全传输
-func (a *MyAuth) RequireTransportSecurity() bool {
-	return false
-}
 
 type SumTotal struct {
 	InTotal int64
@@ -44,8 +30,6 @@ func (h *IdbPoint) SumOfPoints(ctx context.Context, param SumParam) (total SumTo
 			TIME_START: param.Start,
 			TIME_END:   param.End,
 		},
-
-		influxdb3.WithGrpcCallOption(grpc.PerRPCCredentials(&MyAuth{})),
 	)
 
 	if err != nil {
