@@ -1,13 +1,12 @@
 package serv
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
 	"os"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"gopkg.in/yaml.v3"
 
 	"github.com/spf13/cobra"
@@ -67,17 +66,9 @@ func servCmd() {
 
 	printConf(conf)
 
-	ctx := buildCtx(conf)
+	ctx := build(context.Background(), conf)
 
-	mux := chi.NewMux()
-	mux.Use(middleware.Recoverer)
-	mux.Mount("/", pfTestHandle())
-	mux.Mount("/pf", pfHandle(ctx, conf))
-	mux.Mount("/admin", pageHandle(ctx, conf))
-
-	mux.Mount("/debug", middleware.Profiler())
-
-	mux.Mount("/jsonrpc", outHandle(ctx, conf))
+	mux := MainHandler(ctx, conf)
 
 	svr := hx.NewServ().SetAddr(conf.ServerConf.Addr).SetHandler(mux)
 	if err := runSvr(svr, conf.ServerConf); err != nil {

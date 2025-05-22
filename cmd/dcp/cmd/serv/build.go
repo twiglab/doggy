@@ -50,9 +50,7 @@ func buildIDB(ctx context.Context, conf AppConf) (*idb.IdbPoint, context.Context
 	return nil, ctx
 }
 
-func buildCtx(conf AppConf) context.Context {
-	box := context.Background()
-
+func build(box context.Context, conf AppConf) context.Context {
 	_, box = buildRootlogger(box, conf)
 	_, box = buildEntHandle(box, conf)
 	_, box = buildCmdb(box, conf)
