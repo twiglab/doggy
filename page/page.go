@@ -8,21 +8,25 @@ import (
 	"github.com/twiglab/doggy/pf"
 )
 
-type Page struct {
-	tpl          *template.Template
-	deviceLoader pf.DeviceLoader
+type Loader interface {
+	pf.DeviceLoader
 }
 
-func NewPage(loader pf.DeviceLoader) *Page {
+type Page struct {
+	tpl    *template.Template
+	loader Loader
+}
+
+func NewPage(loader Loader) *Page {
 	return &Page{
-		tpl:          template.Must(template.ParseFS(tplFS, "tpl/*.tpl")),
-		deviceLoader: loader,
+		tpl:    template.Must(template.ParseFS(tplFS, "tpl/*.tpl")),
+		loader: loader,
 	}
 }
 
 func ListPage(page *Page) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		devices, err := page.deviceLoader.All(r.Context())
+		devices, err := page.loader.All(r.Context())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}

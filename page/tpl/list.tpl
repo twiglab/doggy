@@ -12,6 +12,8 @@
 					<th>IpAddr</th>
 					<th>UUID</th>
 					<th>DeviceID</th>
+					<th>User</th>
+					<th>Pwd</th>
 					<th>LastTime</th>
 					<th>Operation</th>
 				</tr>
@@ -23,6 +25,8 @@
 					<td>{{.IpAddr }}</td>
 					<td>{{.UUID1 }}</td>
 					<td>{{.Code1 }}</td>
+					<td>{{.User }}</td>
+					<td>{{.Pwd }}</td>
 					<td>{{.Last.Format "2006-01-02T15:04:05Z07:00" }}</td>
 					<td>
 						<a href="https://{{ .IpAddr }}" target="_blank">open</a> |
