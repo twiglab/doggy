@@ -14,8 +14,6 @@ require (
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
 	github.com/taosdata/driver-go/v3 v3.7.0
-	github.com/xen0n/go-workwx/v2 v2.0.0-20250512044836-ae8c900c575c
-	github.com/ybbus/jsonrpc/v3 v3.1.6
 	google.golang.org/grpc v1.70.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/yaml.v3 v3.0.1
@@ -29,7 +27,6 @@ require (
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
-	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
