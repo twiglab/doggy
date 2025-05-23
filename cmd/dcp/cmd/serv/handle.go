@@ -42,14 +42,14 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	}
 	h := pf.NewHandle(pf.WithDeviceRegister(autoSub))
 
-	if !conf.BackendConf.Disable {
-		idb3 := ctx.Value(key_idb3).(*idb.IdbPoint)
-		h.SetCountHandler(idb3)
-		h.SetDensityHandler(idb3)
+	if hasBackend(conf.BackendConf.Use) {
+		backend := ctx.Value(key_idb3).(pfh)
+		h.SetCountHandler(backend)
+		h.SetDensityHandler(backend)
 	}
+
 	return pf.PlatformHandle(h)
 }
-
 
 func MainHandler(ctx context.Context, conf AppConf) http.Handler {
 	mux := chi.NewMux()

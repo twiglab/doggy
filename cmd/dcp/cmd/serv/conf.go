@@ -32,8 +32,9 @@ type InfluxDBConf struct {
 }
 
 type BackendConf struct {
-	Disable      bool         `yaml:"disable" mapstructure:"disable"`
+	Use          string       `yaml:"use" mapstructure:"use"`
 	InfluxDBConf InfluxDBConf `yaml:"influx-db" mapstructure:"influx-db"`
+	TaosDBConf   DBConf       `yaml:"taos" mapstructure:"taos"`
 }
 
 type JobConf struct {
@@ -71,7 +72,7 @@ type DBConf struct {
 
 type AppConf struct {
 	ID           string       `yaml:"id" mapstructure:"id"`
-	LoggerConf   LoggerConf   `yaml:"debug" mapstructure:"debug"`
+	LoggerConf   LoggerConf   `yaml:"log" mapstructure:"log"`
 	ServerConf   ServerConf   `yaml:"server" mapstructure:"server"`
 	BackendConf  BackendConf  `yaml:"backend" mapstructure:"backend"`
 	CameraDBConf CameraDBConf `yaml:"camera-db" mapstructure:"camera-db"`
@@ -146,12 +147,15 @@ func confCmd() {
 		},
 
 		BackendConf: BackendConf{
-			Disable: false,
 			InfluxDBConf: InfluxDBConf{
 				URL:    "url",
 				Token:  "token",
 				Org:    "org",
 				Bucket: "bucket",
+			},
+			TaosDBConf: DBConf{
+				Name: "",
+				DSN:  "",
 			},
 		},
 

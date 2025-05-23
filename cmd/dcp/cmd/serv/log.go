@@ -1,18 +1,30 @@
 package serv
 
 import (
+	"io"
 	"log/slog"
+	"os"
 	"strings"
 
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+func isConsole(logFile string) bool {
+	if logFile == "" || logFile == "console" {
+		return true
+	}
+	return false
+}
+
 func RootLog(id string, logFile string, level slog.Level) *slog.Logger {
-	out := &lumberjack.Logger{
-		Filename:   logFile,
-		MaxSize:    10, // megabytes
-		MaxBackups: 3,
-		MaxAge:     10, //days
+	var out io.Writer = os.Stdout
+	if !isConsole(logFile) {
+		out = &lumberjack.Logger{
+			Filename:   logFile,
+			MaxSize:    10, // megabytes
+			MaxBackups: 10,
+			MaxAge:     10, //days
+		}
 	}
 	h := slog.NewJSONHandler(out, &slog.HandlerOptions{Level: level}).WithAttrs([]slog.Attr{slog.String("id", id)})
 	logger := slog.New(h)

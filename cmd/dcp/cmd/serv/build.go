@@ -8,6 +8,7 @@ import (
 	"github.com/twiglab/doggy/idb"
 	"github.com/twiglab/doggy/orm"
 	"github.com/twiglab/doggy/pf"
+	"github.com/twiglab/doggy/taosdb"
 )
 
 const (
@@ -16,6 +17,15 @@ const (
 	key_idb3        = "_idb3"
 	key_root_logger = "_root_logger"
 )
+
+type pfh interface {
+	pf.CountHandler
+	pf.DensityHandler
+}
+
+func hasBackend(bName string) bool {
+	return bName != ""
+}
 
 func buildRootlogger(ctx context.Context, conf AppConf) (*slog.Logger, context.Context) {
 	logger := BuildRootLog(conf)
@@ -39,14 +49,26 @@ func buildCmdb(ctx context.Context, conf AppConf) (*pf.CsvCameraDB, context.Cont
 	return fixUser, context.WithValue(ctx, key_resolve, fixUser)
 }
 
-func buildIDB(ctx context.Context, conf AppConf) (*idb.IdbPoint, context.Context) {
-	var idb3 *idb.IdbPoint
+func buildIdb3(ctx context.Context, conf AppConf) (*idb.IdbPoint, context.Context) {
+	idb3 := idb.NewIdbPoint(MustIdb(conf.BackendConf.InfluxDBConf))
+	return idb3, context.WithValue(ctx, key_idb3, idb3)
+}
 
-	if !conf.BackendConf.Disable {
-		idb3 = idb.NewIdbPoint(MustIdb(conf.BackendConf.InfluxDBConf))
-		return idb3, context.WithValue(ctx, key_idb3, idb3)
+func buildTaos(ctx context.Context, conf AppConf) (*idb.IdbPoint, context.Context) {
+	_, err := taosdb.OpenDB(conf.BackendConf.TaosDBConf.Name, conf.BackendConf.TaosDBConf.DSN)
+	if err != nil {
+		log.Fatal(err)
 	}
+	return nil, ctx
+}
 
+func buildBackend(ctx context.Context, conf AppConf) (pfh, context.Context) {
+	switch conf.BackendConf.Use {
+	case "taos", "TAOS":
+		return buildTaos(ctx, conf)
+	case "idb", "influxdb", "influx", "idb3":
+		return buildIdb3(ctx, conf)
+	}
 	return nil, ctx
 }
 
@@ -54,7 +76,7 @@ func build(box context.Context, conf AppConf) context.Context {
 	_, box = buildRootlogger(box, conf)
 	_, box = buildEntHandle(box, conf)
 	_, box = buildCmdb(box, conf)
-	_, box = buildIDB(box, conf)
+	_, box = buildBackend(box, conf)
 
 	return box
 }
