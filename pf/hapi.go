@@ -41,14 +41,14 @@ func MetadataEntryUpload(h *Handle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var data holo.MetadataObjectUpload
 		if err := hx.BindAndClose(r, &data); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, "Error-01", http.StatusInternalServerError)
 			return
 		}
 
 		if err := h.HandleMetadata(r.Context(), data); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, "Error-02", http.StatusInternalServerError)
 			return
 		}
-		w.WriteHeader(http.StatusNoContent)
+		hx.NoContent(w)
 	}
 }

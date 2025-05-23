@@ -28,3 +28,7 @@ func Bind(r *http.Request, p any) error {
 	}
 	return nil
 }
+
+func NoContent(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNoContent) // send the headers with a 204 response code.
+}
