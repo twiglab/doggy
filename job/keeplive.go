@@ -56,6 +56,11 @@ func (x *KeepLiveJob) Ping(ctx context.Context, data pf.CameraUpload) {
 				slog.String("errText", "too many subs"),
 			)
 		}
+		slog.InfoContext(ctx, "KeepliveJob",
+			slog.String("sn", data.SN),
+			slog.Int("size", l),
+			slog.String("text", "OK"),
+		)
 		return
 	}
 
