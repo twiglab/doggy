@@ -18,10 +18,16 @@ func pageHandle(ctx context.Context, _ AppConf) http.Handler {
 	return page.AdminPage(p)
 }
 
-func outHandle(ctx context.Context, _ AppConf) http.Handler {
-	p := ctx.Value(key_idb3).(*idb.IdbPoint)
-	acc := idb.NewIdbOut(p)
-	return out.OutHandle(out.NewOutServ(acc))
+func outHandle(ctx context.Context, conf AppConf) http.Handler {
+	switch backendName(conf) {
+	case bNameIDB:
+		p := ctx.Value(keyBackend).(*idb.IdbPoint)
+		acc := idb.NewIdbOut(p)
+		return out.OutHandle(out.NewOutServ(acc))
+	case bNameTaos:
+		//  TODO
+	}
+	return out.OutHandle(out.NewOutServ(&out.UnimplOut{}))
 }
 
 func pfTestHandle() http.Handler {
@@ -30,7 +36,7 @@ func pfTestHandle() http.Handler {
 
 func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	eh := ctx.Value(key_eh).(pf.UploadHandler)
-	fixUser := ctx.Value(key_resolve).(pf.DeviceResolver)
+	fixUser := ctx.Value(keyCmdb).(pf.DeviceResolver)
 
 	autoSub := &pf.AutoSub{
 		DeviceResolver: fixUser,
@@ -42,8 +48,8 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	}
 	h := pf.NewHandle(pf.WithDeviceRegister(autoSub))
 
-	if hasBackend(conf.BackendConf.Use) {
-		backend := ctx.Value(key_idb3).(pfh)
+	if backendName(conf) != bNameNone {
+		backend := ctx.Value(keyBackend).(pfh)
 		h.SetCountHandler(backend)
 		h.SetDensityHandler(backend)
 	}

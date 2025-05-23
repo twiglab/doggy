@@ -12,10 +12,14 @@ import (
 )
 
 const (
-	key_eh          = "_eh"
-	key_resolve     = "_resolve"
-	key_idb3        = "_idb3"
-	key_root_logger = "_root_logger"
+	key_eh     = "_eh"
+	keyCmdb    = "_cmdb_"
+	keyBackend = "_backend_"
+	keyRootLog = "_root_log_"
+
+	bNameTaos = "taos"
+	bNameIDB  = "idb"
+	bNameNone = "none"
 )
 
 type pfh interface {
@@ -23,13 +27,19 @@ type pfh interface {
 	pf.DensityHandler
 }
 
-func hasBackend(bName string) bool {
-	return bName != "" && bName != "none" && bName != "NONE"
+func backendName(conf AppConf) string {
+	switch conf.BackendConf.Use {
+	case "taos", "TAOS":
+		return bNameTaos
+	case "idb", "influxdb", "influx", "idb3":
+		return bNameIDB
+	}
+	return bNameNone
 }
 
 func buildRootlogger(ctx context.Context, conf AppConf) (*slog.Logger, context.Context) {
 	logger := BuildRootLog(conf)
-	return logger, context.WithValue(ctx, key_root_logger, logger)
+	return logger, context.WithValue(ctx, keyRootLog, logger)
 }
 
 func buildEntHandle(ctx context.Context, conf AppConf) (*orm.EntHandle, context.Context) {
@@ -38,20 +48,22 @@ func buildEntHandle(ctx context.Context, conf AppConf) (*orm.EntHandle, context.
 }
 
 func buildCmdb(ctx context.Context, conf AppConf) (*pf.CsvCameraDB, context.Context) {
-	fixUser := pf.NewCsvCameraDB(
+	cmdb := pf.NewCsvCameraDB(
 		conf.CameraDBConf.CsvCameraDB.CsvFile,
 		conf.CameraDBConf.CsvCameraDB.CameraUser,
 		conf.CameraDBConf.CsvCameraDB.CameraPwd,
 	)
-	if err := fixUser.Load(ctx); err != nil {
+
+	if err := cmdb.Load(ctx); err != nil {
 		log.Fatal(err)
 	}
-	return fixUser, context.WithValue(ctx, key_resolve, fixUser)
+
+	return cmdb, context.WithValue(ctx, keyCmdb, cmdb)
 }
 
 func buildIdb3(ctx context.Context, conf AppConf) (*idb.IdbPoint, context.Context) {
 	idb3 := idb.NewIdbPoint(MustIdb(conf.BackendConf.InfluxDBConf))
-	return idb3, context.WithValue(ctx, key_idb3, idb3)
+	return idb3, context.WithValue(ctx, keyBackend, idb3)
 }
 
 func buildTaos(ctx context.Context, conf AppConf) (*idb.IdbPoint, context.Context) {
@@ -63,10 +75,10 @@ func buildTaos(ctx context.Context, conf AppConf) (*idb.IdbPoint, context.Contex
 }
 
 func buildBackend(ctx context.Context, conf AppConf) (pfh, context.Context) {
-	switch conf.BackendConf.Use {
-	case "taos", "TAOS":
+	switch backendName(conf) {
+	case bNameTaos:
 		return buildTaos(ctx, conf)
-	case "idb", "influxdb", "influx", "idb3":
+	case bNameIDB:
 		return buildIdb3(ctx, conf)
 	}
 	return nil, ctx

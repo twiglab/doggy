@@ -61,7 +61,11 @@ func NewIdbOut(p *IdbPoint) *IdbOut {
 	return &IdbOut{Point: p}
 }
 
-func (p *IdbOut) SumOf(ctx context.Context, in *oc.SumArgs, out *oc.SumReply) error {
+func (p *IdbOut) CollectOf(ctx context.Context, in *oc.AreaArg, out *oc.Reply) error {
+	return nil
+}
+
+func (p *IdbOut) SumOf(ctx context.Context, in *oc.AreaArg, out *oc.Reply) error {
 	result, err := p.Point.SumOfPoints(ctx, SumParam{
 		Start: in.Start,
 		End:   in.End,
@@ -71,6 +75,6 @@ func (p *IdbOut) SumOf(ctx context.Context, in *oc.SumArgs, out *oc.SumReply) er
 		return err
 	}
 
-	out.Total = result.InTotal
+	out.ValueA = result.InTotal
 	return nil
 }

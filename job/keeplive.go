@@ -2,7 +2,7 @@ package job
 
 import (
 	"context"
-	"log"
+	"log/slog"
 
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/pf"
@@ -19,9 +19,11 @@ type KeepLiveJob struct {
 
 func (x *KeepLiveJob) Run() {
 	ctx := context.Background()
+	slog.InfoContext(ctx, "KeepliveJob", slog.String("text", "keepliveJob staring..."))
 
 	ds, err := x.DeviceLoader.All(ctx)
 	if err != nil {
+		slog.ErrorContext(ctx, "KeepliveJob", slog.String("errText", err.Error()))
 		return
 	}
 
@@ -48,17 +50,41 @@ func (x *KeepLiveJob) Ping(ctx context.Context, data pf.CameraUpload) {
 	l := len(subs.Subscriptions)
 	if l != 0 {
 		if l > 1 {
-			log.Printf("%s %s %d too many subs", data.SN, data.IpAddr, l)
+			slog.InfoContext(ctx, "KeepliveJob",
+				slog.String("sn", data.SN),
+				slog.Int("size", l),
+				slog.String("errText", "too many subs"),
+			)
 		}
 		return
 	}
 
-	device.PostMetadataSubscription(ctx, holo.SubscriptionReq{
+	resp, err := device.PostMetadataSubscription(ctx, holo.SubscriptionReq{
 		Address:     x.Addr,
 		Port:        x.Port,
 		TimeOut:     0,
 		HttpsEnable: 1,
 		MetadataURL: x.MetadataURL,
 	})
-}
 
+	if err != nil {
+		slog.ErrorContext(ctx, "KeepliveJob",
+			slog.String("sn", data.SN),
+			slog.Int("size", l),
+			slog.String("errText", err.Error()),
+		)
+	}
+
+	if err := resp.Err(); err != nil {
+		slog.ErrorContext(ctx, "KeepliveJob",
+			slog.String("sn", data.SN),
+			slog.Int("size", l),
+			slog.String("errText", err.Error()),
+		)
+	}
+
+	slog.ErrorContext(ctx, "KeepliveJob",
+		slog.String("sn", data.SN),
+		slog.String("ping", "OK"),
+	)
+}

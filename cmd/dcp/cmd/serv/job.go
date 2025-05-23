@@ -20,7 +20,7 @@ func buildAllJob(ctx context.Context, conf AppConf) *job.CronWarp {
 }
 
 func buildKeepliveJob(ctx context.Context, conf AppConf) job.Job {
-	resolver := ctx.Value(key_resolve).(pf.DeviceResolver)
+	resolver := ctx.Value(keyCmdb).(pf.DeviceResolver)
 	loader := ctx.Value(key_eh).(pf.DeviceLoader)
 
 	return &job.KeepLiveJob{

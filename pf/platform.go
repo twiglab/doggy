@@ -134,9 +134,9 @@ func (d *cameraAction) HandleCount(ctx context.Context, common holo.Common, targ
 	start := holo.MilliToTime(target.StartTime, target.TimeZone).Format(time.RFC3339Nano)
 	end := holo.MilliToTime(target.EndTime, target.TimeZone).Format(time.RFC3339Nano)
 
-	c := slog.Group("Common", slog.String("uuid", common.UUID), slog.String("deviceID", common.DeviceID))
-	da := slog.Group("Data", slog.Int("in", target.HumanCountIn), slog.Int("out", target.HumanCountOut))
-	t := slog.Group("Time", slog.String("start", start), slog.String("end", end))
+	c := slog.Group("common", slog.String("uuid", common.UUID), slog.String("deviceID", common.DeviceID))
+	da := slog.Group("data", slog.Int("in", target.HumanCountIn), slog.Int("out", target.HumanCountOut))
+	t := slog.Group("time", slog.String("start", start), slog.String("end", end))
 
 	slog.DebugContext(ctx, "HandleCount", slog.Int("targetType", target.TargetType), c, da, t)
 
@@ -146,8 +146,8 @@ func (d *cameraAction) HandleCount(ctx context.Context, common holo.Common, targ
 func (d *cameraAction) HandleDensity(ctx context.Context, common holo.Common, target holo.HumanMix) error {
 	now := time.Now().Format(time.RFC3339Nano)
 
-	c := slog.Group("Common", slog.String("uuid", common.UUID), slog.String("deviceID", common.DeviceID))
-	da := slog.Group("Data", slog.Int("count", target.HumanCount), slog.Int("areaRatio", target.AreaRatio))
+	c := slog.Group("common", slog.String("uuid", common.UUID), slog.String("deviceID", common.DeviceID))
+	da := slog.Group("data", slog.Int("count", target.HumanCount), slog.Int("areaRatio", target.AreaRatio))
 
 	slog.DebugContext(ctx, "HandleCount", slog.Int("targetType", target.TargetType), slog.String("now", now), c, da)
 
