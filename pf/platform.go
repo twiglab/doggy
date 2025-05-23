@@ -2,7 +2,7 @@ package pf
 
 import (
 	"context"
-	"log"
+	"log/slog"
 	"time"
 
 	"github.com/twiglab/doggy/holo"
@@ -109,14 +109,14 @@ func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpl
 		switch target.TargetType {
 		case holo.HUMMAN_DENSITY:
 			if err := h.densityHandler.HandleDensity(ctx, data.MetadataObject.Common, target); err != nil {
-				log.Println(err)
+				slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.String("errText", err.Error()))
 			}
 		case holo.HUMMAN_COUNT:
 			if err := h.countHandler.HandleCount(ctx, data.MetadataObject.Common, target); err != nil {
-				log.Println(err)
+				slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.String("errText", err.Error()))
 			}
 		default:
-			log.Println("unsupport type ", target.TargetType)
+			slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.String("errText", "unsupport type"))
 		}
 	}
 	return nil
@@ -126,19 +126,30 @@ type cameraAction struct {
 }
 
 func (d *cameraAction) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	log.Printf("auto reg sn = %s, ip = %s\n", data.SerialNumber, data.IpAddr)
+	slog.DebugContext(ctx, "AutoRegister", slog.String("sn", data.SerialNumber), slog.String("addr", data.IpAddr))
 	return nil
 }
 
 func (d *cameraAction) HandleCount(ctx context.Context, common holo.Common, target holo.HumanMix) error {
 	start := holo.MilliToTime(target.StartTime, target.TimeZone).Format(time.RFC3339Nano)
 	end := holo.MilliToTime(target.EndTime, target.TimeZone).Format(time.RFC3339Nano)
-	log.Printf("count in = %d, out = %d, start = %s, end = %s, type = %d\n", target.HumanCountIn, target.HumanCountOut, start, end, target.TargetType)
+
+	c := slog.Group("Common", slog.String("uuid", common.UUID), slog.String("deviceID", common.DeviceID))
+	da := slog.Group("Data", slog.Int("in", target.HumanCountIn), slog.Int("out", target.HumanCountOut))
+	t := slog.Group("Time", slog.String("start", start), slog.String("end", end))
+
+	slog.DebugContext(ctx, "HandleCount", slog.Int("targetType", target.TargetType), c, da, t)
+
 	return nil
 }
 
 func (d *cameraAction) HandleDensity(ctx context.Context, common holo.Common, target holo.HumanMix) error {
 	now := time.Now().Format(time.RFC3339Nano)
-	log.Printf("density count = %d, ration = %d, type = %d, time = %s\n", target.HumanCount, target.AreaRatio, target.TargetType, now)
+
+	c := slog.Group("Common", slog.String("uuid", common.UUID), slog.String("deviceID", common.DeviceID))
+	da := slog.Group("Data", slog.Int("count", target.HumanCount), slog.Int("areaRatio", target.AreaRatio))
+
+	slog.DebugContext(ctx, "HandleCount", slog.Int("targetType", target.TargetType), slog.String("now", now), c, da)
+
 	return nil
 }

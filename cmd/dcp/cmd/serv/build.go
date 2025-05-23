@@ -24,7 +24,7 @@ type pfh interface {
 }
 
 func hasBackend(bName string) bool {
-	return bName != ""
+	return bName != "" && bName != "none" && bName != "NONE"
 }
 
 func buildRootlogger(ctx context.Context, conf AppConf) (*slog.Logger, context.Context) {

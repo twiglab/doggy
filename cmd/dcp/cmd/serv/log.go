@@ -42,11 +42,11 @@ func BuildRootLog(conf AppConf) *slog.Logger {
 
 	l := strings.ToUpper(conf.LoggerConf.Level)
 	switch l {
-	case "DEBUG":
+	case "DEBUG", "debug":
 		level = slog.LevelDebug
-	case "WARN":
+	case "WARN", "warn":
 		level = slog.LevelWarn
-	case "ERROR":
+	case "ERROR", "error":
 		level = slog.LevelError
 	default:
 		level = slog.LevelInfo

@@ -147,6 +147,7 @@ func confCmd() {
 		},
 
 		BackendConf: BackendConf{
+			Use: "idb",
 			InfluxDBConf: InfluxDBConf{
 				URL:    "url",
 				Token:  "token",
