@@ -41,16 +41,14 @@ func MetadataEntryUpload(h *Handle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var data holo.MetadataObjectUpload
 		if err := hx.BindAndClose(r, &data); err != nil {
-			_ = hx.JsonTo(http.StatusInternalServerError,
-				holo.CommonResponseFailed(r.URL.Path), w)
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
 		if err := h.HandleMetadata(r.Context(), data); err != nil {
-			_ = hx.JsonTo(http.StatusInternalServerError,
-				holo.CommonResponseFailed(r.URL.Path), w)
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		_ = hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
+		w.WriteHeader(http.StatusNoContent)
 	}
 }
