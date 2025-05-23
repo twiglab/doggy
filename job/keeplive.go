@@ -83,7 +83,7 @@ func (x *KeepLiveJob) Ping(ctx context.Context, data pf.CameraUpload) {
 		)
 	}
 
-	slog.ErrorContext(ctx, "KeepliveJob",
+	slog.InfoContext(ctx, "KeepliveJob",
 		slog.String("sn", data.SN),
 		slog.String("ping", "OK"),
 	)
