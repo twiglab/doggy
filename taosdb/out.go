@@ -31,9 +31,13 @@ type OutS struct {
 }
 
 func (o *OutS) CollectOf(ctx context.Context, in *oc.AreaArg, out *oc.Reply) error {
+	out.ValueA = 1
+	out.ValueB = 2
 	return nil
 }
 
 func (o *OutS) SumOf(ctx context.Context, in *oc.AreaArg, out *oc.Reply) error {
+	out.ValueA = 1
+	out.ValueB = 3
 	return nil
 }

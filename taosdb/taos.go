@@ -18,12 +18,15 @@ const (
 	FIELD_COUNT_IN  = "human_in"
 	FIELD_COUNT_OUT = "human_out"
 
-	MA_DENSITY = "density"
-	MA_COUNTY  = "count"
+	MA_DENSITY = "s_density"
+	MA_COUNTY  = "s_count"
 )
 
 const (
-	TSDB_SML_TIMESTAMP_NANO_SECONDS = "ns"
+	TSDB_SML_TIMESTAMP_SECONDS       = "s"
+	TSDB_SML_TIMESTAMP_MILLI_SECONDS = "ms"
+	TSDB_SML_TIMESTAMP_MICRO_SECONDS = "us"
+	TSDB_SML_TIMESTAMP_NANO_SECONDS  = "ns"
 )
 
 type Config struct {

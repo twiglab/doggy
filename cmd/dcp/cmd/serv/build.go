@@ -5,7 +5,6 @@ import (
 	"log"
 	"log/slog"
 
-	"github.com/twiglab/doggy/idb"
 	"github.com/twiglab/doggy/orm"
 	"github.com/twiglab/doggy/pf"
 	"github.com/twiglab/doggy/taosdb"
@@ -18,7 +17,6 @@ const (
 	keyRootLog = "_root_log_"
 
 	bNameTaos = "taos"
-	bNameIDB  = "idb"
 	bNameNone = "none"
 )
 
@@ -31,8 +29,6 @@ func backendName(conf AppConf) string {
 	switch conf.BackendConf.Use {
 	case "taos", "TAOS":
 		return bNameTaos
-	case "idb", "influxdb", "influx", "idb3":
-		return bNameIDB
 	}
 	return bNameNone
 }
@@ -61,11 +57,6 @@ func buildCmdb(ctx context.Context, conf AppConf) (*pf.CsvCameraDB, context.Cont
 	return cmdb, context.WithValue(ctx, keyCmdb, cmdb)
 }
 
-func buildIdb3(ctx context.Context, conf AppConf) (*idb.IdbPoint, context.Context) {
-	idb3 := idb.NewIdbPoint(MustIdb(conf.BackendConf.InfluxDBConf))
-	return idb3, context.WithValue(ctx, keyBackend, idb3)
-}
-
 func buildTaos(ctx context.Context, conf AppConf) (*taosdb.Schemaless, context.Context) {
 	schema, err := taosdb.NewSchemaless(taosdb.Config{
 		Addr:     conf.BackendConf.TaosDBConf.Addr,
@@ -85,8 +76,6 @@ func buildBackend(ctx context.Context, conf AppConf) (pfh, context.Context) {
 	switch backendName(conf) {
 	case bNameTaos:
 		return buildTaos(ctx, conf)
-	case bNameIDB:
-		return buildIdb3(ctx, conf)
 	}
 	return nil, ctx
 }

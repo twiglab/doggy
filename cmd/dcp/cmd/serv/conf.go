@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/InfluxCommunity/influxdb3-go/v2/influxdb3"
 	"github.com/spf13/cobra"
 	"github.com/twiglab/doggy/orm"
 	"github.com/twiglab/doggy/orm/ent"
@@ -35,17 +34,9 @@ type TaosDBConf struct {
 	DBName   string `yaml:"dbname" mapstructure:"dbname"`
 }
 
-type InfluxDBConf struct {
-	URL    string `yaml:"url" mapstructure:"url"`
-	Token  string `yaml:"token" mapstructure:"token"`
-	Org    string `yaml:"org" mapstructure:"org"`
-	Bucket string `yaml:"bucket" mapstructure:"bucket"`
-}
-
 type BackendConf struct {
-	Use          string       `yaml:"use" mapstructure:"use"`
-	InfluxDBConf InfluxDBConf `yaml:"influx-db" mapstructure:"influx-db"`
-	TaosDBConf   TaosDBConf   `yaml:"taos" mapstructure:"taos"`
+	Use        string     `yaml:"use" mapstructure:"use"`
+	TaosDBConf TaosDBConf `yaml:"taos" mapstructure:"taos"`
 }
 
 type JobConf struct {
@@ -115,19 +106,6 @@ func MustOpenTaosDB(conf AppConf) *sql.DB {
 	return db
 }
 
-func MustIdb(conf InfluxDBConf) *influxdb3.Client {
-	client, err := influxdb3.New(influxdb3.ClientConfig{
-		Host:         conf.URL,
-		Token:        conf.Token,
-		Organization: conf.Org,
-		Database:     conf.Bucket,
-	})
-	if err != nil {
-		log.Fatal("idb create error: ", err)
-	}
-	return client
-}
-
 var ConfCmd = &cobra.Command{
 	Use:   "config",
 	Short: "生成配置文件",
@@ -174,12 +152,6 @@ func confCmd() {
 
 		BackendConf: BackendConf{
 			Use: "taos",
-			InfluxDBConf: InfluxDBConf{
-				URL:    "url",
-				Token:  "token",
-				Org:    "org",
-				Bucket: "bucket",
-			},
 			TaosDBConf: TaosDBConf{
 				Addr:     "127.0.0.1",
 				Port:     6041,

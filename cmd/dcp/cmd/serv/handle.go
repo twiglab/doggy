@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/twiglab/doggy/idb"
 	"github.com/twiglab/doggy/out"
 	"github.com/twiglab/doggy/page"
 	"github.com/twiglab/doggy/pf"
@@ -21,10 +20,6 @@ func pageHandle(ctx context.Context, _ AppConf) http.Handler {
 
 func outHandle(ctx context.Context, conf AppConf) http.Handler {
 	switch backendName(conf) {
-	case bNameIDB:
-		p := ctx.Value(keyBackend).(*idb.IdbPoint)
-		acc := idb.NewIdbOut(p)
-		return out.OutHandle(out.NewOutServ(acc))
 	case bNameTaos:
 		db := MustOpenTaosDB(conf)
 		return out.OutHandle(out.NewOutServ(&taosdb.OutS{DB: db}))

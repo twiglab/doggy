@@ -51,13 +51,13 @@ func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data h
 
 	var enc lineprotocol.Encoder
 
-	enc.SetPrecision(lineprotocol.Nanosecond)
+	enc.SetPrecision(lineprotocol.Millisecond)
 	enc.StartLine(MA_COUNTY)
-	enc.AddTag(TAG_UUID, common.UUID)
 	enc.AddTag(TAG_DIVICE_ID, common.DeviceID)
 	enc.AddTag(TAG_TYPE, TYPE_15)
-	enc.AddField(FIELD_COUNT_IN, lineprotocol.MustNewValue(data.HumanCountIn))
-	enc.AddField(FIELD_COUNT_OUT, lineprotocol.MustNewValue(data.HumanCountOut))
+	enc.AddTag(TAG_UUID, common.UUID)
+	enc.AddField(FIELD_COUNT_IN, lineprotocol.MustNewValue(int64(data.HumanCountIn)))
+	enc.AddField(FIELD_COUNT_OUT, lineprotocol.MustNewValue(int64(data.HumanCountOut)))
 	enc.EndLine(holo.MilliToTime(data.EndTime, data.TimeZone))
 
 	if err := enc.Err(); err != nil {
@@ -67,7 +67,7 @@ func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data h
 	bs := enc.Bytes()
 	line := bytesToStr(bs)
 
-	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_NANO_SECONDS, 0, 0)
+	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_MILLI_SECONDS, 0, 0)
 }
 
 func (s *Schemaless) HandleDensity(ctx context.Context, common holo.Common, data holo.HumanMix) error {
@@ -78,13 +78,13 @@ func (s *Schemaless) HandleDensity(ctx context.Context, common holo.Common, data
 
 	var enc lineprotocol.Encoder
 
-	enc.SetPrecision(lineprotocol.Nanosecond)
+	enc.SetPrecision(lineprotocol.Millisecond)
 	enc.StartLine(MA_DENSITY)
-	enc.AddTag(TAG_UUID, common.UUID)
 	enc.AddTag(TAG_DIVICE_ID, common.DeviceID)
 	enc.AddTag(TAG_TYPE, TYPE_12)
-	enc.AddField(FIELD_DENSITY_COUNT, lineprotocol.MustNewValue(data.HumanCount))
-	enc.AddField(FIELD_DENSITY_RATIO, lineprotocol.MustNewValue(data.AreaRatio))
+	enc.AddTag(TAG_UUID, common.UUID)
+	enc.AddField(FIELD_DENSITY_COUNT, lineprotocol.MustNewValue(int64(data.HumanCount)))
+	enc.AddField(FIELD_DENSITY_RATIO, lineprotocol.MustNewValue(int64(data.AreaRatio)))
 	enc.EndLine(time.Now())
 
 	if err := enc.Err(); err != nil {
@@ -94,5 +94,5 @@ func (s *Schemaless) HandleDensity(ctx context.Context, common holo.Common, data
 	bs := enc.Bytes()
 	line := bytesToStr(bs)
 
-	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_NANO_SECONDS, 0, 0)
+	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_MILLI_SECONDS, 0, 0)
 }
