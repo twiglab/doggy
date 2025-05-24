@@ -10,6 +10,7 @@ import (
 	"github.com/twiglab/doggy/out"
 	"github.com/twiglab/doggy/page"
 	"github.com/twiglab/doggy/pf"
+	"github.com/twiglab/doggy/taosdb"
 )
 
 func pageHandle(ctx context.Context, _ AppConf) http.Handler {
@@ -25,7 +26,8 @@ func outHandle(ctx context.Context, conf AppConf) http.Handler {
 		acc := idb.NewIdbOut(p)
 		return out.OutHandle(out.NewOutServ(acc))
 	case bNameTaos:
-		//  TODO
+		db := MustOpenTaosDB(conf)
+		return out.OutHandle(out.NewOutServ(&taosdb.OutS{DB: db}))
 	}
 	return out.OutHandle(out.NewOutServ(&out.UnimplOut{}))
 }

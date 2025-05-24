@@ -1,6 +1,7 @@
 package serv
 
 import (
+	"database/sql"
 	"log"
 	"os"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/twiglab/doggy/orm"
 	"github.com/twiglab/doggy/orm/ent"
+	"github.com/twiglab/doggy/taosdb"
 	"gopkg.in/yaml.v3"
 )
 
@@ -24,6 +26,15 @@ type LoggerConf struct {
 	LogFile string `yaml:"log-file" mapstructure:"log-file"`
 }
 
+type TaosDBConf struct {
+	Addr     string `yaml:"addr" mapstructure:"addr"`
+	Port     string `yaml:"addr" mapstructure:"port"`
+	Protocol string `yaml:"addr" mapstructure:"protocol"`
+	Username string `yaml:"addr" mapstructure:"username"`
+	Password string `yaml:"addr" mapstructure:"password"`
+	DBName   string `yaml:"dbname" mapstructure:"dbname"`
+}
+
 type InfluxDBConf struct {
 	URL    string `yaml:"url" mapstructure:"url"`
 	Token  string `yaml:"token" mapstructure:"token"`
@@ -34,7 +45,7 @@ type InfluxDBConf struct {
 type BackendConf struct {
 	Use          string       `yaml:"use" mapstructure:"use"`
 	InfluxDBConf InfluxDBConf `yaml:"influx-db" mapstructure:"influx-db"`
-	TaosDBConf   DBConf       `yaml:"taos" mapstructure:"taos"`
+	TaosDBConf   TaosDBConf   `yaml:"taos" mapstructure:"taos"`
 }
 
 type JobConf struct {
@@ -87,6 +98,21 @@ func MustEntClient(dbconf DBConf) *ent.Client {
 		log.Fatal("ent client create error: ", err)
 	}
 	return c
+}
+
+func MustOpenTaosDB(conf AppConf) *sql.DB {
+	db, err := taosdb.OpenDB(taosdb.Config{
+		Addr:     conf.BackendConf.TaosDBConf.Addr,
+		Port:     conf.BackendConf.TaosDBConf.Port,
+		Protocol: conf.BackendConf.TaosDBConf.Protocol,
+		Username: conf.BackendConf.TaosDBConf.Username,
+		Password: conf.BackendConf.TaosDBConf.Password,
+		DBName:   conf.BackendConf.TaosDBConf.DBName,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	return db
 }
 
 func MustIdb(conf InfluxDBConf) *influxdb3.Client {
@@ -147,16 +173,20 @@ func confCmd() {
 		},
 
 		BackendConf: BackendConf{
-			Use: "idb",
+			Use: "taos",
 			InfluxDBConf: InfluxDBConf{
 				URL:    "url",
 				Token:  "token",
 				Org:    "org",
 				Bucket: "bucket",
 			},
-			TaosDBConf: DBConf{
-				Name: "",
-				DSN:  "",
+			TaosDBConf: TaosDBConf{
+				Addr:     "127.0.0.1",
+				Port:     "6041",
+				Protocol: "ws",
+				Username: "root",
+				Password: "taosdata",
+				DBName:   "taosdb",
 			},
 		},
 

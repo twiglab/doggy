@@ -66,12 +66,19 @@ func buildIdb3(ctx context.Context, conf AppConf) (*idb.IdbPoint, context.Contex
 	return idb3, context.WithValue(ctx, keyBackend, idb3)
 }
 
-func buildTaos(ctx context.Context, conf AppConf) (*idb.IdbPoint, context.Context) {
-	_, err := taosdb.OpenDB(conf.BackendConf.TaosDBConf.Name, conf.BackendConf.TaosDBConf.DSN)
+func buildTaos(ctx context.Context, conf AppConf) (*taosdb.Schemaless, context.Context) {
+	schema, err := taosdb.NewSchemaless(taosdb.Config{
+		Addr:     conf.BackendConf.TaosDBConf.Addr,
+		Port:     conf.BackendConf.TaosDBConf.Port,
+		Protocol: conf.BackendConf.TaosDBConf.Protocol,
+		Username: conf.BackendConf.TaosDBConf.Username,
+		Password: conf.BackendConf.TaosDBConf.Password,
+		DBName:   conf.BackendConf.TaosDBConf.DBName,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	return nil, ctx
+	return schema, context.WithValue(ctx, keyBackend, schema)
 }
 
 func buildBackend(ctx context.Context, conf AppConf) (pfh, context.Context) {
