@@ -2,11 +2,11 @@ package taosdb
 
 import (
 	"context"
+	"log/slog"
 	"time"
 
 	"github.com/influxdata/line-protocol/v2/lineprotocol"
 
-	comm "github.com/taosdata/driver-go/v3/common"
 	"github.com/taosdata/driver-go/v3/ws/schemaless"
 	"github.com/twiglab/doggy/holo"
 )
@@ -35,36 +35,23 @@ func NewSchemaless(conf Config) (*Schemaless, error) {
 	return &Schemaless{schemaless: s}, nil
 }
 
-func (s *Schemaless) HandleDensity(ctx context.Context, common holo.Common, data holo.HumanMix) error {
-	var enc lineprotocol.Encoder
-
-	enc.SetPrecision(lineprotocol.Microsecond)
-	enc.StartLine(MA_DENSITY)
-	enc.AddTag(TAG_UUID, common.UUID)
-	enc.AddTag(TAG_DIVICE_ID, common.DeviceID)
-	enc.AddTag(TAG_TYPE, TYPE_12)
-	enc.AddField(FIELD_DENSITY_COUNT, lineprotocol.MustNewValue(data.HumanCount))
-	enc.AddField(FIELD_DENSITY_RATIO, lineprotocol.MustNewValue(data.AreaRatio))
-	enc.EndLine(time.Now())
-
-	if err := enc.Err(); err != nil {
-		return nil
-	}
-
-	bs := enc.Bytes()
-	line := bytesToStr(bs)
-
-	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, "ms", 0, comm.GetReqID())
-}
-
 func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data holo.HumanMix) error {
 	if !hasCount(data.HumanCountIn, data.HumanCountOut) {
 		return nil
 	}
 
+	start := holo.MilliToTime(data.StartTime, data.TimeZone)
+	end := holo.MilliToTime(data.EndTime, data.TimeZone)
+
+	slog.DebugContext(ctx, "HandleCount", slog.Int(TAG_TYPE, data.TargetType),
+		slog.Group("common", slog.String(TAG_UUID, common.UUID), slog.String(TAG_DIVICE_ID, common.DeviceID)),
+		slog.Group("data", slog.Int(FIELD_COUNT_IN, data.HumanCountIn), slog.Int(FIELD_COUNT_OUT, data.HumanCountOut)),
+		slog.Group("time", slog.Time("start", start), slog.Time("end", end)),
+	)
+
 	var enc lineprotocol.Encoder
 
-	enc.SetPrecision(lineprotocol.Microsecond)
+	enc.SetPrecision(lineprotocol.Nanosecond)
 	enc.StartLine(MA_COUNTY)
 	enc.AddTag(TAG_UUID, common.UUID)
 	enc.AddTag(TAG_DIVICE_ID, common.DeviceID)
@@ -74,11 +61,38 @@ func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data h
 	enc.EndLine(holo.MilliToTime(data.EndTime, data.TimeZone))
 
 	if err := enc.Err(); err != nil {
-		return nil
+		return err
 	}
 
 	bs := enc.Bytes()
 	line := bytesToStr(bs)
 
-	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, "ms", 0, comm.GetReqID())
+	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_NANO_SECONDS, 0, 0)
+}
+
+func (s *Schemaless) HandleDensity(ctx context.Context, common holo.Common, data holo.HumanMix) error {
+	slog.DebugContext(ctx, "HandleCount", slog.Int(TAG_TYPE, data.TargetType), slog.Time("now", time.Now()),
+		slog.Group("common", slog.String(TAG_UUID, common.UUID), slog.String(TAG_DIVICE_ID, common.DeviceID)),
+		slog.Group("data", slog.Int(FIELD_DENSITY_COUNT, data.HumanCount), slog.Int(FIELD_DENSITY_RATIO, data.AreaRatio)),
+	)
+
+	var enc lineprotocol.Encoder
+
+	enc.SetPrecision(lineprotocol.Nanosecond)
+	enc.StartLine(MA_DENSITY)
+	enc.AddTag(TAG_UUID, common.UUID)
+	enc.AddTag(TAG_DIVICE_ID, common.DeviceID)
+	enc.AddTag(TAG_TYPE, TYPE_12)
+	enc.AddField(FIELD_DENSITY_COUNT, lineprotocol.MustNewValue(data.HumanCount))
+	enc.AddField(FIELD_DENSITY_RATIO, lineprotocol.MustNewValue(data.AreaRatio))
+	enc.EndLine(time.Now())
+
+	if err := enc.Err(); err != nil {
+		return err
+	}
+
+	bs := enc.Bytes()
+	line := bytesToStr(bs)
+
+	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_NANO_SECONDS, 0, 0)
 }

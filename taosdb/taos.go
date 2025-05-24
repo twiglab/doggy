@@ -12,14 +12,18 @@ const (
 	TAG_TYPE      = "type"
 	TAG_DIVICE_ID = "device_id"
 
-	FIELD_DENSITY_COUNT = "count"
-	FIELD_DENSITY_RATIO = "ratio"
+	FIELD_DENSITY_COUNT = "human_count"
+	FIELD_DENSITY_RATIO = "human_ratio"
 
-	FIELD_COUNT_IN  = "in"
-	FIELD_COUNT_OUT = "out"
+	FIELD_COUNT_IN  = "human_in"
+	FIELD_COUNT_OUT = "human_out"
 
 	MA_DENSITY = "density"
 	MA_COUNTY  = "count"
+)
+
+const (
+	TSDB_SML_TIMESTAMP_NANO_SECONDS = "ns"
 )
 
 type Config struct {
