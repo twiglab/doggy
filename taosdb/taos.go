@@ -24,7 +24,7 @@ const (
 
 type Config struct {
 	Addr     string
-	Port     string
+	Port     int
 	Protocol string
 	Username string
 	Password string
@@ -32,13 +32,12 @@ type Config struct {
 }
 
 func db(conf Config) (string, string) {
-	dns := fmt.Sprintf("%s:%s@ws(%s:%s)/%s", conf.Username, conf.Password, conf.Addr, conf.Port, conf.DBName)
+	dns := fmt.Sprintf("%s:%s@ws(%s:%d)/%s", conf.Username, conf.Password, conf.Addr, conf.Port, conf.DBName)
 	return "taosWS", dns
 }
 
 func schemalessURL(conf Config) string {
-	return "ws://" + conf.Addr + ":" + conf.Port
-
+	return fmt.Sprintf("ws://%s:%d", conf.Addr, conf.Port)
 }
 
 func bytesToStr(bs []byte) string {

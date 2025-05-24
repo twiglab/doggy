@@ -28,10 +28,10 @@ type LoggerConf struct {
 
 type TaosDBConf struct {
 	Addr     string `yaml:"addr" mapstructure:"addr"`
-	Port     string `yaml:"addr" mapstructure:"port"`
-	Protocol string `yaml:"addr" mapstructure:"protocol"`
-	Username string `yaml:"addr" mapstructure:"username"`
-	Password string `yaml:"addr" mapstructure:"password"`
+	Port     int    `yaml:"port" mapstructure:"port"`
+	Protocol string `yaml:"protocol" mapstructure:"protocol"`
+	Username string `yaml:"username" mapstructure:"username"`
+	Password string `yaml:"password" mapstructure:"password"`
 	DBName   string `yaml:"dbname" mapstructure:"dbname"`
 }
 
@@ -182,7 +182,7 @@ func confCmd() {
 			},
 			TaosDBConf: TaosDBConf{
 				Addr:     "127.0.0.1",
-				Port:     "6041",
+				Port:     6041,
 				Protocol: "ws",
 				Username: "root",
 				Password: "taosdata",
