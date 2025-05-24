@@ -2,6 +2,7 @@ package pf
 
 import (
 	"log"
+	"log/slog"
 	"net"
 	"net/http"
 
@@ -41,12 +42,18 @@ func MetadataEntryUpload(h *Handle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var data holo.MetadataObjectUpload
 		if err := hx.BindAndClose(r, &data); err != nil {
-			http.Error(w, "Error-01", http.StatusInternalServerError)
+			slog.ErrorContext(r.Context(), "error-01",
+				slog.String("method", "MetadataEntryUpload"),
+				slog.Any("error", err))
+			http.Error(w, "error-01", http.StatusInternalServerError)
 			return
 		}
 
 		if err := h.HandleMetadata(r.Context(), data); err != nil {
-			http.Error(w, "Error-02", http.StatusInternalServerError)
+			slog.ErrorContext(r.Context(), "error-02",
+				slog.String("method", "MetadataEntryUpload"),
+				slog.Any("error", err))
+			http.Error(w, "error-02", http.StatusInternalServerError)
 			return
 		}
 		hx.NoContent(w)
