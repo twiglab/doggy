@@ -1,7 +1,6 @@
 package pf
 
 import (
-	"log"
 	"log/slog"
 	"net"
 	"net/http"
@@ -33,7 +32,10 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 			return
 		}
 
-		log.Println("register device ok, sn = ", data.SerialNumber)
+		slog.InfoContext(r.Context(), "register device ok",
+			slog.String("sn", data.SerialNumber),
+			slog.String("ip", data.IpAddr),
+		)
 		_ = hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
 	}
 }
@@ -56,6 +58,7 @@ func MetadataEntryUpload(h *Handle) http.HandlerFunc {
 			http.Error(w, "error-02", http.StatusInternalServerError)
 			return
 		}
+
 		hx.NoContent(w)
 	}
 }

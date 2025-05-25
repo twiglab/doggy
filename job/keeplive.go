@@ -19,11 +19,11 @@ type KeepLiveJob struct {
 
 func (x *KeepLiveJob) Run() {
 	ctx := context.Background()
-	slog.InfoContext(ctx, "KeepliveJob", slog.String("text", "keepliveJob staring..."))
+	slog.InfoContext(ctx, "KeepliveJob starting...")
 
 	ds, err := x.DeviceLoader.All(ctx)
 	if err != nil {
-		slog.ErrorContext(ctx, "KeepliveJob", slog.String("errText", err.Error()))
+		slog.ErrorContext(ctx, "KeepliveJob", slog.Any("error", err))
 		return
 	}
 
@@ -47,19 +47,12 @@ func (x *KeepLiveJob) Ping(ctx context.Context, data pf.CameraUpload) {
 		return
 	}
 
-	l := len(subs.Subscriptions)
-	if l != 0 {
-		if l > 1 {
-			slog.InfoContext(ctx, "KeepliveJob",
-				slog.String("sn", data.SN),
-				slog.Int("size", l),
-				slog.String("errText", "too many subs"),
-			)
-		}
-		slog.InfoContext(ctx, "KeepliveJob",
+	size := len(subs.Subscriptions)
+	if size != 0 {
+		slog.InfoContext(ctx, "ping ok",
 			slog.String("sn", data.SN),
-			slog.Int("size", l),
-			slog.String("text", "OK"),
+			slog.Int("size", size),
+			slog.String("job", "KeepliveJob"),
 		)
 		return
 	}
@@ -75,7 +68,7 @@ func (x *KeepLiveJob) Ping(ctx context.Context, data pf.CameraUpload) {
 	if err != nil {
 		slog.ErrorContext(ctx, "KeepliveJob",
 			slog.String("sn", data.SN),
-			slog.Int("size", l),
+			slog.Int("size", size),
 			slog.String("errText", err.Error()),
 		)
 	}
@@ -83,13 +76,13 @@ func (x *KeepLiveJob) Ping(ctx context.Context, data pf.CameraUpload) {
 	if err := resp.Err(); err != nil {
 		slog.ErrorContext(ctx, "KeepliveJob",
 			slog.String("sn", data.SN),
-			slog.Int("size", l),
-			slog.String("errText", err.Error()),
+			slog.Int("size", size),
+			slog.Any("error", err),
 		)
 	}
 
-	slog.InfoContext(ctx, "KeepliveJob",
+	slog.InfoContext(ctx, "ping ok",
 		slog.String("sn", data.SN),
-		slog.String("ping", "OK"),
+		slog.String("job", "KeepliveJob"),
 	)
 }
