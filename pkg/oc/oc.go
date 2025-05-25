@@ -1,5 +1,13 @@
 package oc
 
+import "time"
+
+const CALL_SUM = "out.Sum"
+
+func ToMilliTimestamp(t time.Time) int64 {
+	return t.UnixMilli()
+}
+
 type AreaArg struct {
 	Start int64    `json:"starte"`
 	End   int64    `json:"end"`
