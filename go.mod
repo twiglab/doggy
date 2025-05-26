@@ -7,7 +7,7 @@ require (
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/go-co-op/gocron/v2 v2.16.2
 	github.com/gorilla/rpc v1.2.1
-	github.com/imroc/req/v3 v3.52.1
+	github.com/imroc/req/v3 v3.52.2
 	github.com/influxdata/line-protocol/v2 v2.2.1
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/mattn/go-sqlite3 v1.14.28
