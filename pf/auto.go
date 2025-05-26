@@ -33,9 +33,9 @@ type AutoSub struct {
 	DeviceResolver DeviceResolver
 	UploadHandler  UploadHandler
 
-	MetadataURL string
-	Addr        string
-	Port        int
+	MainSub holo.SubscriptionReq
+	Backups []holo.SubscriptionReq
+	MutiSub int
 }
 
 func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
@@ -51,7 +51,7 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 		return err
 	}
 
-	if len(ids.IDs) <= 0 {
+	if len(ids.IDs) < 1 {
 		return errors.New("not found device ids")
 	}
 
@@ -87,21 +87,20 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 
 	if len(subs.Subscriptions) == 0 {
 
-		log.Println("下发元数据订阅参数", a.MetadataURL)
+		log.Println("下发元数据订阅参数", a.MainSub.MetadataURL)
 
-		res, err := device.PostMetadataSubscription(ctx,
-			holo.SubscriptionReq{
-				Address:     a.Addr,
-				Port:        a.Port,
-				TimeOut:     0,
-				HttpsEnable: 1,
-				MetadataURL: a.MetadataURL,
-			})
-		if err != nil {
+		res, err := device.PostMetadataSubscription(ctx, a.MainSub)
+		if err := holo.CheckErr(res, err); err != nil {
 			return err
 		}
-		if err := res.Err(); err != nil {
-			return err
+
+		if a.MutiSub != 0 {
+			for _, sub := range a.Backups {
+				res, err := device.PostMetadataSubscription(ctx, sub)
+				if err := holo.CheckErr(res, err); err != nil {
+					return err
+				}
+			}
 		}
 	}
 

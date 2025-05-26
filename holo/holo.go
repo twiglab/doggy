@@ -35,3 +35,10 @@ func NewApiError(code int, text string) *ApiError {
 func (e *ApiError) Error() string {
 	return fmt.Sprintf("code = %d, text = %s", e.Code, e.Text)
 }
+
+func CheckErr(comm *CommonResponse, err error) error {
+	if err != nil {
+		return err
+	}
+	return comm.Err()
+}

@@ -27,8 +27,8 @@ func buildKeepliveJob(ctx context.Context, conf AppConf) job.Job {
 		DeviceLoader:   loader,
 		DeviceResolver: resolver,
 
-		Addr:        conf.JobConf.Keeplive.Addr,
-		Port:        conf.JobConf.Keeplive.Port,
-		MetadataURL: conf.JobConf.Keeplive.MetadataURL,
+		Addr:        conf.SubsConf.Main.Addr,
+		Port:        conf.SubsConf.Main.Port,
+		MetadataURL: conf.SubsConf.Main.MetadataURL,
 	}
 }

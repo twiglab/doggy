@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/out"
 	"github.com/twiglab/doggy/page"
 	"github.com/twiglab/doggy/pf"
@@ -39,9 +40,11 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 		DeviceResolver: fixUser,
 		UploadHandler:  eh,
 
-		MetadataURL: conf.AutoRegConf.MetadataURL,
-		Addr:        conf.AutoRegConf.Addr,
-		Port:        conf.AutoRegConf.Port,
+		MainSub: holo.SubscriptionReq{
+			Address:     conf.SubsConf.Main.Addr,
+			Port:        conf.SubsConf.Main.Port,
+			MetadataURL: conf.SubsConf.Main.MetadataURL,
+		},
 	}
 	h := pf.NewHandle(pf.WithDeviceRegister(autoSub))
 

@@ -12,9 +12,7 @@ type KeepLiveJob struct {
 	DeviceLoader   pf.DeviceLoader
 	DeviceResolver pf.DeviceResolver
 
-	MetadataURL string
-	Addr        string
-	Port        int
+	MainSub holo.SubscriptionReq
 }
 
 func (x *KeepLiveJob) Run() {
@@ -49,40 +47,25 @@ func (x *KeepLiveJob) Ping(ctx context.Context, data pf.CameraUpload) {
 
 	size := len(subs.Subscriptions)
 	if size != 0 {
-		slog.InfoContext(ctx, "ping ok",
+		slog.InfoContext(ctx, "KeepliveJob ok",
 			slog.String("sn", data.SN),
 			slog.Int("size", size),
-			slog.String("job", "KeepliveJob"),
 		)
 		return
 	}
 
-	resp, err := device.PostMetadataSubscription(ctx, holo.SubscriptionReq{
-		Address:     x.Addr,
-		Port:        x.Port,
-		TimeOut:     0,
-		HttpsEnable: 1,
-		MetadataURL: x.MetadataURL,
-	})
+	resp, err := device.PostMetadataSubscription(ctx, x.MainSub)
 
-	if err != nil {
-		slog.ErrorContext(ctx, "KeepliveJob",
-			slog.String("sn", data.SN),
-			slog.Int("size", size),
-			slog.String("errText", err.Error()),
-		)
-	}
-
-	if err := resp.Err(); err != nil {
-		slog.ErrorContext(ctx, "KeepliveJob",
+	if err := holo.CheckErr(resp, err); err != nil {
+		slog.ErrorContext(ctx, "KeepliveJob error",
 			slog.String("sn", data.SN),
 			slog.Int("size", size),
 			slog.Any("error", err),
 		)
+		return
 	}
 
-	slog.InfoContext(ctx, "ping ok",
+	slog.InfoContext(ctx, "KeepliveJob no sub",
 		slog.String("sn", data.SN),
-		slog.String("job", "KeepliveJob"),
 	)
 }

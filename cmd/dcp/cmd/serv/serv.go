@@ -70,7 +70,7 @@ func servCmd() {
 
 	mux := MainHandler(ctx, conf)
 
-	if !conf.JobConf.Disable {
+	if conf.JobConf.Disable != 0 {
 		s := buildAllJob(ctx, conf)
 		s.Start()
 	}

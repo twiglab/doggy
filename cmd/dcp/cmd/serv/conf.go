@@ -12,12 +12,21 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type KeepliveJobConf struct {
-	Crontab string `yaml:"crontab" mapstructure:"crontab"`
-
+type Sub struct {
 	MetadataURL string `yaml:"metadata-url" mapstructure:"metadata-url"`
 	Addr        string `yaml:"addr" mapstructure:"addr"`
 	Port        int    `yaml:"port" mapstructure:"port"`
+	TimeOut     int    `yaml:"time-out" mapstructure:"time-out"`
+	HttpsEnable int    `yaml:"https-enable" mapstructure:"https-enable" `
+}
+
+type SubsConf struct {
+	Main    Sub   `yaml:"main" mapstructure:"main"`
+	Backups []Sub `yaml:"backups" mapstructure:"backups"`
+}
+
+type KeepliveJobConf struct {
+	Crontab string `yaml:"crontab" mapstructure:"crontab"`
 }
 
 type LoggerConf struct {
@@ -40,14 +49,12 @@ type BackendConf struct {
 }
 
 type JobConf struct {
-	Disable  bool            `yaml:"disable" mapstructure:"disable"`
+	Disable  int             `yaml:"disable" mapstructure:"disable"`
 	Keeplive KeepliveJobConf `yaml:"keeplive" mapstructure:"keeplive"`
 }
 
 type AutoRegConf struct {
-	MetadataURL string `yaml:"metadata-url" mapstructure:"metadata-url"`
-	Addr        string `yaml:"addr" mapstructure:"addr"`
-	Port        int    `yaml:"port" mapstructure:"port"`
+	MutiSub int `yaml:"muti-sub" mapstructure:"muti-sub"`
 }
 
 type CameraDBConf struct {
@@ -76,6 +83,7 @@ type AppConf struct {
 	ID           string       `yaml:"id" mapstructure:"id"`
 	LoggerConf   LoggerConf   `yaml:"log" mapstructure:"log"`
 	ServerConf   ServerConf   `yaml:"server" mapstructure:"server"`
+	SubsConf     SubsConf     `yaml:"subs" mapstructure:"subs"`
 	BackendConf  BackendConf  `yaml:"backend" mapstructure:"backend"`
 	CameraDBConf CameraDBConf `yaml:"camera-db" mapstructure:"camera-db"`
 	AutoRegConf  AutoRegConf  `yaml:"auto-reg" mapstructure:"auto-reg"`
@@ -135,7 +143,32 @@ func confCmd() {
 			KeyFile:    "repo/server.key",
 			ForceHttps: 1,
 		},
+		SubsConf: SubsConf{
+			Main: Sub{
+				Addr:        "127.0.0.1",
+				Port:        10005,
+				TimeOut:     0,
+				HttpsEnable: 1,
+				MetadataURL: "https://127.0.0.1:10005/pf/upload",
+			},
 
+			Backups: []Sub{
+				{
+					Addr:        "127.0.0.1",
+					Port:        10005,
+					TimeOut:     0,
+					HttpsEnable: 1,
+					MetadataURL: "https://127.0.0.1:10005/pf/upload",
+				},
+				{
+					Addr:        "127.0.0.1",
+					Port:        10005,
+					TimeOut:     0,
+					HttpsEnable: 1,
+					MetadataURL: "https://127.0.0.1:10005/pf/upload",
+				},
+			},
+		},
 		CameraDBConf: CameraDBConf{
 			CsvCameraDB: CsvCameraDB{
 				CameraUser: "ApiAdmin",
@@ -145,9 +178,7 @@ func confCmd() {
 		},
 
 		AutoRegConf: AutoRegConf{
-			Addr:        "127.0.0.1",
-			Port:        10005,
-			MetadataURL: "https://127.0.0.1:10005/pf/upload",
+			MutiSub: 1,
 		},
 
 		BackendConf: BackendConf{
@@ -169,10 +200,7 @@ func confCmd() {
 
 		JobConf: JobConf{
 			Keeplive: KeepliveJobConf{
-				Crontab:     "*/10 * * * *",
-				Addr:        "127.0.0.1",
-				Port:        10005,
-				MetadataURL: "https://127.0.0.1:10005/pf/upload",
+				Crontab: "*/10 * * * *",
 			},
 		},
 	}
