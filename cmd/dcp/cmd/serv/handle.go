@@ -59,7 +59,19 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	return pf.PlatformHandle(h)
 }
 
-func MainHandler(ctx context.Context, conf AppConf) http.Handler {
+func pfBackendHandle(ctx context.Context, conf AppConf) http.Handler {
+	h := pf.NewHandle()
+
+	if backendName(conf) != bNameNone {
+		backend := ctx.Value(keyBackend).(pfh)
+		h.SetCountHandler(backend)
+		h.SetDensityHandler(backend)
+	}
+
+	return pf.PlatformHandle(h)
+}
+
+func FullHandler(ctx context.Context, conf AppConf) http.Handler {
 	mux := chi.NewMux()
 	mux.Use(middleware.Recoverer)
 	mux.Mount("/", pfTestHandle())
@@ -68,6 +80,16 @@ func MainHandler(ctx context.Context, conf AppConf) http.Handler {
 
 	mux.Mount("/debug", middleware.Profiler())
 
+	mux.Mount("/jsonrpc", outHandle(ctx, conf))
+
+	return mux
+}
+
+func BackendHandler(ctx context.Context, conf AppConf) http.Handler {
+	mux := chi.NewMux()
+	mux.Use(middleware.Recoverer)
+	mux.Mount("/pf", pfBackendHandle(ctx, conf))
+	mux.Mount("/debug", middleware.Profiler())
 	mux.Mount("/jsonrpc", outHandle(ctx, conf))
 
 	return mux

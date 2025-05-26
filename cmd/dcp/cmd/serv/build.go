@@ -80,7 +80,7 @@ func buildBackend(ctx context.Context, conf AppConf) (pfh, context.Context) {
 	return nil, ctx
 }
 
-func build(box context.Context, conf AppConf) context.Context {
+func buildAll(box context.Context, conf AppConf) context.Context {
 	_, box = buildRootlogger(box, conf)
 	_, box = buildEntHandle(box, conf)
 	_, box = buildCmdb(box, conf)

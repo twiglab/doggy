@@ -16,6 +16,7 @@ import (
 )
 
 var cfgFile string
+var backendOnly bool
 
 var ServCmd = &cobra.Command{
 	Use:   "serv",
@@ -29,6 +30,7 @@ var ServCmd = &cobra.Command{
 func init() {
 	cobra.OnInitialize(initConfig)
 	ServCmd.Flags().StringVarP(&cfgFile, "config", "c", "dcp.yaml", "config file")
+	ServCmd.Flags().BoolVarP(&backendOnly, "backend-only", "b", false, "backend only")
 }
 
 func initConfig() {
@@ -55,6 +57,21 @@ func printConf(conf AppConf) {
 	fmt.Println("--------------------")
 	enc.Encode(conf)
 	fmt.Println("--------------------")
+	fmt.Println("backendOnly", backendOnly)
+	fmt.Println("--------------------")
+}
+
+func backendSvr(conf AppConf) (context.Context, *hx.Svr) {
+	_, ctx := buildRootlogger(context.Background(), conf)
+	_, ctx = buildBackend(ctx, conf)
+	mux := BackendHandler(ctx, conf)
+	return ctx, hx.NewServ().SetAddr(conf.ServerConf.Addr).SetHandler(mux)
+}
+
+func fullSvr(conf AppConf) (context.Context, *hx.Svr) {
+	ctx := buildAll(context.Background(), conf)
+	mux := FullHandler(ctx, conf)
+	return ctx, hx.NewServ().SetAddr(conf.ServerConf.Addr).SetHandler(mux)
 }
 
 func servCmd() {
@@ -66,16 +83,20 @@ func servCmd() {
 
 	printConf(conf)
 
-	ctx := build(context.Background(), conf)
-
-	mux := MainHandler(ctx, conf)
-
-	if conf.JobConf.Disable != 0 {
-		s := buildAllJob(ctx, conf)
-		s.Start()
+	var (
+		svr *hx.Svr
+		ctx context.Context
+	)
+	if backendOnly {
+		ctx, svr = backendSvr(conf)
+	} else {
+		ctx, svr = fullSvr(conf)
+		if conf.JobConf.Disable != 0 {
+			s := buildAllJob(ctx, conf)
+			s.Start()
+		}
 	}
 
-	svr := hx.NewServ().SetAddr(conf.ServerConf.Addr).SetHandler(mux)
 	if err := runSvr(svr, conf.ServerConf); err != nil {
 		log.Fatal(err)
 	}
