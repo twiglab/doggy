@@ -44,6 +44,8 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 			Address:     conf.SubsConf.Main.Addr,
 			Port:        conf.SubsConf.Main.Port,
 			MetadataURL: conf.SubsConf.Main.MetadataURL,
+			TimeOut:     conf.SubsConf.Main.TimeOut,
+			HttpsEnable: conf.SubsConf.Main.HttpsEnable,
 		},
 	}
 	h := pf.NewHandle(pf.WithDeviceRegister(autoSub))

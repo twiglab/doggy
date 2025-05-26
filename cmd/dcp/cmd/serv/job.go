@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/job"
 	"github.com/twiglab/doggy/pf"
 )
@@ -27,8 +28,12 @@ func buildKeepliveJob(ctx context.Context, conf AppConf) job.Job {
 		DeviceLoader:   loader,
 		DeviceResolver: resolver,
 
-		Addr:        conf.SubsConf.Main.Addr,
-		Port:        conf.SubsConf.Main.Port,
-		MetadataURL: conf.SubsConf.Main.MetadataURL,
+		MainSub: holo.SubscriptionReq{
+			Address:     conf.SubsConf.Main.Addr,
+			Port:        conf.SubsConf.Main.Port,
+			MetadataURL: conf.SubsConf.Main.MetadataURL,
+			TimeOut:     conf.SubsConf.Main.TimeOut,
+			HttpsEnable: conf.SubsConf.Main.HttpsEnable,
+		},
 	}
 }

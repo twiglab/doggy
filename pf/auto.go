@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"log/slog"
 	"time"
 
 	"github.com/twiglab/doggy/holo"
@@ -87,7 +88,7 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 
 	if len(subs.Subscriptions) == 0 {
 
-		log.Println("下发元数据订阅参数", a.MainSub.MetadataURL)
+		slog.DebugContext(ctx, "下发主元数据订阅参数", slog.Any("sub", a.MainSub), slog.String("method", "AutoRegister"))
 
 		res, err := device.PostMetadataSubscription(ctx, a.MainSub)
 		if err := holo.CheckErr(res, err); err != nil {
