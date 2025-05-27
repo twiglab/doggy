@@ -43,7 +43,7 @@ func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data h
 	start := holo.MilliToTime(data.StartTime, data.TimeZone)
 	end := holo.MilliToTime(data.EndTime, data.TimeZone)
 
-	slog.DebugContext(ctx, "HandleCount", slog.Int(TAG_TYPE, data.TargetType),
+	slog.InfoContext(ctx, "HandleCount", slog.Int(TAG_TYPE, data.TargetType),
 		slog.Group("common", slog.String(TAG_UUID, common.UUID), slog.String(TAG_DIVICE_ID, common.DeviceID)),
 		slog.Group("data", slog.Int(FIELD_COUNT_IN, data.HumanCountIn), slog.Int(FIELD_COUNT_OUT, data.HumanCountOut)),
 		slog.Group("time", slog.Time("start", start), slog.Time("end", end)),
@@ -71,7 +71,7 @@ func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data h
 }
 
 func (s *Schemaless) HandleDensity(ctx context.Context, common holo.Common, data holo.HumanMix) error {
-	slog.DebugContext(ctx, "HandleCount", slog.Int(TAG_TYPE, data.TargetType), slog.Time("now", time.Now()),
+	slog.InfoContext(ctx, "HandleCount", slog.Int(TAG_TYPE, data.TargetType), slog.Time("now", time.Now()),
 		slog.Group("common", slog.String(TAG_UUID, common.UUID), slog.String(TAG_DIVICE_ID, common.DeviceID)),
 		slog.Group("data", slog.Int(FIELD_DENSITY_COUNT, data.HumanCount), slog.Int(FIELD_DENSITY_RATIO, data.AreaRatio)),
 	)
