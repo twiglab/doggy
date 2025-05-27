@@ -3,7 +3,6 @@ package pf
 import (
 	"context"
 	"errors"
-	"log"
 	"log/slog"
 	"time"
 
@@ -40,7 +39,11 @@ type AutoSub struct {
 }
 
 func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	log.Printf("auto sub reg sn = %s, ip = %s\n", data.SerialNumber, data.IpAddr)
+	slog.DebugContext(ctx, "receive reg data",
+		slog.String("module", "AutoSub"),
+		slog.String("sn", data.SerialNumber),
+		slog.String("addr", data.IpAddr))
+
 	device, err := a.DeviceResolver.Resolve(ctx, data)
 	if err != nil {
 		return err
@@ -60,7 +63,10 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 	if device.DeviceID != "" {
 		if device.DeviceID != id.DeviceID {
 
-			log.Println("下发DeviceID ", device.DeviceID)
+			slog.DebugContext(ctx, "send device id",
+				slog.String("deviceID", device.DeviceID),
+				slog.String("module", "AutoSub"),
+				slog.String("method", "AutoRegister"))
 
 			res, err := device.PutDeviceID(ctx,
 				holo.DeviceIDList{
@@ -88,7 +94,10 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 
 	if len(subs.Subscriptions) == 0 {
 
-		slog.DebugContext(ctx, "下发主元数据订阅参数", slog.Any("sub", a.MainSub), slog.String("method", "AutoRegister"))
+		slog.DebugContext(ctx, "send meta sub",
+			slog.Any("sub", a.MainSub),
+			slog.String("module", "AutoSub"),
+			slog.String("method", "AutoRegister"))
 
 		res, err := device.PostMetadataSubscription(ctx, a.MainSub)
 		if err := holo.CheckErr(res, err); err != nil {

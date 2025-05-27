@@ -126,7 +126,10 @@ type cameraAction struct {
 }
 
 func (d *cameraAction) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	slog.DebugContext(ctx, "AutoRegister", slog.String("sn", data.SerialNumber), slog.String("addr", data.IpAddr))
+	slog.DebugContext(ctx, "receive reg data",
+		slog.String("module", "cameraAction"),
+		slog.String("sn", data.SerialNumber),
+		slog.String("addr", data.IpAddr))
 	return nil
 }
 
