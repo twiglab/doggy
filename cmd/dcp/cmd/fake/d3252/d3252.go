@@ -15,8 +15,13 @@ import (
 	"github.com/twiglab/doggy/job"
 )
 
+/*
+00000000-0000-0000-0000-000000000000
+ffffffff-ffff-ffff-ffff-ffffffffffff
+*/
+
 func rnd() int {
-	return rand.IntN(100)
+	return rand.IntN(10)
 }
 
 type Camera struct {
@@ -38,7 +43,10 @@ var camera = &Camera{
 	},
 
 	IDList: holo.DeviceIDList{IDs: []holo.DeviceID{
-		{UUID: "5a6f2bc1-6980-4b7f-81c4-d45f09446973", DeviceID: "1234567890"},
+		{
+			UUID:     "00000000-0000-0000-0000-000000000000",
+			DeviceID: "1234567890",
+		},
 	}},
 	SubMap: make(map[string]holo.SubscriptionReq),
 }
