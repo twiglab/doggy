@@ -75,10 +75,7 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 					},
 				})
 
-			if err != nil {
-				return err
-			}
-			if err := res.Err(); err != nil {
+			if err := holo.CheckErr(res, err); err != nil {
 				return err
 			}
 		}
