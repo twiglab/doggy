@@ -19,6 +19,7 @@ import (
 00000000-0000-0000-0000-000000000000
 ffffffff-ffff-ffff-ffff-ffffffffffff
 */
+const uuid = "00000000-0000-0000-0000-000000000000"
 
 func rnd() int {
 	return rand.IntN(10)
@@ -44,7 +45,7 @@ var camera = &Camera{
 
 	IDList: holo.DeviceIDList{IDs: []holo.DeviceID{
 		{
-			UUID:     "00000000-0000-0000-0000-000000000000",
+			UUID:     uuid,
 			DeviceID: "1234567890",
 		},
 	}},
@@ -157,7 +158,7 @@ func d3252() {
 		camera.isAutoReg = false
 
 		camera.IDList = holo.DeviceIDList{IDs: []holo.DeviceID{
-			{UUID: "5a6f2bc1-6980-4b7f-81c4-d45f09446973", DeviceID: "1234567890"},
+			{UUID: uuid, DeviceID: "1234567890"},
 		}}
 
 		hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
