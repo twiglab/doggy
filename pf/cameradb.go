@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/csv"
 	"errors"
-	"fmt"
 	"io"
 	"log/slog"
 	"os"
@@ -81,21 +80,17 @@ func (r *CsvCameraDB) Load(ctx context.Context) error {
 }
 
 func (r *CsvCameraDB) Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error) {
-	if dev, ok := r.deviceConf[data.SerialNumber]; ok {
-		device, err := holo.OpenDevice(data.IpAddr, r.User, r.Pwd)
-		if err != nil {
-			return nil, err
-		}
+	device, err := holo.OpenDevice(data.IpAddr, r.User, r.Pwd)
+	if err != nil {
+		return nil, err
+	}
 
+	device.SN = data.SerialNumber
+
+	if dev, ok := r.deviceConf[data.SerialNumber]; ok {
 		device.UUID = dev.uuid
 		device.DeviceID = dev.deviceID
-		device.SN = dev.sn
-
-		return device, nil
 	}
 
-	if r.strict {
-		return nil, fmt.Errorf("sn: %s not found", data.SerialNumber)
-	}
-	return holo.OpenDevice(data.IpAddr, r.User, r.Pwd)
+	return device, nil
 }

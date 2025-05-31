@@ -8,6 +8,3 @@ import (
 
 // Upload is the predicate function for upload builders.
 type Upload func(*sql.Selector)
-
-// Using is the predicate function for using builders.
-type Using func(*sql.Selector)

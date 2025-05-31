@@ -15,7 +15,6 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"github.com/twiglab/doggy/orm/ent/upload"
-	"github.com/twiglab/doggy/orm/ent/using"
 
 	stdsql "database/sql"
 )
@@ -27,8 +26,6 @@ type Client struct {
 	Schema *migrate.Schema
 	// Upload is the client for interacting with the Upload builders.
 	Upload *UploadClient
-	// Using is the client for interacting with the Using builders.
-	Using *UsingClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -41,7 +38,6 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Upload = NewUploadClient(c.config)
-	c.Using = NewUsingClient(c.config)
 }
 
 type (
@@ -135,7 +131,6 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ctx:    ctx,
 		config: cfg,
 		Upload: NewUploadClient(cfg),
-		Using:  NewUsingClient(cfg),
 	}, nil
 }
 
@@ -156,7 +151,6 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ctx:    ctx,
 		config: cfg,
 		Upload: NewUploadClient(cfg),
-		Using:  NewUsingClient(cfg),
 	}, nil
 }
 
@@ -186,14 +180,12 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Upload.Use(hooks...)
-	c.Using.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.Upload.Intercept(interceptors...)
-	c.Using.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
@@ -201,8 +193,6 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
 	case *UploadMutation:
 		return c.Upload.mutate(ctx, m)
-	case *UsingMutation:
-		return c.Using.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -341,146 +331,13 @@ func (c *UploadClient) mutate(ctx context.Context, m *UploadMutation) (Value, er
 	}
 }
 
-// UsingClient is a client for the Using schema.
-type UsingClient struct {
-	config
-}
-
-// NewUsingClient returns a client for the Using from the given config.
-func NewUsingClient(c config) *UsingClient {
-	return &UsingClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `using.Hooks(f(g(h())))`.
-func (c *UsingClient) Use(hooks ...Hook) {
-	c.hooks.Using = append(c.hooks.Using, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `using.Intercept(f(g(h())))`.
-func (c *UsingClient) Intercept(interceptors ...Interceptor) {
-	c.inters.Using = append(c.inters.Using, interceptors...)
-}
-
-// Create returns a builder for creating a Using entity.
-func (c *UsingClient) Create() *UsingCreate {
-	mutation := newUsingMutation(c.config, OpCreate)
-	return &UsingCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of Using entities.
-func (c *UsingClient) CreateBulk(builders ...*UsingCreate) *UsingCreateBulk {
-	return &UsingCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *UsingClient) MapCreateBulk(slice any, setFunc func(*UsingCreate, int)) *UsingCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &UsingCreateBulk{err: fmt.Errorf("calling to UsingClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*UsingCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &UsingCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for Using.
-func (c *UsingClient) Update() *UsingUpdate {
-	mutation := newUsingMutation(c.config, OpUpdate)
-	return &UsingUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *UsingClient) UpdateOne(u *Using) *UsingUpdateOne {
-	mutation := newUsingMutation(c.config, OpUpdateOne, withUsing(u))
-	return &UsingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *UsingClient) UpdateOneID(id int) *UsingUpdateOne {
-	mutation := newUsingMutation(c.config, OpUpdateOne, withUsingID(id))
-	return &UsingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Using.
-func (c *UsingClient) Delete() *UsingDelete {
-	mutation := newUsingMutation(c.config, OpDelete)
-	return &UsingDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *UsingClient) DeleteOne(u *Using) *UsingDeleteOne {
-	return c.DeleteOneID(u.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *UsingClient) DeleteOneID(id int) *UsingDeleteOne {
-	builder := c.Delete().Where(using.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &UsingDeleteOne{builder}
-}
-
-// Query returns a query builder for Using.
-func (c *UsingClient) Query() *UsingQuery {
-	return &UsingQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeUsing},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a Using entity by its id.
-func (c *UsingClient) Get(ctx context.Context, id int) (*Using, error) {
-	return c.Query().Where(using.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *UsingClient) GetX(ctx context.Context, id int) *Using {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// Hooks returns the client hooks.
-func (c *UsingClient) Hooks() []Hook {
-	return c.hooks.Using
-}
-
-// Interceptors returns the client interceptors.
-func (c *UsingClient) Interceptors() []Interceptor {
-	return c.inters.Using
-}
-
-func (c *UsingClient) mutate(ctx context.Context, m *UsingMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&UsingCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&UsingUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&UsingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&UsingDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown Using mutation op: %q", m.Op())
-	}
-}
-
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Upload, Using []ent.Hook
+		Upload []ent.Hook
 	}
 	inters struct {
-		Upload, Using []ent.Interceptor
+		Upload []ent.Interceptor
 	}
 )
 

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/twiglab/doggy/orm/ent/upload"
-	"github.com/twiglab/doggy/orm/ent/using"
 	"github.com/twiglab/doggy/orm/schema"
 )
 
@@ -87,95 +86,4 @@ func init() {
 	uploadDescPwd := uploadFields[6].Descriptor()
 	// upload.PwdValidator is a validator for the "pwd" field. It is called by the builders before save.
 	upload.PwdValidator = uploadDescPwd.Validators[0].(func(string) error)
-	usingMixin := schema.Using{}.Mixin()
-	usingMixinFields0 := usingMixin[0].Fields()
-	_ = usingMixinFields0
-	usingFields := schema.Using{}.Fields()
-	_ = usingFields
-	// usingDescCreateTime is the schema descriptor for create_time field.
-	usingDescCreateTime := usingMixinFields0[0].Descriptor()
-	// using.DefaultCreateTime holds the default value on creation for the create_time field.
-	using.DefaultCreateTime = usingDescCreateTime.Default.(func() time.Time)
-	// usingDescUpdateTime is the schema descriptor for update_time field.
-	usingDescUpdateTime := usingMixinFields0[1].Descriptor()
-	// using.DefaultUpdateTime holds the default value on creation for the update_time field.
-	using.DefaultUpdateTime = usingDescUpdateTime.Default.(func() time.Time)
-	// using.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
-	using.UpdateDefaultUpdateTime = usingDescUpdateTime.UpdateDefault.(func() time.Time)
-	// usingDescSn is the schema descriptor for sn field.
-	usingDescSn := usingFields[0].Descriptor()
-	// using.SnValidator is a validator for the "sn" field. It is called by the builders before save.
-	using.SnValidator = func() func(string) error {
-		validators := usingDescSn.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(sn string) error {
-			for _, fn := range fns {
-				if err := fn(sn); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// usingDescUUID is the schema descriptor for uuid field.
-	usingDescUUID := usingFields[1].Descriptor()
-	// using.UUIDValidator is a validator for the "uuid" field. It is called by the builders before save.
-	using.UUIDValidator = func() func(string) error {
-		validators := usingDescUUID.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(uuid string) error {
-			for _, fn := range fns {
-				if err := fn(uuid); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// usingDescDeviceID is the schema descriptor for device_id field.
-	usingDescDeviceID := usingFields[2].Descriptor()
-	// using.DeviceIDValidator is a validator for the "device_id" field. It is called by the builders before save.
-	using.DeviceIDValidator = func() func(string) error {
-		validators := usingDescDeviceID.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(device_id string) error {
-			for _, fn := range fns {
-				if err := fn(device_id); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// usingDescAlg is the schema descriptor for alg field.
-	usingDescAlg := usingFields[3].Descriptor()
-	// using.AlgValidator is a validator for the "alg" field. It is called by the builders before save.
-	using.AlgValidator = func() func(string) error {
-		validators := usingDescAlg.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(alg string) error {
-			for _, fn := range fns {
-				if err := fn(alg); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// usingDescName is the schema descriptor for name field.
-	usingDescName := usingFields[4].Descriptor()
-	// using.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	using.NameValidator = usingDescName.Validators[0].(func(string) error)
 }

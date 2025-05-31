@@ -4,7 +4,6 @@ package ent
 
 import (
 	"github.com/twiglab/doggy/orm/ent/upload"
-	"github.com/twiglab/doggy/orm/ent/using"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -14,7 +13,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 2)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 1)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   upload.Table,
@@ -35,26 +34,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			upload.FieldCode1:      {Type: field.TypeString, Column: upload.FieldCode1},
 			upload.FieldUser:       {Type: field.TypeString, Column: upload.FieldUser},
 			upload.FieldPwd:        {Type: field.TypeString, Column: upload.FieldPwd},
-		},
-	}
-	graph.Nodes[1] = &sqlgraph.Node{
-		NodeSpec: sqlgraph.NodeSpec{
-			Table:   using.Table,
-			Columns: using.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: using.FieldID,
-			},
-		},
-		Type: "Using",
-		Fields: map[string]*sqlgraph.FieldSpec{
-			using.FieldCreateTime: {Type: field.TypeTime, Column: using.FieldCreateTime},
-			using.FieldUpdateTime: {Type: field.TypeTime, Column: using.FieldUpdateTime},
-			using.FieldSn:         {Type: field.TypeString, Column: using.FieldSn},
-			using.FieldUUID:       {Type: field.TypeString, Column: using.FieldUUID},
-			using.FieldDeviceID:   {Type: field.TypeString, Column: using.FieldDeviceID},
-			using.FieldAlg:        {Type: field.TypeString, Column: using.FieldAlg},
-			using.FieldName:       {Type: field.TypeString, Column: using.FieldName},
 		},
 	}
 	return graph
@@ -149,79 +128,4 @@ func (f *UploadFilter) WhereUser(p entql.StringP) {
 // WherePwd applies the entql string predicate on the pwd field.
 func (f *UploadFilter) WherePwd(p entql.StringP) {
 	f.Where(p.Field(upload.FieldPwd))
-}
-
-// addPredicate implements the predicateAdder interface.
-func (uq *UsingQuery) addPredicate(pred func(s *sql.Selector)) {
-	uq.predicates = append(uq.predicates, pred)
-}
-
-// Filter returns a Filter implementation to apply filters on the UsingQuery builder.
-func (uq *UsingQuery) Filter() *UsingFilter {
-	return &UsingFilter{config: uq.config, predicateAdder: uq}
-}
-
-// addPredicate implements the predicateAdder interface.
-func (m *UsingMutation) addPredicate(pred func(s *sql.Selector)) {
-	m.predicates = append(m.predicates, pred)
-}
-
-// Filter returns an entql.Where implementation to apply filters on the UsingMutation builder.
-func (m *UsingMutation) Filter() *UsingFilter {
-	return &UsingFilter{config: m.config, predicateAdder: m}
-}
-
-// UsingFilter provides a generic filtering capability at runtime for UsingQuery.
-type UsingFilter struct {
-	predicateAdder
-	config
-}
-
-// Where applies the entql predicate on the query filter.
-func (f *UsingFilter) Where(p entql.P) {
-	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
-			s.AddError(err)
-		}
-	})
-}
-
-// WhereID applies the entql int predicate on the id field.
-func (f *UsingFilter) WhereID(p entql.IntP) {
-	f.Where(p.Field(using.FieldID))
-}
-
-// WhereCreateTime applies the entql time.Time predicate on the create_time field.
-func (f *UsingFilter) WhereCreateTime(p entql.TimeP) {
-	f.Where(p.Field(using.FieldCreateTime))
-}
-
-// WhereUpdateTime applies the entql time.Time predicate on the update_time field.
-func (f *UsingFilter) WhereUpdateTime(p entql.TimeP) {
-	f.Where(p.Field(using.FieldUpdateTime))
-}
-
-// WhereSn applies the entql string predicate on the sn field.
-func (f *UsingFilter) WhereSn(p entql.StringP) {
-	f.Where(p.Field(using.FieldSn))
-}
-
-// WhereUUID applies the entql string predicate on the uuid field.
-func (f *UsingFilter) WhereUUID(p entql.StringP) {
-	f.Where(p.Field(using.FieldUUID))
-}
-
-// WhereDeviceID applies the entql string predicate on the device_id field.
-func (f *UsingFilter) WhereDeviceID(p entql.StringP) {
-	f.Where(p.Field(using.FieldDeviceID))
-}
-
-// WhereAlg applies the entql string predicate on the alg field.
-func (f *UsingFilter) WhereAlg(p entql.StringP) {
-	f.Where(p.Field(using.FieldAlg))
-}
-
-// WhereName applies the entql string predicate on the name field.
-func (f *UsingFilter) WhereName(p entql.StringP) {
-	f.Where(p.Field(using.FieldName))
 }

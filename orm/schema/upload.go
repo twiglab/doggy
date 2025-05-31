@@ -44,7 +44,7 @@ func (Upload) Fields() []ent.Field {
 
 		field.String("id_1").
 			MaxLen(36).
-			Unique().Optional().
+			Optional().
 			SchemaType(map[string]string{
 				dialect.MySQL:    "char(36)", // Override MySQL.
 				dialect.Postgres: "char(36)", // Override Postgres.

@@ -16,8 +16,6 @@ type Tx struct {
 	config
 	// Upload is the client for interacting with the Upload builders.
 	Upload *UploadClient
-	// Using is the client for interacting with the Using builders.
-	Using *UsingClient
 
 	// lazily loaded.
 	client     *Client
@@ -150,7 +148,6 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Upload = NewUploadClient(tx.config)
-	tx.Using = NewUsingClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
