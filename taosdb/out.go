@@ -13,8 +13,6 @@ import (
 	// _ "github.com/taosdata/driver-go/v3/taosSql"
 )
 
-// select sum(human_in) as total  from s_count where _ts >= 1 and _ts < 100000000000000 and device_id in ('AAAAAAAAAA', 'BBBBB');
-
 const sum_sql = `
 select
   sum(human_in)  as in_total ,
@@ -23,7 +21,7 @@ from
   s_count
 where
   _ts >= %d and _ts < %d  and
-  device_id in %s
+  uuid in %s
 `
 
 func sqlIn(tables []string) string {
