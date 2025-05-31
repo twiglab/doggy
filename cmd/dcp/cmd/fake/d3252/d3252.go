@@ -22,7 +22,7 @@ ffffffff-ffff-ffff-ffff-ffffffffffff
 const uuid = "00000000-0000-0000-0000-000000000000"
 
 func rnd() int {
-	return rand.IntN(10)
+	return rand.IntN(5)
 }
 
 type Camera struct {
@@ -60,7 +60,7 @@ func d3252() {
 		log.Fatal(err)
 	}
 
-	cron.AddDurationFunc(5*time.Second, func() {
+	cron.AddDurationFunc(10*time.Second, func() {
 		if !camera.isAutoReg {
 			var resp holo.CommonResponse
 
@@ -82,7 +82,7 @@ func d3252() {
 		}
 	})
 
-	cron.AddDurationFunc(time.Second, func() {
+	cron.AddDurationFunc(10*time.Second, func() {
 		var resp holo.CommonResponse
 		data := holo.MetadataObjectUpload{
 			MetadataObject: holo.MetadataObject{
@@ -113,7 +113,7 @@ func d3252() {
 		}
 	})
 
-	cron.AddDurationFunc(10*time.Second, func() {
+	cron.AddDurationFunc(time.Minute, func() {
 		var resp holo.CommonResponse
 		data := holo.MetadataObjectUpload{
 			MetadataObject: holo.MetadataObject{
