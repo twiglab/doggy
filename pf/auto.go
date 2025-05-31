@@ -138,7 +138,7 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 			slog.String("addr", data.IpAddr))
 	*/
 
-	go a.reg(ctx, data)
+	go a.reg(context.Background(), data)
 
 	return nil
 }
