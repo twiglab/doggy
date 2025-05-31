@@ -2,7 +2,6 @@ package pf
 
 import (
 	"log/slog"
-	"net"
 	"net/http"
 
 	"github.com/twiglab/doggy/holo"
@@ -19,13 +18,6 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 			return
 		}
 
-		// fix SDC ver < 9.0.0
-		if data.IpAddr == "" {
-			if ip, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
-				data.IpAddr = ip
-			}
-		}
-
 		if err := h.HandleAutoRegister(r.Context(), data); err != nil {
 			_ = hx.JsonTo(http.StatusInternalServerError,
 				holo.CommonResponseFailedError(r.URL.Path, err), w)
@@ -33,9 +25,11 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 		}
 
 		slog.InfoContext(r.Context(), "register device ok",
+			slog.String("module", "hapi"),
 			slog.String("sn", data.SerialNumber),
 			slog.String("ip", data.IpAddr),
 		)
+
 		_ = hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
 	}
 }
