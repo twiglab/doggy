@@ -32,9 +32,28 @@ func pfTestHandle() http.Handler {
 	return pf.PlatformHandle(pf.NewHandle())
 }
 
+func pfHandle2(ctx context.Context, conf AppConf) http.Handler {
+	uh := ctx.Value(key_eh).(pf.UploadHandler)
+	resolver := ctx.Value(keyCmdb).(pf.DeviceResolver)
+
+	autoReg := &pf.AutoReg{
+		DeviceResolver: resolver,
+		UploadHandler:  uh,
+	}
+	h := pf.NewHandle(pf.WithDeviceRegister(autoReg))
+
+	if backendName(conf) != bNameNone {
+		backend := ctx.Value(keyBackend).(pfh)
+		h.SetCountHandler(backend)
+		h.SetDensityHandler(backend)
+	}
+
+	return pf.PlatformHandle(h)
+}
+
 func pfHandle(ctx context.Context, conf AppConf) http.Handler {
-	eh := ctx.Value(key_eh).(pf.UploadHandler)
-	fixUser := ctx.Value(keyCmdb).(pf.DeviceResolver)
+	uh := ctx.Value(key_eh).(pf.UploadHandler)
+	resolver := ctx.Value(keyCmdb).(pf.DeviceResolver)
 
 	var backups []holo.SubscriptionReq
 	for _, b := range conf.SubsConf.Backups {
@@ -48,8 +67,8 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	}
 
 	autoSub := &pf.AutoSub{
-		DeviceResolver: fixUser,
-		UploadHandler:  eh,
+		DeviceResolver: resolver,
+		UploadHandler:  uh,
 
 		MainSub: holo.SubscriptionReq{
 			Address:     conf.SubsConf.Main.Addr,

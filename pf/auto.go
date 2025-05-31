@@ -2,6 +2,7 @@ package pf
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"time"
 
@@ -37,7 +38,6 @@ type AutoSub struct {
 	MutiSub int
 }
 
-/*
 func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
 	slog.InfoContext(ctx, "receive reg data",
 		slog.String("module", "AutoSub"),
@@ -127,146 +127,4 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 		User:   device.User,
 		Pwd:    device.Pwd,
 	})
-}
-*/
-
-func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	/*
-		slog.InfoContext(ctx, "receive reg data",
-			slog.String("module", "AutoSub"),
-			slog.String("sn", data.SerialNumber),
-			slog.String("addr", data.IpAddr))
-	*/
-
-	go a.reg(context.Background(), data)
-
-	return nil
-}
-
-func (a *AutoSub) reg(ctx context.Context, data holo.DeviceAutoRegisterData) {
-	slog.InfoContext(ctx, "receive reg data",
-		slog.String("module", "AutoSub"),
-		slog.String("method", "reg"),
-		slog.String("sn", data.SerialNumber),
-		slog.String("addr", data.IpAddr))
-
-	device, err := a.DeviceResolver.Resolve(ctx, data)
-	if err != nil {
-		slog.ErrorContext(ctx, "device resolver error",
-			slog.String("sn", data.SerialNumber),
-			slog.Any("error", err),
-		)
-		return
-	}
-	defer device.Close()
-
-	ids, err := device.GetDeviceID(ctx)
-	if err != nil {
-		slog.ErrorContext(ctx, "GetDeviceID error",
-			slog.String("sn", data.SerialNumber),
-			slog.Any("error", err),
-		)
-		return
-	}
-
-	if len(ids.IDs) < 1 {
-		slog.ErrorContext(ctx, "not found device ids",
-			slog.String("sn", data.SerialNumber),
-		)
-		return
-	}
-
-	id := ids.IDs[0]
-	if device.DeviceID != "" {
-		if device.DeviceID != id.DeviceID {
-
-			slog.InfoContext(ctx, "send device id",
-				slog.String("deviceID", device.DeviceID),
-				slog.String("sn", data.SerialNumber),
-				slog.String("module", "AutoSub"),
-				slog.String("method", "AutoRegister"))
-
-			res, err := device.PutDeviceID(ctx,
-				holo.DeviceIDList{
-					IDs: []holo.DeviceID{
-						{UUID: id.UUID, DeviceID: device.DeviceID},
-					},
-				})
-
-			if err := holo.CheckErr(res, err); err != nil {
-				slog.ErrorContext(ctx, "PutDeviceID error",
-					slog.String("sn", data.SerialNumber),
-					slog.Any("error", err),
-				)
-				return
-			}
-		}
-	} else {
-		device.DeviceID = id.DeviceID
-		device.UUID = id.UUID
-	}
-
-	subs, err := device.GetMetadataSubscription(ctx)
-	if err != nil {
-		slog.ErrorContext(ctx, "GetMetadata error",
-			slog.String("sn", data.SerialNumber),
-			slog.Any("error", err),
-		)
-		return
-	}
-
-	if len(subs.Subscriptions) == 0 {
-
-		slog.InfoContext(ctx, "send meta main sub",
-			slog.Any("main", a.MainSub),
-			slog.String("sn", data.SerialNumber),
-			slog.String("module", "AutoSub"),
-			slog.String("method", "AutoRegister"))
-
-		res, err := device.PostMetadataSubscription(ctx, a.MainSub)
-		if err := holo.CheckErr(res, err); err != nil {
-			slog.ErrorContext(ctx, "PostMetadata main error",
-				slog.String("sn", data.SerialNumber),
-				slog.Any("meta", a.MainSub),
-				slog.Any("error", err),
-			)
-			return
-		}
-
-		if a.MutiSub != 0 {
-			slog.InfoContext(ctx, "send meta backups sub",
-				slog.Any("backups", a.Backups),
-				slog.String("sn", data.SerialNumber),
-				slog.String("module", "AutoSub"),
-				slog.String("method", "AutoRegister"))
-			for _, sub := range a.Backups {
-				res, err := device.PostMetadataSubscription(ctx, sub)
-				if err := holo.CheckErr(res, err); err != nil {
-					slog.ErrorContext(ctx, "PostMetadata backup error",
-						slog.String("sn", data.SerialNumber),
-						slog.Any("meta", sub),
-						slog.Any("error", err),
-					)
-					return
-				}
-			}
-		}
-	}
-
-	err = a.UploadHandler.HandleUpload(ctx, CameraUpload{
-		SN:     data.SerialNumber,
-		IpAddr: data.IpAddr,
-		Last:   time.Now(),
-		UUID1:  device.UUID,
-		Code1:  device.DeviceID,
-		User:   device.User,
-		Pwd:    device.Pwd,
-	})
-
-	if err != nil {
-		slog.ErrorContext(ctx, "Upload error",
-			slog.String("sn", data.SerialNumber),
-			slog.Any("error", err),
-		)
-	}
 }
