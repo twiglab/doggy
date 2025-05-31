@@ -146,6 +146,7 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 func (a *AutoSub) reg(ctx context.Context, data holo.DeviceAutoRegisterData) {
 	slog.InfoContext(ctx, "receive reg data",
 		slog.String("module", "AutoSub"),
+		slog.String("method", "reg"),
 		slog.String("sn", data.SerialNumber),
 		slog.String("addr", data.IpAddr))
 
