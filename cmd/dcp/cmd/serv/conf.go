@@ -21,6 +21,7 @@ type Sub struct {
 }
 
 type SubsConf struct {
+	Muti    int   `yaml:"muti" mapstructure:"muti"`
 	Main    Sub   `yaml:"main" mapstructure:"main"`
 	Backups []Sub `yaml:"backups" mapstructure:"backups"`
 }
@@ -53,10 +54,6 @@ type JobConf struct {
 	Keeplive KeepliveJobConf `yaml:"keeplive" mapstructure:"keeplive"`
 }
 
-type AutoRegConf struct {
-	MutiSub int `yaml:"muti-sub" mapstructure:"muti-sub"`
-}
-
 type CameraDBConf struct {
 	CsvCameraDB CsvCameraDB `yaml:"csvdb" mapstructure:"csvdb"`
 }
@@ -86,7 +83,6 @@ type AppConf struct {
 	SubsConf     SubsConf     `yaml:"subs" mapstructure:"subs"`
 	BackendConf  BackendConf  `yaml:"backend" mapstructure:"backend"`
 	CameraDBConf CameraDBConf `yaml:"camera-db" mapstructure:"camera-db"`
-	AutoRegConf  AutoRegConf  `yaml:"auto-reg" mapstructure:"auto-reg"`
 	DBConf       DBConf       `yaml:"db" mapstructure:"db"`
 	JobConf      JobConf      `yaml:"job" mapstructure:"job"`
 }
@@ -144,6 +140,7 @@ func confCmd() {
 			ForceHttps: 1,
 		},
 		SubsConf: SubsConf{
+			Muti: 0,
 			Main: Sub{
 				Addr:        "127.0.0.1",
 				Port:        10005,
@@ -175,10 +172,6 @@ func confCmd() {
 				CameraPwd:  "AAaa1234%%",
 				CsvFile:    "repo/cameradb.csv",
 			},
-		},
-
-		AutoRegConf: AutoRegConf{
-			MutiSub: 1,
 		},
 
 		BackendConf: BackendConf{

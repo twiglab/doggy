@@ -29,7 +29,7 @@ var ServCmd = &cobra.Command{
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	ServCmd.Flags().StringVarP(&cfgFile, "config", "c", "dcp.yaml", "config file")
+	ServCmd.Flags().StringVarP(&cfgFile, "config", "c", "", "config file")
 	ServCmd.Flags().BoolVarP(&backendOnly, "backend-only", "b", false, "backend only")
 }
 
@@ -37,7 +37,6 @@ func initConfig() {
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
 	} else {
-
 		viper.SetConfigType("yaml")
 		viper.SetConfigName("dcp")
 	}

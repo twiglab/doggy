@@ -78,7 +78,7 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 			HttpsEnable: conf.SubsConf.Main.HttpsEnable,
 		},
 		Backups: backups,
-		MutiSub: conf.AutoRegConf.MutiSub,
+		MutiSub: conf.SubsConf.Muti,
 	}
 	h := pf.NewHandle(pf.WithDeviceRegister(autoSub))
 
