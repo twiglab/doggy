@@ -2,7 +2,6 @@ package pf
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 	"time"
 
@@ -132,17 +131,19 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 */
 
 func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	slog.InfoContext(ctx, "receive reg data",
-		slog.String("module", "AutoSub"),
-		slog.String("sn", data.SerialNumber),
-		slog.String("addr", data.IpAddr))
+	/*
+		slog.InfoContext(ctx, "receive reg data",
+			slog.String("module", "AutoSub"),
+			slog.String("sn", data.SerialNumber),
+			slog.String("addr", data.IpAddr))
+	*/
 
-	// go a.reg(ctx, data)
+	go a.reg(ctx, data)
 
 	return nil
 }
 
-func (a *AutoSub) reg(ctx context.Context, data holo.DeviceAutoRegisterData) error {
+func (a *AutoSub) reg(ctx context.Context, data holo.DeviceAutoRegisterData) {
 	slog.InfoContext(ctx, "receive reg data",
 		slog.String("module", "AutoSub"),
 		slog.String("sn", data.SerialNumber),
@@ -150,17 +151,28 @@ func (a *AutoSub) reg(ctx context.Context, data holo.DeviceAutoRegisterData) err
 
 	device, err := a.DeviceResolver.Resolve(ctx, data)
 	if err != nil {
-		return err
+		slog.ErrorContext(ctx, "device resolver error",
+			slog.String("sn", data.SerialNumber),
+			slog.Any("error", err),
+		)
+		return
 	}
 	defer device.Close()
 
 	ids, err := device.GetDeviceID(ctx)
 	if err != nil {
-		return err
+		slog.ErrorContext(ctx, "GetDeviceID error",
+			slog.String("sn", data.SerialNumber),
+			slog.Any("error", err),
+		)
+		return
 	}
 
 	if len(ids.IDs) < 1 {
-		return errors.New("not found device ids")
+		slog.ErrorContext(ctx, "not found device ids",
+			slog.String("sn", data.SerialNumber),
+		)
+		return
 	}
 
 	id := ids.IDs[0]
@@ -181,7 +193,11 @@ func (a *AutoSub) reg(ctx context.Context, data holo.DeviceAutoRegisterData) err
 				})
 
 			if err := holo.CheckErr(res, err); err != nil {
-				return err
+				slog.ErrorContext(ctx, "PutDeviceID error",
+					slog.String("sn", data.SerialNumber),
+					slog.Any("error", err),
+				)
+				return
 			}
 		}
 	} else {
@@ -191,7 +207,11 @@ func (a *AutoSub) reg(ctx context.Context, data holo.DeviceAutoRegisterData) err
 
 	subs, err := device.GetMetadataSubscription(ctx)
 	if err != nil {
-		return err
+		slog.ErrorContext(ctx, "GetMetadata error",
+			slog.String("sn", data.SerialNumber),
+			slog.Any("error", err),
+		)
+		return
 	}
 
 	if len(subs.Subscriptions) == 0 {
@@ -204,7 +224,12 @@ func (a *AutoSub) reg(ctx context.Context, data holo.DeviceAutoRegisterData) err
 
 		res, err := device.PostMetadataSubscription(ctx, a.MainSub)
 		if err := holo.CheckErr(res, err); err != nil {
-			return err
+			slog.ErrorContext(ctx, "PostMetadata main error",
+				slog.String("sn", data.SerialNumber),
+				slog.Any("meta", a.MainSub),
+				slog.Any("error", err),
+			)
+			return
 		}
 
 		if a.MutiSub != 0 {
@@ -216,13 +241,18 @@ func (a *AutoSub) reg(ctx context.Context, data holo.DeviceAutoRegisterData) err
 			for _, sub := range a.Backups {
 				res, err := device.PostMetadataSubscription(ctx, sub)
 				if err := holo.CheckErr(res, err); err != nil {
-					return err
+					slog.ErrorContext(ctx, "PostMetadata backup error",
+						slog.String("sn", data.SerialNumber),
+						slog.Any("meta", sub),
+						slog.Any("error", err),
+					)
+					return
 				}
 			}
 		}
 	}
 
-	return a.UploadHandler.HandleUpload(ctx, CameraUpload{
+	err = a.UploadHandler.HandleUpload(ctx, CameraUpload{
 		SN:     data.SerialNumber,
 		IpAddr: data.IpAddr,
 		Last:   time.Now(),
@@ -231,4 +261,11 @@ func (a *AutoSub) reg(ctx context.Context, data holo.DeviceAutoRegisterData) err
 		User:   device.User,
 		Pwd:    device.Pwd,
 	})
+
+	if err != nil {
+		slog.ErrorContext(ctx, "Upload error",
+			slog.String("sn", data.SerialNumber),
+			slog.Any("error", err),
+		)
+	}
 }
