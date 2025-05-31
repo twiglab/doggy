@@ -49,7 +49,7 @@ type BackendConf struct {
 }
 
 type JobConf struct {
-	Disable  int             `yaml:"disable" mapstructure:"disable"`
+	Enable   int             `yaml:"enable" mapstructure:"enable"`
 	Keeplive KeepliveJobConf `yaml:"keeplive" mapstructure:"keeplive"`
 }
 
@@ -199,6 +199,7 @@ func confCmd() {
 		},
 
 		JobConf: JobConf{
+			Enable: 0,
 			Keeplive: KeepliveJobConf{
 				Crontab: "*/10 * * * *",
 			},

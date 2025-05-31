@@ -85,16 +85,18 @@ func servCmd() {
 
 	var (
 		svr *hx.Svr
-		ctx context.Context
+		// ctx context.Context
 	)
 	if backendOnly {
-		ctx, svr = backendSvr(conf)
+		_, svr = backendSvr(conf)
 	} else {
-		ctx, svr = fullSvr(conf)
-		if conf.JobConf.Disable != 0 {
-			s := buildAllJob(ctx, conf)
-			s.Start()
-		}
+		_, svr = fullSvr(conf)
+		/*
+			if conf.JobConf.Enable != 0 {
+				s := buildAllJob(ctx, conf)
+				s.Start()
+			}
+		*/
 	}
 
 	if err := runSvr(svr, conf.ServerConf); err != nil {

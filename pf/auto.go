@@ -39,7 +39,7 @@ type AutoSub struct {
 }
 
 func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-	slog.DebugContext(ctx, "receive reg data",
+	slog.InfoContext(ctx, "receive reg data",
 		slog.String("module", "AutoSub"),
 		slog.String("sn", data.SerialNumber),
 		slog.String("addr", data.IpAddr))
@@ -63,8 +63,9 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 	if device.DeviceID != "" {
 		if device.DeviceID != id.DeviceID {
 
-			slog.DebugContext(ctx, "send device id",
+			slog.InfoContext(ctx, "send device id",
 				slog.String("deviceID", device.DeviceID),
+				slog.String("sn", data.SerialNumber),
 				slog.String("module", "AutoSub"),
 				slog.String("method", "AutoRegister"))
 
@@ -91,8 +92,9 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 
 	if len(subs.Subscriptions) == 0 {
 
-		slog.DebugContext(ctx, "send meta sub",
-			slog.Any("sub", a.MainSub),
+		slog.InfoContext(ctx, "send meta sub",
+			slog.Any("main", a.MainSub),
+			slog.String("sn", data.SerialNumber),
 			slog.String("module", "AutoSub"),
 			slog.String("method", "AutoRegister"))
 
@@ -102,6 +104,11 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 		}
 
 		if a.MutiSub != 0 {
+			slog.InfoContext(ctx, "send meta sub",
+				slog.Any("backups", a.Backups),
+				slog.String("sn", data.SerialNumber),
+				slog.String("module", "AutoSub"),
+				slog.String("method", "AutoRegister"))
 			for _, sub := range a.Backups {
 				res, err := device.PostMetadataSubscription(ctx, sub)
 				if err := holo.CheckErr(res, err); err != nil {

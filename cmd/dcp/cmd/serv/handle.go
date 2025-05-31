@@ -36,6 +36,17 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	eh := ctx.Value(key_eh).(pf.UploadHandler)
 	fixUser := ctx.Value(keyCmdb).(pf.DeviceResolver)
 
+	var backups []holo.SubscriptionReq
+	for _, b := range conf.SubsConf.Backups {
+		backups = append(backups, holo.SubscriptionReq{
+			Address:     b.Addr,
+			Port:        b.Port,
+			MetadataURL: b.MetadataURL,
+			TimeOut:     b.TimeOut,
+			HttpsEnable: b.HttpsEnable,
+		})
+	}
+
 	autoSub := &pf.AutoSub{
 		DeviceResolver: fixUser,
 		UploadHandler:  eh,
@@ -47,6 +58,8 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 			TimeOut:     conf.SubsConf.Main.TimeOut,
 			HttpsEnable: conf.SubsConf.Main.HttpsEnable,
 		},
+		Backups: backups,
+		MutiSub: conf.AutoRegConf.MutiSub,
 	}
 	h := pf.NewHandle(pf.WithDeviceRegister(autoSub))
 
