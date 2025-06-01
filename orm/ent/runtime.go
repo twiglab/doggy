@@ -70,20 +70,12 @@ func init() {
 	upload.DefaultLastTime = uploadDescLastTime.Default.(func() time.Time)
 	// upload.UpdateDefaultLastTime holds the default value on update for the last_time field.
 	upload.UpdateDefaultLastTime = uploadDescLastTime.UpdateDefault.(func() time.Time)
-	// uploadDescID1 is the schema descriptor for id_1 field.
-	uploadDescID1 := uploadFields[3].Descriptor()
-	// upload.ID1Validator is a validator for the "id_1" field. It is called by the builders before save.
-	upload.ID1Validator = uploadDescID1.Validators[0].(func(string) error)
-	// uploadDescCode1 is the schema descriptor for code_1 field.
-	uploadDescCode1 := uploadFields[4].Descriptor()
-	// upload.Code1Validator is a validator for the "code_1" field. It is called by the builders before save.
-	upload.Code1Validator = uploadDescCode1.Validators[0].(func(string) error)
 	// uploadDescUser is the schema descriptor for user field.
-	uploadDescUser := uploadFields[5].Descriptor()
+	uploadDescUser := uploadFields[3].Descriptor()
 	// upload.UserValidator is a validator for the "user" field. It is called by the builders before save.
 	upload.UserValidator = uploadDescUser.Validators[0].(func(string) error)
 	// uploadDescPwd is the schema descriptor for pwd field.
-	uploadDescPwd := uploadFields[6].Descriptor()
+	uploadDescPwd := uploadFields[4].Descriptor()
 	// upload.PwdValidator is a validator for the "pwd" field. It is called by the builders before save.
 	upload.PwdValidator = uploadDescPwd.Validators[0].(func(string) error)
 }

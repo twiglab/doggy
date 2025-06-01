@@ -27,7 +27,7 @@ func init() {
 }
 
 func reboot(_ *cobra.Command, _ []string) {
-	dev, _ := holo.OpenDevice(addr, user, pwd)
+	dev, _ := holo.OpenDevice("", addr, user, pwd)
 	defer dev.Close()
 
 	resp, err := dev.Reboot(context.Background())

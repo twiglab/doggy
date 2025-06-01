@@ -76,34 +76,6 @@ func (uc *UploadCreate) SetNillableLastTime(t *time.Time) *UploadCreate {
 	return uc
 }
 
-// SetID1 sets the "id_1" field.
-func (uc *UploadCreate) SetID1(s string) *UploadCreate {
-	uc.mutation.SetID1(s)
-	return uc
-}
-
-// SetNillableID1 sets the "id_1" field if the given value is not nil.
-func (uc *UploadCreate) SetNillableID1(s *string) *UploadCreate {
-	if s != nil {
-		uc.SetID1(*s)
-	}
-	return uc
-}
-
-// SetCode1 sets the "code_1" field.
-func (uc *UploadCreate) SetCode1(s string) *UploadCreate {
-	uc.mutation.SetCode1(s)
-	return uc
-}
-
-// SetNillableCode1 sets the "code_1" field if the given value is not nil.
-func (uc *UploadCreate) SetNillableCode1(s *string) *UploadCreate {
-	if s != nil {
-		uc.SetCode1(*s)
-	}
-	return uc
-}
-
 // SetUser sets the "user" field.
 func (uc *UploadCreate) SetUser(s string) *UploadCreate {
 	uc.mutation.SetUser(s)
@@ -208,16 +180,6 @@ func (uc *UploadCreate) check() error {
 	if _, ok := uc.mutation.LastTime(); !ok {
 		return &ValidationError{Name: "last_time", err: errors.New(`ent: missing required field "Upload.last_time"`)}
 	}
-	if v, ok := uc.mutation.ID1(); ok {
-		if err := upload.ID1Validator(v); err != nil {
-			return &ValidationError{Name: "id_1", err: fmt.Errorf(`ent: validator failed for field "Upload.id_1": %w`, err)}
-		}
-	}
-	if v, ok := uc.mutation.Code1(); ok {
-		if err := upload.Code1Validator(v); err != nil {
-			return &ValidationError{Name: "code_1", err: fmt.Errorf(`ent: validator failed for field "Upload.code_1": %w`, err)}
-		}
-	}
 	if v, ok := uc.mutation.User(); ok {
 		if err := upload.UserValidator(v); err != nil {
 			return &ValidationError{Name: "user", err: fmt.Errorf(`ent: validator failed for field "Upload.user": %w`, err)}
@@ -274,14 +236,6 @@ func (uc *UploadCreate) createSpec() (*Upload, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.LastTime(); ok {
 		_spec.SetField(upload.FieldLastTime, field.TypeTime, value)
 		_node.LastTime = value
-	}
-	if value, ok := uc.mutation.ID1(); ok {
-		_spec.SetField(upload.FieldID1, field.TypeString, value)
-		_node.ID1 = value
-	}
-	if value, ok := uc.mutation.Code1(); ok {
-		_spec.SetField(upload.FieldCode1, field.TypeString, value)
-		_node.Code1 = value
 	}
 	if value, ok := uc.mutation.User(); ok {
 		_spec.SetField(upload.FieldUser, field.TypeString, value)
@@ -376,42 +330,6 @@ func (u *UploadUpsert) SetLastTime(v time.Time) *UploadUpsert {
 // UpdateLastTime sets the "last_time" field to the value that was provided on create.
 func (u *UploadUpsert) UpdateLastTime() *UploadUpsert {
 	u.SetExcluded(upload.FieldLastTime)
-	return u
-}
-
-// SetID1 sets the "id_1" field.
-func (u *UploadUpsert) SetID1(v string) *UploadUpsert {
-	u.Set(upload.FieldID1, v)
-	return u
-}
-
-// UpdateID1 sets the "id_1" field to the value that was provided on create.
-func (u *UploadUpsert) UpdateID1() *UploadUpsert {
-	u.SetExcluded(upload.FieldID1)
-	return u
-}
-
-// ClearID1 clears the value of the "id_1" field.
-func (u *UploadUpsert) ClearID1() *UploadUpsert {
-	u.SetNull(upload.FieldID1)
-	return u
-}
-
-// SetCode1 sets the "code_1" field.
-func (u *UploadUpsert) SetCode1(v string) *UploadUpsert {
-	u.Set(upload.FieldCode1, v)
-	return u
-}
-
-// UpdateCode1 sets the "code_1" field to the value that was provided on create.
-func (u *UploadUpsert) UpdateCode1() *UploadUpsert {
-	u.SetExcluded(upload.FieldCode1)
-	return u
-}
-
-// ClearCode1 clears the value of the "code_1" field.
-func (u *UploadUpsert) ClearCode1() *UploadUpsert {
-	u.SetNull(upload.FieldCode1)
 	return u
 }
 
@@ -538,48 +456,6 @@ func (u *UploadUpsertOne) SetLastTime(v time.Time) *UploadUpsertOne {
 func (u *UploadUpsertOne) UpdateLastTime() *UploadUpsertOne {
 	return u.Update(func(s *UploadUpsert) {
 		s.UpdateLastTime()
-	})
-}
-
-// SetID1 sets the "id_1" field.
-func (u *UploadUpsertOne) SetID1(v string) *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.SetID1(v)
-	})
-}
-
-// UpdateID1 sets the "id_1" field to the value that was provided on create.
-func (u *UploadUpsertOne) UpdateID1() *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.UpdateID1()
-	})
-}
-
-// ClearID1 clears the value of the "id_1" field.
-func (u *UploadUpsertOne) ClearID1() *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.ClearID1()
-	})
-}
-
-// SetCode1 sets the "code_1" field.
-func (u *UploadUpsertOne) SetCode1(v string) *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.SetCode1(v)
-	})
-}
-
-// UpdateCode1 sets the "code_1" field to the value that was provided on create.
-func (u *UploadUpsertOne) UpdateCode1() *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.UpdateCode1()
-	})
-}
-
-// ClearCode1 clears the value of the "code_1" field.
-func (u *UploadUpsertOne) ClearCode1() *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.ClearCode1()
 	})
 }
 
@@ -878,48 +754,6 @@ func (u *UploadUpsertBulk) SetLastTime(v time.Time) *UploadUpsertBulk {
 func (u *UploadUpsertBulk) UpdateLastTime() *UploadUpsertBulk {
 	return u.Update(func(s *UploadUpsert) {
 		s.UpdateLastTime()
-	})
-}
-
-// SetID1 sets the "id_1" field.
-func (u *UploadUpsertBulk) SetID1(v string) *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.SetID1(v)
-	})
-}
-
-// UpdateID1 sets the "id_1" field to the value that was provided on create.
-func (u *UploadUpsertBulk) UpdateID1() *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.UpdateID1()
-	})
-}
-
-// ClearID1 clears the value of the "id_1" field.
-func (u *UploadUpsertBulk) ClearID1() *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.ClearID1()
-	})
-}
-
-// SetCode1 sets the "code_1" field.
-func (u *UploadUpsertBulk) SetCode1(v string) *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.SetCode1(v)
-	})
-}
-
-// UpdateCode1 sets the "code_1" field to the value that was provided on create.
-func (u *UploadUpsertBulk) UpdateCode1() *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.UpdateCode1()
-	})
-}
-
-// ClearCode1 clears the value of the "code_1" field.
-func (u *UploadUpsertBulk) ClearCode1() *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.ClearCode1()
 	})
 }
 

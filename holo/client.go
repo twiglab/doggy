@@ -10,16 +10,14 @@ type Device struct {
 	address string
 	client  *req.Client
 
-	SN       string
-	UUID     string
-	DeviceID string
-	User     string
-	Pwd      string
+	SN   string
+	User string
+	Pwd  string
 }
 
-func OpenDevice(addr, username, password string) (*Device, error) {
+func OpenDevice(sn, addr, username, password string) (*Device, error) {
 	c := req.C().
-		SetUserAgent("doggy").
+		SetUserAgent("doggy client").
 		EnableInsecureSkipVerify().
 		DisableCompression().
 		SetCommonDigestAuth(username, password)
@@ -27,8 +25,10 @@ func OpenDevice(addr, username, password string) (*Device, error) {
 	return &Device{
 		client:  c,
 		address: addr,
-		User:    username,
-		Pwd:     password,
+
+		SN:   sn,
+		User: username,
+		Pwd:  password,
 	}, nil
 }
 

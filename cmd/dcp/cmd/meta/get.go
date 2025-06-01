@@ -26,7 +26,7 @@ func init() {
 }
 
 func metaGet(_ *cobra.Command, _ []string) {
-	dev, _ := holo.OpenDevice(addr, user, pwd)
+	dev, _ := holo.OpenDevice("", addr, user, pwd)
 	defer dev.Close()
 
 	subs, err := dev.GetMetadataSubscription(context.Background())

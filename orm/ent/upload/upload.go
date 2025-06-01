@@ -23,10 +23,6 @@ const (
 	FieldIP = "ip"
 	// FieldLastTime holds the string denoting the last_time field in the database.
 	FieldLastTime = "last_time"
-	// FieldID1 holds the string denoting the id_1 field in the database.
-	FieldID1 = "id_1"
-	// FieldCode1 holds the string denoting the code_1 field in the database.
-	FieldCode1 = "code_1"
 	// FieldUser holds the string denoting the user field in the database.
 	FieldUser = "user"
 	// FieldPwd holds the string denoting the pwd field in the database.
@@ -43,8 +39,6 @@ var Columns = []string{
 	FieldSn,
 	FieldIP,
 	FieldLastTime,
-	FieldID1,
-	FieldCode1,
 	FieldUser,
 	FieldPwd,
 }
@@ -74,10 +68,6 @@ var (
 	DefaultLastTime func() time.Time
 	// UpdateDefaultLastTime holds the default value on update for the "last_time" field.
 	UpdateDefaultLastTime func() time.Time
-	// ID1Validator is a validator for the "id_1" field. It is called by the builders before save.
-	ID1Validator func(string) error
-	// Code1Validator is a validator for the "code_1" field. It is called by the builders before save.
-	Code1Validator func(string) error
 	// UserValidator is a validator for the "user" field. It is called by the builders before save.
 	UserValidator func(string) error
 	// PwdValidator is a validator for the "pwd" field. It is called by the builders before save.
@@ -115,16 +105,6 @@ func ByIP(opts ...sql.OrderTermOption) OrderOption {
 // ByLastTime orders the results by the last_time field.
 func ByLastTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLastTime, opts...).ToFunc()
-}
-
-// ByID1 orders the results by the id_1 field.
-func ByID1(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldID1, opts...).ToFunc()
-}
-
-// ByCode1 orders the results by the code_1 field.
-func ByCode1(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCode1, opts...).ToFunc()
 }
 
 // ByUser orders the results by the user field.

@@ -40,7 +40,7 @@ func fromString(s string) holo.DeviceID {
 }
 
 func setid(args []string) {
-	dev, _ := holo.OpenDevice(addr, user, pwd)
+	dev, _ := holo.OpenDevice("", addr, user, pwd)
 	defer dev.Close()
 
 	var ids []holo.DeviceID

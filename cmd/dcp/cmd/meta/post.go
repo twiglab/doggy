@@ -37,7 +37,7 @@ func metaPost(_ *cobra.Command, _ []string) {
 		url  *url.URL
 	)
 
-	dev, _ := holo.OpenDevice(addr, user, pwd)
+	dev, _ := holo.OpenDevice("", addr, user, pwd)
 	defer dev.Close()
 
 	if url, err = url.Parse(metadataURL); err != nil {

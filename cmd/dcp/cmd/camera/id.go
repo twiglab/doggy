@@ -27,7 +27,7 @@ func init() {
 }
 
 func getid() {
-	dev, _ := holo.OpenDevice(addr, user, pwd)
+	dev, _ := holo.OpenDevice("", addr, user, pwd)
 	defer dev.Close()
 
 	resp, err := dev.GetDeviceID(context.Background())
@@ -36,14 +36,9 @@ func getid() {
 		log.Fatal(err)
 	}
 
-	for _, id := range resp.IDs {
-		fmt.Printf("uuid = deviceID\n")
-		fmt.Printf("---------------\n")
-		fmt.Printf("%s = %s\n", id.UUID, id.DeviceID)
-	}
-		fmt.Printf("---------------\n")
+	fmt.Printf("---------------\n")
 
-		enc:=json.NewEncoder(os.Stdout)
-		enc.SetIndent("","  ")
-		enc.Encode(resp)
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "  ")
+	enc.Encode(resp)
 }

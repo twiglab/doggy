@@ -2,7 +2,6 @@ package pf
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 	"time"
 
@@ -50,41 +49,6 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 	}
 	defer device.Close()
 
-	ids, err := device.GetDeviceID(ctx)
-	if err != nil {
-		return err
-	}
-
-	if len(ids.IDs) < 1 {
-		return errors.New("not found device ids")
-	}
-
-	id := ids.IDs[0]
-	if device.DeviceID != "" {
-		if device.DeviceID != id.DeviceID {
-
-			slog.InfoContext(ctx, "send device id",
-				slog.String("deviceID", device.DeviceID),
-				slog.String("sn", data.SerialNumber),
-				slog.String("module", "AutoSub"),
-				slog.String("method", "AutoRegister"))
-
-			res, err := device.PutDeviceID(ctx,
-				holo.DeviceIDList{
-					IDs: []holo.DeviceID{
-						{UUID: id.UUID, DeviceID: device.DeviceID},
-					},
-				})
-
-			if err := holo.CheckErr(res, err); err != nil {
-				return err
-			}
-		}
-	} else {
-		device.DeviceID = id.DeviceID
-		device.UUID = id.UUID
-	}
-
 	subs, err := device.GetMetadataSubscription(ctx)
 	if err != nil {
 		return err
@@ -122,8 +86,6 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 		SN:     data.SerialNumber,
 		IpAddr: data.IpAddr,
 		Last:   time.Now(),
-		UUID1:  device.UUID,
-		Code1:  device.DeviceID,
 		User:   device.User,
 		Pwd:    device.Pwd,
 	})

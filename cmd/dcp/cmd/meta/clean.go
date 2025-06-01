@@ -30,7 +30,7 @@ func metaCLean(_ *cobra.Command, _ []string) {
 		err error
 	)
 
-	dev, _ := holo.OpenDevice(addr, user, pwd)
+	dev, _ := holo.OpenDevice("", addr, user, pwd)
 	defer dev.Close()
 
 	var resp *holo.CommonResponse

@@ -20,16 +20,14 @@ func (a *AutoReg) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 			slog.String("sn", data.SerialNumber),
 			slog.Any("error", err),
 		)
-
 		return err
 	}
 	defer device.Close()
+
 	return a.UploadHandler.HandleUpload(ctx, CameraUpload{
 		SN:     data.SerialNumber,
 		IpAddr: data.IpAddr,
 		Last:   time.Now(),
-		UUID1:  device.UUID,
-		Code1:  device.DeviceID,
 		User:   device.User,
 		Pwd:    device.Pwd,
 	})
