@@ -62,17 +62,17 @@ func printConf(conf AppConf) {
 	fmt.Println("--------------------")
 }
 
-func backendMux(conf AppConf) (context.Context, http.Handler) {
+func backendMux(conf AppConf) http.Handler {
 	_, ctx := buildRootlogger(context.Background(), conf)
 	_, ctx = buildBackend(ctx, conf)
 	mux := BackendHandler(ctx, conf)
-	return ctx, mux
+	return mux
 }
 
-func fullMux(conf AppConf) (context.Context, http.Handler) {
+func fullMux(conf AppConf) http.Handler {
 	ctx := buildAll(context.Background(), conf)
 	mux := FullHandler(ctx, conf)
-	return ctx, mux
+	return mux
 }
 
 func servCmd() {
@@ -84,21 +84,11 @@ func servCmd() {
 
 	printConf(conf)
 
-	var (
-		mux http.Handler
-
-		// ctx context.Context
-	)
+	var mux http.Handler
 	if backendOnly {
-		_, mux = backendMux(conf)
+		mux = backendMux(conf)
 	} else {
-		_, mux = fullMux(conf)
-		/*
-			if conf.JobConf.Enable != 0 {
-				s := buildAllJob(ctx, conf)
-				s.Start()
-			}
-		*/
+		mux = fullMux(conf)
 	}
 
 	svr := &http.Server{

@@ -49,11 +49,6 @@ type BackendConf struct {
 	TaosDBConf TaosDBConf `yaml:"taos" mapstructure:"taos"`
 }
 
-type JobConf struct {
-	Enable   int             `yaml:"enable" mapstructure:"enable"`
-	Keeplive KeepliveJobConf `yaml:"keeplive" mapstructure:"keeplive"`
-}
-
 type CameraDBConf struct {
 	CsvCameraDB CsvCameraDB `yaml:"csvdb" mapstructure:"csvdb"`
 }
@@ -84,7 +79,6 @@ type AppConf struct {
 	BackendConf  BackendConf  `yaml:"backend" mapstructure:"backend"`
 	CameraDBConf CameraDBConf `yaml:"camera-db" mapstructure:"camera-db"`
 	DBConf       DBConf       `yaml:"db" mapstructure:"db"`
-	JobConf      JobConf      `yaml:"job" mapstructure:"job"`
 }
 
 func MustEntClient(dbconf DBConf) *ent.Client {
@@ -189,13 +183,6 @@ func confCmd() {
 		DBConf: DBConf{
 			Name: "sqlite3",
 			DSN:  "repo/dcp.db",
-		},
-
-		JobConf: JobConf{
-			Enable: 0,
-			Keeplive: KeepliveJobConf{
-				Crontab: "*/10 * * * *",
-			},
 		},
 	}
 
