@@ -34,7 +34,7 @@ type AutoSub struct {
 
 	MainSub holo.SubscriptionReq
 	Backups []holo.SubscriptionReq
-	MutiSub int
+	Muti    int
 }
 
 func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
@@ -49,34 +49,35 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 	}
 	defer device.Close()
 
-	subs, err := device.GetMetadataSubscription(ctx)
-	if err != nil {
-		return err
-	}
-
-	if len(subs.Subscriptions) == 0 {
-
-		slog.InfoContext(ctx, "send meta sub",
-			slog.Any("main", a.MainSub),
-			slog.String("sn", data.SerialNumber),
-			slog.String("module", "AutoSub"),
-			slog.String("method", "AutoRegister"))
-
-		res, err := device.PostMetadataSubscription(ctx, a.MainSub)
-		if err := holo.CheckErr(res, err); err != nil {
+	if a.Muti > 0 {
+		subs, err := device.GetMetadataSubscription(ctx)
+		if err != nil {
 			return err
 		}
+		if len(subs.Subscriptions) == 0 {
 
-		if a.MutiSub != 0 {
 			slog.InfoContext(ctx, "send meta sub",
-				slog.Any("backups", a.Backups),
+				slog.Any("main", a.MainSub),
 				slog.String("sn", data.SerialNumber),
 				slog.String("module", "AutoSub"),
 				slog.String("method", "AutoRegister"))
-			for _, sub := range a.Backups {
-				res, err := device.PostMetadataSubscription(ctx, sub)
-				if err := holo.CheckErr(res, err); err != nil {
-					return err
+
+			res, err := device.PostMetadataSubscription(ctx, a.MainSub)
+			if err := holo.CheckErr(res, err); err != nil {
+				return err
+			}
+
+			if a.Muti > 1 {
+				slog.InfoContext(ctx, "send meta sub",
+					slog.Any("backups", a.Backups),
+					slog.String("sn", data.SerialNumber),
+					slog.String("module", "AutoSub"),
+					slog.String("method", "AutoRegister"))
+				for _, sub := range a.Backups {
+					res, err := device.PostMetadataSubscription(ctx, sub)
+					if err := holo.CheckErr(res, err); err != nil {
+						return err
+					}
 				}
 			}
 		}

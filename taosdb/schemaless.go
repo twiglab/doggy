@@ -11,28 +11,28 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
-type Schemaless struct {
-	schemaless *schemaless.Schemaless
+type Liver interface {
+	SetTTL(string, int64)
 }
 
-func NewSchemaless(conf Config) (*Schemaless, error) {
-	url := schemalessURL(conf)
+type nLove struct{}
 
-	sc := schemaless.NewConfig(url, 1,
-		schemaless.SetDb(conf.DBName),
-		schemaless.SetAutoReconnect(true),
-		schemaless.SetUser(conf.Username),
-		schemaless.SetPassword(conf.Password),
-		schemaless.SetReadTimeout(5*time.Second),
-		schemaless.SetWriteTimeout(5*time.Second),
-	)
+func (*nLove) SetTTL(_ string, _ int64) {}
 
-	s, err := schemaless.NewSchemaless(sc)
-	if err != nil {
-		return nil, err
+type Schemaless struct {
+	schemaless *schemaless.Schemaless
+	live       Liver
+}
+
+func NewSchLe(s *schemaless.Schemaless) *Schemaless {
+	return &Schemaless{
+		schemaless: s,
+		live:       &nLove{},
 	}
+}
 
-	return &Schemaless{schemaless: s}, nil
+func (s *Schemaless) SetLiver(l Liver) {
+	s.live = l
 }
 
 func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data holo.HumanMix) error {
@@ -58,7 +58,7 @@ func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data h
 	enc.AddTag(TAG_UUID, common.UUID)
 	enc.AddField(FIELD_COUNT_IN, lineprotocol.MustNewValue(int64(data.HumanCountIn)))
 	enc.AddField(FIELD_COUNT_OUT, lineprotocol.MustNewValue(int64(data.HumanCountOut)))
-	enc.EndLine(holo.MilliToTime(data.EndTime, data.TimeZone))
+	enc.EndLine(end)
 
 	if err := enc.Err(); err != nil {
 		return err
@@ -66,6 +66,7 @@ func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data h
 
 	bs := enc.Bytes()
 	line := bytesToStr(bs)
+	s.live.SetTTL(common.UUID, end.UnixMilli())
 
 	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_MILLI_SECONDS, 0, 0)
 }

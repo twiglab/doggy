@@ -120,7 +120,7 @@ func (r *CsvCameraDB) GetByUUID(uuid string) (data cameraData, ok bool) {
 	return
 }
 
-func (r *CsvCameraDB) SetLive(sn string, time int64) {
+func (r *CsvCameraDB) SetTTL(sn string, time int64) {
 	r.liveMap[sn] = time
 }
 

@@ -96,14 +96,14 @@ func MustEntClient(dbconf DBConf) *ent.Client {
 }
 
 func MustOpenTaosDB(conf AppConf) *sql.DB {
-	db, err := taosdb.OpenDB(taosdb.Config{
-		Addr:     conf.BackendConf.TaosDBConf.Addr,
-		Port:     conf.BackendConf.TaosDBConf.Port,
-		Protocol: conf.BackendConf.TaosDBConf.Protocol,
-		Username: conf.BackendConf.TaosDBConf.Username,
-		Password: conf.BackendConf.TaosDBConf.Password,
-		DBName:   conf.BackendConf.TaosDBConf.DBName,
-	})
+	drv, dsn := taosdb.TaosDSN(
+		conf.BackendConf.TaosDBConf.Username,
+		conf.BackendConf.TaosDBConf.Password,
+		conf.BackendConf.TaosDBConf.Addr,
+		conf.BackendConf.TaosDBConf.Port,
+		conf.BackendConf.TaosDBConf.DBName,
+	)
+	db, err := sql.Open(drv, dsn)
 	if err != nil {
 		log.Fatal(err)
 	}

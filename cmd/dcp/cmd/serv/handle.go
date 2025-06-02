@@ -28,32 +28,9 @@ func outHandle(ctx context.Context, conf AppConf) http.Handler {
 	return out.OutHandle(out.NewOutServ(&out.UnimplOut{}))
 }
 
-func pfTestHandle() http.Handler {
-	return pf.PlatformHandle(pf.NewHandle())
-}
-
-func pfHandle2(ctx context.Context, conf AppConf) http.Handler {
-	uh := ctx.Value(key_eh).(pf.UploadHandler)
-	resolver := ctx.Value(keyCmdb).(pf.DeviceResolver)
-
-	autoReg := &pf.AutoReg{
-		DeviceResolver: resolver,
-		UploadHandler:  uh,
-	}
-	h := pf.NewHandle(pf.WithDeviceRegister(autoReg))
-
-	if backendName(conf) != bNameNone {
-		backend := ctx.Value(keyBackend).(pfh)
-		h.SetCountHandler(backend)
-		h.SetDensityHandler(backend)
-	}
-
-	return pf.PlatformHandle(h)
-}
-
 func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	uh := ctx.Value(key_eh).(pf.UploadHandler)
-	resolver := ctx.Value(keyCmdb).(pf.DeviceResolver)
+	cmdb := ctx.Value(keyCmdb).(*pf.CsvCameraDB)
 
 	var backups []holo.SubscriptionReq
 	for _, b := range conf.SubsConf.Backups {
@@ -67,7 +44,7 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	}
 
 	autoSub := &pf.AutoSub{
-		DeviceResolver: resolver,
+		DeviceResolver: cmdb,
 		UploadHandler:  uh,
 
 		MainSub: holo.SubscriptionReq{
@@ -78,12 +55,13 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 			HttpsEnable: conf.SubsConf.Main.HttpsEnable,
 		},
 		Backups: backups,
-		MutiSub: conf.SubsConf.Muti,
+		Muti:    conf.SubsConf.Muti,
 	}
 	h := pf.NewHandle(pf.WithDeviceRegister(autoSub))
 
 	if backendName(conf) != bNameNone {
-		backend := ctx.Value(keyBackend).(pfh)
+		backend := ctx.Value(keyBackend).(*taosdb.Schemaless)
+		backend.SetLiver(cmdb)
 		h.SetCountHandler(backend)
 		h.SetDensityHandler(backend)
 	}
@@ -93,27 +71,21 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 
 func pfBackendHandle(ctx context.Context, conf AppConf) http.Handler {
 	h := pf.NewHandle()
-
 	if backendName(conf) != bNameNone {
 		backend := ctx.Value(keyBackend).(pfh)
 		h.SetCountHandler(backend)
 		h.SetDensityHandler(backend)
 	}
-
 	return pf.PlatformHandle(h)
 }
 
 func FullHandler(ctx context.Context, conf AppConf) http.Handler {
 	mux := chi.NewMux()
 	mux.Use(middleware.Recoverer)
-	mux.Mount("/", pfTestHandle())
 	mux.Mount("/pf", pfHandle(ctx, conf))
 	mux.Mount("/admin", pageHandle(ctx, conf))
-
 	mux.Mount("/debug", middleware.Profiler())
-
 	mux.Mount("/jsonrpc", outHandle(ctx, conf))
-
 	return mux
 }
 
@@ -123,6 +95,5 @@ func BackendHandler(ctx context.Context, conf AppConf) http.Handler {
 	mux.Mount("/pf", pfBackendHandle(ctx, conf))
 	mux.Mount("/debug", middleware.Profiler())
 	mux.Mount("/jsonrpc", outHandle(ctx, conf))
-
 	return mux
 }

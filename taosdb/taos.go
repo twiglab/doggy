@@ -29,22 +29,13 @@ const (
 	TSDB_SML_TIMESTAMP_NANO_SECONDS  = "ns"
 )
 
-type Config struct {
-	Addr     string
-	Port     int
-	Protocol string
-	Username string
-	Password string
-	DBName   string
-}
-
-func db(conf Config) (string, string) {
-	dns := fmt.Sprintf("%s:%s@ws(%s:%d)/%s", conf.Username, conf.Password, conf.Addr, conf.Port, conf.DBName)
+func TaosDSN(user, pwd, addr string, port int, dbname string) (string, string) {
+	dns := fmt.Sprintf("%s:%s@ws(%s:%d)/%s", user, pwd, addr, port, dbname)
 	return "taosWS", dns
 }
 
-func schemalessURL(conf Config) string {
-	return fmt.Sprintf("ws://%s:%d", conf.Addr, conf.Port)
+func SchemalessURL(addr string, port int) string {
+	return fmt.Sprintf("ws://%s:%d", addr, port)
 }
 
 func bytesToStr(bs []byte) string {

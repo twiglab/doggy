@@ -37,10 +37,8 @@ func sumSQL(start, end int64, tables []string) string {
 	return fmt.Sprintf(sum_sql, start, end, inStr)
 }
 
-func OpenDB(conf Config) (*sql.DB, error) {
-	driverName, dsn := db(conf)
-
-	db, err := sql.Open(driverName, dsn)
+func OpenTaos(drv, dsn string) (*sql.DB, error) {
+	db, err := sql.Open(drv, dsn)
 	if err != nil {
 		return nil, err
 	}
