@@ -12,23 +12,23 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
-type cameraData struct {
-	sn  string
-	mac string
+type CameraData struct {
+	SN  string
+	Mac string
 
-	uuid     string
-	deviceID string
+	UUID     string
+	DeviceID string
 
-	user string
-	pwd  string
+	User string
+	Pwd  string
 }
 
-func buildCamera(rows []string) cameraData {
-	return cameraData{
-		sn:       rows[0],
-		mac:      rows[1],
-		uuid:     rows[2],
-		deviceID: rows[3],
+func buildCamera(rows []string) CameraData {
+	return CameraData{
+		SN:       rows[0],
+		Mac:      rows[1],
+		UUID:     rows[2],
+		DeviceID: rows[3],
 	}
 }
 
@@ -37,8 +37,8 @@ type CsvCameraDB struct {
 	Pwd  string
 
 	csvFile string
-	snMap   map[string]cameraData
-	uuidMap map[string]cameraData
+	snMap   map[string]CameraData
+	uuidMap map[string]CameraData
 
 	liveMap map[string]int64
 
@@ -54,9 +54,9 @@ func NewCsvCameraDB(csvFile, user, pwd string) *CsvCameraDB {
 	}
 }
 
-func (r *CsvCameraDB) load(ctx context.Context) (map[string]cameraData, map[string]cameraData, error) {
-	snMap := make(map[string]cameraData)
-	uuidMap := make(map[string]cameraData)
+func (r *CsvCameraDB) load(ctx context.Context) (map[string]CameraData, map[string]CameraData, error) {
+	snMap := make(map[string]CameraData)
+	uuidMap := make(map[string]CameraData)
 
 	if r.csvFile == "" {
 		slog.InfoContext(ctx, "no csv file")
@@ -80,8 +80,8 @@ func (r *CsvCameraDB) load(ctx context.Context) (map[string]cameraData, map[stri
 			return snMap, uuidMap, err
 		}
 		device := buildCamera(rows)
-		snMap[device.sn] = device
-		uuidMap[device.uuid] = device
+		snMap[device.SN] = device
+		uuidMap[device.UUID] = device
 	}
 
 	slog.InfoContext(ctx, "cameradb", slog.Int("size", len(snMap)))
@@ -104,24 +104,32 @@ func (r *CsvCameraDB) Load(ctx context.Context) error {
 	return nil
 }
 
-func (r *CsvCameraDB) GetBySn(sn string) (data cameraData, ok bool) {
+func (r *CsvCameraDB) GetBySn(sn string) (data CameraData) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	data, ok = r.snMap[sn]
+	data = r.snMap[sn]
 	return
 }
 
-func (r *CsvCameraDB) GetByUUID(uuid string) (data cameraData, ok bool) {
+func (r *CsvCameraDB) GetByUUID(uuid string) (data CameraData) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	data, ok = r.uuidMap[uuid]
+	data = r.uuidMap[uuid]
 	return
 }
 
-func (r *CsvCameraDB) SetTTL(sn string, time int64) {
-	r.liveMap[sn] = time
+func (r *CsvCameraDB) SetTTL(uuid string, time int64) {
+	r.liveMap[uuid] = time
+}
+
+func (r *CsvCameraDB) GetTTL(uuid string) int64 {
+	i, b := r.liveMap[uuid]
+	if b {
+		return i
+	}
+	return 0
 }
 
 func (r *CsvCameraDB) Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error) {

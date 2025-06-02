@@ -14,12 +14,13 @@ import (
 )
 
 func pageHandle(ctx context.Context, _ AppConf) http.Handler {
-	loader := ctx.Value(key_eh).(pf.DeviceLoader)
-	p := page.NewPage(loader)
+	loader := ctx.Value(key_eh).(page.Loader)
+	cmdb := ctx.Value(keyCmdb).(*pf.CsvCameraDB)
+	p := page.NewPage(loader, cmdb)
 	return page.AdminPage(p)
 }
 
-func outHandle(ctx context.Context, conf AppConf) http.Handler {
+func outHandle(_ context.Context, conf AppConf) http.Handler {
 	switch backendName(conf) {
 	case bNameTaos:
 		db := MustOpenTaosDB(conf)

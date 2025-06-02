@@ -13,21 +13,45 @@ type Loader interface {
 	All(context.Context) ([]pf.CameraUpload, error)
 }
 
-type Page struct {
-	tpl    *template.Template
-	loader Loader
+type Item struct {
+	Upload pf.CameraUpload
+	Data   pf.CameraData
+	TTL    int64
 }
 
-func NewPage(loader Loader) *Page {
+type Page struct {
+	tpl    *template.Template
+	Loader Loader
+	Cmdb   *pf.CsvCameraDB
+}
+
+func (v *Page) All(ctx context.Context) ([]Item, error) {
+	uploads, err := v.Loader.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var items []Item
+	for _, u := range uploads {
+		data := v.Cmdb.GetBySn(u.SN)
+		ttl := v.Cmdb.GetTTL(data.UUID)
+		items = append(items, Item{TTL: ttl, Upload: u, Data: data})
+	}
+
+	return items, nil
+}
+
+func NewPage(loader Loader, cmdb *pf.CsvCameraDB) *Page {
 	return &Page{
 		tpl:    template.Must(template.ParseFS(tplFS, "tpl/*.tpl")),
-		loader: loader,
+		Loader: loader,
+		Cmdb:   cmdb,
 	}
 }
 
 func ListPage(page *Page) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		devices, err := page.loader.All(r.Context())
+		devices, err := page.All(r.Context())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
