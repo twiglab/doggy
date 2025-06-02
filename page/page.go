@@ -1,6 +1,7 @@
 package page
 
 import (
+	"context"
 	"html/template"
 	"net/http"
 
@@ -9,7 +10,7 @@ import (
 )
 
 type Loader interface {
-	pf.DeviceLoader
+	All(context.Context) ([]pf.CameraUpload, error)
 }
 
 type Page struct {

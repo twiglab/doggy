@@ -113,7 +113,7 @@ func d3252() {
 		}
 	})
 
-	cron.AddDurationFunc(time.Minute, func() {
+	cron.AddDurationFunc(30*time.Second, func() {
 		var resp holo.CommonResponse
 		data := holo.MetadataObjectUpload{
 			MetadataObject: holo.MetadataObject{

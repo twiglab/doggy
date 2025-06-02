@@ -129,8 +129,8 @@ func confCmd() {
 		ID: "dcp",
 
 		LoggerConf: LoggerConf{
-			Level:   "INFO",
-			LogFile: "dcp.log",
+			Level:   "debug",
+			LogFile: "console",
 		},
 
 		ServerConf: ServerConf{
@@ -140,7 +140,7 @@ func confCmd() {
 			ForceHttps: 1,
 		},
 		SubsConf: SubsConf{
-			Muti: 0,
+			Muti: 1,
 			Main: Sub{
 				Addr:        "127.0.0.1",
 				Port:        10005,
@@ -175,7 +175,7 @@ func confCmd() {
 		},
 
 		BackendConf: BackendConf{
-			Use: "taos",
+			Use: "none",
 			TaosDBConf: TaosDBConf{
 				Addr:     "127.0.0.1",
 				Port:     6041,

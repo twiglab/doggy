@@ -84,7 +84,7 @@ func (r *CsvCameraDB) load(ctx context.Context) (map[string]cameraData, map[stri
 		uuidMap[device.uuid] = device
 	}
 
-	slog.InfoContext(ctx, "cameradb", slog.Int("size", len(r.snMap)))
+	slog.InfoContext(ctx, "cameradb", slog.Int("size", len(snMap)))
 	return snMap, uuidMap, nil
 }
 

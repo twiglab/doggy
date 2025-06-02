@@ -5,14 +5,14 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"time"
 
 	"gopkg.in/yaml.v3"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
-	"github.com/twiglab/doggy/hx"
 )
 
 var cfgFile string
@@ -56,21 +56,23 @@ func printConf(conf AppConf) {
 	fmt.Println("--------------------")
 	enc.Encode(conf)
 	fmt.Println("--------------------")
-	fmt.Println("backendOnly", backendOnly)
+	fmt.Println("backend-only:", backendOnly)
+	fmt.Println("backend:", conf.BackendConf.Use)
+	fmt.Println("sub :", conf.SubsConf.Muti)
 	fmt.Println("--------------------")
 }
 
-func backendSvr(conf AppConf) (context.Context, *hx.Svr) {
+func backendMux(conf AppConf) (context.Context, http.Handler) {
 	_, ctx := buildRootlogger(context.Background(), conf)
 	_, ctx = buildBackend(ctx, conf)
 	mux := BackendHandler(ctx, conf)
-	return ctx, hx.NewServ().SetAddr(conf.ServerConf.Addr).SetHandler(mux)
+	return ctx, mux
 }
 
-func fullSvr(conf AppConf) (context.Context, *hx.Svr) {
+func fullMux(conf AppConf) (context.Context, http.Handler) {
 	ctx := buildAll(context.Background(), conf)
 	mux := FullHandler(ctx, conf)
-	return ctx, hx.NewServ().SetAddr(conf.ServerConf.Addr).SetHandler(mux)
+	return ctx, mux
 }
 
 func servCmd() {
@@ -83,13 +85,14 @@ func servCmd() {
 	printConf(conf)
 
 	var (
-		svr *hx.Svr
+		mux http.Handler
+
 		// ctx context.Context
 	)
 	if backendOnly {
-		_, svr = backendSvr(conf)
+		_, mux = backendMux(conf)
 	} else {
-		_, svr = fullSvr(conf)
+		_, mux = fullMux(conf)
 		/*
 			if conf.JobConf.Enable != 0 {
 				s := buildAllJob(ctx, conf)
@@ -98,17 +101,25 @@ func servCmd() {
 		*/
 	}
 
+	svr := &http.Server{
+		Addr:         conf.ServerConf.Addr,
+		Handler:      mux,
+		IdleTimeout:  90 * time.Second,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
+
 	if err := runSvr(svr, conf.ServerConf); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func runSvr(s *hx.Svr, sc ServerConf) error {
+func runSvr(s *http.Server, sc ServerConf) error {
 	if sc.ForceHttps == 0 {
-		return s.Run()
+		return s.ListenAndServe()
 	}
 	if sc.CertFile == "" || sc.KeyFile == "" {
 		return errors.New("no cert and key file")
 	}
-	return s.RunTLS(sc.CertFile, sc.KeyFile)
+	return s.ListenAndServeTLS(sc.CertFile, sc.KeyFile)
 }
