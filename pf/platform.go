@@ -57,6 +57,24 @@ type Handle struct {
 	countHandler   CountHandler
 	densityHandler DensityHandler
 	deviceRegister DeviceRegister
+
+	// 记录上报的SN
+	snMap map[string]time.Time
+}
+
+func (h *Handle) isSnOk(sn string) bool {
+	t, ok := h.snMap[sn]
+	if !ok {
+		return false
+	}
+	if time.Since(t) > 10*time.Second {
+		return false
+	}
+	return true
+}
+
+func (h *Handle) setSnOk(sn string) {
+	h.snMap[sn] = time.Now()
 }
 
 func NewHandle(opts ...Option) *Handle {
@@ -65,6 +83,8 @@ func NewHandle(opts ...Option) *Handle {
 		countHandler:   action,
 		densityHandler: action,
 		deviceRegister: action,
+
+		snMap: make(map[string]time.Time),
 	}
 
 	for _, o := range opts {
