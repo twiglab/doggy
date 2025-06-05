@@ -18,7 +18,6 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 			return
 		}
 		// ---------------------------
-		if data.DeviceVersion.Software == holo.SDC_11_0_0_SPC300 {
 			// D3252 SDC 11.0.0.SPC300 重复注册
 			// 硬件问题，软件修复
 			// 注册成功后，记录自动注册成功的SN号，如果重复注册，直接返回成功
@@ -26,7 +25,6 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 				_ = hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
 				return
 			}
-		}
 		// ---------------------------
 
 		if err := h.HandleAutoRegister(r.Context(), data); err != nil {
@@ -42,10 +40,8 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 		)
 
 		// ---------------------------
-		if data.DeviceVersion.Software == holo.SDC_11_0_0_SPC300 {
 			// 注册成功后，记录自动注册成功的SN号，如果重复注册，直接返回成功
 			h.setSnOk(data.SerialNumber)
-		}
 		// ---------------------------
 		_ = hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
 	}
