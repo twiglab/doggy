@@ -80,6 +80,11 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 					}
 				}
 			}
+		} else {
+			slog.InfoContext(ctx, "metadata size > 0",
+				slog.String("sn", data.SerialNumber),
+				slog.String("module", "AutoSub"),
+				slog.String("method", "AutoRegister"))
 		}
 	}
 

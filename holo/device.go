@@ -6,7 +6,8 @@ type DeviceAutoRegisterData struct {
 	DeviceType    string            `json:"DeviceType"`
 	SerialNumber  string            `json:"SerialNumber"`
 	DeviceVersion DeviceVersionData `json:"DeviceVersion"`
-	IpAddr        string            `json:"IpAddr"` // for SEC 9.0.0 +
+	IpAddr        string            `json:"IpAddr"`                // for SEC 9.0.0 +
+	ChannelInfo   []Channel         `json:"ChannelInfo,omitempty"` // for SEC 11.0.0 +
 }
 
 type DeviceVersionData struct {
@@ -14,6 +15,10 @@ type DeviceVersionData struct {
 	Uboot    string `json:"Uboot"`
 	Kernel   string `json:"Kernel"`
 	Hardware string `json:"Hardware"`
+}
+type Channel struct {
+	UUID     string `json:"UUID"`
+	DeviceID string `json:"DeviceID"`
 }
 
 type DeviceID struct {

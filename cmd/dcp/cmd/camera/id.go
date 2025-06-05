@@ -3,7 +3,6 @@ package camera
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 
@@ -35,8 +34,6 @@ func getid() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Printf("---------------\n")
 
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "  ")

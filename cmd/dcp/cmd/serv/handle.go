@@ -82,7 +82,7 @@ func pfBackendHandle(ctx context.Context, conf AppConf) http.Handler {
 
 func FullHandler(ctx context.Context, conf AppConf) http.Handler {
 	mux := chi.NewMux()
-	mux.Use(middleware.Recoverer)
+	mux.Use(middleware.Recoverer, middleware.RequestID)
 	mux.Mount("/pf", pfHandle(ctx, conf))
 	mux.Mount("/admin", pageHandle(ctx, conf))
 	mux.Mount("/debug", middleware.Profiler())
@@ -92,7 +92,7 @@ func FullHandler(ctx context.Context, conf AppConf) http.Handler {
 
 func BackendHandler(ctx context.Context, conf AppConf) http.Handler {
 	mux := chi.NewMux()
-	mux.Use(middleware.Recoverer)
+	mux.Use(middleware.Recoverer, middleware.RequestID)
 	mux.Mount("/pf", pfBackendHandle(ctx, conf))
 	mux.Mount("/debug", middleware.Profiler())
 	mux.Mount("/jsonrpc", outHandle(ctx, conf))

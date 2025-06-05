@@ -36,5 +36,6 @@ func getSysBaseInfo() {
 	}
 
 	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "  ")
 	enc.Encode(info)
 }
