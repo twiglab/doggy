@@ -19,7 +19,10 @@ import (
 00000000-0000-0000-0000-000000000000
 ffffffff-ffff-ffff-ffff-ffffffffffff
 */
-const uuid = "00000000-0000-0000-0000-000000000000"
+const (
+	uuid     = "00000000-0000-0000-0000-000000000000"
+	deviceID = "1234567890"
+)
 
 func rnd() int {
 	return rand.IntN(5)
@@ -41,12 +44,13 @@ var camera = &Camera{
 		DeviceName:   "kake SDC",
 		Manufacturer: "fake",
 		DeviceType:   "fake type",
+		ChannelInfo:  []holo.Channel{{UUID: uuid, DeviceID: deviceID}},
 	},
 
 	IDList: holo.DeviceIDList{IDs: []holo.DeviceID{
 		{
 			UUID:     uuid,
-			DeviceID: "1234567890",
+			DeviceID: deviceID,
 		},
 	}},
 	SubMap: make(map[string]holo.SubscriptionReq),
@@ -78,7 +82,9 @@ func d3252() {
 				return
 			}
 			log.Println("auto reg ok")
-			camera.isAutoReg = true
+			if !bBug {
+				camera.isAutoReg = true
+			}
 		}
 	})
 
@@ -158,7 +164,7 @@ func d3252() {
 		camera.isAutoReg = false
 
 		camera.IDList = holo.DeviceIDList{IDs: []holo.DeviceID{
-			{UUID: uuid, DeviceID: "1234567890"},
+			{UUID: uuid, DeviceID: deviceID},
 		}}
 
 		hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
@@ -224,4 +230,9 @@ var D3252Cmd = &cobra.Command{
 	},
 
 	Example: "dcp fake D3252",
+}
+var bBug bool
+
+func init() {
+	D3252Cmd.Flags().BoolVar(&bBug, "bug", false, "bug模式")
 }
