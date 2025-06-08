@@ -45,6 +45,9 @@ var camera = &Camera{
 		Manufacturer: "fake",
 		DeviceType:   "fake type",
 		ChannelInfo:  []holo.Channel{{UUID: uuid, DeviceID: deviceID}},
+		DeviceVersion: holo.DeviceVersionData{
+			Software: holo.SDC_11_0_0_SPC300,
+		},
 	},
 
 	IDList: holo.DeviceIDList{IDs: []holo.DeviceID{
