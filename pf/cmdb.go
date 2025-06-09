@@ -56,6 +56,6 @@ func (p *InMomoryTouch) Last(me string) (time.Time, bool) {
 
 func (p *InMomoryTouch) Touch(me string) {
 	if me != "" {
-		p.mm.LoadOrStore(me, time.Now())
+		p.mm.Store(me, time.Now())
 	}
 }
