@@ -17,6 +17,7 @@ const (
 	keyCmdb    = "_cmdb_"
 	keyBackend = "_backend_"
 	keyRootLog = "_root_log_"
+	keyToucher = "_toucher_"
 
 	bNameTaos = "taos"
 	bNameNone = "none"
@@ -45,15 +46,10 @@ func buildEntHandle(ctx context.Context, conf AppConf) (*orm.EntHandle, context.
 	return eh, context.WithValue(ctx, key_eh, eh)
 }
 
-func buildCmdb(ctx context.Context, conf AppConf) (*pf.CsvCameraDB, context.Context) {
-	cmdb := pf.NewCsvCameraDB(
-		conf.CameraDBConf.CsvCameraDB.CsvFile,
-		conf.CameraDBConf.CsvCameraDB.CameraUser,
-		conf.CameraDBConf.CsvCameraDB.CameraPwd,
-	)
-
-	if err := cmdb.Load(ctx); err != nil {
-		log.Fatal(err)
+func buildCmdb(ctx context.Context, conf AppConf) (*pf.CameraDB, context.Context) {
+	cmdb := &pf.CameraDB{
+		User: conf.CameraDBConf.CsvCameraDB.CameraUser,
+		Pwd:  conf.CameraDBConf.CsvCameraDB.CameraPwd,
 	}
 
 	return cmdb, context.WithValue(ctx, keyCmdb, cmdb)
@@ -89,11 +85,17 @@ func buildBackend(ctx context.Context, conf AppConf) (pfh, context.Context) {
 	return nil, ctx
 }
 
+func buildToucher(ctx context.Context, _ AppConf) (*pf.InMomoryTouch, context.Context) {
+	t := pf.NewInMomoryTouch()
+	return t, context.WithValue(ctx, keyToucher, t)
+}
+
 func buildAll(box context.Context, conf AppConf) context.Context {
 	_, box = buildRootlogger(box, conf)
 	_, box = buildEntHandle(box, conf)
 	_, box = buildCmdb(box, conf)
 	_, box = buildBackend(box, conf)
+	_, box = buildToucher(box, conf)
 
 	return box
 }

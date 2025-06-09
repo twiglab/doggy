@@ -10,15 +10,24 @@ type DeviceAutoRegisterData struct {
 	ChannelInfo   []Channel         `json:"ChannelInfo,omitempty"` // for SEC 11.0.0 +
 }
 
+func (d DeviceAutoRegisterData) FirstChannel() Channel {
+	if len(d.ChannelInfo) <= 0 {
+		return Channel{}
+	}
+	return d.ChannelInfo[0]
+}
+
 type DeviceVersionData struct {
 	Software string `json:"Software"`
 	Uboot    string `json:"Uboot"`
 	Kernel   string `json:"Kernel"`
 	Hardware string `json:"Hardware"`
 }
+
 type Channel struct {
-	UUID     string `json:"UUID"`
-	DeviceID string `json:"DeviceID"`
+	ChannelID int    `json:"ChannelId"`
+	UUID      string `json:"UUID"`
+	DeviceID  string `json:"DeviceId"`
 }
 
 type DeviceID struct {

@@ -21,6 +21,10 @@ const (
 	FieldSn = "sn"
 	// FieldIP holds the string denoting the ip field in the database.
 	FieldIP = "ip"
+	// FieldUUID holds the string denoting the uuid field in the database.
+	FieldUUID = "uuid"
+	// FieldDeviceID holds the string denoting the device_id field in the database.
+	FieldDeviceID = "device_id"
 	// FieldLastTime holds the string denoting the last_time field in the database.
 	FieldLastTime = "last_time"
 	// FieldUser holds the string denoting the user field in the database.
@@ -38,6 +42,8 @@ var Columns = []string{
 	FieldUpdateTime,
 	FieldSn,
 	FieldIP,
+	FieldUUID,
+	FieldDeviceID,
 	FieldLastTime,
 	FieldUser,
 	FieldPwd,
@@ -64,6 +70,10 @@ var (
 	SnValidator func(string) error
 	// IPValidator is a validator for the "ip" field. It is called by the builders before save.
 	IPValidator func(string) error
+	// UUIDValidator is a validator for the "uuid" field. It is called by the builders before save.
+	UUIDValidator func(string) error
+	// DeviceIDValidator is a validator for the "device_id" field. It is called by the builders before save.
+	DeviceIDValidator func(string) error
 	// DefaultLastTime holds the default value on creation for the "last_time" field.
 	DefaultLastTime func() time.Time
 	// UpdateDefaultLastTime holds the default value on update for the "last_time" field.
@@ -100,6 +110,16 @@ func BySn(opts ...sql.OrderTermOption) OrderOption {
 // ByIP orders the results by the ip field.
 func ByIP(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldIP, opts...).ToFunc()
+}
+
+// ByUUID orders the results by the uuid field.
+func ByUUID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUUID, opts...).ToFunc()
+}
+
+// ByDeviceID orders the results by the device_id field.
+func ByDeviceID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeviceID, opts...).ToFunc()
 }
 
 // ByLastTime orders the results by the last_time field.

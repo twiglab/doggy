@@ -62,6 +62,34 @@ func (uc *UploadCreate) SetIP(s string) *UploadCreate {
 	return uc
 }
 
+// SetUUID sets the "uuid" field.
+func (uc *UploadCreate) SetUUID(s string) *UploadCreate {
+	uc.mutation.SetUUID(s)
+	return uc
+}
+
+// SetNillableUUID sets the "uuid" field if the given value is not nil.
+func (uc *UploadCreate) SetNillableUUID(s *string) *UploadCreate {
+	if s != nil {
+		uc.SetUUID(*s)
+	}
+	return uc
+}
+
+// SetDeviceID sets the "device_id" field.
+func (uc *UploadCreate) SetDeviceID(s string) *UploadCreate {
+	uc.mutation.SetDeviceID(s)
+	return uc
+}
+
+// SetNillableDeviceID sets the "device_id" field if the given value is not nil.
+func (uc *UploadCreate) SetNillableDeviceID(s *string) *UploadCreate {
+	if s != nil {
+		uc.SetDeviceID(*s)
+	}
+	return uc
+}
+
 // SetLastTime sets the "last_time" field.
 func (uc *UploadCreate) SetLastTime(t time.Time) *UploadCreate {
 	uc.mutation.SetLastTime(t)
@@ -177,6 +205,16 @@ func (uc *UploadCreate) check() error {
 			return &ValidationError{Name: "ip", err: fmt.Errorf(`ent: validator failed for field "Upload.ip": %w`, err)}
 		}
 	}
+	if v, ok := uc.mutation.UUID(); ok {
+		if err := upload.UUIDValidator(v); err != nil {
+			return &ValidationError{Name: "uuid", err: fmt.Errorf(`ent: validator failed for field "Upload.uuid": %w`, err)}
+		}
+	}
+	if v, ok := uc.mutation.DeviceID(); ok {
+		if err := upload.DeviceIDValidator(v); err != nil {
+			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Upload.device_id": %w`, err)}
+		}
+	}
 	if _, ok := uc.mutation.LastTime(); !ok {
 		return &ValidationError{Name: "last_time", err: errors.New(`ent: missing required field "Upload.last_time"`)}
 	}
@@ -232,6 +270,14 @@ func (uc *UploadCreate) createSpec() (*Upload, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.IP(); ok {
 		_spec.SetField(upload.FieldIP, field.TypeString, value)
 		_node.IP = value
+	}
+	if value, ok := uc.mutation.UUID(); ok {
+		_spec.SetField(upload.FieldUUID, field.TypeString, value)
+		_node.UUID = value
+	}
+	if value, ok := uc.mutation.DeviceID(); ok {
+		_spec.SetField(upload.FieldDeviceID, field.TypeString, value)
+		_node.DeviceID = value
 	}
 	if value, ok := uc.mutation.LastTime(); ok {
 		_spec.SetField(upload.FieldLastTime, field.TypeTime, value)
@@ -318,6 +364,42 @@ func (u *UploadUpsert) SetIP(v string) *UploadUpsert {
 // UpdateIP sets the "ip" field to the value that was provided on create.
 func (u *UploadUpsert) UpdateIP() *UploadUpsert {
 	u.SetExcluded(upload.FieldIP)
+	return u
+}
+
+// SetUUID sets the "uuid" field.
+func (u *UploadUpsert) SetUUID(v string) *UploadUpsert {
+	u.Set(upload.FieldUUID, v)
+	return u
+}
+
+// UpdateUUID sets the "uuid" field to the value that was provided on create.
+func (u *UploadUpsert) UpdateUUID() *UploadUpsert {
+	u.SetExcluded(upload.FieldUUID)
+	return u
+}
+
+// ClearUUID clears the value of the "uuid" field.
+func (u *UploadUpsert) ClearUUID() *UploadUpsert {
+	u.SetNull(upload.FieldUUID)
+	return u
+}
+
+// SetDeviceID sets the "device_id" field.
+func (u *UploadUpsert) SetDeviceID(v string) *UploadUpsert {
+	u.Set(upload.FieldDeviceID, v)
+	return u
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *UploadUpsert) UpdateDeviceID() *UploadUpsert {
+	u.SetExcluded(upload.FieldDeviceID)
+	return u
+}
+
+// ClearDeviceID clears the value of the "device_id" field.
+func (u *UploadUpsert) ClearDeviceID() *UploadUpsert {
+	u.SetNull(upload.FieldDeviceID)
 	return u
 }
 
@@ -442,6 +524,48 @@ func (u *UploadUpsertOne) SetIP(v string) *UploadUpsertOne {
 func (u *UploadUpsertOne) UpdateIP() *UploadUpsertOne {
 	return u.Update(func(s *UploadUpsert) {
 		s.UpdateIP()
+	})
+}
+
+// SetUUID sets the "uuid" field.
+func (u *UploadUpsertOne) SetUUID(v string) *UploadUpsertOne {
+	return u.Update(func(s *UploadUpsert) {
+		s.SetUUID(v)
+	})
+}
+
+// UpdateUUID sets the "uuid" field to the value that was provided on create.
+func (u *UploadUpsertOne) UpdateUUID() *UploadUpsertOne {
+	return u.Update(func(s *UploadUpsert) {
+		s.UpdateUUID()
+	})
+}
+
+// ClearUUID clears the value of the "uuid" field.
+func (u *UploadUpsertOne) ClearUUID() *UploadUpsertOne {
+	return u.Update(func(s *UploadUpsert) {
+		s.ClearUUID()
+	})
+}
+
+// SetDeviceID sets the "device_id" field.
+func (u *UploadUpsertOne) SetDeviceID(v string) *UploadUpsertOne {
+	return u.Update(func(s *UploadUpsert) {
+		s.SetDeviceID(v)
+	})
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *UploadUpsertOne) UpdateDeviceID() *UploadUpsertOne {
+	return u.Update(func(s *UploadUpsert) {
+		s.UpdateDeviceID()
+	})
+}
+
+// ClearDeviceID clears the value of the "device_id" field.
+func (u *UploadUpsertOne) ClearDeviceID() *UploadUpsertOne {
+	return u.Update(func(s *UploadUpsert) {
+		s.ClearDeviceID()
 	})
 }
 
@@ -740,6 +864,48 @@ func (u *UploadUpsertBulk) SetIP(v string) *UploadUpsertBulk {
 func (u *UploadUpsertBulk) UpdateIP() *UploadUpsertBulk {
 	return u.Update(func(s *UploadUpsert) {
 		s.UpdateIP()
+	})
+}
+
+// SetUUID sets the "uuid" field.
+func (u *UploadUpsertBulk) SetUUID(v string) *UploadUpsertBulk {
+	return u.Update(func(s *UploadUpsert) {
+		s.SetUUID(v)
+	})
+}
+
+// UpdateUUID sets the "uuid" field to the value that was provided on create.
+func (u *UploadUpsertBulk) UpdateUUID() *UploadUpsertBulk {
+	return u.Update(func(s *UploadUpsert) {
+		s.UpdateUUID()
+	})
+}
+
+// ClearUUID clears the value of the "uuid" field.
+func (u *UploadUpsertBulk) ClearUUID() *UploadUpsertBulk {
+	return u.Update(func(s *UploadUpsert) {
+		s.ClearUUID()
+	})
+}
+
+// SetDeviceID sets the "device_id" field.
+func (u *UploadUpsertBulk) SetDeviceID(v string) *UploadUpsertBulk {
+	return u.Update(func(s *UploadUpsert) {
+		s.SetDeviceID(v)
+	})
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *UploadUpsertBulk) UpdateDeviceID() *UploadUpsertBulk {
+	return u.Update(func(s *UploadUpsert) {
+		s.UpdateDeviceID()
+	})
+}
+
+// ClearDeviceID clears the value of the "device_id" field.
+func (u *UploadUpsertBulk) ClearDeviceID() *UploadUpsertBulk {
+	return u.Update(func(s *UploadUpsert) {
+		s.ClearDeviceID()
 	})
 }
 

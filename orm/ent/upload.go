@@ -25,6 +25,10 @@ type Upload struct {
 	Sn string `json:"sn,omitempty"`
 	// IP holds the value of the "ip" field.
 	IP string `json:"ip,omitempty"`
+	// UUID holds the value of the "uuid" field.
+	UUID string `json:"uuid,omitempty"`
+	// DeviceID holds the value of the "device_id" field.
+	DeviceID string `json:"device_id,omitempty"`
 	// LastTime holds the value of the "last_time" field.
 	LastTime time.Time `json:"last_time,omitempty"`
 	// User holds the value of the "user" field.
@@ -41,7 +45,7 @@ func (*Upload) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case upload.FieldID:
 			values[i] = new(sql.NullInt64)
-		case upload.FieldSn, upload.FieldIP, upload.FieldUser, upload.FieldPwd:
+		case upload.FieldSn, upload.FieldIP, upload.FieldUUID, upload.FieldDeviceID, upload.FieldUser, upload.FieldPwd:
 			values[i] = new(sql.NullString)
 		case upload.FieldCreateTime, upload.FieldUpdateTime, upload.FieldLastTime:
 			values[i] = new(sql.NullTime)
@@ -89,6 +93,18 @@ func (u *Upload) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field ip", values[i])
 			} else if value.Valid {
 				u.IP = value.String
+			}
+		case upload.FieldUUID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field uuid", values[i])
+			} else if value.Valid {
+				u.UUID = value.String
+			}
+		case upload.FieldDeviceID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field device_id", values[i])
+			} else if value.Valid {
+				u.DeviceID = value.String
 			}
 		case upload.FieldLastTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -155,6 +171,12 @@ func (u *Upload) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("ip=")
 	builder.WriteString(u.IP)
+	builder.WriteString(", ")
+	builder.WriteString("uuid=")
+	builder.WriteString(u.UUID)
+	builder.WriteString(", ")
+	builder.WriteString("device_id=")
+	builder.WriteString(u.DeviceID)
 	builder.WriteString(", ")
 	builder.WriteString("last_time=")
 	builder.WriteString(u.LastTime.Format(time.ANSIC))

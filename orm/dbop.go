@@ -2,7 +2,6 @@ package orm
 
 import (
 	"context"
-	"time"
 
 	"github.com/twiglab/doggy/orm/ent"
 	"github.com/twiglab/doggy/orm/ent/upload"
@@ -23,7 +22,9 @@ func (h *EntHandle) HandleUpload(ctx context.Context, u pf.CameraUpload) error {
 	err := h.client.Upload.Create().
 		SetSn(u.SN).
 		SetIP(u.IpAddr).
-		SetLastTime(time.Now()).
+		SetUUID(u.UUID).
+		SetDeviceID(u.Code).
+		SetLastTime(u.LastTime).
 		SetUser(u.User).
 		SetPwd(u.Pwd).
 		OnConflictColumns(upload.FieldSn).
@@ -41,11 +42,13 @@ func (h *EntHandle) All(ctx context.Context) (uploads []pf.CameraUpload, err err
 
 	for _, u := range us {
 		uploads = append(uploads, pf.CameraUpload{
-			SN:     u.Sn,
-			IpAddr: u.IP,
-			Last:   u.LastTime,
-			User:   u.User,
-			Pwd:    u.Pwd,
+			SN:       u.Sn,
+			IpAddr:   u.IP,
+			UUID:     u.UUID,
+			Code:     u.DeviceID,
+			LastTime: u.LastTime,
+			User:     u.User,
+			Pwd:      u.Pwd,
 		})
 	}
 	return

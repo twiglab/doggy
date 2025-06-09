@@ -10,7 +10,7 @@ var MetaCmd = &cobra.Command{
 	Short: "元数据操作",
 	Long:  `元数据操作`,
 	Run: func(cmd *cobra.Command, args []string) {
-		metaGet(cmd, args)
+		metaGet()
 	},
 	Example: "dcp meta --addr 127.0.0.1",
 }

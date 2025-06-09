@@ -16,7 +16,6 @@ import (
 )
 
 var cfgFile string
-var backendOnly bool
 
 var ServCmd = &cobra.Command{
 	Use:   "serv",
@@ -30,7 +29,6 @@ var ServCmd = &cobra.Command{
 func init() {
 	cobra.OnInitialize(initConfig)
 	ServCmd.Flags().StringVarP(&cfgFile, "config", "c", "", "config file")
-	ServCmd.Flags().BoolVarP(&backendOnly, "backend-only", "b", false, "backend only")
 }
 
 func initConfig() {
@@ -41,9 +39,8 @@ func initConfig() {
 		viper.SetConfigName("dcp")
 	}
 
-	viper.AutomaticEnv() // read in environment variables that match
+	viper.AutomaticEnv()
 
-	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
@@ -56,17 +53,9 @@ func printConf(conf AppConf) {
 	fmt.Println("--------------------")
 	enc.Encode(conf)
 	fmt.Println("--------------------")
-	fmt.Println("backend-only:", backendOnly)
 	fmt.Println("backend:", conf.BackendConf.Use)
 	fmt.Println("sub :", conf.SubsConf.Muti)
 	fmt.Println("--------------------")
-}
-
-func backendMux(conf AppConf) http.Handler {
-	_, ctx := buildRootlogger(context.Background(), conf)
-	_, ctx = buildBackend(ctx, conf)
-	mux := BackendHandler(ctx, conf)
-	return mux
 }
 
 func fullMux(conf AppConf) http.Handler {
@@ -84,12 +73,7 @@ func servCmd() {
 
 	printConf(conf)
 
-	var mux http.Handler
-	if backendOnly {
-		mux = backendMux(conf)
-	} else {
-		mux = fullMux(conf)
-	}
+	mux := fullMux(conf)
 
 	svr := &http.Server{
 		Addr:         conf.ServerConf.Addr,

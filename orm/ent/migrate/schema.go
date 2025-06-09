@@ -16,6 +16,8 @@ var (
 		{Name: "update_time", Type: field.TypeTime},
 		{Name: "sn", Type: field.TypeString, Unique: true, Size: 36, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},
 		{Name: "ip", Type: field.TypeString, Size: 64, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "uuid", Type: field.TypeString, Nullable: true, Size: 64, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "device_id", Type: field.TypeString, Nullable: true, Size: 64, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "last_time", Type: field.TypeTime},
 		{Name: "user", Type: field.TypeString, Nullable: true, Size: 36, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},
 		{Name: "pwd", Type: field.TypeString, Nullable: true, Size: 36, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},

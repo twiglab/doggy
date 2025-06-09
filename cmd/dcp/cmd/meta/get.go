@@ -16,7 +16,7 @@ var MetaGetCmd = &cobra.Command{
 	Short: "查询设备元数据订阅信息",
 	Long:  `查询设备元数据订阅信息`,
 	Run: func(cmd *cobra.Command, args []string) {
-		metaGet(cmd, args)
+		metaGet()
 	},
 	Example: "dcp meta get --addr 1.2.3.4",
 }
@@ -25,8 +25,8 @@ func init() {
 	MetaCmd.AddCommand(MetaGetCmd)
 }
 
-func metaGet(_ *cobra.Command, _ []string) {
-	dev, _ := holo.OpenDevice("", addr, user, pwd)
+func metaGet() {
+	dev, _ := holo.ConnectDevice(addr, user, pwd)
 	defer dev.Close()
 
 	subs, err := dev.GetMetadataSubscription(context.Background())

@@ -26,7 +26,7 @@ func init() {
 }
 
 func getSysBaseInfo() {
-	dev, _ := holo.OpenDevice("", addr, user, pwd)
+	dev, _ := holo.ConnectDevice(addr, user, pwd)
 	defer dev.Close()
 
 	info, err := dev.GetSysBaseInfo(context.Background())

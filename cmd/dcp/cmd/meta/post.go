@@ -18,7 +18,7 @@ var MetaPostCmd = &cobra.Command{
 	Short: "设置设备元数据订阅信息",
 	Long:  `设置设备元数据订阅信息`,
 	Run: func(cmd *cobra.Command, args []string) {
-		metaPost(cmd, args)
+		metaPost()
 	},
 	Example: "dcp meta post --addr 1.2.3.4 --url https://5.6.7.8:8080/meta/upload",
 }
@@ -30,14 +30,14 @@ func init() {
 	MetaPostCmd.Flags().StringVar(&metadataURL, "url", "", "平台URL")
 }
 
-func metaPost(_ *cobra.Command, _ []string) {
+func metaPost() {
 	var (
 		err  error
 		port = 80
 		url  *url.URL
 	)
 
-	dev, _ := holo.OpenDevice("", addr, user, pwd)
+	dev, _ := holo.ConnectDevice(addr, user, pwd)
 	defer dev.Close()
 
 	if url, err = url.Parse(metadataURL); err != nil {

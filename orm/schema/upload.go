@@ -38,6 +38,22 @@ func (Upload) Fields() []ent.Field {
 				dialect.SQLite:   "varchar(64)", // Override Postgres.
 			}),
 
+		field.String("uuid").
+			MaxLen(64).Optional().
+			SchemaType(map[string]string{
+				dialect.MySQL:    "varchar(64)", // Override MySQL.
+				dialect.Postgres: "varchar(64)", // Override Postgres.
+				dialect.SQLite:   "varchar(64)", // Override Postgres.
+			}),
+
+		field.String("device_id").
+			MaxLen(64).Optional().
+			SchemaType(map[string]string{
+				dialect.MySQL:    "varchar(64)", // Override MySQL.
+				dialect.Postgres: "varchar(64)", // Override Postgres.
+				dialect.SQLite:   "varchar(64)", // Override Postgres.
+			}),
+
 		field.Time("last_time").
 			Default(time.Now).
 			UpdateDefault(time.Now),

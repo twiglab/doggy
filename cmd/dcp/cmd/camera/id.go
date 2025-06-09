@@ -26,7 +26,7 @@ func init() {
 }
 
 func getid() {
-	dev, _ := holo.OpenDevice("", addr, user, pwd)
+	dev, _ := holo.ConnectDevice(addr, user, pwd)
 	defer dev.Close()
 
 	resp, err := dev.GetDeviceID(context.Background())

@@ -11,28 +11,14 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
-type Liver interface {
-	SetTTL(string, int64)
-}
-
-type nLove struct{}
-
-func (*nLove) SetTTL(_ string, _ int64) {}
-
 type Schemaless struct {
 	schemaless *schemaless.Schemaless
-	live       Liver
 }
 
 func NewSchLe(s *schemaless.Schemaless) *Schemaless {
 	return &Schemaless{
 		schemaless: s,
-		live:       &nLove{},
 	}
-}
-
-func (s *Schemaless) SetLiver(l Liver) {
-	s.live = l
 }
 
 func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data holo.HumanMix) error {
@@ -66,7 +52,6 @@ func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data h
 
 	bs := enc.Bytes()
 	line := bytesToStr(bs)
-	s.live.SetTTL(common.UUID, end.UnixMilli())
 
 	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_MILLI_SECONDS, 0, 0)
 }

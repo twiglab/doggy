@@ -29,6 +29,8 @@ var schemaGraph = func() *sqlgraph.Schema {
 			upload.FieldUpdateTime: {Type: field.TypeTime, Column: upload.FieldUpdateTime},
 			upload.FieldSn:         {Type: field.TypeString, Column: upload.FieldSn},
 			upload.FieldIP:         {Type: field.TypeString, Column: upload.FieldIP},
+			upload.FieldUUID:       {Type: field.TypeString, Column: upload.FieldUUID},
+			upload.FieldDeviceID:   {Type: field.TypeString, Column: upload.FieldDeviceID},
 			upload.FieldLastTime:   {Type: field.TypeTime, Column: upload.FieldLastTime},
 			upload.FieldUser:       {Type: field.TypeString, Column: upload.FieldUser},
 			upload.FieldPwd:        {Type: field.TypeString, Column: upload.FieldPwd},
@@ -101,6 +103,16 @@ func (f *UploadFilter) WhereSn(p entql.StringP) {
 // WhereIP applies the entql string predicate on the ip field.
 func (f *UploadFilter) WhereIP(p entql.StringP) {
 	f.Where(p.Field(upload.FieldIP))
+}
+
+// WhereUUID applies the entql string predicate on the uuid field.
+func (f *UploadFilter) WhereUUID(p entql.StringP) {
+	f.Where(p.Field(upload.FieldUUID))
+}
+
+// WhereDeviceID applies the entql string predicate on the device_id field.
+func (f *UploadFilter) WhereDeviceID(p entql.StringP) {
+	f.Where(p.Field(upload.FieldDeviceID))
 }
 
 // WhereLastTime applies the entql time.Time predicate on the last_time field.

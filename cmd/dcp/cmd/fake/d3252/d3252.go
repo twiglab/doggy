@@ -44,7 +44,7 @@ var camera = &Camera{
 		DeviceName:   "kake SDC",
 		Manufacturer: "fake",
 		DeviceType:   "fake type",
-		ChannelInfo:  []holo.Channel{{UUID: uuid, DeviceID: deviceID}},
+		ChannelInfo:  []holo.Channel{{ChannelID: 101, UUID: uuid, DeviceID: deviceID}},
 		DeviceVersion: holo.DeviceVersionData{
 			Software: holo.SDC_11_0_0_SPC300,
 		},
@@ -67,7 +67,7 @@ func d3252() {
 		log.Fatal(err)
 	}
 
-	cron.AddDurationFunc(10*time.Second, func() {
+	cron.AddDurationFunc(5*time.Second, func() {
 		if !camera.isAutoReg {
 			var resp holo.CommonResponse
 
@@ -135,7 +135,7 @@ func d3252() {
 						TargetType:    holo.HUMMAN_COUNT,
 						HumanCountIn:  rnd(),
 						HumanCountOut: rnd(),
-						StartTime:     time.Now().Add(-10 * time.Second).UnixMilli(),
+						StartTime:     time.Now().Add(-30 * time.Second).UnixMilli(),
 						EndTime:       time.Now().UnixMilli(),
 						TimeZone:      0, // for testing
 					},

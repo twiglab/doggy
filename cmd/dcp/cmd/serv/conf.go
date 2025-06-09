@@ -56,7 +56,6 @@ type CameraDBConf struct {
 type CsvCameraDB struct {
 	CameraUser string `yaml:"camera-user" mapstructure:"camera-user"`
 	CameraPwd  string `yaml:"camera-pwd" mapstructure:"camera-pwd"`
-	CsvFile    string `yaml:"csv-file" mapstructure:"csv-file"`
 }
 
 type ServerConf struct {
@@ -164,7 +163,6 @@ func confCmd() {
 			CsvCameraDB: CsvCameraDB{
 				CameraUser: "ApiAdmin",
 				CameraPwd:  "AAaa1234%%",
-				CsvFile:    "repo/cameradb.csv",
 			},
 		},
 

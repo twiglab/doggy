@@ -15,7 +15,7 @@ import (
 
 func pageHandle(ctx context.Context, _ AppConf) http.Handler {
 	loader := ctx.Value(key_eh).(page.Loader)
-	cmdb := ctx.Value(keyCmdb).(*pf.CsvCameraDB)
+	cmdb := ctx.Value(keyToucher).(pf.Toucher)
 	p := page.NewPage(loader, cmdb)
 	return page.AdminPage(p)
 }
@@ -30,8 +30,10 @@ func outHandle(_ context.Context, conf AppConf) http.Handler {
 }
 
 func pfHandle(ctx context.Context, conf AppConf) http.Handler {
+
 	uh := ctx.Value(key_eh).(pf.UploadHandler)
-	cmdb := ctx.Value(keyCmdb).(*pf.CsvCameraDB)
+	cmdb := ctx.Value(keyCmdb).(pf.DeviceResolver)
+	toucher := ctx.Value(keyToucher).(pf.Toucher)
 
 	var backups []holo.SubscriptionReq
 	for _, b := range conf.SubsConf.Backups {
@@ -58,25 +60,14 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 		Backups: backups,
 		Muti:    conf.SubsConf.Muti,
 	}
-	h := pf.NewHandle(pf.WithDeviceRegister(autoSub))
+	h := pf.NewHandle(pf.WithDeviceRegister(autoSub), pf.WithToucher(toucher))
 
 	if backendName(conf) != bNameNone {
 		backend := ctx.Value(keyBackend).(*taosdb.Schemaless)
-		backend.SetLiver(cmdb)
 		h.SetCountHandler(backend)
 		h.SetDensityHandler(backend)
 	}
 
-	return pf.PlatformHandle(h)
-}
-
-func pfBackendHandle(ctx context.Context, conf AppConf) http.Handler {
-	h := pf.NewHandle()
-	if backendName(conf) != bNameNone {
-		backend := ctx.Value(keyBackend).(pfh)
-		h.SetCountHandler(backend)
-		h.SetDensityHandler(backend)
-	}
 	return pf.PlatformHandle(h)
 }
 
@@ -85,15 +76,6 @@ func FullHandler(ctx context.Context, conf AppConf) http.Handler {
 	mux.Use(middleware.Recoverer, middleware.RequestID)
 	mux.Mount("/pf", pfHandle(ctx, conf))
 	mux.Mount("/admin", pageHandle(ctx, conf))
-	mux.Mount("/debug", middleware.Profiler())
-	mux.Mount("/jsonrpc", outHandle(ctx, conf))
-	return mux
-}
-
-func BackendHandler(ctx context.Context, conf AppConf) http.Handler {
-	mux := chi.NewMux()
-	mux.Use(middleware.Recoverer, middleware.RequestID)
-	mux.Mount("/pf", pfBackendHandle(ctx, conf))
 	mux.Mount("/debug", middleware.Profiler())
 	mux.Mount("/jsonrpc", outHandle(ctx, conf))
 	return mux

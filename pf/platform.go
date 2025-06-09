@@ -8,10 +8,6 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
-type DeviceLoader interface {
-	All(context.Context) ([]CameraUpload, error)
-}
-
 type DeviceRegister interface {
 	// 对应 2.1.4 自动注册
 	AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error
@@ -53,28 +49,19 @@ func WithDeviceRegister(h DeviceRegister) Option {
 	}
 }
 
+func WithToucher(t Toucher) Option {
+	return func(c *Handle) {
+		if t != nil {
+			c.toucher = t
+		}
+	}
+}
+
 type Handle struct {
 	countHandler   CountHandler
 	densityHandler DensityHandler
 	deviceRegister DeviceRegister
-
-	// 记录上报的SN
-	snMap map[string]time.Time
-}
-
-func (h *Handle) isSnOk(sn string) bool {
-	t, ok := h.snMap[sn]
-	if !ok {
-		return false
-	}
-	if time.Since(t) > 10*time.Second {
-		return false
-	}
-	return true
-}
-
-func (h *Handle) setSnOk(sn string) {
-	h.snMap[sn] = time.Now()
+	toucher        Toucher
 }
 
 func NewHandle(opts ...Option) *Handle {
@@ -83,8 +70,7 @@ func NewHandle(opts ...Option) *Handle {
 		countHandler:   action,
 		densityHandler: action,
 		deviceRegister: action,
-
-		snMap: make(map[string]time.Time),
+		toucher:        NewInMomoryTouch(),
 	}
 
 	for _, o := range opts {
@@ -115,10 +101,21 @@ func (h *Handle) SetDeviceRegister(dr DeviceRegister) *Handle {
 }
 
 func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
+	ch := data.FirstChannel()
+	last, ok := h.toucher.Last(ch.UUID)
+	if ok && time.Since(last) < 90*time.Second {
+		slog.Debug("ignore muti reg",
+			slog.String("ipAddr", data.IpAddr),
+			slog.String("sn", data.SerialNumber),
+			slog.Any("channel", ch),
+		)
+		return nil
+	}
 	return h.deviceRegister.AutoRegister(ctx, data)
 }
 
 func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpload) error {
+	h.toucher.Touch(data.MetadataObject.Common.UUID)
 	for _, target := range data.MetadataObject.TargetList {
 		switch target.TargetType {
 		case holo.HUMMAN_DENSITY:
@@ -136,8 +133,7 @@ func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpl
 	return nil
 }
 
-type cameraAction struct {
-}
+type cameraAction struct{}
 
 func (d *cameraAction) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
 	slog.DebugContext(ctx, "receive reg data",

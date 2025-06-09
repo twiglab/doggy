@@ -4,6 +4,7 @@ import (
 	"context"
 	"html/template"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/twiglab/doggy/pf"
@@ -15,14 +16,12 @@ type Loader interface {
 
 type Item struct {
 	Upload pf.CameraUpload
-	Data   pf.CameraData
-	TTL    int64
+	TTL    time.Time
 }
-
 type Page struct {
 	tpl    *template.Template
 	Loader Loader
-	Cmdb   *pf.CsvCameraDB
+	Laster pf.Toucher
 }
 
 func (v *Page) All(ctx context.Context) ([]Item, error) {
@@ -33,19 +32,18 @@ func (v *Page) All(ctx context.Context) ([]Item, error) {
 
 	var items []Item
 	for _, u := range uploads {
-		data := v.Cmdb.GetBySn(u.SN)
-		ttl := v.Cmdb.GetTTL(data.UUID)
-		items = append(items, Item{TTL: ttl, Upload: u, Data: data})
+		ttl, _ := v.Laster.Last(u.UUID)
+		items = append(items, Item{TTL: ttl, Upload: u})
 	}
 
 	return items, nil
 }
 
-func NewPage(loader Loader, cmdb *pf.CsvCameraDB) *Page {
+func NewPage(loader Loader, l pf.Toucher) *Page {
 	return &Page{
 		tpl:    template.Must(template.ParseFS(tplFS, "tpl/*.tpl")),
 		Loader: loader,
-		Cmdb:   cmdb,
+		Laster: l,
 	}
 }
 

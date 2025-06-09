@@ -7,15 +7,15 @@ import (
 )
 
 type Device struct {
-	address string
-	client  *req.Client
+	client *req.Client
 
-	SN   string
+	address string
+
 	User string
 	Pwd  string
 }
 
-func OpenDevice(sn, addr, username, password string) (*Device, error) {
+func ConnectDevice(addr, username, password string) (*Device, error) {
 	c := req.C().
 		SetUserAgent("doggy client").
 		EnableInsecureSkipVerify().
@@ -26,7 +26,6 @@ func OpenDevice(sn, addr, username, password string) (*Device, error) {
 		client:  c,
 		address: addr,
 
-		SN:   sn,
 		User: username,
 		Pwd:  password,
 	}, nil

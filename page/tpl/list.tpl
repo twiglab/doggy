@@ -10,13 +10,12 @@
 				<tr>
 					<th>SN</th>
 					<th>IpAddr</th>
-					<th>Mac</th>
 					<th>UUID</th>
 					<th>DeviceID</th>
 					<th>User</th>
 					<th>Pwd</th>
-					<th>TTL</th>
-					<th>LastTime</th>
+					<th>LastUpload</th>
+					<th>LastRegTime</th>
 					<th>Operation</th>
 				</tr>
 			</thead>
@@ -25,16 +24,14 @@
 				<tr>
 					<td>{{ .Upload.SN }}</td>
 					<td>{{ .Upload.IpAddr }}</td>
-					<td>{{ .Data.Mac }}</td>
-					<td>{{ .Data.UUID }}</td>
-					<td>{{ .Data.DeviceID }}</td>
+					<td>{{ .Uplaod.Code }}</td>
+					<td>{{ .Upload.Code }}</td>
 					<td>{{ .Upload.User }}</td>
 					<td>{{ .Upload.Pwd }}</td>
 					<td>{{ .TTL }}</td>
-					<td>{{ .Upload.Last.Format "2006-01-02T15:04:05Z07:00" }}</td>
+					<td>{{ .Upload.LastTime.Format "2006-01-02T15:04:05Z07:00" }}</td>
 					<td>
-						<a href="https://{{ .Upload.IpAddr }}" target="_blank">open</a> |
-						Ping | Reboot
+						<a href="https://{{ .Upload.IpAddr }}" target="_blank">open</a>
 					</td>
 				</tr>
 				{{end}}

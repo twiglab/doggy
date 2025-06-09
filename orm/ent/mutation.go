@@ -37,6 +37,8 @@ type UploadMutation struct {
 	update_time   *time.Time
 	sn            *string
 	ip            *string
+	uuid          *string
+	device_id     *string
 	last_time     *time.Time
 	user          *string
 	pwd           *string
@@ -288,6 +290,104 @@ func (m *UploadMutation) ResetIP() {
 	m.ip = nil
 }
 
+// SetUUID sets the "uuid" field.
+func (m *UploadMutation) SetUUID(s string) {
+	m.uuid = &s
+}
+
+// UUID returns the value of the "uuid" field in the mutation.
+func (m *UploadMutation) UUID() (r string, exists bool) {
+	v := m.uuid
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUUID returns the old "uuid" field's value of the Upload entity.
+// If the Upload object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UploadMutation) OldUUID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUUID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUUID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUUID: %w", err)
+	}
+	return oldValue.UUID, nil
+}
+
+// ClearUUID clears the value of the "uuid" field.
+func (m *UploadMutation) ClearUUID() {
+	m.uuid = nil
+	m.clearedFields[upload.FieldUUID] = struct{}{}
+}
+
+// UUIDCleared returns if the "uuid" field was cleared in this mutation.
+func (m *UploadMutation) UUIDCleared() bool {
+	_, ok := m.clearedFields[upload.FieldUUID]
+	return ok
+}
+
+// ResetUUID resets all changes to the "uuid" field.
+func (m *UploadMutation) ResetUUID() {
+	m.uuid = nil
+	delete(m.clearedFields, upload.FieldUUID)
+}
+
+// SetDeviceID sets the "device_id" field.
+func (m *UploadMutation) SetDeviceID(s string) {
+	m.device_id = &s
+}
+
+// DeviceID returns the value of the "device_id" field in the mutation.
+func (m *UploadMutation) DeviceID() (r string, exists bool) {
+	v := m.device_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeviceID returns the old "device_id" field's value of the Upload entity.
+// If the Upload object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UploadMutation) OldDeviceID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeviceID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeviceID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeviceID: %w", err)
+	}
+	return oldValue.DeviceID, nil
+}
+
+// ClearDeviceID clears the value of the "device_id" field.
+func (m *UploadMutation) ClearDeviceID() {
+	m.device_id = nil
+	m.clearedFields[upload.FieldDeviceID] = struct{}{}
+}
+
+// DeviceIDCleared returns if the "device_id" field was cleared in this mutation.
+func (m *UploadMutation) DeviceIDCleared() bool {
+	_, ok := m.clearedFields[upload.FieldDeviceID]
+	return ok
+}
+
+// ResetDeviceID resets all changes to the "device_id" field.
+func (m *UploadMutation) ResetDeviceID() {
+	m.device_id = nil
+	delete(m.clearedFields, upload.FieldDeviceID)
+}
+
 // SetLastTime sets the "last_time" field.
 func (m *UploadMutation) SetLastTime(t time.Time) {
 	m.last_time = &t
@@ -456,7 +556,7 @@ func (m *UploadMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UploadMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 9)
 	if m.create_time != nil {
 		fields = append(fields, upload.FieldCreateTime)
 	}
@@ -468,6 +568,12 @@ func (m *UploadMutation) Fields() []string {
 	}
 	if m.ip != nil {
 		fields = append(fields, upload.FieldIP)
+	}
+	if m.uuid != nil {
+		fields = append(fields, upload.FieldUUID)
+	}
+	if m.device_id != nil {
+		fields = append(fields, upload.FieldDeviceID)
 	}
 	if m.last_time != nil {
 		fields = append(fields, upload.FieldLastTime)
@@ -494,6 +600,10 @@ func (m *UploadMutation) Field(name string) (ent.Value, bool) {
 		return m.Sn()
 	case upload.FieldIP:
 		return m.IP()
+	case upload.FieldUUID:
+		return m.UUID()
+	case upload.FieldDeviceID:
+		return m.DeviceID()
 	case upload.FieldLastTime:
 		return m.LastTime()
 	case upload.FieldUser:
@@ -517,6 +627,10 @@ func (m *UploadMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldSn(ctx)
 	case upload.FieldIP:
 		return m.OldIP(ctx)
+	case upload.FieldUUID:
+		return m.OldUUID(ctx)
+	case upload.FieldDeviceID:
+		return m.OldDeviceID(ctx)
 	case upload.FieldLastTime:
 		return m.OldLastTime(ctx)
 	case upload.FieldUser:
@@ -559,6 +673,20 @@ func (m *UploadMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetIP(v)
+		return nil
+	case upload.FieldUUID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUUID(v)
+		return nil
+	case upload.FieldDeviceID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeviceID(v)
 		return nil
 	case upload.FieldLastTime:
 		v, ok := value.(time.Time)
@@ -611,6 +739,12 @@ func (m *UploadMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *UploadMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(upload.FieldUUID) {
+		fields = append(fields, upload.FieldUUID)
+	}
+	if m.FieldCleared(upload.FieldDeviceID) {
+		fields = append(fields, upload.FieldDeviceID)
+	}
 	if m.FieldCleared(upload.FieldUser) {
 		fields = append(fields, upload.FieldUser)
 	}
@@ -631,6 +765,12 @@ func (m *UploadMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *UploadMutation) ClearField(name string) error {
 	switch name {
+	case upload.FieldUUID:
+		m.ClearUUID()
+		return nil
+	case upload.FieldDeviceID:
+		m.ClearDeviceID()
+		return nil
 	case upload.FieldUser:
 		m.ClearUser()
 		return nil
@@ -656,6 +796,12 @@ func (m *UploadMutation) ResetField(name string) error {
 		return nil
 	case upload.FieldIP:
 		m.ResetIP()
+		return nil
+	case upload.FieldUUID:
+		m.ResetUUID()
+		return nil
+	case upload.FieldDeviceID:
+		m.ResetDeviceID()
 		return nil
 	case upload.FieldLastTime:
 		m.ResetLastTime()

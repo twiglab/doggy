@@ -16,7 +16,7 @@ var MetaCleanCmd = &cobra.Command{
 	Short: "清除设备元数据订阅信息",
 	Long:  `清除设备元数据订阅信息`,
 	Run: func(cmd *cobra.Command, args []string) {
-		metaCLean(cmd, args)
+		metaCLean()
 	},
 	Example: "dcp meta clean --addr 1.2.3.4",
 }
@@ -25,12 +25,12 @@ func init() {
 	MetaCmd.AddCommand(MetaCleanCmd)
 }
 
-func metaCLean(_ *cobra.Command, _ []string) {
+func metaCLean() {
 	var (
 		err error
 	)
 
-	dev, _ := holo.OpenDevice("", addr, user, pwd)
+	dev, _ := holo.ConnectDevice(addr, user, pwd)
 	defer dev.Close()
 
 	var resp *holo.CommonResponse
