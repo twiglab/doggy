@@ -31,7 +31,7 @@ func (r *CameraDB) Resolve(ctx context.Context, data holo.DeviceAutoRegisterData
 
 type Toucher interface {
 	Last(me string) (t time.Time, ok bool)
-	Touch(me string)
+	Touch(me string) error
 }
 
 type InMomoryTouch struct {
@@ -54,8 +54,9 @@ func (p *InMomoryTouch) Last(me string) (time.Time, bool) {
 	return p.zeroTime, false
 }
 
-func (p *InMomoryTouch) Touch(me string) {
+func (p *InMomoryTouch) Touch(me string) error {
 	if me != "" {
 		p.mm.Store(me, time.Now())
 	}
+	return nil
 }
