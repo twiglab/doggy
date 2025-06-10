@@ -15,6 +15,7 @@
 					<th>User</th>
 					<th>Pwd</th>
 					<th>LastUpload</th>
+					<th>Status</th>
 					<th>LastRegTime</th>
 					<th>Operation</th>
 				</tr>
@@ -28,8 +29,9 @@
 					<td>{{ .Upload.Code }}</td>
 					<td>{{ .Upload.User }}</td>
 					<td>{{ .Upload.Pwd }}</td>
-					<td>{{ .TTL }}</td>
-					<td>{{ .Upload.LastTime.Format "2006-01-02T15:04:05Z07:00" }}</td>
+					<td>{{ .TTL | datetime }}</td>
+					<td>{{ .TTL | alarm }}</td>
+					<td>{{ .Upload.LastTime | datetime }}</td>
 					<td>
 						<a href="https://{{ .Upload.IpAddr }}" target="_blank">open</a>
 					</td>

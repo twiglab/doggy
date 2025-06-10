@@ -40,8 +40,9 @@ func (v *Page) All(ctx context.Context) ([]Item, error) {
 }
 
 func NewPage(loader Loader, l pf.Toucher) *Page {
+	t := template.Must(template.New("page").Funcs(build()).ParseFS(tplFS, "tpl/*.tpl"))
 	return &Page{
-		tpl:    template.Must(template.ParseFS(tplFS, "tpl/*.tpl")),
+		tpl:    t,
 		Loader: loader,
 		Touch:  l,
 	}
@@ -65,4 +66,27 @@ func AdminPage(page *Page) http.Handler {
 	admin := chi.NewRouter()
 	admin.Get("/", ListPage(page))
 	return admin
+}
+
+func datetime(t time.Time) string {
+	return t.Format(time.DateTime)
+}
+
+func alarm(t time.Time) string {
+	d := time.Until(t).Abs()
+	if d < 90*time.Second {
+		return "ok"
+	}
+	if d > 3*time.Minute {
+		return "alarm"
+	}
+
+	return "warn"
+}
+
+func build() template.FuncMap {
+	return template.FuncMap{
+		"alarm":    alarm,
+		"datetime": datetime,
+	}
 }
