@@ -21,7 +21,7 @@ type Item struct {
 type Page struct {
 	tpl    *template.Template
 	Loader Loader
-	Laster pf.Toucher
+	Touch  pf.Toucher
 }
 
 func (v *Page) All(ctx context.Context) ([]Item, error) {
@@ -32,7 +32,7 @@ func (v *Page) All(ctx context.Context) ([]Item, error) {
 
 	var items []Item
 	for _, u := range uploads {
-		ttl, _ := v.Laster.Last(u.UUID)
+		ttl, _ := v.Touch.Last(u.UUID)
 		items = append(items, Item{TTL: ttl, Upload: u})
 	}
 
@@ -43,19 +43,19 @@ func NewPage(loader Loader, l pf.Toucher) *Page {
 	return &Page{
 		tpl:    template.Must(template.ParseFS(tplFS, "tpl/*.tpl")),
 		Loader: loader,
-		Laster: l,
+		Touch:  l,
 	}
 }
 
 func ListPage(page *Page) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		devices, err := page.All(r.Context())
+		items, err := page.All(r.Context())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
 		root := make(map[string]any)
-		root["Devices"] = devices
+		root["Items"] = items
 
 		page.tpl.ExecuteTemplate(w, "list.tpl", root)
 	}

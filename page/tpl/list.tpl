@@ -20,11 +20,11 @@
 				</tr>
 			</thead>
 			<tbody>
-				{{range .Devices}}
+				{{ range .Items }}
 				<tr>
 					<td>{{ .Upload.SN }}</td>
 					<td>{{ .Upload.IpAddr }}</td>
-					<td>{{ .Uplaod.Code }}</td>
+					<td>{{ .Upload.UUID }}</td>
 					<td>{{ .Upload.Code }}</td>
 					<td>{{ .Upload.User }}</td>
 					<td>{{ .Upload.Pwd }}</td>
@@ -34,7 +34,7 @@
 						<a href="https://{{ .Upload.IpAddr }}" target="_blank">open</a>
 					</td>
 				</tr>
-				{{end}}
+				{{ end }}
 			</tbody>
 		</table>
 	</body>
