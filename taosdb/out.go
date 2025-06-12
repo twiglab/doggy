@@ -55,7 +55,7 @@ type OutS struct {
 	DB *sql.DB
 }
 
-func (o *OutS) SumOf(ctx context.Context, in *oc.AreaArg, out *oc.Reply) error {
+func (o *OutS) Sum(ctx context.Context, in *oc.SumArg, out *oc.SumReply) error {
 	sql := sumSQL(in.Start, in.End, in.IDs)
 
 	rows, err := o.DB.QueryContext(ctx, sql)
@@ -72,14 +72,18 @@ func (o *OutS) SumOf(ctx context.Context, in *oc.AreaArg, out *oc.Reply) error {
 		}
 	}
 
-	out.ValueA = inTotal
-	out.ValueB = outTotal
-
+	out.InTotal = inTotal
+	out.OutTotal = outTotal
 	return nil
 }
 
-func (o *OutS) CollectOf(ctx context.Context, in *oc.AreaArg, out *oc.Reply) error {
-	out.ValueA = 1
-	out.ValueB = 2
+func (o *OutS) MutiSum(ctx context.Context, in *oc.MutiSumArg, out *oc.MutiSumReply) error {
+	for _, arg := range in.Args {
+		var reply oc.SumReply
+		if err := o.Sum(ctx, &arg, &reply); err != nil {
+			return err
+		}
+		out.Replies = append(out.Replies, reply)
+	}
 	return nil
 }

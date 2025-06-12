@@ -8,26 +8,22 @@ import (
 )
 
 type Accumulator interface {
-	SumOf(context.Context, *oc.AreaArg, *oc.Reply) error
-}
-
-type Densimeter interface {
-	CollectOf(context.Context, *oc.AreaArg, *oc.Reply) error
+	Sum(context.Context, *oc.SumArg, *oc.SumReply) error
+	MutiSum(context.Context, *oc.MutiSumArg, *oc.MutiSumReply) error
 }
 
 type Outer interface {
 	Accumulator
-	Densimeter
 }
 
 type UnimplOut struct {
 }
 
-func (*UnimplOut) SumOf(_ context.Context, _ *oc.AreaArg, _ *oc.Reply) error {
+func (*UnimplOut) Sum(_ context.Context, _ *oc.SumArg, _ *oc.SumReply) error {
 	panic("not implement")
 }
 
-func (*UnimplOut) CollectOf(_ context.Context, _ *oc.AreaArg, _ *oc.Reply) error {
+func (*UnimplOut) MutiSum(_ context.Context, _ *oc.MutiSumArg, _ *oc.MutiSumReply) error {
 	panic("not implement")
 }
 
@@ -41,10 +37,6 @@ func NewOutServ(out Outer) *OutServ {
 	}
 }
 
-func (h *OutServ) Sum(r *http.Request, args *oc.AreaArg, reply *oc.Reply) error {
-	return h.Outer.SumOf(r.Context(), args, reply)
-}
-
-func (h *OutServ) Collect(r *http.Request, args *oc.AreaArg, reply *oc.Reply) error {
-	return h.Outer.CollectOf(r.Context(), args, reply)
+func (h *OutServ) Sum(r *http.Request, args *oc.SumArg, reply *oc.SumReply) error {
+	return h.Outer.Sum(r.Context(), args, reply)
 }
