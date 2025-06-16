@@ -15,6 +15,7 @@ type DeviceResolver interface {
 type UploadHandler interface {
 	HandleUpload(ctx context.Context, u CameraUpload) error
 }
+
 type AutoSub struct {
 	DeviceResolver DeviceResolver
 	UploadHandler  UploadHandler
@@ -25,11 +26,6 @@ type AutoSub struct {
 }
 
 func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
-
-	slog.InfoContext(ctx, "receive reg data",
-		slog.String("module", "AutoSub"),
-		slog.String("sn", data.SerialNumber),
-		slog.String("addr", data.IpAddr))
 
 	device, err := a.DeviceResolver.Resolve(ctx, data)
 	if err != nil {

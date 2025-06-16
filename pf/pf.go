@@ -20,7 +20,17 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 			return
 		}
 
-		if err := h.HandleAutoRegister(r.Context(), data); err != nil {
+		ctx := r.Context()
+		slog.InfoContext(ctx, "receive reg data",
+			slog.String("module", "hapi"),
+			slog.Any("data", data))
+
+		if err := h.HandleAutoRegister(ctx, data); err != nil {
+
+			slog.ErrorContext(ctx, "handleAutoReg error",
+				slog.String("module", "hapi"),
+				slog.Any("error", err))
+
 			_ = hx.JsonTo(http.StatusInternalServerError,
 				holo.CommonResponseFailedError(r.URL.Path, err), w)
 			return
@@ -71,6 +81,7 @@ func PlatformHandle(h *Handle) http.Handler {
 
 	r.Post("/upload", MetadataEntryUpload(h))
 	r.Post("/1", MetadataEntryUpload(h))
+	r.Post("/2", MetadataEntryUpload(h))
 
 	r.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "hahha~~, url = %s, meth = %s, ssl = %t", r.URL.String(), r.Method, r.TLS != nil)
