@@ -87,6 +87,7 @@ func (Upload) Mixin() []ent.Mixin {
 func (Upload) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("sn"),
+		index.Fields("uuid"),
 	}
 }
 

@@ -33,6 +33,11 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{CameraUploadColumns[3]},
 			},
+			{
+				Name:    "upload_uuid",
+				Unique:  false,
+				Columns: []*schema.Column{CameraUploadColumns[5]},
+			},
 		},
 	}
 	// Tables holds all the tables in the schema.

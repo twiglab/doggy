@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	key_eh     = "_eh"
+	keyEhc     = "_ehc_"
 	keyCmdb    = "_cmdb_"
 	keyBackend = "_backend_"
 	keyRootLog = "_root_log_"
@@ -41,9 +41,10 @@ func buildRootlogger(ctx context.Context, conf AppConf) (*slog.Logger, context.C
 	return logger, context.WithValue(ctx, keyRootLog, logger)
 }
 
-func buildEntHandle(ctx context.Context, conf AppConf) (*orm.EntHandle, context.Context) {
+func buildEntCache(ctx context.Context, conf AppConf) (pf.Cache, context.Context) {
 	eh := orm.NewEntHandle(MustEntClient(conf.DBConf))
-	return eh, context.WithValue(ctx, key_eh, eh)
+	cache := orm.NewEntCache(eh)
+	return cache, context.WithValue(ctx, keyEhc, cache)
 }
 
 func buildCmdb(ctx context.Context, conf AppConf) (*pf.CameraDB, context.Context) {
@@ -86,16 +87,15 @@ func buildBackend(ctx context.Context, conf AppConf) (pfh, context.Context) {
 }
 
 func buildToucher(ctx context.Context, _ AppConf) (*pf.InMomoryTouch, context.Context) {
-	t := pf.NewInMomoryTouch()
+	t := &pf.InMomoryTouch{}
 	return t, context.WithValue(ctx, keyToucher, t)
 }
 
 func buildAll(box context.Context, conf AppConf) context.Context {
 	_, box = buildRootlogger(box, conf)
-	_, box = buildEntHandle(box, conf)
+	_, box = buildEntCache(box, conf)
 	_, box = buildCmdb(box, conf)
 	_, box = buildBackend(box, conf)
 	_, box = buildToucher(box, conf)
-
 	return box
 }

@@ -11,11 +11,11 @@ import (
 )
 
 type Loader interface {
-	All(context.Context) ([]pf.CameraUpload, error)
+	GetAll(context.Context) ([]pf.CameraItem, error)
 }
 
 type Item struct {
-	Upload pf.CameraUpload
+	Upload pf.CameraItem
 	TTL    time.Time
 }
 type Page struct {
@@ -25,7 +25,7 @@ type Page struct {
 }
 
 func (v *Page) All(ctx context.Context) ([]Item, error) {
-	uploads, err := v.Loader.All(ctx)
+	uploads, err := v.Loader.GetAll(ctx)
 	if err != nil {
 		return nil, err
 	}

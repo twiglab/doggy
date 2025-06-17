@@ -12,13 +12,9 @@ type DeviceResolver interface {
 	Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error)
 }
 
-type UploadHandler interface {
-	HandleUpload(ctx context.Context, u CameraUpload) error
-}
-
 type AutoSub struct {
 	DeviceResolver DeviceResolver
-	UploadHandler  UploadHandler
+	CacheSetter    CacheSetter
 
 	MainSub holo.SubscriptionReq
 	Backups []holo.SubscriptionReq
@@ -75,7 +71,7 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 	}
 
 	ch := data.FirstChannel()
-	return a.UploadHandler.HandleUpload(ctx, CameraUpload{
+	return a.CacheSetter.Set(ctx, CameraItem{
 		SN:       data.SerialNumber,
 		IpAddr:   data.IpAddr,
 		UUID:     ch.UUID,

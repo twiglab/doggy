@@ -14,9 +14,9 @@ import (
 )
 
 func pageHandle(ctx context.Context, _ AppConf) http.Handler {
-	loader := ctx.Value(key_eh).(page.Loader)
-	cmdb := ctx.Value(keyToucher).(pf.Toucher)
-	p := page.NewPage(loader, cmdb)
+	loader := ctx.Value(keyEhc).(page.Loader)
+	toucher := ctx.Value(keyToucher).(pf.Toucher)
+	p := page.NewPage(loader, toucher)
 	return page.AdminPage(p)
 }
 
@@ -31,8 +31,8 @@ func outHandle(_ context.Context, conf AppConf) http.Handler {
 
 func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 
-	uh := ctx.Value(key_eh).(pf.UploadHandler)
 	cmdb := ctx.Value(keyCmdb).(pf.DeviceResolver)
+	ehc := ctx.Value(keyEhc).(pf.Cache)
 	toucher := ctx.Value(keyToucher).(pf.Toucher)
 
 	var backups []holo.SubscriptionReq
@@ -48,7 +48,7 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 
 	autoSub := &pf.AutoSub{
 		DeviceResolver: cmdb,
-		UploadHandler:  uh,
+		CacheSetter:    ehc,
 
 		MainSub: holo.SubscriptionReq{
 			Address:     conf.SubsConf.Main.Addr,
@@ -60,13 +60,19 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 		Backups: backups,
 		Muti:    conf.SubsConf.Muti,
 	}
-	h := pf.NewHandle(pf.WithDeviceRegister(autoSub), pf.WithToucher(toucher))
 
+	var backend pfh
 	if backendName(conf) != bNameNone {
-		backend := ctx.Value(keyBackend).(*taosdb.Schemaless)
-		h.SetCountHandler(backend)
-		h.SetDensityHandler(backend)
+		backend = ctx.Value(keyBackend).(*taosdb.Schemaless)
 	}
+
+	h := pf.NewHandle(
+		pf.WithDeviceRegister(autoSub),
+		pf.WithCountHandler(backend),
+		pf.WithDensityHandler(backend),
+		pf.WithToucher(toucher),
+		pf.WithCache(pf.NewTieredCache(ehc)),
+	)
 
 	return pf.PlatformHandle(h)
 }

@@ -57,11 +57,20 @@ func WithToucher(t Toucher) Option {
 	}
 }
 
+func WithCache(cache Cache) Option {
+	return func(c *Handle) {
+		if cache != nil {
+			c.cache = cache
+		}
+	}
+}
+
 type Handle struct {
 	countHandler   CountHandler
 	densityHandler DensityHandler
 	deviceRegister DeviceRegister
 	toucher        Toucher
+	cache          Cache
 }
 
 func NewHandle(opts ...Option) *Handle {
@@ -70,32 +79,12 @@ func NewHandle(opts ...Option) *Handle {
 		countHandler:   action,
 		densityHandler: action,
 		deviceRegister: action,
-		toucher:        NewInMomoryTouch(),
+		toucher:        &InMomoryTouch{},
+		cache:          NewTieredCache(nil),
 	}
 
 	for _, o := range opts {
 		o(h)
-	}
-	return h
-}
-
-func (h *Handle) SetCountHandler(ch CountHandler) *Handle {
-	if ch != nil {
-		h.countHandler = ch
-	}
-	return h
-}
-
-func (h *Handle) SetDensityHandler(dh DensityHandler) *Handle {
-	if dh != nil {
-		h.densityHandler = dh
-	}
-	return h
-}
-
-func (h *Handle) SetDeviceRegister(dr DeviceRegister) *Handle {
-	if dr != nil {
-		h.deviceRegister = dr
 	}
 	return h
 }
@@ -111,19 +100,33 @@ func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoReg
 		)
 		return nil
 	}
-	return h.deviceRegister.AutoRegister(ctx, data)
+	if err := h.deviceRegister.AutoRegister(ctx, data); err != nil {
+		slog.Error("AutoReg error",
+			slog.Any("data", data),
+			slog.Any("error", err))
+		return err
+	}
+
+	return nil
 }
 
 func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpload) error {
 	h.toucher.Touch(data.MetadataObject.Common.UUID)
+
+	var common = data.MetadataObject.Common
+
+	if item, ok, _ := h.cache.Get(ctx, data.MetadataObject.Common.UUID); ok {
+		common.DeviceID = item.Code
+	}
+
 	for _, target := range data.MetadataObject.TargetList {
 		switch target.TargetType {
 		case holo.HUMMAN_DENSITY:
-			if err := h.densityHandler.HandleDensity(ctx, data.MetadataObject.Common, target); err != nil {
+			if err := h.densityHandler.HandleDensity(ctx, common, target); err != nil {
 				slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.String("errText", err.Error()))
 			}
 		case holo.HUMMAN_COUNT:
-			if err := h.countHandler.HandleCount(ctx, data.MetadataObject.Common, target); err != nil {
+			if err := h.countHandler.HandleCount(ctx, common, target); err != nil {
 				slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.String("errText", err.Error()))
 			}
 		default:
