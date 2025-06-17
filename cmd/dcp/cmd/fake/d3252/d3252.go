@@ -91,7 +91,10 @@ func d3252() {
 		}
 	})
 
-	cron.AddDurationFunc(10*time.Second, func() {
+	cron.AddDurationFunc(5*time.Second, func() {
+		if !bEnableDensity {
+			return
+		}
 		var resp holo.CommonResponse
 		data := holo.MetadataObjectUpload{
 			MetadataObject: holo.MetadataObject{
@@ -150,7 +153,7 @@ func d3252() {
 				Post(v.MetadataURL)
 
 			if err != nil {
-				log.Println("-----", err)
+				log.Println(err)
 				return
 			}
 		}
@@ -235,7 +238,9 @@ var D3252Cmd = &cobra.Command{
 	Example: "dcp fake D3252",
 }
 var bBug bool
+var bEnableDensity bool
 
 func init() {
 	D3252Cmd.Flags().BoolVar(&bBug, "bug", false, "bug模式")
+	D3252Cmd.Flags().BoolVar(&bEnableDensity, "enable-density", false, "打开人流密度上报")
 }

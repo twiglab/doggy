@@ -1,8 +1,10 @@
 package doggy
 
-import "runtime"
+import (
+	"runtime"
+)
 
-const version = "0.1.13"
+const version = "0.0.3"
 
 var (
 	GitCommit string //Git提交号
