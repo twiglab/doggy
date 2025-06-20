@@ -2,6 +2,7 @@ package d3252
 
 import (
 	"log"
+	"log/slog"
 	"math/rand/v2"
 	"net/http"
 	"time"
@@ -20,8 +21,8 @@ import (
 ffffffff-ffff-ffff-ffff-ffffffffffff
 */
 const (
-	uuid     = "00000000-0000-0000-0000-000000000000"
-	deviceID = "1234567890"
+	uuid        = "00000000-0000-0000-0000-000000000000"
+	rawDeviceID = "0000000000000000"
 )
 
 func rnd() int {
@@ -44,7 +45,7 @@ var camera = &Camera{
 		DeviceName:   "kake SDC",
 		Manufacturer: "fake",
 		DeviceType:   "fake type",
-		ChannelInfo:  []holo.Channel{{ChannelID: 101, UUID: uuid, DeviceID: deviceID}},
+		ChannelInfo:  []holo.Channel{{ChannelID: 101, UUID: uuid, DeviceID: rawDeviceID}},
 		DeviceVersion: holo.DeviceVersionData{
 			Software: holo.SDC_11_0_0_SPC300,
 		},
@@ -53,7 +54,7 @@ var camera = &Camera{
 	IDList: holo.DeviceIDList{IDs: []holo.DeviceID{
 		{
 			UUID:     uuid,
-			DeviceID: deviceID,
+			DeviceID: rawDeviceID,
 		},
 	}},
 	SubMap: make(map[string]holo.SubscriptionReq),
@@ -77,14 +78,13 @@ func d3252() {
 				SetErrorResult(&resp).
 				Put("https://127.0.0.1:10005/pf/nat")
 
-			if err != nil {
-				log.Println("auto reg failet", err)
+			if err = holo.CheckErr(&resp, err); err != nil {
+				slog.Error("autoreg err", slog.Any("error", err))
 				return
 			}
-			if err = resp.Err(); err != nil {
-				return
-			}
-			log.Println("auto reg ok")
+
+			slog.Info("autoreg ok", slog.Any("data", camera.DeviceAutoRegisterData))
+
 			if !bBug {
 				camera.isAutoReg = true
 			}
@@ -96,12 +96,16 @@ func d3252() {
 			return
 		}
 		var resp holo.CommonResponse
+		var common = holo.Common{
+			UUID:     camera.IDList.IDs[0].UUID,
+			DeviceID: camera.IDList.IDs[0].DeviceID,
+		}
+		if bBug {
+			common.DeviceID = rawDeviceID
+		}
 		data := holo.MetadataObjectUpload{
 			MetadataObject: holo.MetadataObject{
-				Common: holo.Common{
-					UUID:     camera.IDList.IDs[0].UUID,
-					DeviceID: camera.IDList.IDs[0].DeviceID,
-				},
+				Common: common,
 				TargetList: []holo.HumanMix{
 					{
 						TargetType: holo.HUMMAN_DENSITY,
@@ -119,20 +123,25 @@ func d3252() {
 				Post(v.MetadataURL)
 
 			if err != nil {
-				log.Println("-----", err)
+				slog.Error("metadata density err", slog.Any("error", err))
 				return
 			}
+			slog.Info("metadata density ok", slog.Any("data", data))
 		}
 	})
 
 	cron.AddDurationFunc(30*time.Second, func() {
 		var resp holo.CommonResponse
+		var common = holo.Common{
+			UUID:     camera.IDList.IDs[0].UUID,
+			DeviceID: camera.IDList.IDs[0].DeviceID,
+		}
+		if bBug {
+			common.DeviceID = rawDeviceID
+		}
 		data := holo.MetadataObjectUpload{
 			MetadataObject: holo.MetadataObject{
-				Common: holo.Common{
-					UUID:     camera.IDList.IDs[0].UUID,
-					DeviceID: camera.IDList.IDs[0].DeviceID,
-				},
+				Common: common,
 				TargetList: []holo.HumanMix{
 					{
 						TargetType:    holo.HUMMAN_COUNT,
@@ -153,9 +162,10 @@ func d3252() {
 				Post(v.MetadataURL)
 
 			if err != nil {
-				log.Println(err)
+				slog.Error("metadata count err", slog.Any("error", err))
 				return
 			}
+			slog.Info("metadata count ok", slog.Any("data", data))
 		}
 	})
 
@@ -168,10 +178,6 @@ func d3252() {
 	sdcapi.Post("/V1.0/System/Reboot", func(w http.ResponseWriter, r *http.Request) {
 		clear(camera.SubMap)
 		camera.isAutoReg = false
-
-		camera.IDList = holo.DeviceIDList{IDs: []holo.DeviceID{
-			{UUID: uuid, DeviceID: deviceID},
-		}}
 
 		hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
 	})
@@ -191,6 +197,7 @@ func d3252() {
 		if len(idList.IDs) > 0 {
 			camera.IDList = idList
 		}
+		camera.DeviceAutoRegisterData.ChannelInfo[0].DeviceID = idList.IDs[0].DeviceID
 
 		hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
 	})
