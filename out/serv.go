@@ -40,3 +40,7 @@ func NewOutServ(out Outer) *OutServ {
 func (h *OutServ) Sum(r *http.Request, args *oc.SumArg, reply *oc.SumReply) error {
 	return h.Outer.Sum(r.Context(), args, reply)
 }
+
+func (h *OutServ) MutiSum(r *http.Request, in *oc.MutiSumArg, out *oc.MutiSumReply) error {
+	return h.Outer.MutiSum(r.Context(), in, out)
+}

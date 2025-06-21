@@ -2,7 +2,10 @@ package oc
 
 import "time"
 
-const CALL_SUM = "out.Sum"
+const (
+	SumCall     = "out.Sum"
+	MuitSumCall = "out.MutiSum"
+)
 
 func ToMilliTimestamp(t time.Time) int64 {
 	return t.UnixMilli()
@@ -16,6 +19,14 @@ type SumArg struct {
 
 type MutiSumArg struct {
 	Args []SumArg
+}
+
+func OneSumArg(start, end int64, ids []string) MutiSumArg {
+	return MutiSumArg{
+		Args: []SumArg{
+			{Start: start, End: end, IDs: ids},
+		},
+	}
 }
 
 type SumReply struct {
