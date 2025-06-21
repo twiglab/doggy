@@ -2,6 +2,7 @@ package pf
 
 import (
 	"context"
+	"log/slog"
 	"sync"
 	"time"
 
@@ -119,6 +120,10 @@ func (c *TieredCache) Get(ctx context.Context, k string) (i CameraItem, ok bool,
 
 	if i, ok, err = c.second.Get(ctx, k); ok {
 		err = c.inner.Set(ctx, i)
+		slog.DebugContext(ctx, "second cache",
+			slog.Any("camera", i),
+			slog.Any("setCacheErr", err),
+			slog.Bool("ok", ok))
 	}
 
 	return

@@ -41,7 +41,6 @@ type Camera struct {
 var camera = &Camera{
 	DeviceAutoRegisterData: holo.DeviceAutoRegisterData{
 		SerialNumber: "ABCDEFGHIJKLMN",
-		IpAddr:       "127.0.0.1:10007",
 		DeviceName:   "kake SDC",
 		Manufacturer: "fake",
 		DeviceType:   "fake type",
@@ -63,12 +62,14 @@ var camera = &Camera{
 var client = req.C().EnableInsecureSkipVerify()
 
 func d3252() {
+	camera.DeviceAutoRegisterData.IpAddr = out
+
 	cron, err := job.NewCron()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	cron.AddDurationFunc(5*time.Second, func() {
+	cron.AddDurationFunc(15*time.Second, func() {
 		if !camera.isAutoReg {
 			var resp holo.CommonResponse
 
@@ -76,7 +77,7 @@ func d3252() {
 				SetBody(camera.DeviceAutoRegisterData).
 				SetSuccessResult(&resp).
 				SetErrorResult(&resp).
-				Put("https://127.0.0.1:10005/pf/nat")
+				Put(pfURL(serverAddr, "/pf/nat"))
 
 			if err = holo.CheckErr(&resp, err); err != nil {
 				slog.Error("autoreg err", slog.Any("error", err))
@@ -228,8 +229,11 @@ func d3252() {
 	})
 
 	mux.Mount("/SDCAPI", sdcapi)
+	mux.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		hx.JsonTo(http.StatusOK, camera, w)
+	})
 
-	if err := http.ListenAndServeTLS(":10007", "repo/server.crt", "repo/server.key", mux); err != nil {
+	if err := http.ListenAndServeTLS(listen, "repo/server.crt", "repo/server.key", mux); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -244,10 +248,22 @@ var D3252Cmd = &cobra.Command{
 
 	Example: "dcp fake D3252",
 }
-var bBug bool
-var bEnableDensity bool
+var (
+	bBug           bool
+	bEnableDensity bool
+	listen         string
+	serverAddr     string
+	out            string
+)
 
 func init() {
 	D3252Cmd.Flags().BoolVar(&bBug, "bug", false, "bug模式")
 	D3252Cmd.Flags().BoolVar(&bEnableDensity, "enable-density", false, "打开人流密度上报")
+	D3252Cmd.Flags().StringVarP(&listen, "listen", "l", "0.0.0.0:10007", "本地地址")
+	D3252Cmd.Flags().StringVarP(&serverAddr, "server", "s", "127.0.0.1:10005", "平台址")
+	D3252Cmd.Flags().StringVarP(&out, "out", "o", "127.0.0.1:10007", "对外地址")
+}
+
+func pfURL(addr, path string) string {
+	return "https://" + addr + path
 }
