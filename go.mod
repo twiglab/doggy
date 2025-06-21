@@ -6,6 +6,7 @@ require (
 	entgo.io/ent v0.14.4
 	github.com/go-chi/chi/v5 v5.2.2
 	github.com/go-co-op/gocron/v2 v2.16.2
+	github.com/go-sql-driver/mysql v1.9.3
 	github.com/gorilla/rpc v1.2.1
 	github.com/imroc/req/v3 v3.53.0
 	github.com/influxdata/line-protocol/v2 v2.2.1
@@ -20,6 +21,7 @@ require (
 
 require (
 	ariga.io/atlas v0.31.1-0.20250212144724-069be8033e83 // indirect
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
