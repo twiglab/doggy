@@ -2,6 +2,8 @@ package holo
 
 import (
 	"fmt"
+	"net/url"
+	"strconv"
 	"time"
 )
 
@@ -10,9 +12,40 @@ const (
 	HUMMAN_COUNT   = 15
 )
 
-func cameraURL(addr, path string) string {
-	url := "https://" + addr + path
-	return url
+func SubReq(s string) (SubscriptionReq, error) {
+	var err error
+	var u *url.URL
+
+	if u, err = url.ParseRequestURI(s); err != nil {
+		return SubscriptionReq{}, err
+	}
+
+	port := 80
+	if p := u.Port(); p != "" {
+		if port, err = strconv.Atoi(p); err != nil {
+			return SubscriptionReq{}, err
+		}
+	}
+
+	https := 0
+	if u.Scheme == "https" {
+		https = 1
+	}
+
+	return SubscriptionReq{
+		Address:     u.Hostname(),
+		TimeOut:     0,
+		Port:        port,
+		HttpsEnable: https,
+		MetadataURL: s,
+	}, nil
+}
+
+func CameraURL(addr, path string, ssl bool) string {
+	if ssl {
+		return "https://" + addr + path
+	}
+	return "http://" + addr + path
 }
 
 func MilliToTime(milli int64, tz int64) time.Time {

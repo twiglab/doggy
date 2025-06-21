@@ -6,28 +6,17 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/orm"
 	"github.com/twiglab/doggy/orm/ent"
 	"github.com/twiglab/doggy/taosdb"
 	"gopkg.in/yaml.v3"
 )
 
-type Sub struct {
-	MetadataURL string `yaml:"metadata-url" mapstructure:"metadata-url"`
-	Addr        string `yaml:"addr" mapstructure:"addr"`
-	Port        int    `yaml:"port" mapstructure:"port"`
-	TimeOut     int    `yaml:"time-out" mapstructure:"time-out"`
-	HttpsEnable int    `yaml:"https-enable" mapstructure:"https-enable" `
-}
-
 type SubsConf struct {
-	Muti    int   `yaml:"muti" mapstructure:"muti"`
-	Main    Sub   `yaml:"main" mapstructure:"main"`
-	Backups []Sub `yaml:"backups" mapstructure:"backups"`
-}
-
-type KeepliveJobConf struct {
-	Crontab string `yaml:"crontab" mapstructure:"crontab"`
+	Muti    int      `yaml:"muti" mapstructure:"muti"`
+	Main    string   `yaml:"main" mapstructure:"main"`
+	Backups []string `yaml:"backups" mapstructure:"backups"`
 }
 
 type LoggerConf struct {
@@ -103,6 +92,13 @@ func MustOpenTaosDB(conf AppConf) *sql.DB {
 	return db
 }
 
+func MustSubReq(req holo.SubscriptionReq, err error) holo.SubscriptionReq {
+	if err != nil {
+		log.Fatal(err)
+	}
+	return req
+}
+
 var ConfCmd = &cobra.Command{
 	Use:   "config",
 	Short: "生成配置文件",
@@ -134,29 +130,10 @@ func confCmd() {
 		},
 		SubsConf: SubsConf{
 			Muti: 1,
-			Main: Sub{
-				Addr:        "127.0.0.1",
-				Port:        10005,
-				TimeOut:     0,
-				HttpsEnable: 1,
-				MetadataURL: "https://127.0.0.1:10005/pf/upload",
-			},
+			Main: "https://127.0.0.1:10005/pf/upload",
 
-			Backups: []Sub{
-				{
-					Addr:        "127.0.0.1",
-					Port:        10005,
-					TimeOut:     0,
-					HttpsEnable: 1,
-					MetadataURL: "https://127.0.0.1:10005/pf/upload",
-				},
-				{
-					Addr:        "127.0.0.1",
-					Port:        10005,
-					TimeOut:     0,
-					HttpsEnable: 1,
-					MetadataURL: "https://127.0.0.1:10005/pf/upload",
-				},
+			Backups: []string{
+				"https://127.0.0.1:10005/pf/upload",
 			},
 		},
 		CameraDBConf: CameraDBConf{

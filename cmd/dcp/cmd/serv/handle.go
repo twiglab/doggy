@@ -37,28 +37,15 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 
 	var backups []holo.SubscriptionReq
 	for _, b := range conf.SubsConf.Backups {
-		backups = append(backups, holo.SubscriptionReq{
-			Address:     b.Addr,
-			Port:        b.Port,
-			MetadataURL: b.MetadataURL,
-			TimeOut:     b.TimeOut,
-			HttpsEnable: b.HttpsEnable,
-		})
+		backups = append(backups, MustSubReq(holo.SubReq(b)))
 	}
 
 	autoSub := &pf.AutoSub{
 		DeviceResolver: cmdb,
 		CacheSetter:    ehc,
-
-		MainSub: holo.SubscriptionReq{
-			Address:     conf.SubsConf.Main.Addr,
-			Port:        conf.SubsConf.Main.Port,
-			MetadataURL: conf.SubsConf.Main.MetadataURL,
-			TimeOut:     conf.SubsConf.Main.TimeOut,
-			HttpsEnable: conf.SubsConf.Main.HttpsEnable,
-		},
-		Backups: backups,
-		Muti:    conf.SubsConf.Muti,
+		MainSub:        MustSubReq(holo.SubReq(conf.SubsConf.Main)),
+		Backups:        backups,
+		Muti:           conf.SubsConf.Muti,
 	}
 
 	var backend pfh

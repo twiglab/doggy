@@ -77,7 +77,7 @@ func d3252() {
 				SetBody(camera.DeviceAutoRegisterData).
 				SetSuccessResult(&resp).
 				SetErrorResult(&resp).
-				Put(pfURL(serverAddr, "/pf/nat"))
+				Put(holo.CameraURL(serverAddr, "/pf/nat", true))
 
 			if err = holo.CheckErr(&resp, err); err != nil {
 				slog.Error("autoreg err", slog.Any("error", err))
@@ -262,8 +262,4 @@ func init() {
 	D3252Cmd.Flags().StringVarP(&listen, "listen", "l", "0.0.0.0:10007", "本地地址")
 	D3252Cmd.Flags().StringVarP(&serverAddr, "server", "s", "127.0.0.1:10005", "平台址")
 	D3252Cmd.Flags().StringVarP(&out, "out", "o", "127.0.0.1:10007", "对外地址")
-}
-
-func pfURL(addr, path string) string {
-	return "https://" + addr + path
 }
