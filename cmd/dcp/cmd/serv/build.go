@@ -43,8 +43,7 @@ func buildRootlogger(ctx context.Context, conf AppConf) (*slog.Logger, context.C
 
 func buildEntCache(ctx context.Context, conf AppConf) (pf.Cache, context.Context) {
 	eh := orm.NewEntHandle(MustEntClient(conf.DBConf))
-	cache := orm.NewEntCache(eh)
-	return cache, context.WithValue(ctx, keyEhc, cache)
+	return eh, context.WithValue(ctx, keyEhc, eh)
 }
 
 func buildCmdb(ctx context.Context, conf AppConf) (*pf.CameraDB, context.Context) {

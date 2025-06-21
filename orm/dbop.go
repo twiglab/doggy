@@ -43,16 +43,8 @@ func (h *EntHandle) GetByUUID(ctx context.Context, uuid string) (*ent.Upload, er
 	return q.Only(ctx)
 }
 
-type EntCache struct {
-	h *EntHandle
-}
-
-func NewEntCache(h *EntHandle) *EntCache {
-	return &EntCache{h: h}
-}
-
-func (x *EntCache) Get(ctx context.Context, k string) (pf.CameraItem, bool, error) {
-	u, err := x.h.GetByUUID(ctx, k)
+func (h *EntHandle) Get(ctx context.Context, k string) (pf.CameraItem, bool, error) {
+	u, err := h.GetByUUID(ctx, k)
 	if err != nil {
 		return pf.CameraItem{}, false, err
 	}
@@ -68,12 +60,12 @@ func (x *EntCache) Get(ctx context.Context, k string) (pf.CameraItem, bool, erro
 	}, true, nil
 }
 
-func (x *EntCache) Set(ctx context.Context, u pf.CameraItem) error {
-	return x.h.HandleUpload(ctx, u)
+func (h *EntHandle) Set(ctx context.Context, u pf.CameraItem) error {
+	return h.HandleUpload(ctx, u)
 }
 
-func (x *EntCache) GetAll(ctx context.Context) (uploads []pf.CameraItem, err error) {
-	us, err := x.h.All(ctx)
+func (h *EntHandle) GetAll(ctx context.Context) (uploads []pf.CameraItem, err error) {
+	us, err := h.All(ctx)
 	if err != nil {
 		return
 	}
