@@ -14,10 +14,10 @@ type Device struct {
 	User string
 	Pwd  string
 
-	useSSL bool
+	useHttps bool
 }
 
-func OpenDevice(addr, username, password string, useSSL bool) (*Device, error) {
+func OpenDevice(addr, username, password string, useHttps bool) (*Device, error) {
 	c := req.C().
 		SetUserAgent("doggy client").
 		EnableInsecureSkipVerify().
@@ -31,7 +31,7 @@ func OpenDevice(addr, username, password string, useSSL bool) (*Device, error) {
 		User: username,
 		Pwd:  password,
 
-		useSSL: useSSL,
+		useHttps: useHttps,
 	}, nil
 }
 
@@ -53,7 +53,7 @@ func (h *Device) PostMetadataSubscription(ctx context.Context, req SubscriptionR
 		SetBody(req).
 		SetSuccessResult(&resp).
 		SetErrorResult(&resp).
-		Post(CameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription", h.useSSL))
+		Post(CameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription", h.useHttps))
 	return
 }
 
@@ -62,7 +62,7 @@ func (h *Device) DeleteMetadataSubscription(ctx context.Context) (resp *CommonRe
 		SetContext(ctx).
 		SetSuccessResult(&resp).
 		SetErrorResult(&resp).
-		Delete(CameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription", h.useSSL))
+		Delete(CameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription", h.useHttps))
 	return
 }
 
@@ -70,7 +70,7 @@ func (h *Device) GetMetadataSubscription(ctx context.Context) (data *Subscripion
 	var resp *req.Response
 	resp, err = h.client.R().
 		SetSuccessResult(&data).
-		Get(CameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription", h.useSSL))
+		Get(CameraURL(h.address, "/SDCAPI/V2.0/Metadata/Subscription", h.useHttps))
 
 	if resp.IsErrorState() {
 		err = NewApiError(resp.StatusCode, resp.Status)
@@ -83,7 +83,7 @@ func (h *Device) Reboot(ctx context.Context) (resp *CommonResponse, err error) {
 		SetContext(ctx).
 		SetSuccessResult(&resp).
 		SetErrorResult(&resp).
-		Post(CameraURL(h.address, "/SDCAPI/V1.0/System/Reboot", h.useSSL))
+		Post(CameraURL(h.address, "/SDCAPI/V1.0/System/Reboot", h.useHttps))
 	return
 }
 
@@ -92,7 +92,7 @@ func (h *Device) GetDeviceID(ctx context.Context) (idList *DeviceIDList, err err
 	resp, err = h.client.R().
 		SetContext(ctx).
 		SetSuccessResult(&idList).
-		Get(CameraURL(h.address, "/SDCAPI/V1.0/Rest/DeviceID", h.useSSL))
+		Get(CameraURL(h.address, "/SDCAPI/V1.0/Rest/DeviceID", h.useHttps))
 
 	if resp.IsErrorState() {
 		err = NewApiError(resp.StatusCode, resp.Status)
@@ -106,13 +106,13 @@ func (h *Device) PutDeviceID(ctx context.Context, idList DeviceIDList) (resp *Co
 		SetBody(idList).
 		SetSuccessResult(&resp).
 		SetErrorResult(&resp).
-		Put(CameraURL(h.address, "/SDCAPI/V1.0/Rest/DeviceID", h.useSSL))
+		Put(CameraURL(h.address, "/SDCAPI/V1.0/Rest/DeviceID", h.useHttps))
 	return
 }
 
 func (h *Device) GetSysBaseInfo(ctx context.Context) (info *SysBaseInfo, err error) {
 	_, err = h.client.R().
 		SetSuccessResult(&info).
-		Get(CameraURL(h.address, "/SDCAPI/V1.0/MiscIaas/System", h.useSSL))
+		Get(CameraURL(h.address, "/SDCAPI/V1.0/MiscIaas/System", h.useHttps))
 	return
 }
