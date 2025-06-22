@@ -4,7 +4,7 @@ import (
 	"runtime"
 )
 
-const version = "0.0.3"
+const version = "0.0.4"
 
 var (
 	GitCommit string //Git提交号
