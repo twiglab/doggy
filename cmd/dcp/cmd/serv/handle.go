@@ -66,7 +66,7 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 
 func FullHandler(ctx context.Context, conf AppConf) http.Handler {
 	mux := chi.NewMux()
-	mux.Use(middleware.Recoverer, middleware.RequestID)
+	mux.Use(middleware.Recoverer)
 	mux.Mount("/pf", pfHandle(ctx, conf))
 	mux.Mount("/admin", pageHandle(ctx, conf))
 	mux.Mount("/debug", middleware.Profiler())
