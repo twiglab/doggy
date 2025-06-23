@@ -21,6 +21,7 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 		}
 
 		ctx := r.Context()
+
 		slog.InfoContext(ctx, "receive reg data",
 			slog.String("module", "hapi"),
 			slog.Any("data", data))

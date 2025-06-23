@@ -2,6 +2,7 @@ package taosdb
 
 import (
 	"fmt"
+	"unsafe"
 )
 
 const (
@@ -39,8 +40,7 @@ func SchemalessURL(addr string, port int) string {
 }
 
 func bytesToStr(bs []byte) string {
-	//return unsafe.String(&bs[0], len(bs))
-	return string(bs)
+	return unsafe.String(&bs[0], len(bs))
 }
 
 func hasCount(in, out int) bool {
