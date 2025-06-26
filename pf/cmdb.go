@@ -71,24 +71,6 @@ type CameraItem struct {
 	Pwd  string
 }
 
-type innerMemoryCache struct {
-	m sync.Map
-}
-
-func (i *innerMemoryCache) Get(ctx context.Context, k string) (CameraItem, bool, error) {
-	a, ok := i.m.Load(k)
-	if ok {
-		return a.(CameraItem), ok, nil
-	}
-
-	return CameraItem{}, false, nil
-}
-
-func (i *innerMemoryCache) Set(ctx context.Context, item CameraItem) error {
-	i.m.Store(item.UUID, item)
-	return nil
-}
-
 type emptyCache string
 
 func (i emptyCache) Get(_ context.Context, _ string) (c CameraItem, ok bool, err error) {
@@ -100,13 +82,12 @@ func (i emptyCache) Set(_ context.Context, _ CameraItem) (err error) {
 }
 
 type TiersCache struct {
-	inner  *innerMemoryCache
+	m      sync.Map
 	second Cache
 }
 
 func NewTiersCache() *TiersCache {
 	return &TiersCache{
-		inner:  &innerMemoryCache{},
 		second: emptyCache("x"),
 	}
 }
@@ -116,12 +97,12 @@ func (c *TiersCache) SetSecond(second Cache) {
 }
 
 func (c *TiersCache) Get(ctx context.Context, k string) (i CameraItem, ok bool, err error) {
-	if i, ok, err = c.inner.Get(ctx, k); ok {
+	if i, ok, err = c.innerGet(k); ok {
 		return
 	}
 
 	if i, ok, err = c.second.Get(ctx, k); ok {
-		err = c.inner.Set(ctx, i)
+		err = c.innerSet(i)
 		slog.DebugContext(ctx, "second cache",
 			slog.Any("camera", i),
 			slog.Any("setCacheErr", err),
@@ -132,5 +113,19 @@ func (c *TiersCache) Get(ctx context.Context, k string) (i CameraItem, ok bool, 
 }
 
 func (c *TiersCache) Set(ctx context.Context, item CameraItem) error {
-	return c.inner.Set(ctx, item)
+	return c.innerSet(item)
+}
+
+func (c *TiersCache) innerGet(k string) (CameraItem, bool, error) {
+	a, ok := c.m.Load(k)
+	if ok {
+		return a.(CameraItem), ok, nil
+	}
+
+	return CameraItem{}, false, nil
+}
+
+func (c *TiersCache) innerSet(item CameraItem) error {
+	c.m.Store(item.UUID, item)
+	return nil
 }
