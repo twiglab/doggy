@@ -22,12 +22,7 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 
 		ctx := r.Context()
 
-		slog.InfoContext(ctx, "receive reg data",
-			slog.String("module", "hapi"),
-			slog.Any("data", data))
-
 		if err := h.HandleAutoRegister(ctx, data); err != nil {
-
 			slog.ErrorContext(ctx, "handleAutoReg error",
 				slog.String("module", "hapi"),
 				slog.Any("error", err))
@@ -37,12 +32,6 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 			return
 		}
 
-		slog.InfoContext(r.Context(), "register device ok",
-			slog.String("module", "hapi"),
-			slog.String("sn", data.SerialNumber),
-			slog.String("ip", data.IpAddr),
-		)
-
 		_ = hx.JsonTo(http.StatusOK, holo.CommonResponseOK(r.URL.Path), w)
 	}
 }
@@ -51,7 +40,6 @@ func MetadataEntryUpload(h *Handle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var data holo.MetadataObjectUpload
 		if err := hx.BindAndClose(r, &data); err != nil {
-
 			slog.ErrorContext(r.Context(), "error-01",
 				slog.String("method", "MetadataEntryUpload"),
 				slog.Any("error", err))
@@ -61,7 +49,6 @@ func MetadataEntryUpload(h *Handle) http.HandlerFunc {
 		}
 
 		if err := h.HandleMetadata(r.Context(), data); err != nil {
-
 			slog.ErrorContext(r.Context(), "error-02",
 				slog.String("method", "MetadataEntryUpload"),
 				slog.Any("error", err))

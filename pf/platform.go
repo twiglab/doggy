@@ -94,9 +94,8 @@ func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoReg
 	last, ok := h.toucher.Last(ch.UUID)
 	if ok && time.Since(last) < 90*time.Second {
 		slog.Debug("ignore muti reg",
-			slog.String("ipAddr", data.IpAddr),
 			slog.String("sn", data.SerialNumber),
-			slog.Any("channel", ch),
+			slog.String("ipAddr", data.IpAddr),
 		)
 		return nil
 	}

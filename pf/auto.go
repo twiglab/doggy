@@ -49,7 +49,7 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 
 			if a.Muti > 1 {
 
-				slog.InfoContext(ctx, "send meta sub",
+				slog.InfoContext(ctx, "send muti  meta sub",
 					slog.Any("backups", a.Backups),
 					slog.String("sn", data.SerialNumber),
 					slog.String("module", "AutoSub"),
