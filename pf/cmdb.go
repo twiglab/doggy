@@ -99,23 +99,23 @@ func (i emptyCache) Set(_ context.Context, _ CameraItem) (err error) {
 	return
 }
 
-type TieredCache struct {
+type TiersCache struct {
 	inner  *innerMemoryCache
 	second Cache
 }
 
-func NewTieredCache(second Cache) *TieredCache {
-	if second == nil {
-		second = emptyCache("x")
-	}
-
-	return &TieredCache{
+func NewTiersCache() *TiersCache {
+	return &TiersCache{
 		inner:  &innerMemoryCache{},
-		second: second,
+		second: emptyCache("x"),
 	}
 }
 
-func (c *TieredCache) Get(ctx context.Context, k string) (i CameraItem, ok bool, err error) {
+func (c *TiersCache) SetSecond(second Cache) {
+	c.second = second
+}
+
+func (c *TiersCache) Get(ctx context.Context, k string) (i CameraItem, ok bool, err error) {
 	if i, ok, err = c.inner.Get(ctx, k); ok {
 		return
 	}
@@ -131,6 +131,6 @@ func (c *TieredCache) Get(ctx context.Context, k string) (i CameraItem, ok bool,
 	return
 }
 
-func (c *TieredCache) Set(ctx context.Context, item CameraItem) error {
+func (c *TiersCache) Set(ctx context.Context, item CameraItem) error {
 	return c.inner.Set(ctx, item)
 }

@@ -48,6 +48,9 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 		Muti:           conf.SubsConf.Muti,
 	}
 
+	cache := pf.NewTiersCache()
+	cache.SetSecond(ehc)
+
 	var backend pfh
 	if backendName(conf) != bNameNone {
 		backend = ctx.Value(keyBackend).(*taosdb.Schemaless)
@@ -58,7 +61,7 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 		pf.WithCountHandler(backend),
 		pf.WithDensityHandler(backend),
 		pf.WithToucher(toucher),
-		pf.WithCache(pf.NewTieredCache(ehc)),
+		pf.WithCache(cache),
 	)
 
 	return pf.PlatformHandle(h)

@@ -80,7 +80,7 @@ func NewHandle(opts ...Option) *Handle {
 		densityHandler: action,
 		deviceRegister: action,
 		toucher:        &InMomoryTouch{},
-		cache:          NewTieredCache(nil),
+		cache:          NewTiersCache(),
 	}
 
 	for _, o := range opts {
