@@ -163,7 +163,7 @@ func (d *cameraAction) HandleDensity(ctx context.Context, common holo.Common, ta
 	c := slog.Group("common", slog.String("uuid", common.UUID), slog.String("deviceID", common.DeviceID))
 	da := slog.Group("data", slog.Int("count", target.HumanCount), slog.Int("areaRatio", target.AreaRatio))
 
-	slog.DebugContext(ctx, "HandleCount", slog.Int("targetType", target.TargetType), slog.Time("now", time.Now()), c, da)
+	slog.DebugContext(ctx, "HandleDensity", slog.Int("targetType", target.TargetType), c, da)
 
 	return nil
 }

@@ -55,7 +55,11 @@ func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data h
 }
 
 func (s *Schemaless) HandleDensity(ctx context.Context, common holo.Common, data holo.HumanMix) error {
-	slog.DebugContext(ctx, "HandleCount", slog.Any("common", common), slog.Any("data", data))
+	if !hasDensity(data.HumanCount) {
+		return nil
+	}
+
+	slog.DebugContext(ctx, "HandleDensity", slog.Any("common", common), slog.Any("data", data))
 
 	var enc lineprotocol.Encoder
 

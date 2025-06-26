@@ -49,3 +49,7 @@ func hasCount(in, out int) bool {
 	}
 	return true
 }
+
+func hasDensity(count int) bool {
+	return count != 0
+}
