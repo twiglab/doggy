@@ -9,9 +9,9 @@ import (
 
 const SERV_OUT = "out"
 
-func OutHandle(srv *OutServ) http.Handler {
+func OutHandle(outer Outer) http.Handler {
 	s := rpc.NewServer()
 	s.RegisterCodec(json2.NewCodec(), "application/json")
-	s.RegisterService(srv, SERV_OUT)
+	s.RegisterService(outer, SERV_OUT)
 	return s
 }

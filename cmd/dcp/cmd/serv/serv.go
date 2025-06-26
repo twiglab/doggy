@@ -54,7 +54,7 @@ func printConf(conf AppConf) {
 	enc.Encode(conf)
 	fmt.Println("--------------------")
 	fmt.Println("backend:", conf.BackendConf.Use)
-	fmt.Println("sub :", conf.SubsConf.Muti)
+	fmt.Println("muti-sub :", conf.SubsConf.Muti)
 	fmt.Println("--------------------")
 }
 

@@ -51,11 +51,11 @@ func OpenTaos(drv, dsn string) (*sql.DB, error) {
 	return db, err
 }
 
-type OutS struct {
+type Out struct {
 	DB *sql.DB
 }
 
-func (o *OutS) Sum(ctx context.Context, in *oc.SumArg, out *oc.SumReply) error {
+func (o *Out) Sum(ctx context.Context, in *oc.SumArg, out *oc.SumReply) error {
 	sql := sumSQL(in.Start, in.End, in.IDs)
 
 	rows, err := o.DB.QueryContext(ctx, sql)
@@ -77,7 +77,7 @@ func (o *OutS) Sum(ctx context.Context, in *oc.SumArg, out *oc.SumReply) error {
 	return nil
 }
 
-func (o *OutS) MutiSum(ctx context.Context, in *oc.MutiSumArg, out *oc.MutiSumReply) error {
+func (o *Out) MutiSum(ctx context.Context, in *oc.MutiSumArg, out *oc.MutiSumReply) error {
 	for _, arg := range in.Args {
 		var reply oc.SumReply
 		if err := o.Sum(ctx, &arg, &reply); err != nil {

@@ -24,9 +24,9 @@ func outHandle(_ context.Context, conf AppConf) http.Handler {
 	switch backendName(conf) {
 	case bNameTaos:
 		db := MustOpenTaosDB(conf)
-		return out.OutHandle(out.NewOutServ(&taosdb.OutS{DB: db}))
+		return out.OutHandle(&taosdb.Out{DB: db})
 	}
-	return out.OutHandle(out.NewOutServ(&out.UnimplOut{}))
+	return out.OutHandle(out.UnimplOut{})
 }
 
 func pfHandle(ctx context.Context, conf AppConf) http.Handler {
@@ -53,7 +53,7 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 
 	var backend pfh
 	if backendName(conf) != bNameNone {
-		backend = ctx.Value(keyBackend).(*taosdb.Schemaless)
+		backend = ctx.Value(keyBackend).(pfh)
 	}
 
 	h := pf.NewHandle(
