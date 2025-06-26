@@ -116,7 +116,6 @@ func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpl
 
 	if item, ok, _ := h.cache.Get(ctx, data.MetadataObject.Common.UUID); ok {
 		common.DeviceID = item.Code
-		slog.DebugContext(ctx, "HandleMetadata", slog.Any("newCommon", common), slog.Any("oldCommon", data.MetadataObject.Common))
 	}
 
 	for _, target := range data.MetadataObject.TargetList {
