@@ -105,8 +105,7 @@ func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoReg
 			slog.Any("error", err))
 		return err
 	}
-
-	return nil
+	return h.toucher.Touch(ch.UUID)
 }
 
 func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpload) error {
