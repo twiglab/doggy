@@ -8,13 +8,17 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
+type Uploader interface {
+	HandleUpload(ctx context.Context, u CameraItem) error
+}
+
 type DeviceResolver interface {
 	Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error)
 }
 
 type AutoSub struct {
 	DeviceResolver DeviceResolver
-	CacheSetter    CacheSetter
+	Uploader       Uploader
 
 	MainSub holo.SubscriptionReq
 	Backups []holo.SubscriptionReq
@@ -71,7 +75,7 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 	}
 
 	ch := data.FirstChannel()
-	return a.CacheSetter.Set(ctx, CameraItem{
+	return a.Uploader.HandleUpload(ctx, CameraItem{
 		SN:       data.SerialNumber,
 		IpAddr:   data.IpAddr,
 		UUID:     ch.UUID,

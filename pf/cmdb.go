@@ -46,17 +46,9 @@ func (p *InMomoryTouch) Touch(me string) error {
 	return nil
 }
 
-type CacheSetter interface {
-	Set(context.Context, CameraItem) error
-}
-
-type CacheGetter interface {
-	Get(context.Context, string) (CameraItem, bool, error)
-}
-
 type Cache interface {
-	CacheGetter
-	CacheSetter
+	Get(context.Context, string) (CameraItem, bool, error)
+	Set(context.Context, CameraItem) error
 }
 
 type CameraItem struct {
