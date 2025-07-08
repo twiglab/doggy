@@ -5,7 +5,6 @@ go 1.24.2
 require (
 	entgo.io/ent v0.14.4
 	github.com/go-chi/chi/v5 v5.2.2
-	github.com/go-co-op/gocron/v2 v2.16.2
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/imroc/req/v3 v3.54.0
 	github.com/influxdata/line-protocol/v2 v2.2.1
@@ -42,7 +41,6 @@ require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
-	github.com/jonboulle/clockwork v0.5.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
@@ -54,7 +52,6 @@ require (
 	github.com/quic-go/qpack v0.5.1 // indirect
 	github.com/quic-go/quic-go v0.53.0 // indirect
 	github.com/refraction-networking/utls v1.7.3 // indirect
-	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	github.com/sagikazarmark/locafero v0.7.0 // indirect
 	github.com/sergi/go-diff v1.3.1 // indirect

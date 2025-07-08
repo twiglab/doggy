@@ -13,7 +13,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/hx"
-	"github.com/twiglab/doggy/job"
 )
 
 /*
@@ -61,15 +60,20 @@ var camera = &Camera{
 
 var client = req.C().EnableInsecureSkipVerify()
 
+func task(d time.Duration, f func()) {
+	go func() {
+		ticker := time.NewTicker(2 * time.Second)
+		defer ticker.Stop()
+		for range ticker.C {
+			f()
+		}
+	}()
+}
+
 func d3252() {
 	camera.DeviceAutoRegisterData.IpAddr = out
 
-	cron, err := job.NewCron()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	cron.AddDurationFunc(15*time.Second, func() {
+	task(15*time.Second, func() {
 		if !camera.isAutoReg {
 			var resp holo.CommonResponse
 
@@ -92,7 +96,7 @@ func d3252() {
 		}
 	})
 
-	cron.AddDurationFunc(5*time.Second, func() {
+	task(5*time.Second, func() {
 		if !bEnableDensity {
 			return
 		}
@@ -131,7 +135,7 @@ func d3252() {
 		}
 	})
 
-	cron.AddDurationFunc(30*time.Second, func() {
+	task(30*time.Second, func() {
 		var resp holo.CommonResponse
 		var common = holo.Common{
 			UUID:     camera.IDList.IDs[0].UUID,
@@ -169,8 +173,6 @@ func d3252() {
 			slog.Info("metadata count ok", slog.Any("data", data))
 		}
 	})
-
-	cron.Start()
 
 	mux := chi.NewMux()
 	mux.Use(middleware.Logger, middleware.Recoverer)
