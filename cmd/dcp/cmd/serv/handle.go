@@ -8,10 +8,8 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/orm"
-	"github.com/twiglab/doggy/out"
 	"github.com/twiglab/doggy/page"
 	"github.com/twiglab/doggy/pf"
-	"github.com/twiglab/doggy/taosdb"
 )
 
 func pageHandle(ctx context.Context, _ AppConf) http.Handler {
@@ -19,15 +17,6 @@ func pageHandle(ctx context.Context, _ AppConf) http.Handler {
 	toucher := ctx.Value(keyToucher).(pf.Toucher)
 	p := page.NewPage(loader, toucher)
 	return page.AdminPage(p)
-}
-
-func outHandle(_ context.Context, conf AppConf) http.Handler {
-	switch backendName(conf) {
-	case bNameTaos:
-		db := MustOpenTaosDB(conf)
-		return out.OutHandle(&taosdb.Out{DB: db})
-	}
-	return out.OutHandle(out.UnimplOut{})
 }
 
 func pfHandle(ctx context.Context, conf AppConf) http.Handler {
@@ -74,6 +63,5 @@ func FullHandler(ctx context.Context, conf AppConf) http.Handler {
 	mux.Mount("/pf", pfHandle(ctx, conf))
 	mux.Mount("/admin", pageHandle(ctx, conf))
 	mux.Mount("/debug", middleware.Profiler())
-	mux.Mount("/jsonrpc", outHandle(ctx, conf))
 	return mux
 }
