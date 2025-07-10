@@ -62,7 +62,7 @@ var client = req.C().EnableInsecureSkipVerify()
 
 func task(d time.Duration, f func()) {
 	go func() {
-		ticker := time.NewTicker(2 * time.Second)
+		ticker := time.NewTicker(d)
 		defer ticker.Stop()
 		for range ticker.C {
 			f()
