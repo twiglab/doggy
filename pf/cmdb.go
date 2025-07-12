@@ -51,18 +51,6 @@ type Cache interface {
 	Set(context.Context, CameraItem) error
 }
 
-type CameraItem struct {
-	SN       string
-	IpAddr   string
-	LastTime time.Time
-
-	UUID string
-	Code string
-
-	User string
-	Pwd  string
-}
-
 type emptyCache string
 
 func (i emptyCache) Get(_ context.Context, _ string) (c CameraItem, ok bool, err error) {
