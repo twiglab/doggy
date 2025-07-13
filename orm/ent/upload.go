@@ -23,18 +23,14 @@ type Upload struct {
 	UpdateTime time.Time `json:"update_time,omitempty"`
 	// Sn holds the value of the "sn" field.
 	Sn string `json:"sn,omitempty"`
-	// IP holds the value of the "ip" field.
-	IP string `json:"ip,omitempty"`
+	// IPAddr holds the value of the "ip_addr" field.
+	IPAddr string `json:"ip_addr,omitempty"`
 	// UUID holds the value of the "uuid" field.
 	UUID string `json:"uuid,omitempty"`
-	// DeviceID holds the value of the "device_id" field.
-	DeviceID string `json:"device_id,omitempty"`
-	// LastTime holds the value of the "last_time" field.
-	LastTime time.Time `json:"last_time,omitempty"`
-	// User holds the value of the "user" field.
-	User string `json:"user,omitempty"`
-	// Pwd holds the value of the "pwd" field.
-	Pwd          string `json:"pwd,omitempty"`
+	// Code holds the value of the "code" field.
+	Code string `json:"code,omitempty"`
+	// RegTime holds the value of the "reg_time" field.
+	RegTime      time.Time `json:"reg_time,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -45,9 +41,9 @@ func (*Upload) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case upload.FieldID:
 			values[i] = new(sql.NullInt64)
-		case upload.FieldSn, upload.FieldIP, upload.FieldUUID, upload.FieldDeviceID, upload.FieldUser, upload.FieldPwd:
+		case upload.FieldSn, upload.FieldIPAddr, upload.FieldUUID, upload.FieldCode:
 			values[i] = new(sql.NullString)
-		case upload.FieldCreateTime, upload.FieldUpdateTime, upload.FieldLastTime:
+		case upload.FieldCreateTime, upload.FieldUpdateTime, upload.FieldRegTime:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -88,11 +84,11 @@ func (u *Upload) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				u.Sn = value.String
 			}
-		case upload.FieldIP:
+		case upload.FieldIPAddr:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field ip", values[i])
+				return fmt.Errorf("unexpected type %T for field ip_addr", values[i])
 			} else if value.Valid {
-				u.IP = value.String
+				u.IPAddr = value.String
 			}
 		case upload.FieldUUID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -100,29 +96,17 @@ func (u *Upload) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				u.UUID = value.String
 			}
-		case upload.FieldDeviceID:
+		case upload.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field device_id", values[i])
+				return fmt.Errorf("unexpected type %T for field code", values[i])
 			} else if value.Valid {
-				u.DeviceID = value.String
+				u.Code = value.String
 			}
-		case upload.FieldLastTime:
+		case upload.FieldRegTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field last_time", values[i])
+				return fmt.Errorf("unexpected type %T for field reg_time", values[i])
 			} else if value.Valid {
-				u.LastTime = value.Time
-			}
-		case upload.FieldUser:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field user", values[i])
-			} else if value.Valid {
-				u.User = value.String
-			}
-		case upload.FieldPwd:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field pwd", values[i])
-			} else if value.Valid {
-				u.Pwd = value.String
+				u.RegTime = value.Time
 			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
@@ -169,23 +153,17 @@ func (u *Upload) String() string {
 	builder.WriteString("sn=")
 	builder.WriteString(u.Sn)
 	builder.WriteString(", ")
-	builder.WriteString("ip=")
-	builder.WriteString(u.IP)
+	builder.WriteString("ip_addr=")
+	builder.WriteString(u.IPAddr)
 	builder.WriteString(", ")
 	builder.WriteString("uuid=")
 	builder.WriteString(u.UUID)
 	builder.WriteString(", ")
-	builder.WriteString("device_id=")
-	builder.WriteString(u.DeviceID)
+	builder.WriteString("code=")
+	builder.WriteString(u.Code)
 	builder.WriteString(", ")
-	builder.WriteString("last_time=")
-	builder.WriteString(u.LastTime.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("user=")
-	builder.WriteString(u.User)
-	builder.WriteString(", ")
-	builder.WriteString("pwd=")
-	builder.WriteString(u.Pwd)
+	builder.WriteString("reg_time=")
+	builder.WriteString(u.RegTime.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

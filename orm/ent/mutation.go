@@ -36,12 +36,10 @@ type UploadMutation struct {
 	create_time   *time.Time
 	update_time   *time.Time
 	sn            *string
-	ip            *string
+	ip_addr       *string
 	uuid          *string
-	device_id     *string
-	last_time     *time.Time
-	user          *string
-	pwd           *string
+	code          *string
+	reg_time      *time.Time
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Upload, error)
@@ -254,40 +252,40 @@ func (m *UploadMutation) ResetSn() {
 	m.sn = nil
 }
 
-// SetIP sets the "ip" field.
-func (m *UploadMutation) SetIP(s string) {
-	m.ip = &s
+// SetIPAddr sets the "ip_addr" field.
+func (m *UploadMutation) SetIPAddr(s string) {
+	m.ip_addr = &s
 }
 
-// IP returns the value of the "ip" field in the mutation.
-func (m *UploadMutation) IP() (r string, exists bool) {
-	v := m.ip
+// IPAddr returns the value of the "ip_addr" field in the mutation.
+func (m *UploadMutation) IPAddr() (r string, exists bool) {
+	v := m.ip_addr
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldIP returns the old "ip" field's value of the Upload entity.
+// OldIPAddr returns the old "ip_addr" field's value of the Upload entity.
 // If the Upload object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UploadMutation) OldIP(ctx context.Context) (v string, err error) {
+func (m *UploadMutation) OldIPAddr(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldIP is only allowed on UpdateOne operations")
+		return v, errors.New("OldIPAddr is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldIP requires an ID field in the mutation")
+		return v, errors.New("OldIPAddr requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldIP: %w", err)
+		return v, fmt.Errorf("querying old value for OldIPAddr: %w", err)
 	}
-	return oldValue.IP, nil
+	return oldValue.IPAddr, nil
 }
 
-// ResetIP resets all changes to the "ip" field.
-func (m *UploadMutation) ResetIP() {
-	m.ip = nil
+// ResetIPAddr resets all changes to the "ip_addr" field.
+func (m *UploadMutation) ResetIPAddr() {
+	m.ip_addr = nil
 }
 
 // SetUUID sets the "uuid" field.
@@ -339,187 +337,89 @@ func (m *UploadMutation) ResetUUID() {
 	delete(m.clearedFields, upload.FieldUUID)
 }
 
-// SetDeviceID sets the "device_id" field.
-func (m *UploadMutation) SetDeviceID(s string) {
-	m.device_id = &s
+// SetCode sets the "code" field.
+func (m *UploadMutation) SetCode(s string) {
+	m.code = &s
 }
 
-// DeviceID returns the value of the "device_id" field in the mutation.
-func (m *UploadMutation) DeviceID() (r string, exists bool) {
-	v := m.device_id
+// Code returns the value of the "code" field in the mutation.
+func (m *UploadMutation) Code() (r string, exists bool) {
+	v := m.code
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldDeviceID returns the old "device_id" field's value of the Upload entity.
+// OldCode returns the old "code" field's value of the Upload entity.
 // If the Upload object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UploadMutation) OldDeviceID(ctx context.Context) (v string, err error) {
+func (m *UploadMutation) OldCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDeviceID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCode is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDeviceID requires an ID field in the mutation")
+		return v, errors.New("OldCode requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDeviceID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCode: %w", err)
 	}
-	return oldValue.DeviceID, nil
+	return oldValue.Code, nil
 }
 
-// ClearDeviceID clears the value of the "device_id" field.
-func (m *UploadMutation) ClearDeviceID() {
-	m.device_id = nil
-	m.clearedFields[upload.FieldDeviceID] = struct{}{}
+// ClearCode clears the value of the "code" field.
+func (m *UploadMutation) ClearCode() {
+	m.code = nil
+	m.clearedFields[upload.FieldCode] = struct{}{}
 }
 
-// DeviceIDCleared returns if the "device_id" field was cleared in this mutation.
-func (m *UploadMutation) DeviceIDCleared() bool {
-	_, ok := m.clearedFields[upload.FieldDeviceID]
+// CodeCleared returns if the "code" field was cleared in this mutation.
+func (m *UploadMutation) CodeCleared() bool {
+	_, ok := m.clearedFields[upload.FieldCode]
 	return ok
 }
 
-// ResetDeviceID resets all changes to the "device_id" field.
-func (m *UploadMutation) ResetDeviceID() {
-	m.device_id = nil
-	delete(m.clearedFields, upload.FieldDeviceID)
+// ResetCode resets all changes to the "code" field.
+func (m *UploadMutation) ResetCode() {
+	m.code = nil
+	delete(m.clearedFields, upload.FieldCode)
 }
 
-// SetLastTime sets the "last_time" field.
-func (m *UploadMutation) SetLastTime(t time.Time) {
-	m.last_time = &t
+// SetRegTime sets the "reg_time" field.
+func (m *UploadMutation) SetRegTime(t time.Time) {
+	m.reg_time = &t
 }
 
-// LastTime returns the value of the "last_time" field in the mutation.
-func (m *UploadMutation) LastTime() (r time.Time, exists bool) {
-	v := m.last_time
+// RegTime returns the value of the "reg_time" field in the mutation.
+func (m *UploadMutation) RegTime() (r time.Time, exists bool) {
+	v := m.reg_time
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLastTime returns the old "last_time" field's value of the Upload entity.
+// OldRegTime returns the old "reg_time" field's value of the Upload entity.
 // If the Upload object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UploadMutation) OldLastTime(ctx context.Context) (v time.Time, err error) {
+func (m *UploadMutation) OldRegTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLastTime is only allowed on UpdateOne operations")
+		return v, errors.New("OldRegTime is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLastTime requires an ID field in the mutation")
+		return v, errors.New("OldRegTime requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLastTime: %w", err)
+		return v, fmt.Errorf("querying old value for OldRegTime: %w", err)
 	}
-	return oldValue.LastTime, nil
+	return oldValue.RegTime, nil
 }
 
-// ResetLastTime resets all changes to the "last_time" field.
-func (m *UploadMutation) ResetLastTime() {
-	m.last_time = nil
-}
-
-// SetUser sets the "user" field.
-func (m *UploadMutation) SetUser(s string) {
-	m.user = &s
-}
-
-// User returns the value of the "user" field in the mutation.
-func (m *UploadMutation) User() (r string, exists bool) {
-	v := m.user
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUser returns the old "user" field's value of the Upload entity.
-// If the Upload object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UploadMutation) OldUser(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUser is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUser requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUser: %w", err)
-	}
-	return oldValue.User, nil
-}
-
-// ClearUser clears the value of the "user" field.
-func (m *UploadMutation) ClearUser() {
-	m.user = nil
-	m.clearedFields[upload.FieldUser] = struct{}{}
-}
-
-// UserCleared returns if the "user" field was cleared in this mutation.
-func (m *UploadMutation) UserCleared() bool {
-	_, ok := m.clearedFields[upload.FieldUser]
-	return ok
-}
-
-// ResetUser resets all changes to the "user" field.
-func (m *UploadMutation) ResetUser() {
-	m.user = nil
-	delete(m.clearedFields, upload.FieldUser)
-}
-
-// SetPwd sets the "pwd" field.
-func (m *UploadMutation) SetPwd(s string) {
-	m.pwd = &s
-}
-
-// Pwd returns the value of the "pwd" field in the mutation.
-func (m *UploadMutation) Pwd() (r string, exists bool) {
-	v := m.pwd
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPwd returns the old "pwd" field's value of the Upload entity.
-// If the Upload object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UploadMutation) OldPwd(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPwd is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPwd requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPwd: %w", err)
-	}
-	return oldValue.Pwd, nil
-}
-
-// ClearPwd clears the value of the "pwd" field.
-func (m *UploadMutation) ClearPwd() {
-	m.pwd = nil
-	m.clearedFields[upload.FieldPwd] = struct{}{}
-}
-
-// PwdCleared returns if the "pwd" field was cleared in this mutation.
-func (m *UploadMutation) PwdCleared() bool {
-	_, ok := m.clearedFields[upload.FieldPwd]
-	return ok
-}
-
-// ResetPwd resets all changes to the "pwd" field.
-func (m *UploadMutation) ResetPwd() {
-	m.pwd = nil
-	delete(m.clearedFields, upload.FieldPwd)
+// ResetRegTime resets all changes to the "reg_time" field.
+func (m *UploadMutation) ResetRegTime() {
+	m.reg_time = nil
 }
 
 // Where appends a list predicates to the UploadMutation builder.
@@ -556,7 +456,7 @@ func (m *UploadMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UploadMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 7)
 	if m.create_time != nil {
 		fields = append(fields, upload.FieldCreateTime)
 	}
@@ -566,23 +466,17 @@ func (m *UploadMutation) Fields() []string {
 	if m.sn != nil {
 		fields = append(fields, upload.FieldSn)
 	}
-	if m.ip != nil {
-		fields = append(fields, upload.FieldIP)
+	if m.ip_addr != nil {
+		fields = append(fields, upload.FieldIPAddr)
 	}
 	if m.uuid != nil {
 		fields = append(fields, upload.FieldUUID)
 	}
-	if m.device_id != nil {
-		fields = append(fields, upload.FieldDeviceID)
+	if m.code != nil {
+		fields = append(fields, upload.FieldCode)
 	}
-	if m.last_time != nil {
-		fields = append(fields, upload.FieldLastTime)
-	}
-	if m.user != nil {
-		fields = append(fields, upload.FieldUser)
-	}
-	if m.pwd != nil {
-		fields = append(fields, upload.FieldPwd)
+	if m.reg_time != nil {
+		fields = append(fields, upload.FieldRegTime)
 	}
 	return fields
 }
@@ -598,18 +492,14 @@ func (m *UploadMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdateTime()
 	case upload.FieldSn:
 		return m.Sn()
-	case upload.FieldIP:
-		return m.IP()
+	case upload.FieldIPAddr:
+		return m.IPAddr()
 	case upload.FieldUUID:
 		return m.UUID()
-	case upload.FieldDeviceID:
-		return m.DeviceID()
-	case upload.FieldLastTime:
-		return m.LastTime()
-	case upload.FieldUser:
-		return m.User()
-	case upload.FieldPwd:
-		return m.Pwd()
+	case upload.FieldCode:
+		return m.Code()
+	case upload.FieldRegTime:
+		return m.RegTime()
 	}
 	return nil, false
 }
@@ -625,18 +515,14 @@ func (m *UploadMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldUpdateTime(ctx)
 	case upload.FieldSn:
 		return m.OldSn(ctx)
-	case upload.FieldIP:
-		return m.OldIP(ctx)
+	case upload.FieldIPAddr:
+		return m.OldIPAddr(ctx)
 	case upload.FieldUUID:
 		return m.OldUUID(ctx)
-	case upload.FieldDeviceID:
-		return m.OldDeviceID(ctx)
-	case upload.FieldLastTime:
-		return m.OldLastTime(ctx)
-	case upload.FieldUser:
-		return m.OldUser(ctx)
-	case upload.FieldPwd:
-		return m.OldPwd(ctx)
+	case upload.FieldCode:
+		return m.OldCode(ctx)
+	case upload.FieldRegTime:
+		return m.OldRegTime(ctx)
 	}
 	return nil, fmt.Errorf("unknown Upload field %s", name)
 }
@@ -667,12 +553,12 @@ func (m *UploadMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetSn(v)
 		return nil
-	case upload.FieldIP:
+	case upload.FieldIPAddr:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetIP(v)
+		m.SetIPAddr(v)
 		return nil
 	case upload.FieldUUID:
 		v, ok := value.(string)
@@ -681,33 +567,19 @@ func (m *UploadMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUUID(v)
 		return nil
-	case upload.FieldDeviceID:
+	case upload.FieldCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetDeviceID(v)
+		m.SetCode(v)
 		return nil
-	case upload.FieldLastTime:
+	case upload.FieldRegTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLastTime(v)
-		return nil
-	case upload.FieldUser:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUser(v)
-		return nil
-	case upload.FieldPwd:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPwd(v)
+		m.SetRegTime(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Upload field %s", name)
@@ -742,14 +614,8 @@ func (m *UploadMutation) ClearedFields() []string {
 	if m.FieldCleared(upload.FieldUUID) {
 		fields = append(fields, upload.FieldUUID)
 	}
-	if m.FieldCleared(upload.FieldDeviceID) {
-		fields = append(fields, upload.FieldDeviceID)
-	}
-	if m.FieldCleared(upload.FieldUser) {
-		fields = append(fields, upload.FieldUser)
-	}
-	if m.FieldCleared(upload.FieldPwd) {
-		fields = append(fields, upload.FieldPwd)
+	if m.FieldCleared(upload.FieldCode) {
+		fields = append(fields, upload.FieldCode)
 	}
 	return fields
 }
@@ -768,14 +634,8 @@ func (m *UploadMutation) ClearField(name string) error {
 	case upload.FieldUUID:
 		m.ClearUUID()
 		return nil
-	case upload.FieldDeviceID:
-		m.ClearDeviceID()
-		return nil
-	case upload.FieldUser:
-		m.ClearUser()
-		return nil
-	case upload.FieldPwd:
-		m.ClearPwd()
+	case upload.FieldCode:
+		m.ClearCode()
 		return nil
 	}
 	return fmt.Errorf("unknown Upload nullable field %s", name)
@@ -794,23 +654,17 @@ func (m *UploadMutation) ResetField(name string) error {
 	case upload.FieldSn:
 		m.ResetSn()
 		return nil
-	case upload.FieldIP:
-		m.ResetIP()
+	case upload.FieldIPAddr:
+		m.ResetIPAddr()
 		return nil
 	case upload.FieldUUID:
 		m.ResetUUID()
 		return nil
-	case upload.FieldDeviceID:
-		m.ResetDeviceID()
+	case upload.FieldCode:
+		m.ResetCode()
 		return nil
-	case upload.FieldLastTime:
-		m.ResetLastTime()
-		return nil
-	case upload.FieldUser:
-		m.ResetUser()
-		return nil
-	case upload.FieldPwd:
-		m.ResetPwd()
+	case upload.FieldRegTime:
+		m.ResetRegTime()
 		return nil
 	}
 	return fmt.Errorf("unknown Upload field %s", name)

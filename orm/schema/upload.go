@@ -30,7 +30,7 @@ func (Upload) Fields() []ent.Field {
 				dialect.SQLite:   "varchar(36)", // Override Postgres.
 			}),
 
-		field.String("ip").
+		field.String("ip_addr").
 			MaxLen(64).NotEmpty().
 			SchemaType(map[string]string{
 				dialect.MySQL:    "varchar(64)", // Override MySQL.
@@ -46,7 +46,7 @@ func (Upload) Fields() []ent.Field {
 				dialect.SQLite:   "varchar(64)", // Override Postgres.
 			}),
 
-		field.String("device_id").
+		field.String("code").
 			MaxLen(64).Optional().
 			SchemaType(map[string]string{
 				dialect.MySQL:    "varchar(64)", // Override MySQL.
@@ -54,27 +54,9 @@ func (Upload) Fields() []ent.Field {
 				dialect.SQLite:   "varchar(64)", // Override Postgres.
 			}),
 
-		field.Time("last_time").
+		field.Time("reg_time").
 			Default(time.Now).
 			UpdateDefault(time.Now),
-
-		field.String("user").
-			MaxLen(36).
-			Optional().
-			SchemaType(map[string]string{
-				dialect.MySQL:    "varchar(36)", // Override MySQL.
-				dialect.Postgres: "varchar(36)", // Override Postgres.
-				dialect.SQLite:   "varchar(36)", // Override Postgres.
-			}),
-
-		field.String("pwd").
-			MaxLen(36).
-			Optional().
-			SchemaType(map[string]string{
-				dialect.MySQL:    "varchar(36)", // Override MySQL.
-				dialect.Postgres: "varchar(36)", // Override Postgres.
-				dialect.SQLite:   "varchar(36)", // Override Postgres.
-			}),
 	}
 }
 
@@ -88,6 +70,7 @@ func (Upload) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("sn"),
 		index.Fields("uuid"),
+		index.Fields("code"),
 	}
 }
 

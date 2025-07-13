@@ -21,12 +21,10 @@ func NewEntHandle(client *ent.Client) *EntHandle {
 func (h *EntHandle) HandleUpload(ctx context.Context, u pf.CameraItem) error {
 	err := h.client.Upload.Create().
 		SetSn(u.SN).
-		SetIP(u.IpAddr).
+		SetIPAddr(u.IpAddr).
 		SetUUID(u.UUID).
-		SetDeviceID(u.Code).
-		SetLastTime(u.LastTime).
-		SetUser(u.User).
-		SetPwd(u.Pwd).
+		SetCode(u.Code).
+		SetRegTime(u.RegTime).
 		OnConflictColumns(upload.FieldSn).
 		UpdateNewValues().
 		Exec(ctx)
@@ -50,13 +48,11 @@ func (h *EntHandle) Get(ctx context.Context, k string) (pf.CameraItem, bool, err
 	}
 
 	return pf.CameraItem{
-		SN:       u.Sn,
-		IpAddr:   u.IP,
-		UUID:     u.UUID,
-		Code:     u.DeviceID,
-		LastTime: u.LastTime,
-		User:     u.User,
-		Pwd:      u.Pwd,
+		SN:      u.Sn,
+		IpAddr:  u.IPAddr,
+		UUID:    u.UUID,
+		Code:    u.Code,
+		RegTime: u.RegTime,
 	}, true, nil
 }
 
@@ -72,13 +68,11 @@ func (h *EntHandle) GetAll(ctx context.Context) (uploads []pf.CameraItem, err er
 
 	for _, u := range us {
 		uploads = append(uploads, pf.CameraItem{
-			SN:       u.Sn,
-			IpAddr:   u.IP,
-			UUID:     u.UUID,
-			Code:     u.DeviceID,
-			LastTime: u.LastTime,
-			User:     u.User,
-			Pwd:      u.Pwd,
+			SN:      u.Sn,
+			IpAddr:  u.IPAddr,
+			UUID:    u.UUID,
+			Code:    u.Code,
+			RegTime: u.RegTime,
 		})
 	}
 	return

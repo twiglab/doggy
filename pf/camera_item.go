@@ -4,13 +4,10 @@ import "time"
 
 //go:generate msgp
 type CameraItem struct {
-	SN       string    `msg:"s"`
-	IpAddr   string    `msg:"p"`
-	LastTime time.Time `msg:"t"`
+	SN      string    `msg:"s"`
+	IpAddr  string    `msg:"p"`
+	RegTime time.Time `msg:"r"`
 
 	UUID string `msg:"i"`
 	Code string `msg:"c"`
-
-	User string `msg:"u"`
-	Pwd  string `msg:"x"`
 }

@@ -36,10 +36,10 @@ func (z *CameraItem) DecodeMsg(dc *msgp.Reader) (err error) {
 				err = msgp.WrapError(err, "IpAddr")
 				return
 			}
-		case "t":
-			z.LastTime, err = dc.ReadTime()
+		case "r":
+			z.RegTime, err = dc.ReadTime()
 			if err != nil {
-				err = msgp.WrapError(err, "LastTime")
+				err = msgp.WrapError(err, "RegTime")
 				return
 			}
 		case "i":
@@ -52,18 +52,6 @@ func (z *CameraItem) DecodeMsg(dc *msgp.Reader) (err error) {
 			z.Code, err = dc.ReadString()
 			if err != nil {
 				err = msgp.WrapError(err, "Code")
-				return
-			}
-		case "u":
-			z.User, err = dc.ReadString()
-			if err != nil {
-				err = msgp.WrapError(err, "User")
-				return
-			}
-		case "x":
-			z.Pwd, err = dc.ReadString()
-			if err != nil {
-				err = msgp.WrapError(err, "Pwd")
 				return
 			}
 		default:
@@ -79,9 +67,9 @@ func (z *CameraItem) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *CameraItem) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 7
+	// map header, size 5
 	// write "s"
-	err = en.Append(0x87, 0xa1, 0x73)
+	err = en.Append(0x85, 0xa1, 0x73)
 	if err != nil {
 		return
 	}
@@ -100,14 +88,14 @@ func (z *CameraItem) EncodeMsg(en *msgp.Writer) (err error) {
 		err = msgp.WrapError(err, "IpAddr")
 		return
 	}
-	// write "t"
-	err = en.Append(0xa1, 0x74)
+	// write "r"
+	err = en.Append(0xa1, 0x72)
 	if err != nil {
 		return
 	}
-	err = en.WriteTime(z.LastTime)
+	err = en.WriteTime(z.RegTime)
 	if err != nil {
-		err = msgp.WrapError(err, "LastTime")
+		err = msgp.WrapError(err, "RegTime")
 		return
 	}
 	// write "i"
@@ -130,54 +118,28 @@ func (z *CameraItem) EncodeMsg(en *msgp.Writer) (err error) {
 		err = msgp.WrapError(err, "Code")
 		return
 	}
-	// write "u"
-	err = en.Append(0xa1, 0x75)
-	if err != nil {
-		return
-	}
-	err = en.WriteString(z.User)
-	if err != nil {
-		err = msgp.WrapError(err, "User")
-		return
-	}
-	// write "x"
-	err = en.Append(0xa1, 0x78)
-	if err != nil {
-		return
-	}
-	err = en.WriteString(z.Pwd)
-	if err != nil {
-		err = msgp.WrapError(err, "Pwd")
-		return
-	}
 	return
 }
 
 // MarshalMsg implements msgp.Marshaler
 func (z *CameraItem) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 7
+	// map header, size 5
 	// string "s"
-	o = append(o, 0x87, 0xa1, 0x73)
+	o = append(o, 0x85, 0xa1, 0x73)
 	o = msgp.AppendString(o, z.SN)
 	// string "p"
 	o = append(o, 0xa1, 0x70)
 	o = msgp.AppendString(o, z.IpAddr)
-	// string "t"
-	o = append(o, 0xa1, 0x74)
-	o = msgp.AppendTime(o, z.LastTime)
+	// string "r"
+	o = append(o, 0xa1, 0x72)
+	o = msgp.AppendTime(o, z.RegTime)
 	// string "i"
 	o = append(o, 0xa1, 0x69)
 	o = msgp.AppendString(o, z.UUID)
 	// string "c"
 	o = append(o, 0xa1, 0x63)
 	o = msgp.AppendString(o, z.Code)
-	// string "u"
-	o = append(o, 0xa1, 0x75)
-	o = msgp.AppendString(o, z.User)
-	// string "x"
-	o = append(o, 0xa1, 0x78)
-	o = msgp.AppendString(o, z.Pwd)
 	return
 }
 
@@ -211,10 +173,10 @@ func (z *CameraItem) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				err = msgp.WrapError(err, "IpAddr")
 				return
 			}
-		case "t":
-			z.LastTime, bts, err = msgp.ReadTimeBytes(bts)
+		case "r":
+			z.RegTime, bts, err = msgp.ReadTimeBytes(bts)
 			if err != nil {
-				err = msgp.WrapError(err, "LastTime")
+				err = msgp.WrapError(err, "RegTime")
 				return
 			}
 		case "i":
@@ -227,18 +189,6 @@ func (z *CameraItem) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			z.Code, bts, err = msgp.ReadStringBytes(bts)
 			if err != nil {
 				err = msgp.WrapError(err, "Code")
-				return
-			}
-		case "u":
-			z.User, bts, err = msgp.ReadStringBytes(bts)
-			if err != nil {
-				err = msgp.WrapError(err, "User")
-				return
-			}
-		case "x":
-			z.Pwd, bts, err = msgp.ReadStringBytes(bts)
-			if err != nil {
-				err = msgp.WrapError(err, "Pwd")
 				return
 			}
 		default:
@@ -255,6 +205,6 @@ func (z *CameraItem) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *CameraItem) Msgsize() (s int) {
-	s = 1 + 2 + msgp.StringPrefixSize + len(z.SN) + 2 + msgp.StringPrefixSize + len(z.IpAddr) + 2 + msgp.TimeSize + 2 + msgp.StringPrefixSize + len(z.UUID) + 2 + msgp.StringPrefixSize + len(z.Code) + 2 + msgp.StringPrefixSize + len(z.User) + 2 + msgp.StringPrefixSize + len(z.Pwd)
+	s = 1 + 2 + msgp.StringPrefixSize + len(z.SN) + 2 + msgp.StringPrefixSize + len(z.IpAddr) + 2 + msgp.TimeSize + 2 + msgp.StringPrefixSize + len(z.UUID) + 2 + msgp.StringPrefixSize + len(z.Code)
 	return
 }

@@ -19,18 +19,14 @@ const (
 	FieldUpdateTime = "update_time"
 	// FieldSn holds the string denoting the sn field in the database.
 	FieldSn = "sn"
-	// FieldIP holds the string denoting the ip field in the database.
-	FieldIP = "ip"
+	// FieldIPAddr holds the string denoting the ip_addr field in the database.
+	FieldIPAddr = "ip_addr"
 	// FieldUUID holds the string denoting the uuid field in the database.
 	FieldUUID = "uuid"
-	// FieldDeviceID holds the string denoting the device_id field in the database.
-	FieldDeviceID = "device_id"
-	// FieldLastTime holds the string denoting the last_time field in the database.
-	FieldLastTime = "last_time"
-	// FieldUser holds the string denoting the user field in the database.
-	FieldUser = "user"
-	// FieldPwd holds the string denoting the pwd field in the database.
-	FieldPwd = "pwd"
+	// FieldCode holds the string denoting the code field in the database.
+	FieldCode = "code"
+	// FieldRegTime holds the string denoting the reg_time field in the database.
+	FieldRegTime = "reg_time"
 	// Table holds the table name of the upload in the database.
 	Table = "camera_upload"
 )
@@ -41,12 +37,10 @@ var Columns = []string{
 	FieldCreateTime,
 	FieldUpdateTime,
 	FieldSn,
-	FieldIP,
+	FieldIPAddr,
 	FieldUUID,
-	FieldDeviceID,
-	FieldLastTime,
-	FieldUser,
-	FieldPwd,
+	FieldCode,
+	FieldRegTime,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -68,20 +62,16 @@ var (
 	UpdateDefaultUpdateTime func() time.Time
 	// SnValidator is a validator for the "sn" field. It is called by the builders before save.
 	SnValidator func(string) error
-	// IPValidator is a validator for the "ip" field. It is called by the builders before save.
-	IPValidator func(string) error
+	// IPAddrValidator is a validator for the "ip_addr" field. It is called by the builders before save.
+	IPAddrValidator func(string) error
 	// UUIDValidator is a validator for the "uuid" field. It is called by the builders before save.
 	UUIDValidator func(string) error
-	// DeviceIDValidator is a validator for the "device_id" field. It is called by the builders before save.
-	DeviceIDValidator func(string) error
-	// DefaultLastTime holds the default value on creation for the "last_time" field.
-	DefaultLastTime func() time.Time
-	// UpdateDefaultLastTime holds the default value on update for the "last_time" field.
-	UpdateDefaultLastTime func() time.Time
-	// UserValidator is a validator for the "user" field. It is called by the builders before save.
-	UserValidator func(string) error
-	// PwdValidator is a validator for the "pwd" field. It is called by the builders before save.
-	PwdValidator func(string) error
+	// CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	CodeValidator func(string) error
+	// DefaultRegTime holds the default value on creation for the "reg_time" field.
+	DefaultRegTime func() time.Time
+	// UpdateDefaultRegTime holds the default value on update for the "reg_time" field.
+	UpdateDefaultRegTime func() time.Time
 )
 
 // OrderOption defines the ordering options for the Upload queries.
@@ -107,9 +97,9 @@ func BySn(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSn, opts...).ToFunc()
 }
 
-// ByIP orders the results by the ip field.
-func ByIP(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldIP, opts...).ToFunc()
+// ByIPAddr orders the results by the ip_addr field.
+func ByIPAddr(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIPAddr, opts...).ToFunc()
 }
 
 // ByUUID orders the results by the uuid field.
@@ -117,22 +107,12 @@ func ByUUID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUUID, opts...).ToFunc()
 }
 
-// ByDeviceID orders the results by the device_id field.
-func ByDeviceID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDeviceID, opts...).ToFunc()
+// ByCode orders the results by the code field.
+func ByCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCode, opts...).ToFunc()
 }
 
-// ByLastTime orders the results by the last_time field.
-func ByLastTime(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLastTime, opts...).ToFunc()
-}
-
-// ByUser orders the results by the user field.
-func ByUser(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUser, opts...).ToFunc()
-}
-
-// ByPwd orders the results by the pwd field.
-func ByPwd(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPwd, opts...).ToFunc()
+// ByRegTime orders the results by the reg_time field.
+func ByRegTime(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRegTime, opts...).ToFunc()
 }

@@ -34,16 +34,16 @@ func (uu *UploadUpdate) SetUpdateTime(t time.Time) *UploadUpdate {
 	return uu
 }
 
-// SetIP sets the "ip" field.
-func (uu *UploadUpdate) SetIP(s string) *UploadUpdate {
-	uu.mutation.SetIP(s)
+// SetIPAddr sets the "ip_addr" field.
+func (uu *UploadUpdate) SetIPAddr(s string) *UploadUpdate {
+	uu.mutation.SetIPAddr(s)
 	return uu
 }
 
-// SetNillableIP sets the "ip" field if the given value is not nil.
-func (uu *UploadUpdate) SetNillableIP(s *string) *UploadUpdate {
+// SetNillableIPAddr sets the "ip_addr" field if the given value is not nil.
+func (uu *UploadUpdate) SetNillableIPAddr(s *string) *UploadUpdate {
 	if s != nil {
-		uu.SetIP(*s)
+		uu.SetIPAddr(*s)
 	}
 	return uu
 }
@@ -68,69 +68,29 @@ func (uu *UploadUpdate) ClearUUID() *UploadUpdate {
 	return uu
 }
 
-// SetDeviceID sets the "device_id" field.
-func (uu *UploadUpdate) SetDeviceID(s string) *UploadUpdate {
-	uu.mutation.SetDeviceID(s)
+// SetCode sets the "code" field.
+func (uu *UploadUpdate) SetCode(s string) *UploadUpdate {
+	uu.mutation.SetCode(s)
 	return uu
 }
 
-// SetNillableDeviceID sets the "device_id" field if the given value is not nil.
-func (uu *UploadUpdate) SetNillableDeviceID(s *string) *UploadUpdate {
+// SetNillableCode sets the "code" field if the given value is not nil.
+func (uu *UploadUpdate) SetNillableCode(s *string) *UploadUpdate {
 	if s != nil {
-		uu.SetDeviceID(*s)
+		uu.SetCode(*s)
 	}
 	return uu
 }
 
-// ClearDeviceID clears the value of the "device_id" field.
-func (uu *UploadUpdate) ClearDeviceID() *UploadUpdate {
-	uu.mutation.ClearDeviceID()
+// ClearCode clears the value of the "code" field.
+func (uu *UploadUpdate) ClearCode() *UploadUpdate {
+	uu.mutation.ClearCode()
 	return uu
 }
 
-// SetLastTime sets the "last_time" field.
-func (uu *UploadUpdate) SetLastTime(t time.Time) *UploadUpdate {
-	uu.mutation.SetLastTime(t)
-	return uu
-}
-
-// SetUser sets the "user" field.
-func (uu *UploadUpdate) SetUser(s string) *UploadUpdate {
-	uu.mutation.SetUser(s)
-	return uu
-}
-
-// SetNillableUser sets the "user" field if the given value is not nil.
-func (uu *UploadUpdate) SetNillableUser(s *string) *UploadUpdate {
-	if s != nil {
-		uu.SetUser(*s)
-	}
-	return uu
-}
-
-// ClearUser clears the value of the "user" field.
-func (uu *UploadUpdate) ClearUser() *UploadUpdate {
-	uu.mutation.ClearUser()
-	return uu
-}
-
-// SetPwd sets the "pwd" field.
-func (uu *UploadUpdate) SetPwd(s string) *UploadUpdate {
-	uu.mutation.SetPwd(s)
-	return uu
-}
-
-// SetNillablePwd sets the "pwd" field if the given value is not nil.
-func (uu *UploadUpdate) SetNillablePwd(s *string) *UploadUpdate {
-	if s != nil {
-		uu.SetPwd(*s)
-	}
-	return uu
-}
-
-// ClearPwd clears the value of the "pwd" field.
-func (uu *UploadUpdate) ClearPwd() *UploadUpdate {
-	uu.mutation.ClearPwd()
+// SetRegTime sets the "reg_time" field.
+func (uu *UploadUpdate) SetRegTime(t time.Time) *UploadUpdate {
+	uu.mutation.SetRegTime(t)
 	return uu
 }
 
@@ -173,17 +133,17 @@ func (uu *UploadUpdate) defaults() {
 		v := upload.UpdateDefaultUpdateTime()
 		uu.mutation.SetUpdateTime(v)
 	}
-	if _, ok := uu.mutation.LastTime(); !ok {
-		v := upload.UpdateDefaultLastTime()
-		uu.mutation.SetLastTime(v)
+	if _, ok := uu.mutation.RegTime(); !ok {
+		v := upload.UpdateDefaultRegTime()
+		uu.mutation.SetRegTime(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (uu *UploadUpdate) check() error {
-	if v, ok := uu.mutation.IP(); ok {
-		if err := upload.IPValidator(v); err != nil {
-			return &ValidationError{Name: "ip", err: fmt.Errorf(`ent: validator failed for field "Upload.ip": %w`, err)}
+	if v, ok := uu.mutation.IPAddr(); ok {
+		if err := upload.IPAddrValidator(v); err != nil {
+			return &ValidationError{Name: "ip_addr", err: fmt.Errorf(`ent: validator failed for field "Upload.ip_addr": %w`, err)}
 		}
 	}
 	if v, ok := uu.mutation.UUID(); ok {
@@ -191,19 +151,9 @@ func (uu *UploadUpdate) check() error {
 			return &ValidationError{Name: "uuid", err: fmt.Errorf(`ent: validator failed for field "Upload.uuid": %w`, err)}
 		}
 	}
-	if v, ok := uu.mutation.DeviceID(); ok {
-		if err := upload.DeviceIDValidator(v); err != nil {
-			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Upload.device_id": %w`, err)}
-		}
-	}
-	if v, ok := uu.mutation.User(); ok {
-		if err := upload.UserValidator(v); err != nil {
-			return &ValidationError{Name: "user", err: fmt.Errorf(`ent: validator failed for field "Upload.user": %w`, err)}
-		}
-	}
-	if v, ok := uu.mutation.Pwd(); ok {
-		if err := upload.PwdValidator(v); err != nil {
-			return &ValidationError{Name: "pwd", err: fmt.Errorf(`ent: validator failed for field "Upload.pwd": %w`, err)}
+	if v, ok := uu.mutation.Code(); ok {
+		if err := upload.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Upload.code": %w`, err)}
 		}
 	}
 	return nil
@@ -224,8 +174,8 @@ func (uu *UploadUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.UpdateTime(); ok {
 		_spec.SetField(upload.FieldUpdateTime, field.TypeTime, value)
 	}
-	if value, ok := uu.mutation.IP(); ok {
-		_spec.SetField(upload.FieldIP, field.TypeString, value)
+	if value, ok := uu.mutation.IPAddr(); ok {
+		_spec.SetField(upload.FieldIPAddr, field.TypeString, value)
 	}
 	if value, ok := uu.mutation.UUID(); ok {
 		_spec.SetField(upload.FieldUUID, field.TypeString, value)
@@ -233,26 +183,14 @@ func (uu *UploadUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if uu.mutation.UUIDCleared() {
 		_spec.ClearField(upload.FieldUUID, field.TypeString)
 	}
-	if value, ok := uu.mutation.DeviceID(); ok {
-		_spec.SetField(upload.FieldDeviceID, field.TypeString, value)
+	if value, ok := uu.mutation.Code(); ok {
+		_spec.SetField(upload.FieldCode, field.TypeString, value)
 	}
-	if uu.mutation.DeviceIDCleared() {
-		_spec.ClearField(upload.FieldDeviceID, field.TypeString)
+	if uu.mutation.CodeCleared() {
+		_spec.ClearField(upload.FieldCode, field.TypeString)
 	}
-	if value, ok := uu.mutation.LastTime(); ok {
-		_spec.SetField(upload.FieldLastTime, field.TypeTime, value)
-	}
-	if value, ok := uu.mutation.User(); ok {
-		_spec.SetField(upload.FieldUser, field.TypeString, value)
-	}
-	if uu.mutation.UserCleared() {
-		_spec.ClearField(upload.FieldUser, field.TypeString)
-	}
-	if value, ok := uu.mutation.Pwd(); ok {
-		_spec.SetField(upload.FieldPwd, field.TypeString, value)
-	}
-	if uu.mutation.PwdCleared() {
-		_spec.ClearField(upload.FieldPwd, field.TypeString)
+	if value, ok := uu.mutation.RegTime(); ok {
+		_spec.SetField(upload.FieldRegTime, field.TypeTime, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -280,16 +218,16 @@ func (uuo *UploadUpdateOne) SetUpdateTime(t time.Time) *UploadUpdateOne {
 	return uuo
 }
 
-// SetIP sets the "ip" field.
-func (uuo *UploadUpdateOne) SetIP(s string) *UploadUpdateOne {
-	uuo.mutation.SetIP(s)
+// SetIPAddr sets the "ip_addr" field.
+func (uuo *UploadUpdateOne) SetIPAddr(s string) *UploadUpdateOne {
+	uuo.mutation.SetIPAddr(s)
 	return uuo
 }
 
-// SetNillableIP sets the "ip" field if the given value is not nil.
-func (uuo *UploadUpdateOne) SetNillableIP(s *string) *UploadUpdateOne {
+// SetNillableIPAddr sets the "ip_addr" field if the given value is not nil.
+func (uuo *UploadUpdateOne) SetNillableIPAddr(s *string) *UploadUpdateOne {
 	if s != nil {
-		uuo.SetIP(*s)
+		uuo.SetIPAddr(*s)
 	}
 	return uuo
 }
@@ -314,69 +252,29 @@ func (uuo *UploadUpdateOne) ClearUUID() *UploadUpdateOne {
 	return uuo
 }
 
-// SetDeviceID sets the "device_id" field.
-func (uuo *UploadUpdateOne) SetDeviceID(s string) *UploadUpdateOne {
-	uuo.mutation.SetDeviceID(s)
+// SetCode sets the "code" field.
+func (uuo *UploadUpdateOne) SetCode(s string) *UploadUpdateOne {
+	uuo.mutation.SetCode(s)
 	return uuo
 }
 
-// SetNillableDeviceID sets the "device_id" field if the given value is not nil.
-func (uuo *UploadUpdateOne) SetNillableDeviceID(s *string) *UploadUpdateOne {
+// SetNillableCode sets the "code" field if the given value is not nil.
+func (uuo *UploadUpdateOne) SetNillableCode(s *string) *UploadUpdateOne {
 	if s != nil {
-		uuo.SetDeviceID(*s)
+		uuo.SetCode(*s)
 	}
 	return uuo
 }
 
-// ClearDeviceID clears the value of the "device_id" field.
-func (uuo *UploadUpdateOne) ClearDeviceID() *UploadUpdateOne {
-	uuo.mutation.ClearDeviceID()
+// ClearCode clears the value of the "code" field.
+func (uuo *UploadUpdateOne) ClearCode() *UploadUpdateOne {
+	uuo.mutation.ClearCode()
 	return uuo
 }
 
-// SetLastTime sets the "last_time" field.
-func (uuo *UploadUpdateOne) SetLastTime(t time.Time) *UploadUpdateOne {
-	uuo.mutation.SetLastTime(t)
-	return uuo
-}
-
-// SetUser sets the "user" field.
-func (uuo *UploadUpdateOne) SetUser(s string) *UploadUpdateOne {
-	uuo.mutation.SetUser(s)
-	return uuo
-}
-
-// SetNillableUser sets the "user" field if the given value is not nil.
-func (uuo *UploadUpdateOne) SetNillableUser(s *string) *UploadUpdateOne {
-	if s != nil {
-		uuo.SetUser(*s)
-	}
-	return uuo
-}
-
-// ClearUser clears the value of the "user" field.
-func (uuo *UploadUpdateOne) ClearUser() *UploadUpdateOne {
-	uuo.mutation.ClearUser()
-	return uuo
-}
-
-// SetPwd sets the "pwd" field.
-func (uuo *UploadUpdateOne) SetPwd(s string) *UploadUpdateOne {
-	uuo.mutation.SetPwd(s)
-	return uuo
-}
-
-// SetNillablePwd sets the "pwd" field if the given value is not nil.
-func (uuo *UploadUpdateOne) SetNillablePwd(s *string) *UploadUpdateOne {
-	if s != nil {
-		uuo.SetPwd(*s)
-	}
-	return uuo
-}
-
-// ClearPwd clears the value of the "pwd" field.
-func (uuo *UploadUpdateOne) ClearPwd() *UploadUpdateOne {
-	uuo.mutation.ClearPwd()
+// SetRegTime sets the "reg_time" field.
+func (uuo *UploadUpdateOne) SetRegTime(t time.Time) *UploadUpdateOne {
+	uuo.mutation.SetRegTime(t)
 	return uuo
 }
 
@@ -432,17 +330,17 @@ func (uuo *UploadUpdateOne) defaults() {
 		v := upload.UpdateDefaultUpdateTime()
 		uuo.mutation.SetUpdateTime(v)
 	}
-	if _, ok := uuo.mutation.LastTime(); !ok {
-		v := upload.UpdateDefaultLastTime()
-		uuo.mutation.SetLastTime(v)
+	if _, ok := uuo.mutation.RegTime(); !ok {
+		v := upload.UpdateDefaultRegTime()
+		uuo.mutation.SetRegTime(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (uuo *UploadUpdateOne) check() error {
-	if v, ok := uuo.mutation.IP(); ok {
-		if err := upload.IPValidator(v); err != nil {
-			return &ValidationError{Name: "ip", err: fmt.Errorf(`ent: validator failed for field "Upload.ip": %w`, err)}
+	if v, ok := uuo.mutation.IPAddr(); ok {
+		if err := upload.IPAddrValidator(v); err != nil {
+			return &ValidationError{Name: "ip_addr", err: fmt.Errorf(`ent: validator failed for field "Upload.ip_addr": %w`, err)}
 		}
 	}
 	if v, ok := uuo.mutation.UUID(); ok {
@@ -450,19 +348,9 @@ func (uuo *UploadUpdateOne) check() error {
 			return &ValidationError{Name: "uuid", err: fmt.Errorf(`ent: validator failed for field "Upload.uuid": %w`, err)}
 		}
 	}
-	if v, ok := uuo.mutation.DeviceID(); ok {
-		if err := upload.DeviceIDValidator(v); err != nil {
-			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Upload.device_id": %w`, err)}
-		}
-	}
-	if v, ok := uuo.mutation.User(); ok {
-		if err := upload.UserValidator(v); err != nil {
-			return &ValidationError{Name: "user", err: fmt.Errorf(`ent: validator failed for field "Upload.user": %w`, err)}
-		}
-	}
-	if v, ok := uuo.mutation.Pwd(); ok {
-		if err := upload.PwdValidator(v); err != nil {
-			return &ValidationError{Name: "pwd", err: fmt.Errorf(`ent: validator failed for field "Upload.pwd": %w`, err)}
+	if v, ok := uuo.mutation.Code(); ok {
+		if err := upload.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Upload.code": %w`, err)}
 		}
 	}
 	return nil
@@ -500,8 +388,8 @@ func (uuo *UploadUpdateOne) sqlSave(ctx context.Context) (_node *Upload, err err
 	if value, ok := uuo.mutation.UpdateTime(); ok {
 		_spec.SetField(upload.FieldUpdateTime, field.TypeTime, value)
 	}
-	if value, ok := uuo.mutation.IP(); ok {
-		_spec.SetField(upload.FieldIP, field.TypeString, value)
+	if value, ok := uuo.mutation.IPAddr(); ok {
+		_spec.SetField(upload.FieldIPAddr, field.TypeString, value)
 	}
 	if value, ok := uuo.mutation.UUID(); ok {
 		_spec.SetField(upload.FieldUUID, field.TypeString, value)
@@ -509,26 +397,14 @@ func (uuo *UploadUpdateOne) sqlSave(ctx context.Context) (_node *Upload, err err
 	if uuo.mutation.UUIDCleared() {
 		_spec.ClearField(upload.FieldUUID, field.TypeString)
 	}
-	if value, ok := uuo.mutation.DeviceID(); ok {
-		_spec.SetField(upload.FieldDeviceID, field.TypeString, value)
+	if value, ok := uuo.mutation.Code(); ok {
+		_spec.SetField(upload.FieldCode, field.TypeString, value)
 	}
-	if uuo.mutation.DeviceIDCleared() {
-		_spec.ClearField(upload.FieldDeviceID, field.TypeString)
+	if uuo.mutation.CodeCleared() {
+		_spec.ClearField(upload.FieldCode, field.TypeString)
 	}
-	if value, ok := uuo.mutation.LastTime(); ok {
-		_spec.SetField(upload.FieldLastTime, field.TypeTime, value)
-	}
-	if value, ok := uuo.mutation.User(); ok {
-		_spec.SetField(upload.FieldUser, field.TypeString, value)
-	}
-	if uuo.mutation.UserCleared() {
-		_spec.ClearField(upload.FieldUser, field.TypeString)
-	}
-	if value, ok := uuo.mutation.Pwd(); ok {
-		_spec.SetField(upload.FieldPwd, field.TypeString, value)
-	}
-	if uuo.mutation.PwdCleared() {
-		_spec.ClearField(upload.FieldPwd, field.TypeString)
+	if value, ok := uuo.mutation.RegTime(); ok {
+		_spec.SetField(upload.FieldRegTime, field.TypeTime, value)
 	}
 	_node = &Upload{config: uuo.config}
 	_spec.Assign = _node.assignValues

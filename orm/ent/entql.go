@@ -28,12 +28,10 @@ var schemaGraph = func() *sqlgraph.Schema {
 			upload.FieldCreateTime: {Type: field.TypeTime, Column: upload.FieldCreateTime},
 			upload.FieldUpdateTime: {Type: field.TypeTime, Column: upload.FieldUpdateTime},
 			upload.FieldSn:         {Type: field.TypeString, Column: upload.FieldSn},
-			upload.FieldIP:         {Type: field.TypeString, Column: upload.FieldIP},
+			upload.FieldIPAddr:     {Type: field.TypeString, Column: upload.FieldIPAddr},
 			upload.FieldUUID:       {Type: field.TypeString, Column: upload.FieldUUID},
-			upload.FieldDeviceID:   {Type: field.TypeString, Column: upload.FieldDeviceID},
-			upload.FieldLastTime:   {Type: field.TypeTime, Column: upload.FieldLastTime},
-			upload.FieldUser:       {Type: field.TypeString, Column: upload.FieldUser},
-			upload.FieldPwd:        {Type: field.TypeString, Column: upload.FieldPwd},
+			upload.FieldCode:       {Type: field.TypeString, Column: upload.FieldCode},
+			upload.FieldRegTime:    {Type: field.TypeTime, Column: upload.FieldRegTime},
 		},
 	}
 	return graph
@@ -100,9 +98,9 @@ func (f *UploadFilter) WhereSn(p entql.StringP) {
 	f.Where(p.Field(upload.FieldSn))
 }
 
-// WhereIP applies the entql string predicate on the ip field.
-func (f *UploadFilter) WhereIP(p entql.StringP) {
-	f.Where(p.Field(upload.FieldIP))
+// WhereIPAddr applies the entql string predicate on the ip_addr field.
+func (f *UploadFilter) WhereIPAddr(p entql.StringP) {
+	f.Where(p.Field(upload.FieldIPAddr))
 }
 
 // WhereUUID applies the entql string predicate on the uuid field.
@@ -110,22 +108,12 @@ func (f *UploadFilter) WhereUUID(p entql.StringP) {
 	f.Where(p.Field(upload.FieldUUID))
 }
 
-// WhereDeviceID applies the entql string predicate on the device_id field.
-func (f *UploadFilter) WhereDeviceID(p entql.StringP) {
-	f.Where(p.Field(upload.FieldDeviceID))
+// WhereCode applies the entql string predicate on the code field.
+func (f *UploadFilter) WhereCode(p entql.StringP) {
+	f.Where(p.Field(upload.FieldCode))
 }
 
-// WhereLastTime applies the entql time.Time predicate on the last_time field.
-func (f *UploadFilter) WhereLastTime(p entql.TimeP) {
-	f.Where(p.Field(upload.FieldLastTime))
-}
-
-// WhereUser applies the entql string predicate on the user field.
-func (f *UploadFilter) WhereUser(p entql.StringP) {
-	f.Where(p.Field(upload.FieldUser))
-}
-
-// WherePwd applies the entql string predicate on the pwd field.
-func (f *UploadFilter) WherePwd(p entql.StringP) {
-	f.Where(p.Field(upload.FieldPwd))
+// WhereRegTime applies the entql time.Time predicate on the reg_time field.
+func (f *UploadFilter) WhereRegTime(p entql.TimeP) {
+	f.Where(p.Field(upload.FieldRegTime))
 }

@@ -69,9 +69,9 @@ func Sn(v string) predicate.Upload {
 	return predicate.Upload(sql.FieldEQ(FieldSn, v))
 }
 
-// IP applies equality check predicate on the "ip" field. It's identical to IPEQ.
-func IP(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldEQ(FieldIP, v))
+// IPAddr applies equality check predicate on the "ip_addr" field. It's identical to IPAddrEQ.
+func IPAddr(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldEQ(FieldIPAddr, v))
 }
 
 // UUID applies equality check predicate on the "uuid" field. It's identical to UUIDEQ.
@@ -79,24 +79,14 @@ func UUID(v string) predicate.Upload {
 	return predicate.Upload(sql.FieldEQ(FieldUUID, v))
 }
 
-// DeviceID applies equality check predicate on the "device_id" field. It's identical to DeviceIDEQ.
-func DeviceID(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldEQ(FieldDeviceID, v))
+// Code applies equality check predicate on the "code" field. It's identical to CodeEQ.
+func Code(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldEQ(FieldCode, v))
 }
 
-// LastTime applies equality check predicate on the "last_time" field. It's identical to LastTimeEQ.
-func LastTime(v time.Time) predicate.Upload {
-	return predicate.Upload(sql.FieldEQ(FieldLastTime, v))
-}
-
-// User applies equality check predicate on the "user" field. It's identical to UserEQ.
-func User(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldEQ(FieldUser, v))
-}
-
-// Pwd applies equality check predicate on the "pwd" field. It's identical to PwdEQ.
-func Pwd(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldEQ(FieldPwd, v))
+// RegTime applies equality check predicate on the "reg_time" field. It's identical to RegTimeEQ.
+func RegTime(v time.Time) predicate.Upload {
+	return predicate.Upload(sql.FieldEQ(FieldRegTime, v))
 }
 
 // CreateTimeEQ applies the EQ predicate on the "create_time" field.
@@ -244,69 +234,69 @@ func SnContainsFold(v string) predicate.Upload {
 	return predicate.Upload(sql.FieldContainsFold(FieldSn, v))
 }
 
-// IPEQ applies the EQ predicate on the "ip" field.
-func IPEQ(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldEQ(FieldIP, v))
+// IPAddrEQ applies the EQ predicate on the "ip_addr" field.
+func IPAddrEQ(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldEQ(FieldIPAddr, v))
 }
 
-// IPNEQ applies the NEQ predicate on the "ip" field.
-func IPNEQ(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldNEQ(FieldIP, v))
+// IPAddrNEQ applies the NEQ predicate on the "ip_addr" field.
+func IPAddrNEQ(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldNEQ(FieldIPAddr, v))
 }
 
-// IPIn applies the In predicate on the "ip" field.
-func IPIn(vs ...string) predicate.Upload {
-	return predicate.Upload(sql.FieldIn(FieldIP, vs...))
+// IPAddrIn applies the In predicate on the "ip_addr" field.
+func IPAddrIn(vs ...string) predicate.Upload {
+	return predicate.Upload(sql.FieldIn(FieldIPAddr, vs...))
 }
 
-// IPNotIn applies the NotIn predicate on the "ip" field.
-func IPNotIn(vs ...string) predicate.Upload {
-	return predicate.Upload(sql.FieldNotIn(FieldIP, vs...))
+// IPAddrNotIn applies the NotIn predicate on the "ip_addr" field.
+func IPAddrNotIn(vs ...string) predicate.Upload {
+	return predicate.Upload(sql.FieldNotIn(FieldIPAddr, vs...))
 }
 
-// IPGT applies the GT predicate on the "ip" field.
-func IPGT(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldGT(FieldIP, v))
+// IPAddrGT applies the GT predicate on the "ip_addr" field.
+func IPAddrGT(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldGT(FieldIPAddr, v))
 }
 
-// IPGTE applies the GTE predicate on the "ip" field.
-func IPGTE(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldGTE(FieldIP, v))
+// IPAddrGTE applies the GTE predicate on the "ip_addr" field.
+func IPAddrGTE(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldGTE(FieldIPAddr, v))
 }
 
-// IPLT applies the LT predicate on the "ip" field.
-func IPLT(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldLT(FieldIP, v))
+// IPAddrLT applies the LT predicate on the "ip_addr" field.
+func IPAddrLT(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldLT(FieldIPAddr, v))
 }
 
-// IPLTE applies the LTE predicate on the "ip" field.
-func IPLTE(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldLTE(FieldIP, v))
+// IPAddrLTE applies the LTE predicate on the "ip_addr" field.
+func IPAddrLTE(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldLTE(FieldIPAddr, v))
 }
 
-// IPContains applies the Contains predicate on the "ip" field.
-func IPContains(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldContains(FieldIP, v))
+// IPAddrContains applies the Contains predicate on the "ip_addr" field.
+func IPAddrContains(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldContains(FieldIPAddr, v))
 }
 
-// IPHasPrefix applies the HasPrefix predicate on the "ip" field.
-func IPHasPrefix(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldHasPrefix(FieldIP, v))
+// IPAddrHasPrefix applies the HasPrefix predicate on the "ip_addr" field.
+func IPAddrHasPrefix(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldHasPrefix(FieldIPAddr, v))
 }
 
-// IPHasSuffix applies the HasSuffix predicate on the "ip" field.
-func IPHasSuffix(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldHasSuffix(FieldIP, v))
+// IPAddrHasSuffix applies the HasSuffix predicate on the "ip_addr" field.
+func IPAddrHasSuffix(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldHasSuffix(FieldIPAddr, v))
 }
 
-// IPEqualFold applies the EqualFold predicate on the "ip" field.
-func IPEqualFold(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldEqualFold(FieldIP, v))
+// IPAddrEqualFold applies the EqualFold predicate on the "ip_addr" field.
+func IPAddrEqualFold(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldEqualFold(FieldIPAddr, v))
 }
 
-// IPContainsFold applies the ContainsFold predicate on the "ip" field.
-func IPContainsFold(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldContainsFold(FieldIP, v))
+// IPAddrContainsFold applies the ContainsFold predicate on the "ip_addr" field.
+func IPAddrContainsFold(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldContainsFold(FieldIPAddr, v))
 }
 
 // UUIDEQ applies the EQ predicate on the "uuid" field.
@@ -384,269 +374,119 @@ func UUIDContainsFold(v string) predicate.Upload {
 	return predicate.Upload(sql.FieldContainsFold(FieldUUID, v))
 }
 
-// DeviceIDEQ applies the EQ predicate on the "device_id" field.
-func DeviceIDEQ(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldEQ(FieldDeviceID, v))
+// CodeEQ applies the EQ predicate on the "code" field.
+func CodeEQ(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldEQ(FieldCode, v))
 }
 
-// DeviceIDNEQ applies the NEQ predicate on the "device_id" field.
-func DeviceIDNEQ(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldNEQ(FieldDeviceID, v))
+// CodeNEQ applies the NEQ predicate on the "code" field.
+func CodeNEQ(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldNEQ(FieldCode, v))
 }
 
-// DeviceIDIn applies the In predicate on the "device_id" field.
-func DeviceIDIn(vs ...string) predicate.Upload {
-	return predicate.Upload(sql.FieldIn(FieldDeviceID, vs...))
+// CodeIn applies the In predicate on the "code" field.
+func CodeIn(vs ...string) predicate.Upload {
+	return predicate.Upload(sql.FieldIn(FieldCode, vs...))
 }
 
-// DeviceIDNotIn applies the NotIn predicate on the "device_id" field.
-func DeviceIDNotIn(vs ...string) predicate.Upload {
-	return predicate.Upload(sql.FieldNotIn(FieldDeviceID, vs...))
+// CodeNotIn applies the NotIn predicate on the "code" field.
+func CodeNotIn(vs ...string) predicate.Upload {
+	return predicate.Upload(sql.FieldNotIn(FieldCode, vs...))
 }
 
-// DeviceIDGT applies the GT predicate on the "device_id" field.
-func DeviceIDGT(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldGT(FieldDeviceID, v))
+// CodeGT applies the GT predicate on the "code" field.
+func CodeGT(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldGT(FieldCode, v))
 }
 
-// DeviceIDGTE applies the GTE predicate on the "device_id" field.
-func DeviceIDGTE(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldGTE(FieldDeviceID, v))
+// CodeGTE applies the GTE predicate on the "code" field.
+func CodeGTE(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldGTE(FieldCode, v))
 }
 
-// DeviceIDLT applies the LT predicate on the "device_id" field.
-func DeviceIDLT(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldLT(FieldDeviceID, v))
+// CodeLT applies the LT predicate on the "code" field.
+func CodeLT(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldLT(FieldCode, v))
 }
 
-// DeviceIDLTE applies the LTE predicate on the "device_id" field.
-func DeviceIDLTE(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldLTE(FieldDeviceID, v))
+// CodeLTE applies the LTE predicate on the "code" field.
+func CodeLTE(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldLTE(FieldCode, v))
 }
 
-// DeviceIDContains applies the Contains predicate on the "device_id" field.
-func DeviceIDContains(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldContains(FieldDeviceID, v))
+// CodeContains applies the Contains predicate on the "code" field.
+func CodeContains(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldContains(FieldCode, v))
 }
 
-// DeviceIDHasPrefix applies the HasPrefix predicate on the "device_id" field.
-func DeviceIDHasPrefix(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldHasPrefix(FieldDeviceID, v))
+// CodeHasPrefix applies the HasPrefix predicate on the "code" field.
+func CodeHasPrefix(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldHasPrefix(FieldCode, v))
 }
 
-// DeviceIDHasSuffix applies the HasSuffix predicate on the "device_id" field.
-func DeviceIDHasSuffix(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldHasSuffix(FieldDeviceID, v))
+// CodeHasSuffix applies the HasSuffix predicate on the "code" field.
+func CodeHasSuffix(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldHasSuffix(FieldCode, v))
 }
 
-// DeviceIDIsNil applies the IsNil predicate on the "device_id" field.
-func DeviceIDIsNil() predicate.Upload {
-	return predicate.Upload(sql.FieldIsNull(FieldDeviceID))
+// CodeIsNil applies the IsNil predicate on the "code" field.
+func CodeIsNil() predicate.Upload {
+	return predicate.Upload(sql.FieldIsNull(FieldCode))
 }
 
-// DeviceIDNotNil applies the NotNil predicate on the "device_id" field.
-func DeviceIDNotNil() predicate.Upload {
-	return predicate.Upload(sql.FieldNotNull(FieldDeviceID))
+// CodeNotNil applies the NotNil predicate on the "code" field.
+func CodeNotNil() predicate.Upload {
+	return predicate.Upload(sql.FieldNotNull(FieldCode))
 }
 
-// DeviceIDEqualFold applies the EqualFold predicate on the "device_id" field.
-func DeviceIDEqualFold(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldEqualFold(FieldDeviceID, v))
+// CodeEqualFold applies the EqualFold predicate on the "code" field.
+func CodeEqualFold(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldEqualFold(FieldCode, v))
 }
 
-// DeviceIDContainsFold applies the ContainsFold predicate on the "device_id" field.
-func DeviceIDContainsFold(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldContainsFold(FieldDeviceID, v))
+// CodeContainsFold applies the ContainsFold predicate on the "code" field.
+func CodeContainsFold(v string) predicate.Upload {
+	return predicate.Upload(sql.FieldContainsFold(FieldCode, v))
 }
 
-// LastTimeEQ applies the EQ predicate on the "last_time" field.
-func LastTimeEQ(v time.Time) predicate.Upload {
-	return predicate.Upload(sql.FieldEQ(FieldLastTime, v))
+// RegTimeEQ applies the EQ predicate on the "reg_time" field.
+func RegTimeEQ(v time.Time) predicate.Upload {
+	return predicate.Upload(sql.FieldEQ(FieldRegTime, v))
 }
 
-// LastTimeNEQ applies the NEQ predicate on the "last_time" field.
-func LastTimeNEQ(v time.Time) predicate.Upload {
-	return predicate.Upload(sql.FieldNEQ(FieldLastTime, v))
+// RegTimeNEQ applies the NEQ predicate on the "reg_time" field.
+func RegTimeNEQ(v time.Time) predicate.Upload {
+	return predicate.Upload(sql.FieldNEQ(FieldRegTime, v))
 }
 
-// LastTimeIn applies the In predicate on the "last_time" field.
-func LastTimeIn(vs ...time.Time) predicate.Upload {
-	return predicate.Upload(sql.FieldIn(FieldLastTime, vs...))
+// RegTimeIn applies the In predicate on the "reg_time" field.
+func RegTimeIn(vs ...time.Time) predicate.Upload {
+	return predicate.Upload(sql.FieldIn(FieldRegTime, vs...))
 }
 
-// LastTimeNotIn applies the NotIn predicate on the "last_time" field.
-func LastTimeNotIn(vs ...time.Time) predicate.Upload {
-	return predicate.Upload(sql.FieldNotIn(FieldLastTime, vs...))
+// RegTimeNotIn applies the NotIn predicate on the "reg_time" field.
+func RegTimeNotIn(vs ...time.Time) predicate.Upload {
+	return predicate.Upload(sql.FieldNotIn(FieldRegTime, vs...))
 }
 
-// LastTimeGT applies the GT predicate on the "last_time" field.
-func LastTimeGT(v time.Time) predicate.Upload {
-	return predicate.Upload(sql.FieldGT(FieldLastTime, v))
+// RegTimeGT applies the GT predicate on the "reg_time" field.
+func RegTimeGT(v time.Time) predicate.Upload {
+	return predicate.Upload(sql.FieldGT(FieldRegTime, v))
 }
 
-// LastTimeGTE applies the GTE predicate on the "last_time" field.
-func LastTimeGTE(v time.Time) predicate.Upload {
-	return predicate.Upload(sql.FieldGTE(FieldLastTime, v))
+// RegTimeGTE applies the GTE predicate on the "reg_time" field.
+func RegTimeGTE(v time.Time) predicate.Upload {
+	return predicate.Upload(sql.FieldGTE(FieldRegTime, v))
 }
 
-// LastTimeLT applies the LT predicate on the "last_time" field.
-func LastTimeLT(v time.Time) predicate.Upload {
-	return predicate.Upload(sql.FieldLT(FieldLastTime, v))
+// RegTimeLT applies the LT predicate on the "reg_time" field.
+func RegTimeLT(v time.Time) predicate.Upload {
+	return predicate.Upload(sql.FieldLT(FieldRegTime, v))
 }
 
-// LastTimeLTE applies the LTE predicate on the "last_time" field.
-func LastTimeLTE(v time.Time) predicate.Upload {
-	return predicate.Upload(sql.FieldLTE(FieldLastTime, v))
-}
-
-// UserEQ applies the EQ predicate on the "user" field.
-func UserEQ(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldEQ(FieldUser, v))
-}
-
-// UserNEQ applies the NEQ predicate on the "user" field.
-func UserNEQ(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldNEQ(FieldUser, v))
-}
-
-// UserIn applies the In predicate on the "user" field.
-func UserIn(vs ...string) predicate.Upload {
-	return predicate.Upload(sql.FieldIn(FieldUser, vs...))
-}
-
-// UserNotIn applies the NotIn predicate on the "user" field.
-func UserNotIn(vs ...string) predicate.Upload {
-	return predicate.Upload(sql.FieldNotIn(FieldUser, vs...))
-}
-
-// UserGT applies the GT predicate on the "user" field.
-func UserGT(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldGT(FieldUser, v))
-}
-
-// UserGTE applies the GTE predicate on the "user" field.
-func UserGTE(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldGTE(FieldUser, v))
-}
-
-// UserLT applies the LT predicate on the "user" field.
-func UserLT(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldLT(FieldUser, v))
-}
-
-// UserLTE applies the LTE predicate on the "user" field.
-func UserLTE(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldLTE(FieldUser, v))
-}
-
-// UserContains applies the Contains predicate on the "user" field.
-func UserContains(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldContains(FieldUser, v))
-}
-
-// UserHasPrefix applies the HasPrefix predicate on the "user" field.
-func UserHasPrefix(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldHasPrefix(FieldUser, v))
-}
-
-// UserHasSuffix applies the HasSuffix predicate on the "user" field.
-func UserHasSuffix(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldHasSuffix(FieldUser, v))
-}
-
-// UserIsNil applies the IsNil predicate on the "user" field.
-func UserIsNil() predicate.Upload {
-	return predicate.Upload(sql.FieldIsNull(FieldUser))
-}
-
-// UserNotNil applies the NotNil predicate on the "user" field.
-func UserNotNil() predicate.Upload {
-	return predicate.Upload(sql.FieldNotNull(FieldUser))
-}
-
-// UserEqualFold applies the EqualFold predicate on the "user" field.
-func UserEqualFold(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldEqualFold(FieldUser, v))
-}
-
-// UserContainsFold applies the ContainsFold predicate on the "user" field.
-func UserContainsFold(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldContainsFold(FieldUser, v))
-}
-
-// PwdEQ applies the EQ predicate on the "pwd" field.
-func PwdEQ(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldEQ(FieldPwd, v))
-}
-
-// PwdNEQ applies the NEQ predicate on the "pwd" field.
-func PwdNEQ(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldNEQ(FieldPwd, v))
-}
-
-// PwdIn applies the In predicate on the "pwd" field.
-func PwdIn(vs ...string) predicate.Upload {
-	return predicate.Upload(sql.FieldIn(FieldPwd, vs...))
-}
-
-// PwdNotIn applies the NotIn predicate on the "pwd" field.
-func PwdNotIn(vs ...string) predicate.Upload {
-	return predicate.Upload(sql.FieldNotIn(FieldPwd, vs...))
-}
-
-// PwdGT applies the GT predicate on the "pwd" field.
-func PwdGT(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldGT(FieldPwd, v))
-}
-
-// PwdGTE applies the GTE predicate on the "pwd" field.
-func PwdGTE(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldGTE(FieldPwd, v))
-}
-
-// PwdLT applies the LT predicate on the "pwd" field.
-func PwdLT(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldLT(FieldPwd, v))
-}
-
-// PwdLTE applies the LTE predicate on the "pwd" field.
-func PwdLTE(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldLTE(FieldPwd, v))
-}
-
-// PwdContains applies the Contains predicate on the "pwd" field.
-func PwdContains(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldContains(FieldPwd, v))
-}
-
-// PwdHasPrefix applies the HasPrefix predicate on the "pwd" field.
-func PwdHasPrefix(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldHasPrefix(FieldPwd, v))
-}
-
-// PwdHasSuffix applies the HasSuffix predicate on the "pwd" field.
-func PwdHasSuffix(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldHasSuffix(FieldPwd, v))
-}
-
-// PwdIsNil applies the IsNil predicate on the "pwd" field.
-func PwdIsNil() predicate.Upload {
-	return predicate.Upload(sql.FieldIsNull(FieldPwd))
-}
-
-// PwdNotNil applies the NotNil predicate on the "pwd" field.
-func PwdNotNil() predicate.Upload {
-	return predicate.Upload(sql.FieldNotNull(FieldPwd))
-}
-
-// PwdEqualFold applies the EqualFold predicate on the "pwd" field.
-func PwdEqualFold(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldEqualFold(FieldPwd, v))
-}
-
-// PwdContainsFold applies the ContainsFold predicate on the "pwd" field.
-func PwdContainsFold(v string) predicate.Upload {
-	return predicate.Upload(sql.FieldContainsFold(FieldPwd, v))
+// RegTimeLTE applies the LTE predicate on the "reg_time" field.
+func RegTimeLTE(v time.Time) predicate.Upload {
+	return predicate.Upload(sql.FieldLTE(FieldRegTime, v))
 }
 
 // And groups predicates with the AND operator between them.

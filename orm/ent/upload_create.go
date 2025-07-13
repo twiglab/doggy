@@ -56,9 +56,9 @@ func (uc *UploadCreate) SetSn(s string) *UploadCreate {
 	return uc
 }
 
-// SetIP sets the "ip" field.
-func (uc *UploadCreate) SetIP(s string) *UploadCreate {
-	uc.mutation.SetIP(s)
+// SetIPAddr sets the "ip_addr" field.
+func (uc *UploadCreate) SetIPAddr(s string) *UploadCreate {
+	uc.mutation.SetIPAddr(s)
 	return uc
 }
 
@@ -76,58 +76,30 @@ func (uc *UploadCreate) SetNillableUUID(s *string) *UploadCreate {
 	return uc
 }
 
-// SetDeviceID sets the "device_id" field.
-func (uc *UploadCreate) SetDeviceID(s string) *UploadCreate {
-	uc.mutation.SetDeviceID(s)
+// SetCode sets the "code" field.
+func (uc *UploadCreate) SetCode(s string) *UploadCreate {
+	uc.mutation.SetCode(s)
 	return uc
 }
 
-// SetNillableDeviceID sets the "device_id" field if the given value is not nil.
-func (uc *UploadCreate) SetNillableDeviceID(s *string) *UploadCreate {
+// SetNillableCode sets the "code" field if the given value is not nil.
+func (uc *UploadCreate) SetNillableCode(s *string) *UploadCreate {
 	if s != nil {
-		uc.SetDeviceID(*s)
+		uc.SetCode(*s)
 	}
 	return uc
 }
 
-// SetLastTime sets the "last_time" field.
-func (uc *UploadCreate) SetLastTime(t time.Time) *UploadCreate {
-	uc.mutation.SetLastTime(t)
+// SetRegTime sets the "reg_time" field.
+func (uc *UploadCreate) SetRegTime(t time.Time) *UploadCreate {
+	uc.mutation.SetRegTime(t)
 	return uc
 }
 
-// SetNillableLastTime sets the "last_time" field if the given value is not nil.
-func (uc *UploadCreate) SetNillableLastTime(t *time.Time) *UploadCreate {
+// SetNillableRegTime sets the "reg_time" field if the given value is not nil.
+func (uc *UploadCreate) SetNillableRegTime(t *time.Time) *UploadCreate {
 	if t != nil {
-		uc.SetLastTime(*t)
-	}
-	return uc
-}
-
-// SetUser sets the "user" field.
-func (uc *UploadCreate) SetUser(s string) *UploadCreate {
-	uc.mutation.SetUser(s)
-	return uc
-}
-
-// SetNillableUser sets the "user" field if the given value is not nil.
-func (uc *UploadCreate) SetNillableUser(s *string) *UploadCreate {
-	if s != nil {
-		uc.SetUser(*s)
-	}
-	return uc
-}
-
-// SetPwd sets the "pwd" field.
-func (uc *UploadCreate) SetPwd(s string) *UploadCreate {
-	uc.mutation.SetPwd(s)
-	return uc
-}
-
-// SetNillablePwd sets the "pwd" field if the given value is not nil.
-func (uc *UploadCreate) SetNillablePwd(s *string) *UploadCreate {
-	if s != nil {
-		uc.SetPwd(*s)
+		uc.SetRegTime(*t)
 	}
 	return uc
 }
@@ -175,9 +147,9 @@ func (uc *UploadCreate) defaults() {
 		v := upload.DefaultUpdateTime()
 		uc.mutation.SetUpdateTime(v)
 	}
-	if _, ok := uc.mutation.LastTime(); !ok {
-		v := upload.DefaultLastTime()
-		uc.mutation.SetLastTime(v)
+	if _, ok := uc.mutation.RegTime(); !ok {
+		v := upload.DefaultRegTime()
+		uc.mutation.SetRegTime(v)
 	}
 }
 
@@ -197,12 +169,12 @@ func (uc *UploadCreate) check() error {
 			return &ValidationError{Name: "sn", err: fmt.Errorf(`ent: validator failed for field "Upload.sn": %w`, err)}
 		}
 	}
-	if _, ok := uc.mutation.IP(); !ok {
-		return &ValidationError{Name: "ip", err: errors.New(`ent: missing required field "Upload.ip"`)}
+	if _, ok := uc.mutation.IPAddr(); !ok {
+		return &ValidationError{Name: "ip_addr", err: errors.New(`ent: missing required field "Upload.ip_addr"`)}
 	}
-	if v, ok := uc.mutation.IP(); ok {
-		if err := upload.IPValidator(v); err != nil {
-			return &ValidationError{Name: "ip", err: fmt.Errorf(`ent: validator failed for field "Upload.ip": %w`, err)}
+	if v, ok := uc.mutation.IPAddr(); ok {
+		if err := upload.IPAddrValidator(v); err != nil {
+			return &ValidationError{Name: "ip_addr", err: fmt.Errorf(`ent: validator failed for field "Upload.ip_addr": %w`, err)}
 		}
 	}
 	if v, ok := uc.mutation.UUID(); ok {
@@ -210,23 +182,13 @@ func (uc *UploadCreate) check() error {
 			return &ValidationError{Name: "uuid", err: fmt.Errorf(`ent: validator failed for field "Upload.uuid": %w`, err)}
 		}
 	}
-	if v, ok := uc.mutation.DeviceID(); ok {
-		if err := upload.DeviceIDValidator(v); err != nil {
-			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Upload.device_id": %w`, err)}
+	if v, ok := uc.mutation.Code(); ok {
+		if err := upload.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Upload.code": %w`, err)}
 		}
 	}
-	if _, ok := uc.mutation.LastTime(); !ok {
-		return &ValidationError{Name: "last_time", err: errors.New(`ent: missing required field "Upload.last_time"`)}
-	}
-	if v, ok := uc.mutation.User(); ok {
-		if err := upload.UserValidator(v); err != nil {
-			return &ValidationError{Name: "user", err: fmt.Errorf(`ent: validator failed for field "Upload.user": %w`, err)}
-		}
-	}
-	if v, ok := uc.mutation.Pwd(); ok {
-		if err := upload.PwdValidator(v); err != nil {
-			return &ValidationError{Name: "pwd", err: fmt.Errorf(`ent: validator failed for field "Upload.pwd": %w`, err)}
-		}
+	if _, ok := uc.mutation.RegTime(); !ok {
+		return &ValidationError{Name: "reg_time", err: errors.New(`ent: missing required field "Upload.reg_time"`)}
 	}
 	return nil
 }
@@ -267,29 +229,21 @@ func (uc *UploadCreate) createSpec() (*Upload, *sqlgraph.CreateSpec) {
 		_spec.SetField(upload.FieldSn, field.TypeString, value)
 		_node.Sn = value
 	}
-	if value, ok := uc.mutation.IP(); ok {
-		_spec.SetField(upload.FieldIP, field.TypeString, value)
-		_node.IP = value
+	if value, ok := uc.mutation.IPAddr(); ok {
+		_spec.SetField(upload.FieldIPAddr, field.TypeString, value)
+		_node.IPAddr = value
 	}
 	if value, ok := uc.mutation.UUID(); ok {
 		_spec.SetField(upload.FieldUUID, field.TypeString, value)
 		_node.UUID = value
 	}
-	if value, ok := uc.mutation.DeviceID(); ok {
-		_spec.SetField(upload.FieldDeviceID, field.TypeString, value)
-		_node.DeviceID = value
+	if value, ok := uc.mutation.Code(); ok {
+		_spec.SetField(upload.FieldCode, field.TypeString, value)
+		_node.Code = value
 	}
-	if value, ok := uc.mutation.LastTime(); ok {
-		_spec.SetField(upload.FieldLastTime, field.TypeTime, value)
-		_node.LastTime = value
-	}
-	if value, ok := uc.mutation.User(); ok {
-		_spec.SetField(upload.FieldUser, field.TypeString, value)
-		_node.User = value
-	}
-	if value, ok := uc.mutation.Pwd(); ok {
-		_spec.SetField(upload.FieldPwd, field.TypeString, value)
-		_node.Pwd = value
+	if value, ok := uc.mutation.RegTime(); ok {
+		_spec.SetField(upload.FieldRegTime, field.TypeTime, value)
+		_node.RegTime = value
 	}
 	return _node, _spec
 }
@@ -355,15 +309,15 @@ func (u *UploadUpsert) UpdateUpdateTime() *UploadUpsert {
 	return u
 }
 
-// SetIP sets the "ip" field.
-func (u *UploadUpsert) SetIP(v string) *UploadUpsert {
-	u.Set(upload.FieldIP, v)
+// SetIPAddr sets the "ip_addr" field.
+func (u *UploadUpsert) SetIPAddr(v string) *UploadUpsert {
+	u.Set(upload.FieldIPAddr, v)
 	return u
 }
 
-// UpdateIP sets the "ip" field to the value that was provided on create.
-func (u *UploadUpsert) UpdateIP() *UploadUpsert {
-	u.SetExcluded(upload.FieldIP)
+// UpdateIPAddr sets the "ip_addr" field to the value that was provided on create.
+func (u *UploadUpsert) UpdateIPAddr() *UploadUpsert {
+	u.SetExcluded(upload.FieldIPAddr)
 	return u
 }
 
@@ -385,69 +339,33 @@ func (u *UploadUpsert) ClearUUID() *UploadUpsert {
 	return u
 }
 
-// SetDeviceID sets the "device_id" field.
-func (u *UploadUpsert) SetDeviceID(v string) *UploadUpsert {
-	u.Set(upload.FieldDeviceID, v)
+// SetCode sets the "code" field.
+func (u *UploadUpsert) SetCode(v string) *UploadUpsert {
+	u.Set(upload.FieldCode, v)
 	return u
 }
 
-// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
-func (u *UploadUpsert) UpdateDeviceID() *UploadUpsert {
-	u.SetExcluded(upload.FieldDeviceID)
+// UpdateCode sets the "code" field to the value that was provided on create.
+func (u *UploadUpsert) UpdateCode() *UploadUpsert {
+	u.SetExcluded(upload.FieldCode)
 	return u
 }
 
-// ClearDeviceID clears the value of the "device_id" field.
-func (u *UploadUpsert) ClearDeviceID() *UploadUpsert {
-	u.SetNull(upload.FieldDeviceID)
+// ClearCode clears the value of the "code" field.
+func (u *UploadUpsert) ClearCode() *UploadUpsert {
+	u.SetNull(upload.FieldCode)
 	return u
 }
 
-// SetLastTime sets the "last_time" field.
-func (u *UploadUpsert) SetLastTime(v time.Time) *UploadUpsert {
-	u.Set(upload.FieldLastTime, v)
+// SetRegTime sets the "reg_time" field.
+func (u *UploadUpsert) SetRegTime(v time.Time) *UploadUpsert {
+	u.Set(upload.FieldRegTime, v)
 	return u
 }
 
-// UpdateLastTime sets the "last_time" field to the value that was provided on create.
-func (u *UploadUpsert) UpdateLastTime() *UploadUpsert {
-	u.SetExcluded(upload.FieldLastTime)
-	return u
-}
-
-// SetUser sets the "user" field.
-func (u *UploadUpsert) SetUser(v string) *UploadUpsert {
-	u.Set(upload.FieldUser, v)
-	return u
-}
-
-// UpdateUser sets the "user" field to the value that was provided on create.
-func (u *UploadUpsert) UpdateUser() *UploadUpsert {
-	u.SetExcluded(upload.FieldUser)
-	return u
-}
-
-// ClearUser clears the value of the "user" field.
-func (u *UploadUpsert) ClearUser() *UploadUpsert {
-	u.SetNull(upload.FieldUser)
-	return u
-}
-
-// SetPwd sets the "pwd" field.
-func (u *UploadUpsert) SetPwd(v string) *UploadUpsert {
-	u.Set(upload.FieldPwd, v)
-	return u
-}
-
-// UpdatePwd sets the "pwd" field to the value that was provided on create.
-func (u *UploadUpsert) UpdatePwd() *UploadUpsert {
-	u.SetExcluded(upload.FieldPwd)
-	return u
-}
-
-// ClearPwd clears the value of the "pwd" field.
-func (u *UploadUpsert) ClearPwd() *UploadUpsert {
-	u.SetNull(upload.FieldPwd)
+// UpdateRegTime sets the "reg_time" field to the value that was provided on create.
+func (u *UploadUpsert) UpdateRegTime() *UploadUpsert {
+	u.SetExcluded(upload.FieldRegTime)
 	return u
 }
 
@@ -513,17 +431,17 @@ func (u *UploadUpsertOne) UpdateUpdateTime() *UploadUpsertOne {
 	})
 }
 
-// SetIP sets the "ip" field.
-func (u *UploadUpsertOne) SetIP(v string) *UploadUpsertOne {
+// SetIPAddr sets the "ip_addr" field.
+func (u *UploadUpsertOne) SetIPAddr(v string) *UploadUpsertOne {
 	return u.Update(func(s *UploadUpsert) {
-		s.SetIP(v)
+		s.SetIPAddr(v)
 	})
 }
 
-// UpdateIP sets the "ip" field to the value that was provided on create.
-func (u *UploadUpsertOne) UpdateIP() *UploadUpsertOne {
+// UpdateIPAddr sets the "ip_addr" field to the value that was provided on create.
+func (u *UploadUpsertOne) UpdateIPAddr() *UploadUpsertOne {
 	return u.Update(func(s *UploadUpsert) {
-		s.UpdateIP()
+		s.UpdateIPAddr()
 	})
 }
 
@@ -548,80 +466,38 @@ func (u *UploadUpsertOne) ClearUUID() *UploadUpsertOne {
 	})
 }
 
-// SetDeviceID sets the "device_id" field.
-func (u *UploadUpsertOne) SetDeviceID(v string) *UploadUpsertOne {
+// SetCode sets the "code" field.
+func (u *UploadUpsertOne) SetCode(v string) *UploadUpsertOne {
 	return u.Update(func(s *UploadUpsert) {
-		s.SetDeviceID(v)
+		s.SetCode(v)
 	})
 }
 
-// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
-func (u *UploadUpsertOne) UpdateDeviceID() *UploadUpsertOne {
+// UpdateCode sets the "code" field to the value that was provided on create.
+func (u *UploadUpsertOne) UpdateCode() *UploadUpsertOne {
 	return u.Update(func(s *UploadUpsert) {
-		s.UpdateDeviceID()
+		s.UpdateCode()
 	})
 }
 
-// ClearDeviceID clears the value of the "device_id" field.
-func (u *UploadUpsertOne) ClearDeviceID() *UploadUpsertOne {
+// ClearCode clears the value of the "code" field.
+func (u *UploadUpsertOne) ClearCode() *UploadUpsertOne {
 	return u.Update(func(s *UploadUpsert) {
-		s.ClearDeviceID()
+		s.ClearCode()
 	})
 }
 
-// SetLastTime sets the "last_time" field.
-func (u *UploadUpsertOne) SetLastTime(v time.Time) *UploadUpsertOne {
+// SetRegTime sets the "reg_time" field.
+func (u *UploadUpsertOne) SetRegTime(v time.Time) *UploadUpsertOne {
 	return u.Update(func(s *UploadUpsert) {
-		s.SetLastTime(v)
+		s.SetRegTime(v)
 	})
 }
 
-// UpdateLastTime sets the "last_time" field to the value that was provided on create.
-func (u *UploadUpsertOne) UpdateLastTime() *UploadUpsertOne {
+// UpdateRegTime sets the "reg_time" field to the value that was provided on create.
+func (u *UploadUpsertOne) UpdateRegTime() *UploadUpsertOne {
 	return u.Update(func(s *UploadUpsert) {
-		s.UpdateLastTime()
-	})
-}
-
-// SetUser sets the "user" field.
-func (u *UploadUpsertOne) SetUser(v string) *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.SetUser(v)
-	})
-}
-
-// UpdateUser sets the "user" field to the value that was provided on create.
-func (u *UploadUpsertOne) UpdateUser() *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.UpdateUser()
-	})
-}
-
-// ClearUser clears the value of the "user" field.
-func (u *UploadUpsertOne) ClearUser() *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.ClearUser()
-	})
-}
-
-// SetPwd sets the "pwd" field.
-func (u *UploadUpsertOne) SetPwd(v string) *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.SetPwd(v)
-	})
-}
-
-// UpdatePwd sets the "pwd" field to the value that was provided on create.
-func (u *UploadUpsertOne) UpdatePwd() *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.UpdatePwd()
-	})
-}
-
-// ClearPwd clears the value of the "pwd" field.
-func (u *UploadUpsertOne) ClearPwd() *UploadUpsertOne {
-	return u.Update(func(s *UploadUpsert) {
-		s.ClearPwd()
+		s.UpdateRegTime()
 	})
 }
 
@@ -853,17 +729,17 @@ func (u *UploadUpsertBulk) UpdateUpdateTime() *UploadUpsertBulk {
 	})
 }
 
-// SetIP sets the "ip" field.
-func (u *UploadUpsertBulk) SetIP(v string) *UploadUpsertBulk {
+// SetIPAddr sets the "ip_addr" field.
+func (u *UploadUpsertBulk) SetIPAddr(v string) *UploadUpsertBulk {
 	return u.Update(func(s *UploadUpsert) {
-		s.SetIP(v)
+		s.SetIPAddr(v)
 	})
 }
 
-// UpdateIP sets the "ip" field to the value that was provided on create.
-func (u *UploadUpsertBulk) UpdateIP() *UploadUpsertBulk {
+// UpdateIPAddr sets the "ip_addr" field to the value that was provided on create.
+func (u *UploadUpsertBulk) UpdateIPAddr() *UploadUpsertBulk {
 	return u.Update(func(s *UploadUpsert) {
-		s.UpdateIP()
+		s.UpdateIPAddr()
 	})
 }
 
@@ -888,80 +764,38 @@ func (u *UploadUpsertBulk) ClearUUID() *UploadUpsertBulk {
 	})
 }
 
-// SetDeviceID sets the "device_id" field.
-func (u *UploadUpsertBulk) SetDeviceID(v string) *UploadUpsertBulk {
+// SetCode sets the "code" field.
+func (u *UploadUpsertBulk) SetCode(v string) *UploadUpsertBulk {
 	return u.Update(func(s *UploadUpsert) {
-		s.SetDeviceID(v)
+		s.SetCode(v)
 	})
 }
 
-// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
-func (u *UploadUpsertBulk) UpdateDeviceID() *UploadUpsertBulk {
+// UpdateCode sets the "code" field to the value that was provided on create.
+func (u *UploadUpsertBulk) UpdateCode() *UploadUpsertBulk {
 	return u.Update(func(s *UploadUpsert) {
-		s.UpdateDeviceID()
+		s.UpdateCode()
 	})
 }
 
-// ClearDeviceID clears the value of the "device_id" field.
-func (u *UploadUpsertBulk) ClearDeviceID() *UploadUpsertBulk {
+// ClearCode clears the value of the "code" field.
+func (u *UploadUpsertBulk) ClearCode() *UploadUpsertBulk {
 	return u.Update(func(s *UploadUpsert) {
-		s.ClearDeviceID()
+		s.ClearCode()
 	})
 }
 
-// SetLastTime sets the "last_time" field.
-func (u *UploadUpsertBulk) SetLastTime(v time.Time) *UploadUpsertBulk {
+// SetRegTime sets the "reg_time" field.
+func (u *UploadUpsertBulk) SetRegTime(v time.Time) *UploadUpsertBulk {
 	return u.Update(func(s *UploadUpsert) {
-		s.SetLastTime(v)
+		s.SetRegTime(v)
 	})
 }
 
-// UpdateLastTime sets the "last_time" field to the value that was provided on create.
-func (u *UploadUpsertBulk) UpdateLastTime() *UploadUpsertBulk {
+// UpdateRegTime sets the "reg_time" field to the value that was provided on create.
+func (u *UploadUpsertBulk) UpdateRegTime() *UploadUpsertBulk {
 	return u.Update(func(s *UploadUpsert) {
-		s.UpdateLastTime()
-	})
-}
-
-// SetUser sets the "user" field.
-func (u *UploadUpsertBulk) SetUser(v string) *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.SetUser(v)
-	})
-}
-
-// UpdateUser sets the "user" field to the value that was provided on create.
-func (u *UploadUpsertBulk) UpdateUser() *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.UpdateUser()
-	})
-}
-
-// ClearUser clears the value of the "user" field.
-func (u *UploadUpsertBulk) ClearUser() *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.ClearUser()
-	})
-}
-
-// SetPwd sets the "pwd" field.
-func (u *UploadUpsertBulk) SetPwd(v string) *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.SetPwd(v)
-	})
-}
-
-// UpdatePwd sets the "pwd" field to the value that was provided on create.
-func (u *UploadUpsertBulk) UpdatePwd() *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.UpdatePwd()
-	})
-}
-
-// ClearPwd clears the value of the "pwd" field.
-func (u *UploadUpsertBulk) ClearPwd() *UploadUpsertBulk {
-	return u.Update(func(s *UploadUpsert) {
-		s.ClearPwd()
+		s.UpdateRegTime()
 	})
 }
 

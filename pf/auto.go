@@ -76,12 +76,10 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 
 	ch := data.FirstChannel()
 	return a.Uploader.HandleUpload(ctx, CameraItem{
-		SN:       data.SerialNumber,
-		IpAddr:   data.IpAddr,
-		UUID:     ch.UUID,
-		Code:     ch.DeviceID,
-		LastTime: time.Now(),
-		User:     device.User,
-		Pwd:      device.Pwd,
+		SN:      data.SerialNumber,
+		IpAddr:  data.IpAddr,
+		UUID:    ch.UUID,
+		Code:    ch.DeviceID,
+		RegTime: time.Now(),
 	})
 }

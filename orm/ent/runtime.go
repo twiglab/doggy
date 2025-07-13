@@ -46,18 +46,18 @@ func init() {
 			return nil
 		}
 	}()
-	// uploadDescIP is the schema descriptor for ip field.
-	uploadDescIP := uploadFields[1].Descriptor()
-	// upload.IPValidator is a validator for the "ip" field. It is called by the builders before save.
-	upload.IPValidator = func() func(string) error {
-		validators := uploadDescIP.Validators
+	// uploadDescIPAddr is the schema descriptor for ip_addr field.
+	uploadDescIPAddr := uploadFields[1].Descriptor()
+	// upload.IPAddrValidator is a validator for the "ip_addr" field. It is called by the builders before save.
+	upload.IPAddrValidator = func() func(string) error {
+		validators := uploadDescIPAddr.Validators
 		fns := [...]func(string) error{
 			validators[0].(func(string) error),
 			validators[1].(func(string) error),
 		}
-		return func(ip string) error {
+		return func(ip_addr string) error {
 			for _, fn := range fns {
-				if err := fn(ip); err != nil {
+				if err := fn(ip_addr); err != nil {
 					return err
 				}
 			}
@@ -68,22 +68,14 @@ func init() {
 	uploadDescUUID := uploadFields[2].Descriptor()
 	// upload.UUIDValidator is a validator for the "uuid" field. It is called by the builders before save.
 	upload.UUIDValidator = uploadDescUUID.Validators[0].(func(string) error)
-	// uploadDescDeviceID is the schema descriptor for device_id field.
-	uploadDescDeviceID := uploadFields[3].Descriptor()
-	// upload.DeviceIDValidator is a validator for the "device_id" field. It is called by the builders before save.
-	upload.DeviceIDValidator = uploadDescDeviceID.Validators[0].(func(string) error)
-	// uploadDescLastTime is the schema descriptor for last_time field.
-	uploadDescLastTime := uploadFields[4].Descriptor()
-	// upload.DefaultLastTime holds the default value on creation for the last_time field.
-	upload.DefaultLastTime = uploadDescLastTime.Default.(func() time.Time)
-	// upload.UpdateDefaultLastTime holds the default value on update for the last_time field.
-	upload.UpdateDefaultLastTime = uploadDescLastTime.UpdateDefault.(func() time.Time)
-	// uploadDescUser is the schema descriptor for user field.
-	uploadDescUser := uploadFields[5].Descriptor()
-	// upload.UserValidator is a validator for the "user" field. It is called by the builders before save.
-	upload.UserValidator = uploadDescUser.Validators[0].(func(string) error)
-	// uploadDescPwd is the schema descriptor for pwd field.
-	uploadDescPwd := uploadFields[6].Descriptor()
-	// upload.PwdValidator is a validator for the "pwd" field. It is called by the builders before save.
-	upload.PwdValidator = uploadDescPwd.Validators[0].(func(string) error)
+	// uploadDescCode is the schema descriptor for code field.
+	uploadDescCode := uploadFields[3].Descriptor()
+	// upload.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	upload.CodeValidator = uploadDescCode.Validators[0].(func(string) error)
+	// uploadDescRegTime is the schema descriptor for reg_time field.
+	uploadDescRegTime := uploadFields[4].Descriptor()
+	// upload.DefaultRegTime holds the default value on creation for the reg_time field.
+	upload.DefaultRegTime = uploadDescRegTime.Default.(func() time.Time)
+	// upload.UpdateDefaultRegTime holds the default value on update for the reg_time field.
+	upload.UpdateDefaultRegTime = uploadDescRegTime.UpdateDefault.(func() time.Time)
 }
