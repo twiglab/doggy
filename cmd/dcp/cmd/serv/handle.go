@@ -7,7 +7,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/twiglab/doggy/holo"
-	"github.com/twiglab/doggy/orm"
 	"github.com/twiglab/doggy/page"
 	"github.com/twiglab/doggy/pf"
 )
@@ -20,9 +19,8 @@ func pageHandle(ctx context.Context, _ AppConf) http.Handler {
 }
 
 func pfHandle(ctx context.Context, conf AppConf) http.Handler {
-
 	cmdb := ctx.Value(keyCmdb).(pf.DeviceResolver)
-	ehc := ctx.Value(keyEhc).(*orm.EntHandle)
+	//ehc := nil
 	toucher := ctx.Value(keyToucher).(pf.Toucher)
 
 	var backups []holo.SubscriptionReq
@@ -32,14 +30,14 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 
 	autoSub := &pf.AutoSub{
 		DeviceResolver: cmdb,
-		Uploader:       ehc,
-		MainSub:        MustSubReq(holo.SubReq(conf.SubsConf.Main)),
-		Backups:        backups,
-		Muti:           conf.SubsConf.Muti,
+		//Uploader:       ehc,
+		MainSub: MustSubReq(holo.SubReq(conf.SubsConf.Main)),
+		Backups: backups,
+		Muti:    conf.SubsConf.Muti,
 	}
 
 	cache := pf.NewTiersCache()
-	cache.SetSecond(ehc)
+	//cache.SetSecond(ehc)
 
 	var backend pfh
 	if backendName(conf) != bNameNone {

@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/taosdata/driver-go/v3/ws/schemaless"
-	"github.com/twiglab/doggy/orm"
 	"github.com/twiglab/doggy/pf"
 	"github.com/twiglab/doggy/taosdb"
 )
@@ -42,8 +41,7 @@ func buildRootlogger(ctx context.Context, conf AppConf) (*slog.Logger, context.C
 }
 
 func buildEntCache(ctx context.Context, conf AppConf) (pf.Cache, context.Context) {
-	eh := orm.NewEntHandle(MustEntClient(conf.DBConf))
-	return eh, context.WithValue(ctx, keyEhc, eh)
+	return nil, nil
 }
 
 func buildCmdb(ctx context.Context, conf AppConf) (*pf.CameraDB, context.Context) {

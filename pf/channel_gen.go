@@ -7,7 +7,7 @@ import (
 )
 
 // DecodeMsg implements msgp.Decodable
-func (z *CameraItem) DecodeMsg(dc *msgp.Reader) (err error) {
+func (z *Channel) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
 	var zb0001 uint32
@@ -66,7 +66,7 @@ func (z *CameraItem) DecodeMsg(dc *msgp.Reader) (err error) {
 }
 
 // EncodeMsg implements msgp.Encodable
-func (z *CameraItem) EncodeMsg(en *msgp.Writer) (err error) {
+func (z *Channel) EncodeMsg(en *msgp.Writer) (err error) {
 	// map header, size 5
 	// write "s"
 	err = en.Append(0x85, 0xa1, 0x73)
@@ -122,7 +122,7 @@ func (z *CameraItem) EncodeMsg(en *msgp.Writer) (err error) {
 }
 
 // MarshalMsg implements msgp.Marshaler
-func (z *CameraItem) MarshalMsg(b []byte) (o []byte, err error) {
+func (z *Channel) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
 	// map header, size 5
 	// string "s"
@@ -144,7 +144,7 @@ func (z *CameraItem) MarshalMsg(b []byte) (o []byte, err error) {
 }
 
 // UnmarshalMsg implements msgp.Unmarshaler
-func (z *CameraItem) UnmarshalMsg(bts []byte) (o []byte, err error) {
+func (z *Channel) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
 	var zb0001 uint32
@@ -204,7 +204,7 @@ func (z *CameraItem) UnmarshalMsg(bts []byte) (o []byte, err error) {
 }
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
-func (z *CameraItem) Msgsize() (s int) {
+func (z *Channel) Msgsize() (s int) {
 	s = 1 + 2 + msgp.StringPrefixSize + len(z.SN) + 2 + msgp.StringPrefixSize + len(z.IpAddr) + 2 + msgp.TimeSize + 2 + msgp.StringPrefixSize + len(z.UUID) + 2 + msgp.StringPrefixSize + len(z.Code)
 	return
 }

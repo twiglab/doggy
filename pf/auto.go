@@ -9,7 +9,7 @@ import (
 )
 
 type Uploader interface {
-	HandleUpload(ctx context.Context, u CameraItem) error
+	Upload(ctx context.Context, channels []Channel) error
 }
 
 type DeviceResolver interface {
@@ -74,12 +74,15 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 		}
 	}
 
-	ch := data.FirstChannel()
-	return a.Uploader.HandleUpload(ctx, CameraItem{
-		SN:      data.SerialNumber,
-		IpAddr:  data.IpAddr,
-		UUID:    ch.UUID,
-		Code:    ch.DeviceID,
-		RegTime: time.Now(),
-	})
+	var chs []Channel
+	for _, ch := range data.ChannelInfo {
+		chs = append(chs, Channel{
+			SN:      data.SerialNumber,
+			IpAddr:  data.IpAddr,
+			UUID:    ch.UUID,
+			Code:    ch.DeviceID,
+			RegTime: time.Now(),
+		})
+	}
+	return a.Uploader.Upload(ctx, chs)
 }

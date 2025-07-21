@@ -8,7 +8,6 @@ import (
 	"github.com/twiglab/doggy/cmd/dcp/cmd/fake"
 	"github.com/twiglab/doggy/cmd/dcp/cmd/meta"
 	"github.com/twiglab/doggy/cmd/dcp/cmd/serv"
-	"github.com/twiglab/doggy/cmd/dcp/cmd/sqlite"
 	"github.com/twiglab/doggy/cmd/dcp/cmd/version"
 )
 
@@ -35,7 +34,6 @@ func init() {
 	rootCmd.AddCommand(serv.ServCmd)
 	rootCmd.AddCommand(meta.MetaCmd)
 	rootCmd.AddCommand(camera.CameraCmd)
-	rootCmd.AddCommand(sqlite.SqliteCmd)
 	rootCmd.AddCommand(version.VersionCmd)
 	rootCmd.AddCommand(fake.FakeCmd)
 }

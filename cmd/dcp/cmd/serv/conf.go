@@ -7,8 +7,6 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/twiglab/doggy/holo"
-	"github.com/twiglab/doggy/orm"
-	"github.com/twiglab/doggy/orm/ent"
 	"github.com/twiglab/doggy/taosdb"
 	"gopkg.in/yaml.v3"
 )
@@ -54,9 +52,8 @@ type ServerConf struct {
 	ForceHttps int    `yaml:"force-https" mapstructure:"force-https"`
 }
 
-type DBConf struct {
-	Name string `yaml:"name" mapstructure:"name"`
-	DSN  string `yaml:"dsn" mapstructure:"dsn"`
+type EtcdConf struct {
+	URLs []string `yaml:"urls" mapstructure:"urls"`
 }
 
 type AppConf struct {
@@ -66,15 +63,7 @@ type AppConf struct {
 	SubsConf     SubsConf     `yaml:"subs" mapstructure:"subs"`
 	BackendConf  BackendConf  `yaml:"backend" mapstructure:"backend"`
 	CameraDBConf CameraDBConf `yaml:"camera-db" mapstructure:"camera-db"`
-	DBConf       DBConf       `yaml:"db" mapstructure:"db"`
-}
-
-func MustEntClient(dbconf DBConf) *ent.Client {
-	c, err := orm.OpenClient(dbconf.Name, dbconf.DSN)
-	if err != nil {
-		log.Fatal("ent client create error: ", err)
-	}
-	return c
+	EtcdConf     EtcdConf     `yaml:"etcd" mapstructure:"etcd"`
 }
 
 func MustOpenTaosDB(conf AppConf) *sql.DB {
@@ -155,9 +144,8 @@ func confCmd() {
 			},
 		},
 
-		DBConf: DBConf{
-			Name: "sqlite3",
-			DSN:  "repo/dcp.db",
+		EtcdConf: EtcdConf{
+			URLs: []string{"127.0.0.1:2379"},
 		},
 	}
 

@@ -31,11 +31,6 @@ type InMomoryTouch struct {
 }
 
 func (p *InMomoryTouch) Last(me string) (time.Time, bool) {
-	if me != "" {
-		if v, ok := p.mm.Load(me); ok {
-			return v.(time.Time), ok
-		}
-	}
 	return p.zeroTime, false
 }
 
@@ -47,17 +42,17 @@ func (p *InMomoryTouch) Touch(me string) error {
 }
 
 type Cache interface {
-	Get(context.Context, string) (CameraItem, bool, error)
-	Set(context.Context, CameraItem) error
+	Get(context.Context, string) (Channel, bool, error)
+	Set(context.Context, Channel) error
 }
 
 type emptyCache string
 
-func (i emptyCache) Get(_ context.Context, _ string) (c CameraItem, ok bool, err error) {
+func (i emptyCache) Get(_ context.Context, _ string) (c Channel, ok bool, err error) {
 	return
 }
 
-func (i emptyCache) Set(_ context.Context, _ CameraItem) (err error) {
+func (i emptyCache) Set(_ context.Context, _ Channel) (err error) {
 	return
 }
 
@@ -76,7 +71,7 @@ func (c *TiersCache) SetSecond(second Cache) {
 	c.second = second
 }
 
-func (c *TiersCache) Get(ctx context.Context, k string) (i CameraItem, ok bool, err error) {
+func (c *TiersCache) Get(ctx context.Context, k string) (i Channel, ok bool, err error) {
 	if i, ok, err = c.innerGet(k); ok {
 		return
 	}
@@ -92,20 +87,20 @@ func (c *TiersCache) Get(ctx context.Context, k string) (i CameraItem, ok bool, 
 	return
 }
 
-func (c *TiersCache) Set(ctx context.Context, item CameraItem) error {
+func (c *TiersCache) Set(ctx context.Context, item Channel) error {
 	return c.innerSet(item)
 }
 
-func (c *TiersCache) innerGet(k string) (CameraItem, bool, error) {
+func (c *TiersCache) innerGet(k string) (Channel, bool, error) {
 	a, ok := c.m.Load(k)
 	if ok {
-		return a.(CameraItem), ok, nil
+		return a.(Channel), ok, nil
 	}
 
-	return CameraItem{}, false, nil
+	return Channel{}, false, nil
 }
 
-func (c *TiersCache) innerSet(item CameraItem) error {
+func (c *TiersCache) innerSet(item Channel) error {
 	c.m.Store(item.UUID, item)
 	return nil
 }

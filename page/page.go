@@ -11,11 +11,11 @@ import (
 )
 
 type Loader interface {
-	GetAll(context.Context) ([]pf.CameraItem, error)
+	GetAll(context.Context) ([]pf.Channel, error)
 }
 
 type Item struct {
-	Upload pf.CameraItem
+	Upload pf.Channel
 	TTL    time.Time
 }
 type Page struct {
