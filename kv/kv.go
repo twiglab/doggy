@@ -3,7 +3,9 @@ package kv
 import (
 	"bytes"
 	"context"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/tinylib/msgp/msgp"
 	"github.com/twiglab/doggy/pf"
@@ -100,7 +102,7 @@ func (h *KeyValHandle) AllChannels(ctx context.Context) ([]pf.Channel, error) {
 	return items, nil
 }
 
-func (h *KeyValHandle) TouchChannel(ctx context.Context, uuid string, ttl int64) error {
+func (h *KeyValHandle) TouchChannel(ctx context.Context, uuid string, now time.Time, ttl int64) error {
 	lease := clientv3.NewLease(h.client)
 
 	lresp, err := lease.Grant(ctx, ttl)
@@ -108,7 +110,26 @@ func (h *KeyValHandle) TouchChannel(ctx context.Context, uuid string, ttl int64)
 		return nil
 	}
 
+	sec := now.Unix()
+	timeStr := strconv.FormatInt(sec, 36)
+
 	kv := clientv3.NewKV(h.client)
-	_, err = kv.Put(ctx, touchKey(uuid), "1", clientv3.WithLease(lresp.ID))
+	_, err = kv.Put(ctx, touchKey(uuid), timeStr, clientv3.WithLease(lresp.ID))
 	return err
+}
+
+func (h *KeyValHandle) TouchLast(ctx context.Context, uuid string) (time.Time, bool, error) {
+	resp, err := h.client.Get(ctx, touchKey(uuid))
+	if err != nil {
+		return time.Unix(0, 0), false, err
+	}
+	if resp.Count <= 0 {
+		return time.Unix(0, 0), false, nil
+	}
+
+	i, err := strconv.ParseInt(string(resp.Kvs[0].Value), 36, 64)
+	if err != nil {
+		return time.Unix(0, 0), false, err
+	}
+	return time.Unix(i, 0), true, nil
 }
