@@ -49,7 +49,7 @@ func WithDeviceRegister(h DeviceRegister) Option {
 	}
 }
 
-func WithToucher(t Toucher) Option {
+func WithToucher(t Cache[string, time.Time]) Option {
 	return func(c *Handle) {
 		if t != nil {
 			c.toucher = t
@@ -57,7 +57,7 @@ func WithToucher(t Toucher) Option {
 	}
 }
 
-func WithCache(cache Cache) Option {
+func WithCache(cache Cache[string, Channel]) Option {
 	return func(c *Handle) {
 		if cache != nil {
 			c.cache = cache
@@ -69,8 +69,8 @@ type Handle struct {
 	countHandler   CountHandler
 	densityHandler DensityHandler
 	deviceRegister DeviceRegister
-	toucher        Toucher
-	cache          Cache
+	toucher        Cache[string, time.Time]
+	cache          Cache[string, Channel]
 }
 
 func NewHandle(opts ...Option) *Handle {
@@ -79,8 +79,8 @@ func NewHandle(opts ...Option) *Handle {
 		countHandler:   action,
 		densityHandler: action,
 		deviceRegister: action,
-		toucher:        &InMomoryTouch{},
-		cache:          NewTiersCache(),
+		toucher:        emptyCache[string, time.Time]{},
+		cache:          emptyCache[string, Channel]{},
 	}
 
 	for _, o := range opts {
@@ -91,7 +91,10 @@ func NewHandle(opts ...Option) *Handle {
 
 func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
 	ch := data.FirstChannel()
-	last, ok := h.toucher.Last(ch.UUID)
+	last, ok, err := h.toucher.Get(ctx, ch.UUID)
+	if err != nil {
+		return err
+	}
 	if ok && time.Since(last) < 90*time.Second {
 		slog.Debug("ignore muti reg",
 			slog.String("sn", data.SerialNumber),
@@ -105,11 +108,13 @@ func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoReg
 			slog.Any("error", err))
 		return err
 	}
-	return h.toucher.Touch(ch.UUID)
+	return h.toucher.Set(ctx, ch.UUID, time.Now())
 }
 
 func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpload) error {
-	h.toucher.Touch(data.MetadataObject.Common.UUID)
+	if err := h.toucher.Set(ctx, data.MetadataObject.Common.UUID, time.Now()); err != nil {
+		return err
+	}
 
 	var common = data.MetadataObject.Common
 
