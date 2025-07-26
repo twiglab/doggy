@@ -12,8 +12,6 @@
 					<th>IpAddr</th>
 					<th>UUID</th>
 					<th>DeviceID</th>
-					<th>User</th>
-					<th>Pwd</th>
 					<th>LastUpload</th>
 					<th>Status</th>
 					<th>LastRegTime</th>
@@ -27,11 +25,9 @@
 					<td>{{ .Upload.IpAddr }}</td>
 					<td>{{ .Upload.UUID }}</td>
 					<td>{{ .Upload.Code }}</td>
-					<td>{{ .Upload.User }}</td>
-					<td>{{ .Upload.Pwd }}</td>
 					<td>{{ .TTL | datetime }}</td>
 					<td>{{ .TTL | alarm }}</td>
-					<td>{{ .Upload.LastTime | datetime }}</td>
+					<td>{{ .Upload.RegTime | datetime }}</td>
 					<td>
 						<a href="https://{{ .Upload.IpAddr }}" target="_blank">open</a>
 					</td>
