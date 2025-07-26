@@ -65,7 +65,7 @@ func fullMux(conf AppConf) http.Handler {
 }
 
 func servCmd() {
-	conf := AppConf{}
+	var conf AppConf
 
 	if err := viper.Unmarshal(&conf); err != nil {
 		log.Fatal(err)
@@ -73,6 +73,36 @@ func servCmd() {
 
 	printConf(conf)
 
+	/*
+		mux := fullMux(conf)
+
+		svr := &http.Server{
+			Addr:         conf.ServerConf.Addr,
+			Handler:      mux,
+			IdleTimeout:  90 * time.Second,
+			ReadTimeout:  5 * time.Second,
+			WriteTimeout: 10 * time.Second,
+		}
+
+		if err := runSvr(svr, conf.ServerConf); err != nil {
+			log.Fatal(err)
+		}
+	*/
+
+	RunWithConf(conf)
+}
+
+func runSvr(s *http.Server, sc ServerConf) error {
+	if sc.ForceHttps == 0 {
+		return s.ListenAndServe()
+	}
+	if sc.CertFile == "" || sc.KeyFile == "" {
+		return errors.New("no cert and key file")
+	}
+	return s.ListenAndServeTLS(sc.CertFile, sc.KeyFile)
+}
+
+func RunWithConf(conf AppConf) {
 	mux := fullMux(conf)
 
 	svr := &http.Server{
@@ -86,14 +116,4 @@ func servCmd() {
 	if err := runSvr(svr, conf.ServerConf); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func runSvr(s *http.Server, sc ServerConf) error {
-	if sc.ForceHttps == 0 {
-		return s.ListenAndServe()
-	}
-	if sc.CertFile == "" || sc.KeyFile == "" {
-		return errors.New("no cert and key file")
-	}
-	return s.ListenAndServeTLS(sc.CertFile, sc.KeyFile)
 }

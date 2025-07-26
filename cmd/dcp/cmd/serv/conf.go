@@ -77,7 +77,14 @@ func init() {
 }
 
 func confCmd() {
-	conf := AppConf{
+	enc := yaml.NewEncoder(os.Stdout)
+	defer enc.Close()
+	enc.SetIndent(2)
+	enc.Encode(defaultConfig())
+}
+
+func defaultConfig() AppConf {
+	return AppConf{
 		ID: "dcp",
 
 		LoggerConf: LoggerConf{
@@ -123,8 +130,4 @@ func confCmd() {
 		},
 	}
 
-	enc := yaml.NewEncoder(os.Stdout)
-	defer enc.Close()
-	enc.SetIndent(2)
-	enc.Encode(conf)
 }

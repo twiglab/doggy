@@ -14,11 +14,11 @@ import (
 )
 
 const prefix = "/doggy"
-const channelPrefix = "/doggy/channel/item"
-const touchPrefix = "/doggy/channel/touch"
+const channelPrefix = prefix + "/channel/item"
+const touchPrefix = prefix + "/channel/touch"
 
 func channelKey(uuid string) string {
-	return channelPrefix + "/" + uuid
+	return channelPrefixKey() + uuid
 }
 
 func channelPrefixKey() string {
@@ -33,12 +33,16 @@ type Handle struct {
 	client *clientv3.Client
 }
 
-func New(urls []string) (*Handle, error) {
+func FromURLs(urls []string) (*Handle, error) {
 	client, err := clientv3.NewFromURLs(urls)
 	if err != nil {
 		return nil, err
 	}
 	return &Handle{client: client}, nil
+}
+
+func New(client *clientv3.Client) *Handle {
+	return &Handle{client: client}
 }
 
 func (h *Handle) GetChannel(ctx context.Context, key string) (pf.Channel, bool, error) {
@@ -73,6 +77,7 @@ func (h *Handle) SetChannels(ctx context.Context, us []pf.Channel) error {
 	_, err := concurrency.NewSTM(h.client, func(stm concurrency.STM) error {
 		for _, item := range us {
 			var sb strings.Builder
+			sb.Grow(512)
 			if err := msgp.Encode(&sb, &item); err != nil {
 				return err
 			}
@@ -86,7 +91,7 @@ func (h *Handle) SetChannels(ctx context.Context, us []pf.Channel) error {
 func (h *Handle) AllChannels(ctx context.Context) ([]pf.Channel, error) {
 	var items []pf.Channel
 
-	resp, err := h.client.Get(ctx, channelPrefixKey(), clientv3.WithFromKey())
+	resp, err := h.client.Get(ctx, channelPrefixKey(), clientv3.WithPrefix())
 	if err != nil {
 		return items, err
 	}

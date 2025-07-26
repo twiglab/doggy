@@ -14,7 +14,7 @@ import (
 
 func pageHandle(ctx context.Context, _ AppConf) http.Handler {
 	kvh := ctx.Value(keyKVHandle).(*kv.Handle)
-	toucher := &kv.Touch{H: kvh}
+	toucher := kv.NewTouch(kvh, 90)
 	p := page.NewPage(kvh, toucher)
 	return page.AdminPage(p)
 }
@@ -37,7 +37,7 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	}
 
 	cache := pf.NewTiersCache[string, pf.Channel]().WithSecond(&kv.ChannelCache{H: kvh})
-	toucher := &kv.Touch{H: kvh}
+	toucher := kv.NewTouch(kvh, 90)
 
 	var backend pfh
 	if backendName(conf) != bNameNone {

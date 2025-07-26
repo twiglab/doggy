@@ -13,6 +13,10 @@ type Touch struct {
 	TTL int64
 }
 
+func NewTouch(h *Handle, ttl int64) *Touch {
+	return &Touch{H: h, TTL: ttl}
+}
+
 func (t *Touch) Get(ctx context.Context, me string) (time.Time, bool, error) {
 	return t.H.TouchLast(ctx, me)
 }
