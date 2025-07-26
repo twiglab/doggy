@@ -7,21 +7,21 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/twiglab/doggy/holo"
+	"github.com/twiglab/doggy/kv"
 	"github.com/twiglab/doggy/page"
 	"github.com/twiglab/doggy/pf"
 )
 
 func pageHandle(ctx context.Context, _ AppConf) http.Handler {
-	loader := ctx.Value(keyEhc).(page.Loader)
-	toucher := ctx.Value(keyToucher).(pf.Toucher)
-	p := page.NewPage(loader, toucher)
+	kvh := ctx.Value(keyKVHandle).(*kv.Handle)
+	toucher := &kv.Touch{H: kvh}
+	p := page.NewPage(kvh, toucher)
 	return page.AdminPage(p)
 }
 
 func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	cmdb := ctx.Value(keyCmdb).(pf.DeviceResolver)
-	//ehc := nil
-	toucher := ctx.Value(keyToucher).(pf.Toucher)
+	kvh := ctx.Value(keyKVHandle).(*kv.Handle)
 
 	var backups []holo.SubscriptionReq
 	for _, b := range conf.SubsConf.Backups {
@@ -30,14 +30,14 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 
 	autoSub := &pf.AutoSub{
 		DeviceResolver: cmdb,
-		//Uploader:       ehc,
-		MainSub: MustSubReq(holo.SubReq(conf.SubsConf.Main)),
-		Backups: backups,
-		Muti:    conf.SubsConf.Muti,
+		Uploader:       &kv.Upload{H: kvh},
+		MainSub:        MustSubReq(holo.SubReq(conf.SubsConf.Main)),
+		Backups:        backups,
+		Muti:           conf.SubsConf.Muti,
 	}
 
-	cache := pf.NewTiersCache()
-	//cache.SetSecond(ehc)
+	cache := pf.NewTiersCache[string, pf.Channel]().WithSecond(&kv.ChannelCache{H: kvh})
+	toucher := &kv.Touch{H: kvh}
 
 	var backend pfh
 	if backendName(conf) != bNameNone {

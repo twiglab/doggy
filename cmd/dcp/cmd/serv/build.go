@@ -7,16 +7,17 @@ import (
 	"time"
 
 	"github.com/taosdata/driver-go/v3/ws/schemaless"
+	"github.com/twiglab/doggy/kv"
 	"github.com/twiglab/doggy/pf"
 	"github.com/twiglab/doggy/taosdb"
 )
 
 const (
-	keyEhc     = "_ehc_"
-	keyCmdb    = "_cmdb_"
-	keyBackend = "_backend_"
-	keyRootLog = "_root_log_"
-	keyToucher = "_toucher_"
+	keyKVHandle = "_ehc_"
+	keyCmdb     = "_cmdb_"
+	keyBackend  = "_backend_"
+	keyRootLog  = "_root_log_"
+	keyToucher  = "_toucher_"
 
 	bNameTaos = "taos"
 	bNameNone = "none"
@@ -40,8 +41,9 @@ func buildRootlogger(ctx context.Context, conf AppConf) (*slog.Logger, context.C
 	return logger, context.WithValue(ctx, keyRootLog, logger)
 }
 
-func buildEntCache(ctx context.Context, conf AppConf) (pf.Cache, context.Context) {
-	return nil, nil
+func buildKVHandle(ctx context.Context, conf AppConf) (*kv.Handle, context.Context) {
+	h := MustOpenKV(conf)
+	return h, context.WithValue(ctx, keyKVHandle, h)
 }
 
 func buildCmdb(ctx context.Context, conf AppConf) (*pf.CameraDB, context.Context) {
@@ -83,16 +85,18 @@ func buildBackend(ctx context.Context, conf AppConf) (pfh, context.Context) {
 	return nil, ctx
 }
 
+/*
 func buildToucher(ctx context.Context, _ AppConf) (*pf.InMomoryTouch, context.Context) {
 	t := &pf.InMomoryTouch{}
 	return t, context.WithValue(ctx, keyToucher, t)
 }
+*/
 
 func buildAll(box context.Context, conf AppConf) context.Context {
 	_, box = buildRootlogger(box, conf)
-	_, box = buildEntCache(box, conf)
+	_, box = buildKVHandle(box, conf)
 	_, box = buildCmdb(box, conf)
 	_, box = buildBackend(box, conf)
-	_, box = buildToucher(box, conf)
+	//_, box = buildToucher(box, conf)
 	return box
 }

@@ -1,13 +1,9 @@
 package serv
 
 import (
-	"database/sql"
-	"log"
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/twiglab/doggy/holo"
-	"github.com/twiglab/doggy/taosdb"
 	"gopkg.in/yaml.v3"
 )
 
@@ -64,28 +60,6 @@ type AppConf struct {
 	BackendConf  BackendConf  `yaml:"backend" mapstructure:"backend"`
 	CameraDBConf CameraDBConf `yaml:"camera-db" mapstructure:"camera-db"`
 	EtcdConf     EtcdConf     `yaml:"etcd" mapstructure:"etcd"`
-}
-
-func MustOpenTaosDB(conf AppConf) *sql.DB {
-	drv, dsn := taosdb.TaosDSN(
-		conf.BackendConf.TaosDBConf.Username,
-		conf.BackendConf.TaosDBConf.Password,
-		conf.BackendConf.TaosDBConf.Addr,
-		conf.BackendConf.TaosDBConf.Port,
-		conf.BackendConf.TaosDBConf.DBName,
-	)
-	db, err := sql.Open(drv, dsn)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return db
-}
-
-func MustSubReq(req holo.SubscriptionReq, err error) holo.SubscriptionReq {
-	if err != nil {
-		log.Fatal(err)
-	}
-	return req
 }
 
 var ConfCmd = &cobra.Command{

@@ -11,7 +11,7 @@ import (
 )
 
 type Loader interface {
-	GetAll(context.Context) ([]pf.Channel, error)
+	AllChannels(ctx context.Context) ([]pf.Channel, error)
 }
 
 type Item struct {
@@ -21,25 +21,25 @@ type Item struct {
 type Page struct {
 	tpl    *template.Template
 	Loader Loader
-	Touch  pf.Toucher
+	Touch  pf.Cache[string, time.Time]
 }
 
 func (v *Page) All(ctx context.Context) ([]Item, error) {
-	uploads, err := v.Loader.GetAll(ctx)
+	uploads, err := v.Loader.AllChannels(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	var items []Item
 	for _, u := range uploads {
-		ttl, _ := v.Touch.Last(u.UUID)
+		ttl, _, _ := v.Touch.Get(ctx, u.UUID)
 		items = append(items, Item{TTL: ttl, Upload: u})
 	}
 
 	return items, nil
 }
 
-func NewPage(loader Loader, l pf.Toucher) *Page {
+func NewPage(loader Loader, l pf.Cache[string, time.Time]) *Page {
 	t := template.Must(template.New("page").Funcs(build()).ParseFS(tplFS, "tpl/*.tpl"))
 	return &Page{
 		tpl:    t,

@@ -29,19 +29,19 @@ func touchKey(uuid string) string {
 	return touchPrefix + "/" + uuid
 }
 
-type KeyValHandle struct {
+type Handle struct {
 	client *clientv3.Client
 }
 
-func New(urls []string) (*KeyValHandle, error) {
+func New(urls []string) (*Handle, error) {
 	client, err := clientv3.NewFromURLs(urls)
 	if err != nil {
 		return nil, err
 	}
-	return &KeyValHandle{client: client}, nil
+	return &Handle{client: client}, nil
 }
 
-func (h *KeyValHandle) GetChannel(ctx context.Context, key string) (pf.Channel, bool, error) {
+func (h *Handle) GetChannel(ctx context.Context, key string) (pf.Channel, bool, error) {
 	var item pf.Channel
 
 	resp, err := h.client.Get(ctx, channelKey(key))
@@ -60,7 +60,7 @@ func (h *KeyValHandle) GetChannel(ctx context.Context, key string) (pf.Channel, 
 	return item, true, nil
 }
 
-func (h *KeyValHandle) SetChannel(ctx context.Context, u pf.Channel) error {
+func (h *Handle) SetChannel(ctx context.Context, u pf.Channel) error {
 	var sb strings.Builder
 	if err := msgp.Encode(&sb, &u); err != nil {
 		return err
@@ -69,7 +69,7 @@ func (h *KeyValHandle) SetChannel(ctx context.Context, u pf.Channel) error {
 	return err
 }
 
-func (h *KeyValHandle) SetChannels(ctx context.Context, us []pf.Channel) error {
+func (h *Handle) SetChannels(ctx context.Context, us []pf.Channel) error {
 	_, err := concurrency.NewSTM(h.client, func(stm concurrency.STM) error {
 		for _, item := range us {
 			var sb strings.Builder
@@ -83,7 +83,7 @@ func (h *KeyValHandle) SetChannels(ctx context.Context, us []pf.Channel) error {
 	return err
 }
 
-func (h *KeyValHandle) AllChannels(ctx context.Context) ([]pf.Channel, error) {
+func (h *Handle) AllChannels(ctx context.Context) ([]pf.Channel, error) {
 	var items []pf.Channel
 
 	resp, err := h.client.Get(ctx, channelPrefixKey(), clientv3.WithFromKey())
@@ -102,7 +102,7 @@ func (h *KeyValHandle) AllChannels(ctx context.Context) ([]pf.Channel, error) {
 	return items, nil
 }
 
-func (h *KeyValHandle) TouchChannel(ctx context.Context, uuid string, now time.Time, ttl int64) error {
+func (h *Handle) TouchChannel(ctx context.Context, uuid string, now time.Time, ttl int64) error {
 	lease := clientv3.NewLease(h.client)
 
 	lresp, err := lease.Grant(ctx, ttl)
@@ -118,7 +118,7 @@ func (h *KeyValHandle) TouchChannel(ctx context.Context, uuid string, now time.T
 	return err
 }
 
-func (h *KeyValHandle) TouchLast(ctx context.Context, uuid string) (time.Time, bool, error) {
+func (h *Handle) TouchLast(ctx context.Context, uuid string) (time.Time, bool, error) {
 	resp, err := h.client.Get(ctx, touchKey(uuid))
 	if err != nil {
 		return time.Unix(0, 0), false, err
