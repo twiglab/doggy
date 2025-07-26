@@ -98,10 +98,9 @@ func (h *Handle) AllChannels(ctx context.Context) ([]pf.Channel, error) {
 
 	for _, v := range resp.Kvs {
 		var item pf.Channel
-		if err := msgp.Decode(bytes.NewReader(v.Value), &item); err != nil {
-			return items, err
+		if err := msgp.Decode(bytes.NewReader(v.Value), &item); err == nil { // err == nil
+			items = append(items, item)
 		}
-		items = append(items, item)
 	}
 
 	return items, nil
