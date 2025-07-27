@@ -26,6 +26,7 @@ const (
 type pfh interface {
 	pf.CountHandler
 	pf.DensityHandler
+	pf.QueueHandler
 }
 
 func backendName(conf AppConf) string {
@@ -85,18 +86,10 @@ func buildBackend(ctx context.Context, conf AppConf) (pfh, context.Context) {
 	return nil, ctx
 }
 
-/*
-func buildToucher(ctx context.Context, _ AppConf) (*pf.InMomoryTouch, context.Context) {
-	t := &pf.InMomoryTouch{}
-	return t, context.WithValue(ctx, keyToucher, t)
-}
-*/
-
 func buildAll(box context.Context, conf AppConf) context.Context {
 	_, box = buildRootlogger(box, conf)
 	_, box = buildKVHandle(box, conf)
 	_, box = buildCmdb(box, conf)
 	_, box = buildBackend(box, conf)
-	//_, box = buildToucher(box, conf)
 	return box
 }

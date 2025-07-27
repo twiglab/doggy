@@ -22,7 +22,7 @@ func NewSchLe(s *schemaless.Schemaless) *Schemaless {
 }
 
 func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data holo.HumanMix) error {
-	if !hasCount(data.HumanCountIn, data.HumanCountOut) {
+	if !hasHuman(data.HumanCountIn, data.HumanCountOut) {
 		return nil
 	}
 
@@ -55,7 +55,7 @@ func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data h
 }
 
 func (s *Schemaless) HandleDensity(ctx context.Context, common holo.Common, data holo.HumanMix) error {
-	if !hasDensity(data.HumanCount) {
+	if !hasCount(data.HumanCount) {
 		return nil
 	}
 
@@ -70,6 +70,34 @@ func (s *Schemaless) HandleDensity(ctx context.Context, common holo.Common, data
 	enc.AddTag(TAG_UUID, common.UUID)
 	enc.AddField(FIELD_DENSITY_COUNT, lineprotocol.MustNewValue(int64(data.HumanCount)))
 	enc.AddField(FIELD_DENSITY_RATIO, lineprotocol.MustNewValue(int64(data.AreaRatio)))
+	enc.EndLine(time.Now())
+
+	if err := enc.Err(); err != nil {
+		return err
+	}
+
+	bs := enc.Bytes()
+	line := bytesToStr(bs)
+
+	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_MILLI_SECONDS, 0, 0)
+}
+
+func (s *Schemaless) HandleQueue(ctx context.Context, common holo.Common, data holo.HumanMix) error {
+	if !hasCount(data.HumanCount) {
+		return nil
+	}
+
+	slog.DebugContext(ctx, "HandleQueue", slog.Any("common", common), slog.Any("data", data))
+
+	var enc lineprotocol.Encoder
+
+	enc.SetPrecision(lineprotocol.Millisecond)
+	enc.StartLine(MA_DENSITY)
+	enc.AddTag(TAG_DIVICE_ID, common.DeviceID)
+	enc.AddTag(TAG_TYPE, TYPE_12)
+	enc.AddTag(TAG_UUID, common.UUID)
+	enc.AddField(FIELD_QUEUE_COUNT, lineprotocol.MustNewValue(int64(data.HumanCount)))
+	enc.AddField(FIELD_QUEUE_TIME, lineprotocol.MustNewValue(int64(data.QueueTime)))
 	enc.EndLine(time.Now())
 
 	if err := enc.Err(); err != nil {

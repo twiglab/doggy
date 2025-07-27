@@ -7,6 +7,7 @@ import (
 
 const (
 	TYPE_12 = "12"
+	TYPE_13 = "13"
 	TYPE_15 = "15"
 
 	TAG_UUID      = "uuid"
@@ -16,11 +17,15 @@ const (
 	FIELD_DENSITY_COUNT = "human_count"
 	FIELD_DENSITY_RATIO = "human_ratio"
 
+	FIELD_QUEUE_COUNT = "human_count"
+	FIELD_QUEUE_TIME  = "queue_time"
+
 	FIELD_COUNT_IN  = "human_in"
 	FIELD_COUNT_OUT = "human_out"
 
 	MA_DENSITY = "s_density"
 	MA_COUNTY  = "s_count"
+	MA_QUEUE   = "s_queue"
 )
 
 const (
@@ -43,13 +48,13 @@ func bytesToStr(bs []byte) string {
 	return unsafe.String(&bs[0], len(bs))
 }
 
-func hasCount(in, out int) bool {
+func hasHuman(in, out int) bool {
 	if in == 0 && out == 0 {
 		return false
 	}
 	return true
 }
 
-func hasDensity(count int) bool {
+func hasCount(count int) bool {
 	return count != 0
 }

@@ -8,8 +8,9 @@ import (
 )
 
 const (
-	HUMMAN_DENSITY = 12
-	HUMMAN_COUNT   = 15
+	HUMMAN_DENSITY = 12 // 密度 2.6.7
+	HUMMAN_QUEUE   = 13 // 排队长度 2.6.8
+	HUMMAN_COUNT   = 15 // 人数 2.6.9
 )
 
 func SubReq(s string) (SubscriptionReq, error) {

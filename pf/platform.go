@@ -18,6 +18,11 @@ type CountHandler interface {
 	HandleCount(ctx context.Context, common holo.Common, data holo.HumanMix) error
 }
 
+type QueueHandler interface {
+	// 对应 2.6.8 排队上报(排队检测，type = 13)
+	HandleQueue(ctx context.Context, common holo.Common, data holo.HumanMix) error
+}
+
 type DensityHandler interface {
 	// 对应2.6.7 密度上报(密度检查，type = 12)
 	HandleDensity(ctx context.Context, common holo.Common, data holo.HumanMix) error
@@ -37,6 +42,14 @@ func WithDensityHandler(h DensityHandler) Option {
 	return func(c *Handle) {
 		if h != nil {
 			c.densityHandler = h
+		}
+	}
+}
+
+func WithQueueHandler(h QueueHandler) Option {
+	return func(c *Handle) {
+		if h != nil {
+			c.queueHandler = h
 		}
 	}
 }
@@ -66,19 +79,23 @@ func WithCache(cache Cache[string, Channel]) Option {
 }
 
 type Handle struct {
+	deviceRegister DeviceRegister
+
 	countHandler   CountHandler
 	densityHandler DensityHandler
-	deviceRegister DeviceRegister
-	toucher        Cache[string, time.Time]
-	cache          Cache[string, Channel]
+	queueHandler   QueueHandler
+
+	toucher Cache[string, time.Time]
+	cache   Cache[string, Channel]
 }
 
 func NewHandle(opts ...Option) *Handle {
 	action := &cameraAction{}
 	h := &Handle{
+		deviceRegister: action,
 		countHandler:   action,
 		densityHandler: action,
-		deviceRegister: action,
+		queueHandler:   action,
 		toucher:        emptyCache[string, time.Time]{},
 		cache:          emptyCache[string, Channel]{},
 	}
@@ -138,6 +155,10 @@ func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpl
 			if err := h.countHandler.HandleCount(ctx, common, target); err != nil {
 				slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.String("errText", err.Error()))
 			}
+		case holo.HUMMAN_QUEUE:
+			if err := h.queueHandler.HandleQueue(ctx, common, target); err != nil {
+				slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.String("errText", err.Error()))
+			}
 		default:
 			slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.String("errText", "unsupport type"))
 		}
@@ -171,6 +192,15 @@ func (d *cameraAction) HandleCount(ctx context.Context, common holo.Common, targ
 func (d *cameraAction) HandleDensity(ctx context.Context, common holo.Common, target holo.HumanMix) error {
 	c := slog.Group("common", slog.String("uuid", common.UUID), slog.String("deviceID", common.DeviceID))
 	da := slog.Group("data", slog.Int("count", target.HumanCount), slog.Int("areaRatio", target.AreaRatio))
+
+	slog.DebugContext(ctx, "HandleDensity", slog.Int("targetType", target.TargetType), c, da)
+
+	return nil
+}
+
+func (d *cameraAction) HandleQueue(ctx context.Context, common holo.Common, target holo.HumanMix) error {
+	c := slog.Group("common", slog.String("uuid", common.UUID), slog.String("deviceID", common.DeviceID))
+	da := slog.Group("data", slog.Int("count", target.HumanCount), slog.Int("queueTime", target.QueueTime))
 
 	slog.DebugContext(ctx, "HandleDensity", slog.Int("targetType", target.TargetType), c, da)
 

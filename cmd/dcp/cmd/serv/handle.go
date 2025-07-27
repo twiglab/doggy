@@ -48,6 +48,7 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 		pf.WithDeviceRegister(autoSub),
 		pf.WithCountHandler(backend),
 		pf.WithDensityHandler(backend),
+		pf.WithQueueHandler(backend),
 		pf.WithToucher(toucher),
 		pf.WithCache(cache),
 	)
