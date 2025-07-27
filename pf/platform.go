@@ -2,11 +2,14 @@ package pf
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"time"
 
 	"github.com/twiglab/doggy/holo"
 )
+
+var errUnsupportType = errors.New("unsupport type")
 
 type DeviceRegister interface {
 	// 对应 2.1.4 自动注册
@@ -149,18 +152,18 @@ func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpl
 		switch target.TargetType {
 		case holo.HUMMAN_DENSITY:
 			if err := h.densityHandler.HandleDensity(ctx, common, target); err != nil {
-				slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.String("errText", err.Error()))
+				slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.Any("err", err))
 			}
 		case holo.HUMMAN_COUNT:
 			if err := h.countHandler.HandleCount(ctx, common, target); err != nil {
-				slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.String("errText", err.Error()))
+				slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.Any("err", err))
 			}
 		case holo.HUMMAN_QUEUE:
 			if err := h.queueHandler.HandleQueue(ctx, common, target); err != nil {
-				slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.String("errText", err.Error()))
+				slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.Any("err", err))
 			}
 		default:
-			slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.String("errText", "unsupport type"))
+			slog.ErrorContext(ctx, "HandleMetadata", slog.Int("targetType", target.TargetType), slog.Any("err", errUnsupportType))
 		}
 	}
 	return nil
