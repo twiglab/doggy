@@ -205,7 +205,7 @@ func (d *cameraAction) HandleQueue(ctx context.Context, common holo.Common, targ
 	c := slog.Group("common", slog.String("uuid", common.UUID), slog.String("deviceID", common.DeviceID))
 	da := slog.Group("data", slog.Int("count", target.HumanCount), slog.Int("queueTime", target.QueueTime))
 
-	slog.DebugContext(ctx, "HandleDensity", slog.Int("targetType", target.TargetType), c, da)
+	slog.DebugContext(ctx, "HandleQueue", slog.Int("targetType", target.TargetType), c, da)
 
 	return nil
 }
