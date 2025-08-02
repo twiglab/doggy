@@ -1,7 +1,6 @@
 package pf
 
 import (
-	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -68,11 +67,7 @@ func PlatformHandle(h *Handle) http.Handler {
 	r.Put("/1", DeviceAutoRegisterUpload(h))
 
 	r.Post("/upload", MetadataEntryUpload(h))
-	r.Post("/1", MetadataEntryUpload(h))
 	r.Post("/2", MetadataEntryUpload(h))
 
-	r.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "hahha~~, url = %s, meth = %s, ssl = %t", r.URL.String(), r.Method, r.TLS != nil)
-	})
 	return r
 }

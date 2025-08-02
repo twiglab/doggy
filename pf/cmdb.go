@@ -14,5 +14,5 @@ type CameraDB struct {
 }
 
 func (r *CameraDB) Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error) {
-	return holo.OpenDevice(data.IpAddr, r.User, r.Pwd, true)
+	return holo.OpenDevice(data.IpAddr, r.User, r.Pwd, r.UseHttps)
 }

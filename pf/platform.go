@@ -115,19 +115,6 @@ func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoReg
 		return nil
 	}
 
-	/*
-		if err != nil {
-			return err
-		}
-			if ok && time.Since(last) < 90*time.Second {
-				slog.Debug("ignore muti reg",
-					slog.String("sn", data.SerialNumber),
-					slog.String("ipAddr", data.IpAddr),
-				)
-				return nil
-			}
-	*/
-
 	if err := h.deviceRegister.AutoRegister(ctx, data); err != nil {
 		slog.Error("AutoReg error",
 			slog.Any("data", data),
