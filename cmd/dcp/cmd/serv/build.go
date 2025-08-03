@@ -17,7 +17,6 @@ const (
 	keyCmdb     = "_cmdb_"
 	keyBackend  = "_backend_"
 	keyRootLog  = "_root_log_"
-	keyToucher  = "_toucher_"
 
 	bNameTaos = "taos"
 	bNameNone = "none"
@@ -49,8 +48,9 @@ func buildKVHandle(ctx context.Context, conf AppConf) (*kv.Handle, context.Conte
 
 func buildCmdb(ctx context.Context, conf AppConf) (*pf.CameraDB, context.Context) {
 	cmdb := &pf.CameraDB{
-		User: conf.CameraDBConf.CsvCameraDB.CameraUser,
-		Pwd:  conf.CameraDBConf.CsvCameraDB.CameraPwd,
+		User:     conf.CameraDBConf.CsvCameraDB.CameraUser,
+		Pwd:      conf.CameraDBConf.CsvCameraDB.CameraPwd,
+		UseHttps: true,
 	}
 
 	return cmdb, context.WithValue(ctx, keyCmdb, cmdb)

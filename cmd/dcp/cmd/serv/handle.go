@@ -53,7 +53,7 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 		pf.WithCache(cache),
 	)
 
-	return pf.LocalHandle(h)
+	return pf.PlatformHandle(h)
 }
 
 func FullHandler(ctx context.Context, conf AppConf) http.Handler {
