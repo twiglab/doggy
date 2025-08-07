@@ -9,6 +9,7 @@ import (
 
 	"github.com/taosdata/driver-go/v3/ws/schemaless"
 	"github.com/twiglab/doggy/holo"
+	"github.com/twiglab/doggy/pf"
 )
 
 type Schemaless struct {
@@ -19,6 +20,18 @@ func NewSchLe(s *schemaless.Schemaless) *Schemaless {
 	return &Schemaless{
 		schemaless: s,
 	}
+}
+
+func (s *Schemaless) HandleData(ctx context.Context, data pf.UploadeData) error {
+	switch data.Target.TargetType {
+	case holo.HUMMAN_COUNT:
+		return s.HandleCount(ctx, data.Common, data.Target)
+	case holo.HUMMAN_QUEUE:
+		return s.HandleQueue(ctx, data.Common, data.Target)
+	case holo.HUMMAN_DENSITY:
+		return s.HandleDensity(ctx, data.Common, data.Target)
+	}
+	return pf.ErrUnimplType
 }
 
 func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data holo.HumanMix) error {
