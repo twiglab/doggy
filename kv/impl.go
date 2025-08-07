@@ -25,11 +25,11 @@ func (t *Touch) Set(ctx context.Context, me string, now time.Time) error {
 	return t.H.TouchChannel(ctx, me, now, t.TTL)
 }
 
-type Upload struct {
+type Store struct {
 	H *Handle
 }
 
-func (u *Upload) Upload(ctx context.Context, channels []pf.Channel) error {
+func (u *Store) Store(ctx context.Context, channels []pf.Channel) error {
 	return u.H.SetChannels(ctx, channels)
 }
 

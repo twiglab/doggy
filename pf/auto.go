@@ -8,8 +8,8 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
-type Uploader interface {
-	Upload(ctx context.Context, channels []Channel) error
+type Storer interface {
+	Store(ctx context.Context, channels []Channel) error
 }
 
 type DeviceResolver interface {
@@ -18,7 +18,7 @@ type DeviceResolver interface {
 
 type AutoSub struct {
 	DeviceResolver DeviceResolver
-	Uploader       Uploader
+	Storer         Storer
 
 	MainSub holo.SubscriptionReq
 	Backups []holo.SubscriptionReq
@@ -84,5 +84,5 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 			RegTime: time.Now(),
 		})
 	}
-	return a.Uploader.Upload(ctx, chs)
+	return a.Storer.Store(ctx, chs)
 }

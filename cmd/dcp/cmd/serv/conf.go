@@ -7,6 +7,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type TenantConf struct {
+	TenantID string `yaml:"tenant-id" mapstructure:"tenant-id"`
+}
+
 type SubsConf struct {
 	Muti    int      `yaml:"muti" mapstructure:"muti"`
 	Main    string   `yaml:"main" mapstructure:"main"`
@@ -56,6 +60,7 @@ type AppConf struct {
 	ID           string       `yaml:"id" mapstructure:"id"`
 	LoggerConf   LoggerConf   `yaml:"log" mapstructure:"log"`
 	ServerConf   ServerConf   `yaml:"server" mapstructure:"server"`
+	TenantConf   TenantConf   `yaml:"tenant" mapstructure:"tenant"`
 	SubsConf     SubsConf     `yaml:"subs" mapstructure:"subs"`
 	BackendConf  BackendConf  `yaml:"backend" mapstructure:"backend"`
 	CameraDBConf CameraDBConf `yaml:"camera-db" mapstructure:"camera-db"`
@@ -97,6 +102,9 @@ func defaultConfig() AppConf {
 			CertFile:   "repo/server.crt",
 			KeyFile:    "repo/server.key",
 			ForceHttps: 1,
+		},
+		TenantConf:TenantConf{
+			TenantID:"0000000000",
 		},
 		SubsConf: SubsConf{
 			Muti: 1,

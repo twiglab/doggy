@@ -30,7 +30,7 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 
 	autoSub := &pf.AutoSub{
 		DeviceResolver: cmdb,
-		Uploader:       &kv.Upload{H: kvh},
+		Storer:         &kv.Store{H: kvh},
 		MainSub:        MustSubReq(holo.SubReq(conf.SubsConf.Main)),
 		Backups:        backups,
 		Muti:           conf.SubsConf.Muti,
@@ -39,16 +39,14 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	cache := pf.NewTiersCache[string, pf.Channel]().WithSecond(&kv.ChannelCache{H: kvh})
 	toucher := kv.NewTouch(kvh, 90)
 
-	var backend pfh
+	var backend pf.DataHandler
 	if backendName(conf) != bNameNone {
-		backend = ctx.Value(keyBackend).(pfh)
+		backend = ctx.Value(keyBackend).(pf.DataHandler)
 	}
 
 	h := pf.NewHandle(
 		pf.WithDeviceRegister(autoSub),
-		pf.WithCountHandler(backend),
-		pf.WithDensityHandler(backend),
-		pf.WithQueueHandler(backend),
+		pf.WithDataHandler(backend),
 		pf.WithToucher(toucher),
 		pf.WithCache(cache),
 	)

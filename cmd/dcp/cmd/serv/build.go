@@ -22,12 +22,6 @@ const (
 	bNameNone = "none"
 )
 
-type pfh interface {
-	pf.CountHandler
-	pf.DensityHandler
-	pf.QueueHandler
-}
-
 func backendName(conf AppConf) string {
 	switch conf.BackendConf.Use {
 	case "taos", "TAOS":
@@ -78,7 +72,7 @@ func buildTaos(ctx context.Context, conf AppConf) (*taosdb.Schemaless, context.C
 	return schema, context.WithValue(ctx, keyBackend, schema)
 }
 
-func buildBackend(ctx context.Context, conf AppConf) (pfh, context.Context) {
+func buildBackend(ctx context.Context, conf AppConf) (pf.DataHandler, context.Context) {
 	switch backendName(conf) {
 	case bNameTaos:
 		return buildTaos(ctx, conf)

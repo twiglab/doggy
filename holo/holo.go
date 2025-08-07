@@ -56,7 +56,6 @@ func MilliToTime(milli int64, tz int64) time.Time {
 type ApiError struct {
 	Code int
 	Text string
-	error
 }
 
 func NewApiError(code int, text string) *ApiError {
