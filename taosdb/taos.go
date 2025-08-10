@@ -50,10 +50,7 @@ func bytesToStr(bs []byte) string {
 }
 
 func hasHuman(in, out int) bool {
-	if in == 0 && out == 0 {
-		return false
-	}
-	return true
+	return in != 0 || out != 0
 }
 
 func hasCount(count int) bool {
