@@ -20,31 +20,31 @@ type UploadeData struct {
 type CloudAction struct {
 	client  *resty.Client
 	baseURL string
-	token   string
+	key     string
 }
 
-func NewCloudAction(token, baseURL string) *CloudAction {
+func NewCloudAction(key, baseURL string) *CloudAction {
 	clinet := resty.New().
 		SetBaseURL(baseURL).
-		SetAuthToken(token)
+		SetAuthToken(key)
 
 	return &CloudAction{
 		client:  clinet,
 		baseURL: baseURL,
-		token:   token,
+		key:     key,
 	}
 }
 
-func (c *CloudAction) HandleData(ctx context.Context, x UploadeData) error {
-	data := holo.MetadataObjectUpload{
+func (c *CloudAction) HandleData(ctx context.Context, data UploadeData) error {
+	upload := holo.MetadataObjectUpload{
 		MetadataObject: holo.MetadataObject{
-			Common:     x.Common,
-			TargetList: []holo.HumanMix{x.Target},
+			Common:     data.Common,
+			TargetList: []holo.HumanMix{data.Target},
 		},
 	}
 	r := c.client.R().
 		SetContext(ctx).
-		SetBody(data)
+		SetBody(upload)
 	_, err := r.Post("/cloud")
 	return err
 }
