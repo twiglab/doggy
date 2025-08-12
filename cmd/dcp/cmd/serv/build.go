@@ -13,13 +13,19 @@ import (
 )
 
 const (
-	keyKVHandle = "_ehc_"
-	keyCmdb     = "_cmdb_"
-	keyBackend  = "_backend_"
-	keyRootLog  = "_root_log_"
-
 	bNameTaos = "taos"
 	bNameNone = "none"
+)
+
+type ctxKey struct {
+	name string
+}
+
+var (
+	keyKvHandle = ctxKey{"_ehc_"}
+	keyCmdb     = ctxKey{"_cmdb_"}
+	keyBackend  = ctxKey{"_backend_"}
+	keyRootLog  = ctxKey{"_root_log_"}
 )
 
 func backendName(conf AppConf) string {
@@ -37,7 +43,7 @@ func buildRootlogger(ctx context.Context, conf AppConf) (*slog.Logger, context.C
 
 func buildKVHandle(ctx context.Context, conf AppConf) (*kv.Handle, context.Context) {
 	h := MustOpenKV(conf)
-	return h, context.WithValue(ctx, keyKVHandle, h)
+	return h, context.WithValue(ctx, keyKvHandle, h)
 }
 
 func buildCmdb(ctx context.Context, conf AppConf) (*pf.CameraDB, context.Context) {

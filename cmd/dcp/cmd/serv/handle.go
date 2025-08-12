@@ -13,7 +13,7 @@ import (
 )
 
 func pageHandle(ctx context.Context, _ AppConf) http.Handler {
-	kvh := ctx.Value(keyKVHandle).(*kv.Handle)
+	kvh := ctx.Value(keyKvHandle).(*kv.Handle)
 	toucher := kv.NewTouch(kvh, 90)
 	p := page.NewPage(kvh, toucher)
 	return page.AdminPage(p)
@@ -21,7 +21,7 @@ func pageHandle(ctx context.Context, _ AppConf) http.Handler {
 
 func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	cmdb := ctx.Value(keyCmdb).(pf.DeviceResolver)
-	kvh := ctx.Value(keyKVHandle).(*kv.Handle)
+	kvh := ctx.Value(keyKvHandle).(*kv.Handle)
 
 	var backups []holo.SubscriptionReq
 	for _, b := range conf.SubsConf.Backups {
