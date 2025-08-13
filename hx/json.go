@@ -1,32 +1,24 @@
 package hx
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 	"net/http"
 )
 
 func JsonTo(code int, resp any, w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(code)
-	enc := json.NewEncoder(w)
-	return enc.Encode(resp)
+	return json.MarshalWrite(w, resp)
 }
 
+// Deprecated: use Bind
 func BindAndClose(r *http.Request, p any) error {
 	defer r.Body.Close()
-	dec := json.NewDecoder(r.Body)
-	if err := dec.Decode(p); err != nil {
-		return err
-	}
-	return nil
+	return json.UnmarshalRead(r.Body, p)
 }
 
 func Bind(r *http.Request, p any) error {
-	dec := json.NewDecoder(r.Body)
-	if err := dec.Decode(p); err != nil {
-		return err
-	}
-	return nil
+	return json.UnmarshalRead(r.Body, p)
 }
 
 func NoContent(w http.ResponseWriter) {
