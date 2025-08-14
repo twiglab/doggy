@@ -2,7 +2,6 @@ package pf
 
 import (
 	"context"
-	"log/slog"
 	"net/http"
 
 	"github.com/twiglab/doggy/holo"
@@ -60,22 +59,16 @@ func CloudUpload(h *CloudHandle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var data UploadeData
 		if err := hx.BindAndClose(r, &data); err != nil {
-			slog.ErrorContext(r.Context(), "error-01",
-				slog.String("method", "MetadataEntryUpload"),
-				slog.Any("error", err))
-
 			http.Error(w, "error-01", http.StatusInternalServerError)
 			return
 		}
 
 		if err := h.dataHandler.HandleData(r.Context(), data); err != nil {
-			slog.ErrorContext(r.Context(), "error-02",
-				slog.String("method", "MetadataEntryUpload"),
-				slog.Any("error", err))
-
 			http.Error(w, "error-02", http.StatusInternalServerError)
 			return
 		}
+
+		http.NewServeMux()
 
 		hx.NoContent(w)
 	}
