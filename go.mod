@@ -3,12 +3,12 @@ module github.com/twiglab/doggy
 go 1.25.0
 
 require (
-	github.com/go-chi/chi/v5 v5.2.2
-	github.com/imroc/req/v3 v3.54.0
+	github.com/go-chi/chi/v5 v5.2.3
+	github.com/imroc/req/v3 v3.54.2
 	github.com/influxdata/line-protocol/v2 v2.2.1
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
-	github.com/taosdata/driver-go/v3 v3.7.3
+	github.com/taosdata/driver-go/v3 v3.7.4
 	github.com/tinylib/msgp v1.3.0
 	go.etcd.io/etcd/client/v3 v3.6.4
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
