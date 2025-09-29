@@ -123,6 +123,8 @@ github.com/subosito/gotenv v1.6.0 h1:9NlTDc1FTs4qu0DDq7AEtTPNw6SVm7uBMsUCUjABIf8
 github.com/subosito/gotenv v1.6.0/go.mod h1:Dk4QP5c2W3ibzajGcXpNraDfq2IrhjMIvMSWPKKo0FU=
 github.com/taosdata/driver-go/v3 v3.7.5 h1:Vk7Rs3K0T6Bg59AXPB5RZso7lnJIG9lOPmlcaAHbkC8=
 github.com/taosdata/driver-go/v3 v3.7.5/go.mod h1:gSxBEPOueMg0rTmMO1Ug6aeD7AwGdDGvUtLrsDTTpYc=
+github.com/taosdata/driver-go/v3 v3.7.6 h1:R0Ld+KzaGFqNxv62LzWi9lv4t7o4xdgJAp++l+8q55Q=
+github.com/taosdata/driver-go/v3 v3.7.6/go.mod h1:gSxBEPOueMg0rTmMO1Ug6aeD7AwGdDGvUtLrsDTTpYc=
 github.com/tinylib/msgp v1.3.0 h1:ULuf7GPooDaIlbyvgAxBV/FI7ynli6LZ1/nVUNu+0ww=
 github.com/tinylib/msgp v1.3.0/go.mod h1:ykjzy2wzgrlvpDCRc4LA8UXy6D8bzMSuAF3WD57Gok0=
 github.com/tinylib/msgp v1.4.0 h1:SYOeDRiydzOw9kSiwdYp9UcBgPFtLU2WDHaJXyHruf8=
