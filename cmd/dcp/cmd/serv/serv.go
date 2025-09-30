@@ -35,8 +35,9 @@ func initConfig() {
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
 	} else {
-		viper.SetConfigType("yaml")
+		viper.AddConfigPath(".")
 		viper.SetConfigName("dcp")
+		viper.SetConfigType("toml")
 	}
 
 	viper.AutomaticEnv()
