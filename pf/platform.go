@@ -16,10 +16,6 @@ type DeviceRegister interface {
 	AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error
 }
 
-type Tenant struct {
-	TenantID string
-}
-
 type Option func(*Handle)
 
 func WithDataHandler(h DataHandler) Option {
@@ -59,7 +55,6 @@ type Handle struct {
 	dataHandler    DataHandler
 	toucher        Cache[string, time.Time]
 	cache          Cache[string, Channel]
-	tenant         Tenant
 }
 
 func NewHandle(opts ...Option) *Handle {
@@ -69,7 +64,6 @@ func NewHandle(opts ...Option) *Handle {
 		dataHandler:    action,
 		toucher:        emptyCache[string, time.Time]{},
 		cache:          emptyCache[string, Channel]{},
-		tenant:         Tenant{},
 	}
 
 	for _, o := range opts {
@@ -102,11 +96,10 @@ func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpl
 		common.DeviceID = item.Code
 	}
 	for _, target := range data.MetadataObject.TargetList {
-		if err := h.dataHandler.HandleData(ctx, UploadeData{Common: common, Target: target, Tenant: h.tenant}); err != nil {
+		if err := h.dataHandler.HandleData(ctx, UploadeData{Common: common, Target: target}); err != nil {
 			slog.ErrorContext(ctx, "HandleData",
 				slog.Any("taget", target),
 				slog.Any("common", common),
-				slog.Any("tenant", h.tenant),
 				slog.Any("err", err))
 		}
 	}
