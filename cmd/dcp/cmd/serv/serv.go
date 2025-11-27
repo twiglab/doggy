@@ -37,7 +37,7 @@ func initConfig() {
 	} else {
 		viper.AddConfigPath(".")
 		viper.SetConfigName("dcp")
-		viper.SetConfigType("toml")
+		viper.SetConfigType("yaml")
 	}
 
 	viper.AutomaticEnv()
@@ -73,22 +73,6 @@ func servCmd() {
 	}
 
 	printConf(conf)
-
-	/*
-		mux := fullMux(conf)
-
-		svr := &http.Server{
-			Addr:         conf.ServerConf.Addr,
-			Handler:      mux,
-			IdleTimeout:  90 * time.Second,
-			ReadTimeout:  5 * time.Second,
-			WriteTimeout: 10 * time.Second,
-		}
-
-		if err := runSvr(svr, conf.ServerConf); err != nil {
-			log.Fatal(err)
-		}
-	*/
 
 	RunWithConf(conf)
 }
