@@ -56,7 +56,6 @@ func CommonResponseFailedError(url string, err error) *CommonResponse {
 type CommonError struct {
 	Code int
 	Text string
-	error
 }
 
 func (ce *CommonError) Error() string {

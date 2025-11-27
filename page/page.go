@@ -58,7 +58,7 @@ func ListPage(page *Page) http.HandlerFunc {
 		root := make(map[string]any)
 		root["Items"] = items
 
-		page.tpl.ExecuteTemplate(w, "list.tpl", root)
+		_ = page.tpl.ExecuteTemplate(w, "list.tpl", root)
 	}
 }
 

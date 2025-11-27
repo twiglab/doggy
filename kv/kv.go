@@ -66,6 +66,7 @@ func (h *Handle) GetChannel(ctx context.Context, key string) (pf.Channel, bool, 
 
 func (h *Handle) SetChannel(ctx context.Context, u pf.Channel) error {
 	var sb strings.Builder
+	sb.Grow(512)
 	if err := msgp.Encode(&sb, &u); err != nil {
 		return err
 	}

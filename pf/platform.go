@@ -62,7 +62,7 @@ func NewHandle(opts ...Option) *Handle {
 	h := &Handle{
 		deviceRegister: action,
 		dataHandler:    action,
-		toucher:        emptyCache[string, time.Time]{},
+		toucher:        emptyCache[string, time.Time]{}, // 用于防止摄像头短时间内重复注册
 		cache:          emptyCache[string, Channel]{},
 	}
 

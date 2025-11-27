@@ -85,7 +85,7 @@ func confCmd() {
 	enc := yaml.NewEncoder(os.Stdout)
 	defer enc.Close()
 	enc.SetIndent(2)
-	enc.Encode(defaultConfig())
+	_ = enc.Encode(defaultConfig())
 }
 
 func defaultConfig() AppConf {
@@ -103,8 +103,8 @@ func defaultConfig() AppConf {
 			KeyFile:    "repo/server.key",
 			ForceHttps: 1,
 		},
-		TenantConf:TenantConf{
-			TenantID:"0000000000",
+		TenantConf: TenantConf{
+			TenantID: "0000000000",
 		},
 		SubsConf: SubsConf{
 			Muti: 1,
