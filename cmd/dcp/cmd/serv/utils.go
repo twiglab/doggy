@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/twiglab/doggy/backend/taosdb"
+	"github.com/twiglab/doggy/be/taosdb"
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/kv"
 )

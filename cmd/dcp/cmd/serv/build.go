@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/taosdata/driver-go/v3/ws/schemaless"
-	"github.com/twiglab/doggy/backend"
-	"github.com/twiglab/doggy/backend/taosdb"
+	"github.com/twiglab/doggy/be"
+	"github.com/twiglab/doggy/be/taosdb"
 	"github.com/twiglab/doggy/kv"
 	"github.com/twiglab/doggy/pf"
 )
@@ -27,11 +27,11 @@ var (
 func backendName(conf AppConf) string {
 	switch conf.BackendConf.Use {
 	case "taos", "TAOS":
-		return backend.TAOS
+		return be.TAOS
 	case "mqtt", "MQTT":
-		return backend.MQTT
+		return be.MQTT
 	}
-	return backend.NONE
+	return be.NONE
 }
 
 func buildRootlogger(ctx context.Context, conf AppConf) (*slog.Logger, context.Context) {
@@ -82,9 +82,9 @@ func buildMQTT(ctx context.Context, _ AppConf) (pf.DataHandler, context.Context)
 
 func buildBackend(ctx context.Context, conf AppConf) (pf.DataHandler, context.Context) {
 	switch backendName(conf) {
-	case backend.TAOS:
+	case be.TAOS:
 		return buildTaos(ctx, conf)
-	case backend.MQTT:
+	case be.MQTT:
 		return buildMQTT(ctx, conf)
 	}
 	return pf.NoneAction, context.WithValue(ctx, keyBackend, pf.NoneAction)
