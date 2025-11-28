@@ -4,7 +4,7 @@ import (
 	"runtime"
 )
 
-const version = "0.0.5"
+const version = "0.0.6-dev"
 
 var (
 	GitCommit string //Git提交号
@@ -17,6 +17,7 @@ type Ver struct {
 	BuildTime string
 	GoVersion string
 	OsArch    string
+	Backends  string
 }
 
 func Version() *Ver {
@@ -26,5 +27,6 @@ func Version() *Ver {
 		BuildTime: BuildTime,
 		GoVersion: runtime.Version(),
 		OsArch:    runtime.GOOS + "/" + runtime.GOARCH,
+		Backends:  "taos,mqtt",
 	}
 }

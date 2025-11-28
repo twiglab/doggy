@@ -25,8 +25,8 @@ func version() {
 	fmt.Printf("Go Version: %s\n", ver.GoVersion)
 	fmt.Printf("OS/Arch: %s\n", ver.OsArch)
 
-
 	fmt.Printf("Git Commit: %s\n", ver.GitCommit)
 	fmt.Printf("Build Time: %s\n", ver.BuildTime)
+	fmt.Printf("Backends: %s\n", ver.Backends)
 	fmt.Println("-------------")
 }

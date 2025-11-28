@@ -8,6 +8,7 @@ import (
 
 	"github.com/taosdata/driver-go/v3/ws/schemaless"
 	"github.com/twiglab/doggy/be"
+	"github.com/twiglab/doggy/be/mqttc"
 	"github.com/twiglab/doggy/be/taosdb"
 	"github.com/twiglab/doggy/kv"
 	"github.com/twiglab/doggy/pf"
@@ -77,7 +78,8 @@ func buildTaos(ctx context.Context, conf AppConf) (*taosdb.Schemaless, context.C
 }
 
 func buildMQTT(ctx context.Context, _ AppConf) (pf.DataHandler, context.Context) {
-	return pf.NoneAction, context.WithValue(ctx, keyBackend, pf.NoneAction)
+	c := mqttc.New()
+	return c, context.WithValue(ctx, keyBackend, c)
 }
 
 func buildBackend(ctx context.Context, conf AppConf) (pf.DataHandler, context.Context) {
