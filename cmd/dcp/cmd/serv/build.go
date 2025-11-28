@@ -7,14 +7,10 @@ import (
 	"time"
 
 	"github.com/taosdata/driver-go/v3/ws/schemaless"
+	"github.com/twiglab/doggy/backend"
 	"github.com/twiglab/doggy/backend/taosdb"
 	"github.com/twiglab/doggy/kv"
 	"github.com/twiglab/doggy/pf"
-)
-
-const (
-	bNameTaos = "taos"
-	bNameNone = "none"
 )
 
 type ctxKey struct {
@@ -31,9 +27,11 @@ var (
 func backendName(conf AppConf) string {
 	switch conf.BackendConf.Use {
 	case "taos", "TAOS":
-		return bNameTaos
+		return backend.TAOS
+	case "mqtt", "MQTT":
+		return backend.MQTT
 	}
-	return bNameNone
+	return backend.NONE
 }
 
 func buildRootlogger(ctx context.Context, conf AppConf) (*slog.Logger, context.Context) {
@@ -78,12 +76,18 @@ func buildTaos(ctx context.Context, conf AppConf) (*taosdb.Schemaless, context.C
 	return schema, context.WithValue(ctx, keyBackend, schema)
 }
 
+func buildMQTT(ctx context.Context, _ AppConf) (pf.DataHandler, context.Context) {
+	return pf.NoneAction, context.WithValue(ctx, keyBackend, pf.NoneAction)
+}
+
 func buildBackend(ctx context.Context, conf AppConf) (pf.DataHandler, context.Context) {
 	switch backendName(conf) {
-	case bNameTaos:
+	case backend.TAOS:
 		return buildTaos(ctx, conf)
+	case backend.MQTT:
+		return buildMQTT(ctx, conf)
 	}
-	return nil, ctx
+	return pf.NoneAction, context.WithValue(ctx, keyBackend, pf.NoneAction)
 }
 
 func buildAll(box context.Context, conf AppConf) context.Context {

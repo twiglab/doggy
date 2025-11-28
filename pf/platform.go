@@ -120,3 +120,5 @@ func (d *action) HandleData(ctx context.Context, data UploadeData) error {
 	slog.DebugContext(ctx, "handleData", slog.Any("data", data))
 	return nil
 }
+
+var NoneAction = &action{}

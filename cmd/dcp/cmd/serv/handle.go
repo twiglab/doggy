@@ -22,6 +22,7 @@ func pageHandle(ctx context.Context, _ AppConf) http.Handler {
 func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	cmdb := ctx.Value(keyCmdb).(pf.DeviceResolver)
 	kvh := ctx.Value(keyKvHandle).(*kv.Handle)
+	backend := ctx.Value(keyBackend).(pf.DataHandler)
 
 	var backups []holo.SubscriptionReq
 	for _, b := range conf.SubsConf.Backups {
@@ -38,11 +39,6 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 
 	cache := pf.NewTiersCache[string, pf.Channel]().WithSecond(&kv.ChannelCache{H: kvh})
 	toucher := kv.NewTouch(kvh, 90)
-
-	var backend pf.DataHandler
-	if backendName(conf) != bNameNone {
-		backend = ctx.Value(keyBackend).(pf.DataHandler)
-	}
 
 	h := pf.NewHandle(
 		pf.WithDeviceRegister(autoSub),

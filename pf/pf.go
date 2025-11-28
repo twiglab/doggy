@@ -63,7 +63,8 @@ func MetadataEntryUpload(h *Handle) http.HandlerFunc {
 func PlatformHandle(h *Handle) http.Handler {
 	r := chi.NewRouter()
 	r.Put("/nat", DeviceAutoRegisterUpload(h))
-	r.Put("1", DeviceAutoRegisterUpload(h))
+	r.Put("/1", DeviceAutoRegisterUpload(h))
+
 	r.Post("/upload", MetadataEntryUpload(h))
 	r.Post("/2", MetadataEntryUpload(h))
 	return r

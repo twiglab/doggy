@@ -11,11 +11,11 @@ import (
 	"github.com/twiglab/doggy/pf"
 )
 
-type MQTTBackend struct {
+type MQTTAction struct {
 	client mqtt.Client
 }
 
-func (c *MQTTBackend) HandleData(ctx context.Context, data pf.UploadeData) error {
+func (c *MQTTAction) HandleData(ctx context.Context, data pf.UploadeData) error {
 	switch data.Target.TargetType {
 	case holo.HUMMAN_COUNT:
 		return c.handleCount(ctx, data.Common, data.Target)
@@ -25,7 +25,7 @@ func (c *MQTTBackend) HandleData(ctx context.Context, data pf.UploadeData) error
 	return pf.ErrUnimplType
 }
 
-func (c *MQTTBackend) handleCount(ctx context.Context, common holo.Common, data holo.HumanMix) error {
+func (c *MQTTAction) handleCount(ctx context.Context, common holo.Common, data holo.HumanMix) error {
 	if !backend.HasHuman(data.HumanCountIn, data.HumanCountOut) {
 		return nil
 	}
