@@ -8,6 +8,7 @@ import (
 	"github.com/influxdata/line-protocol/v2/lineprotocol"
 
 	"github.com/taosdata/driver-go/v3/ws/schemaless"
+	"github.com/twiglab/doggy/backend"
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/pf"
 )
@@ -35,7 +36,7 @@ func (s *Schemaless) HandleData(ctx context.Context, data pf.UploadeData) error 
 }
 
 func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data holo.HumanMix) error {
-	if !hasHuman(data.HumanCountIn, data.HumanCountOut) {
+	if !backend.HasHuman(data.HumanCountIn, data.HumanCountOut) {
 		return nil
 	}
 
@@ -68,7 +69,7 @@ func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data h
 }
 
 func (s *Schemaless) HandleDensity(ctx context.Context, common holo.Common, data holo.HumanMix) error {
-	if !hasCount(data.HumanCount) {
+	if !backend.HasCount(data.HumanCount) {
 		return nil
 	}
 
@@ -96,7 +97,7 @@ func (s *Schemaless) HandleDensity(ctx context.Context, common holo.Common, data
 }
 
 func (s *Schemaless) HandleQueue(ctx context.Context, common holo.Common, data holo.HumanMix) error {
-	if !hasCount(data.HumanCount) {
+	if !backend.HasCount(data.HumanCount) {
 		return nil
 	}
 

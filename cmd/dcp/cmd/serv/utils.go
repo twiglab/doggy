@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/twiglab/doggy/backend/taosdb"
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/kv"
-	"github.com/twiglab/doggy/taosdb"
 )
 
 func MustOpenTaosDB(conf AppConf) *sql.DB {

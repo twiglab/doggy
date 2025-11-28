@@ -48,11 +48,3 @@ func SchemalessURL(addr string, port int) string {
 func bytesToStr(bs []byte) string {
 	return unsafe.String(&bs[0], len(bs))
 }
-
-func hasHuman(in, out int) bool {
-	return in != 0 || out != 0
-}
-
-func hasCount(count int) bool {
-	return count != 0
-}

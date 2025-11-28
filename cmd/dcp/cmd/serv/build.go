@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/taosdata/driver-go/v3/ws/schemaless"
+	"github.com/twiglab/doggy/backend/taosdb"
 	"github.com/twiglab/doggy/kv"
 	"github.com/twiglab/doggy/pf"
-	"github.com/twiglab/doggy/taosdb"
 )
 
 const (
