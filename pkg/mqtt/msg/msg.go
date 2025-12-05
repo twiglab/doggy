@@ -1,1 +1,16 @@
 package msg
+
+type HumanMix struct {
+	TargetType           int   `json:"targetType"` // 元数据类型，2.6.9为15, 2.6.7为12, 2.6.8 为13
+	HumanCountIn         int   `json:"humanCountIn"`
+	HumanCountOut        int   `json:"humanCountOut"`
+	StartTime            int64 `json:"startTime"`
+	EndTime              int64 `json:"endTime"`
+	TimeZone             int64 `json:"timeZone"`
+	DayLightSavingOffset int64 `json:"dayLightSavingOffset"` //夏令时偏移（秒）
+
+	HumanCount int `json:"humanCount"`
+	AreaRatio  int `json:"areaRatio"`
+
+	QueueTime int `json:"queueTime"` // 2.6.8
+}
