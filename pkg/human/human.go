@@ -10,8 +10,8 @@ const (
 )
 
 type Head struct {
-	SN       string
-	IpAddr   string
+	SN       string `json:"sn"`
+	IpAddr   string `json:"ipAddr"`
 	UUID     string `json:"UUID"`
 	DeviceID string `json:"deviceID"`
 	Project  string `json:"project"`
@@ -20,7 +20,7 @@ type Head struct {
 type DataMix struct {
 	Head Head `json:"head"`
 
-	Type string
+	Type string `json:"type"`
 
 	HumanCountIn  int       `json:"humanCountIn,omitempty"`
 	HumanCountOut int       `json:"humanCountOut,omitempty"`
