@@ -40,7 +40,7 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	cache := pf.NewTiersCache[string, pf.Channel]().WithSecond(&kv.ChannelCache{H: kvh})
 	toucher := kv.NewTouch(kvh, 90)
 
-	h := pf.NewHandle(
+	h := pf.NewMainHandle(
 		pf.WithDeviceRegister(autoSub),
 		pf.WithDataHandler(backend),
 		pf.WithToucher(toucher),

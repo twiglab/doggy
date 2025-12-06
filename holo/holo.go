@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
-	"time"
 )
 
 const (
@@ -47,10 +46,6 @@ func CameraURL(addr, path string, ssl bool) string {
 		return "https://" + addr + path
 	}
 	return "http://" + addr + path
-}
-
-func MilliToTime(milli int64, tz int64) time.Time {
-	return time.UnixMilli(milli)
 }
 
 type ApiError struct {

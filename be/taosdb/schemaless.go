@@ -11,6 +11,7 @@ import (
 	"github.com/twiglab/doggy/be"
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/pf"
+	"github.com/twiglab/doggy/pkg/human"
 )
 
 type Schemaless struct {
@@ -40,8 +41,8 @@ func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data h
 		return nil
 	}
 
-	start := holo.MilliToTime(data.StartTime, data.TimeZone)
-	end := holo.MilliToTime(data.EndTime, data.TimeZone)
+	start := human.MilliToTime(data.StartTime, data.TimeZone)
+	end := human.MilliToTime(data.EndTime, data.TimeZone)
 
 	slog.DebugContext(ctx, "HandleCount", slog.Any("data", data), slog.Any("common", common),
 		slog.Group("time", slog.Time("start", start), slog.Time("end", end)),

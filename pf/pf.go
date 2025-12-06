@@ -9,7 +9,7 @@ import (
 	"github.com/twiglab/doggy/hx"
 )
 
-func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
+func DeviceAutoRegisterUpload(h *MainHandle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var data holo.DeviceAutoRegisterData
@@ -35,7 +35,7 @@ func DeviceAutoRegisterUpload(h *Handle) http.HandlerFunc {
 	}
 }
 
-func MetadataEntryUpload(h *Handle) http.HandlerFunc {
+func MetadataEntryUpload(h *MainHandle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var data holo.MetadataObjectUpload
 		if err := hx.BindAndClose(r, &data); err != nil {
@@ -60,7 +60,7 @@ func MetadataEntryUpload(h *Handle) http.HandlerFunc {
 	}
 }
 
-func PlatformHandle(h *Handle) http.Handler {
+func PlatformHandle(h *MainHandle) http.Handler {
 	r := chi.NewRouter()
 	r.Put("/nat", DeviceAutoRegisterUpload(h))
 	r.Put("/1", DeviceAutoRegisterUpload(h))

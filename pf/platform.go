@@ -7,19 +7,24 @@ import (
 	"time"
 
 	"github.com/twiglab/doggy/holo"
+	"github.com/twiglab/doggy/pkg/human"
 )
 
 var ErrUnimplType = errors.New("unsupport type")
+
+type DataHandler interface {
+	HandleData(ctx context.Context, data human.DataMix) error
+}
 
 type DeviceRegister interface {
 	// 对应 2.1.4 自动注册
 	AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error
 }
 
-type Option func(*Handle)
+type Option func(*MainHandle)
 
 func WithDataHandler(h DataHandler) Option {
-	return func(c *Handle) {
+	return func(c *MainHandle) {
 		if h != nil {
 			c.dataHandler = h
 		}
@@ -27,7 +32,7 @@ func WithDataHandler(h DataHandler) Option {
 }
 
 func WithDeviceRegister(h DeviceRegister) Option {
-	return func(c *Handle) {
+	return func(c *MainHandle) {
 		if h != nil {
 			c.deviceRegister = h
 		}
@@ -35,7 +40,7 @@ func WithDeviceRegister(h DeviceRegister) Option {
 }
 
 func WithToucher(t Cache[string, time.Time]) Option {
-	return func(c *Handle) {
+	return func(c *MainHandle) {
 		if t != nil {
 			c.toucher = t
 		}
@@ -43,27 +48,31 @@ func WithToucher(t Cache[string, time.Time]) Option {
 }
 
 func WithCache(cache Cache[string, Channel]) Option {
-	return func(c *Handle) {
+	return func(c *MainHandle) {
 		if cache != nil {
 			c.cache = cache
 		}
 	}
 }
 
-type Handle struct {
+type MainHandle struct {
 	deviceRegister DeviceRegister
 	dataHandler    DataHandler
 	toucher        Cache[string, time.Time]
 	cache          Cache[string, Channel]
+
+	project string
 }
 
-func NewHandle(opts ...Option) *Handle {
+func NewMainHandle(project string, opts ...Option) *MainHandle {
 	action := &action{}
-	h := &Handle{
+	h := &MainHandle{
 		deviceRegister: action,
 		dataHandler:    action,
 		toucher:        emptyCache[string, time.Time]{}, // 用于防止摄像头短时间内重复注册
 		cache:          emptyCache[string, Channel]{},
+
+		project: project,
 	}
 
 	for _, o := range opts {
@@ -72,9 +81,9 @@ func NewHandle(opts ...Option) *Handle {
 	return h
 }
 
-func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
+func (h *MainHandle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoRegisterData) error {
 	ch := data.FirstChannel()
-	if _, ok, _ := h.toucher.Get(ctx, ch.UUID); ok {
+	if _, ok, _ := h.toucher.Get(ctx, ch.UUID); ok { // find it, do not register
 		return nil
 	}
 
@@ -87,19 +96,42 @@ func (h *Handle) HandleAutoRegister(ctx context.Context, data holo.DeviceAutoReg
 	return h.toucher.Set(ctx, ch.UUID, time.Now())
 }
 
-func (h *Handle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpload) error {
+func (h *MainHandle) HandleMetadata(ctx context.Context, data holo.MetadataObjectUpload) error {
 	if err := h.toucher.Set(ctx, data.MetadataObject.Common.UUID, time.Now()); err != nil {
 		return err
 	}
-	var common = data.MetadataObject.Common
-	if item, ok, _ := h.cache.Get(ctx, data.MetadataObject.Common.UUID); ok {
-		common.DeviceID = item.Code
+
+	head := human.Head{
+		Project:  h.project,
+		UUID:     data.MetadataObject.Common.UUID,
+		DeviceID: data.MetadataObject.Common.DeviceID,
 	}
+	if item, ok, _ := h.cache.Get(ctx, data.MetadataObject.Common.UUID); ok {
+		head.SN = item.SN
+		head.IpAddr = item.IpAddr
+		head.DeviceID = item.Code
+	}
+
 	for _, target := range data.MetadataObject.TargetList {
-		if err := h.dataHandler.HandleData(ctx, UploadeData{Common: common, Target: target}); err != nil {
+		data := human.DataMix{
+			Head: head,
+
+			TargetType: target.TargetType,
+
+			HumanCountIn:  target.HumanCountIn,
+			HumanCountOut: target.HumanCountOut,
+			BeginTime:     human.MilliToTime(target.StartTime, target.TimeZone),
+			EndTime:       human.MilliToTime(target.EndTime, target.TimeZone),
+
+			HumanCount: target.HumanCount,
+			AreaRatio:  target.AreaRatio,
+
+			QueueTime: target.QueueTime,
+		}
+
+		if err := h.dataHandler.HandleData(ctx, data); err != nil {
 			slog.ErrorContext(ctx, "HandleData",
-				slog.Any("taget", target),
-				slog.Any("common", common),
+				slog.Any("data", data),
 				slog.Any("err", err))
 		}
 	}
@@ -116,7 +148,7 @@ func (d *action) AutoRegister(ctx context.Context, data holo.DeviceAutoRegisterD
 	return nil
 }
 
-func (d *action) HandleData(ctx context.Context, data UploadeData) error {
+func (d *action) HandleData(ctx context.Context, data human.DataMix) error {
 	slog.DebugContext(ctx, "handleData", slog.Any("data", data))
 	return nil
 }
