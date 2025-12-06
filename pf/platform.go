@@ -116,7 +116,7 @@ func (h *MainHandle) HandleMetadata(ctx context.Context, data holo.MetadataObjec
 		data := human.DataMix{
 			Head: head,
 
-			TargetType: target.TargetType,
+			Type: dataType(target.TargetType),
 
 			HumanCountIn:  target.HumanCountIn,
 			HumanCountOut: target.HumanCountOut,
@@ -154,3 +154,16 @@ func (d *action) HandleData(ctx context.Context, data human.DataMix) error {
 }
 
 var NoneAction = &action{}
+
+func dataType(t int) string {
+	switch t {
+	case holo.HUMMAN_COUNT:
+		return human.COUNT
+	case holo.HUMMAN_DENSITY:
+		return human.DENSITY
+	case holo.HUMMAN_QUEUE:
+		return human.QUEUE
+	default:
+		return human.UNKNOWN
+	}
+}

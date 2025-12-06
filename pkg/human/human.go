@@ -3,9 +3,10 @@ package human
 import "time"
 
 const (
-	DENSITY = 12 // 密度 2.6.7
-	QUEUE   = 13 // 排队长度 2.6.8
-	COUNT   = 15 // 人数 2.6.9
+	DENSITY = "density"
+	QUEUE   = "queue"
+	COUNT   = "count"
+	UNKNOWN = "unknown"
 )
 
 type Head struct {
@@ -19,7 +20,7 @@ type Head struct {
 type DataMix struct {
 	Head Head `json:"head"`
 
-	TargetType int `json:"targetType"`
+	Type string
 
 	HumanCountIn  int       `json:"humanCountIn,omitempty"`
 	HumanCountOut int       `json:"humanCountOut,omitempty"`

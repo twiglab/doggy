@@ -6,14 +6,10 @@ import (
 )
 
 const (
-	TYPE_12 = "12"
-	TYPE_13 = "13"
-	TYPE_15 = "15"
-
 	TAG_UUID      = "uuid"
 	TAG_TYPE      = "type"
 	TAG_DIVICE_ID = "device_id"
-	TAG_TENANT_ID = "tenant_id"
+	TAG_PROJECT   = "project"
 
 	FIELD_DENSITY_COUNT = "human_count"
 	FIELD_DENSITY_RATIO = "human_ratio"
@@ -24,9 +20,9 @@ const (
 	FIELD_COUNT_IN  = "human_in"
 	FIELD_COUNT_OUT = "human_out"
 
-	MA_DENSITY = "s_density"
-	MA_COUNTY  = "s_count"
-	MA_QUEUE   = "s_queue"
+	MA_DENSITY = "stb_density"
+	MA_COUNTY  = "stb_count"
+	MA_QUEUE   = "stb_queue"
 )
 
 const (

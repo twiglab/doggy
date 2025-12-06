@@ -2,14 +2,12 @@ package taosdb
 
 import (
 	"context"
-	"log/slog"
 	"time"
 
 	"github.com/influxdata/line-protocol/v2/lineprotocol"
 
 	"github.com/taosdata/driver-go/v3/ws/schemaless"
 	"github.com/twiglab/doggy/be"
-	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/pf"
 	"github.com/twiglab/doggy/pkg/human"
 )
@@ -24,40 +22,36 @@ func NewSchLe(s *schemaless.Schemaless) *Schemaless {
 	}
 }
 
-func (s *Schemaless) HandleData(ctx context.Context, data pf.UploadeData) error {
-	switch data.Target.TargetType {
-	case holo.HUMMAN_COUNT:
-		return s.HandleCount(ctx, data.Common, data.Target)
-	case holo.HUMMAN_QUEUE:
-		return s.HandleQueue(ctx, data.Common, data.Target)
-	case holo.HUMMAN_DENSITY:
-		return s.HandleDensity(ctx, data.Common, data.Target)
+func (s *Schemaless) HandleData(ctx context.Context, data human.DataMix) error {
+	switch data.Type {
+	case human.COUNT:
+		return s.handleCount(ctx, data)
+	case human.DENSITY:
+		return s.handleDensity(ctx, data)
+	case human.QUEUE:
+		return s.handleQueue(ctx, data)
 	}
 	return pf.ErrUnimplType
 }
 
-func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data holo.HumanMix) error {
+func (s *Schemaless) handleCount(_ context.Context, data human.DataMix) error {
 	if !be.HasHuman(data.HumanCountIn, data.HumanCountOut) {
 		return nil
 	}
-
-	start := human.MilliToTime(data.StartTime, data.TimeZone)
-	end := human.MilliToTime(data.EndTime, data.TimeZone)
-
-	slog.DebugContext(ctx, "HandleCount", slog.Any("data", data), slog.Any("common", common),
-		slog.Group("time", slog.Time("start", start), slog.Time("end", end)),
-	)
 
 	var enc lineprotocol.Encoder
 
 	enc.SetPrecision(lineprotocol.Millisecond)
 	enc.StartLine(MA_COUNTY)
-	enc.AddTag(TAG_DIVICE_ID, common.DeviceID)
-	enc.AddTag(TAG_TYPE, TYPE_15)
-	enc.AddTag(TAG_UUID, common.UUID)
+
+	enc.AddTag(TAG_DIVICE_ID, data.Head.DeviceID)
+	enc.AddTag(TAG_PROJECT, data.Head.Project)
+	enc.AddTag(TAG_TYPE, data.Type)
+	enc.AddTag(TAG_UUID, data.Head.UUID)
+
 	enc.AddField(FIELD_COUNT_IN, lineprotocol.MustNewValue(int64(data.HumanCountIn)))
 	enc.AddField(FIELD_COUNT_OUT, lineprotocol.MustNewValue(int64(data.HumanCountOut)))
-	enc.EndLine(end)
+	enc.EndLine(data.EndTime)
 
 	if err := enc.Err(); err != nil {
 		return err
@@ -69,20 +63,21 @@ func (s *Schemaless) HandleCount(ctx context.Context, common holo.Common, data h
 	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_MILLI_SECONDS, 0, 0)
 }
 
-func (s *Schemaless) HandleDensity(ctx context.Context, common holo.Common, data holo.HumanMix) error {
+func (s *Schemaless) handleDensity(_ context.Context, data human.DataMix) error {
 	if !be.HasCount(data.HumanCount) {
 		return nil
 	}
-
-	slog.DebugContext(ctx, "HandleDensity", slog.Any("common", common), slog.Any("data", data))
 
 	var enc lineprotocol.Encoder
 
 	enc.SetPrecision(lineprotocol.Millisecond)
 	enc.StartLine(MA_DENSITY)
-	enc.AddTag(TAG_DIVICE_ID, common.DeviceID)
-	enc.AddTag(TAG_TYPE, TYPE_12)
-	enc.AddTag(TAG_UUID, common.UUID)
+
+	enc.AddTag(TAG_DIVICE_ID, data.Head.DeviceID)
+	enc.AddTag(TAG_PROJECT, data.Head.Project)
+	enc.AddTag(TAG_TYPE, data.Type)
+	enc.AddTag(TAG_UUID, data.Head.UUID)
+
 	enc.AddField(FIELD_DENSITY_COUNT, lineprotocol.MustNewValue(int64(data.HumanCount)))
 	enc.AddField(FIELD_DENSITY_RATIO, lineprotocol.MustNewValue(int64(data.AreaRatio)))
 	enc.EndLine(time.Now())
@@ -97,20 +92,21 @@ func (s *Schemaless) HandleDensity(ctx context.Context, common holo.Common, data
 	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_MILLI_SECONDS, 0, 0)
 }
 
-func (s *Schemaless) HandleQueue(ctx context.Context, common holo.Common, data holo.HumanMix) error {
+func (s *Schemaless) handleQueue(_ context.Context, data human.DataMix) error {
 	if !be.HasCount(data.HumanCount) {
 		return nil
 	}
 
-	slog.DebugContext(ctx, "HandleQueue", slog.Any("common", common), slog.Any("data", data))
-
 	var enc lineprotocol.Encoder
 
 	enc.SetPrecision(lineprotocol.Millisecond)
-	enc.StartLine(MA_DENSITY)
-	enc.AddTag(TAG_DIVICE_ID, common.DeviceID)
-	enc.AddTag(TAG_TYPE, TYPE_12)
-	enc.AddTag(TAG_UUID, common.UUID)
+	enc.StartLine(MA_QUEUE)
+
+	enc.AddTag(TAG_DIVICE_ID, data.Head.DeviceID)
+	enc.AddTag(TAG_PROJECT, data.Head.Project)
+	enc.AddTag(TAG_TYPE, data.Type)
+	enc.AddTag(TAG_UUID, data.Head.UUID)
+
 	enc.AddField(FIELD_QUEUE_COUNT, lineprotocol.MustNewValue(int64(data.HumanCount)))
 	enc.AddField(FIELD_QUEUE_TIME, lineprotocol.MustNewValue(int64(data.QueueTime)))
 	enc.EndLine(time.Now())
