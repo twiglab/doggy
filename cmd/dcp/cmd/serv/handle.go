@@ -41,6 +41,8 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 	toucher := kv.NewTouch(kvh, 90)
 
 	h := pf.NewMainHandle(
+		conf.ProjectConf.Project,
+
 		pf.WithDeviceRegister(autoSub),
 		pf.WithDataHandler(backend),
 		pf.WithToucher(toucher),

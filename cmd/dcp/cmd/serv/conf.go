@@ -7,8 +7,8 @@ import (
 	"go.yaml.in/yaml/v3"
 )
 
-type TenantConf struct {
-	TenantID string `yaml:"tenant-id" mapstructure:"tenant-id"`
+type ProjectConf struct {
+	Project string `yaml:"tenant-id" mapstructure:"tenant-id"`
 }
 
 type SubsConf struct {
@@ -60,7 +60,7 @@ type AppConf struct {
 	ID           string       `yaml:"id" mapstructure:"id"`
 	LoggerConf   LoggerConf   `yaml:"log" mapstructure:"log"`
 	ServerConf   ServerConf   `yaml:"server" mapstructure:"server"`
-	TenantConf   TenantConf   `yaml:"tenant" mapstructure:"tenant"`
+	ProjectConf  ProjectConf  `yaml:"project" mapstructure:"project"`
 	SubsConf     SubsConf     `yaml:"subs" mapstructure:"subs"`
 	BackendConf  BackendConf  `yaml:"backend" mapstructure:"backend"`
 	CameraDBConf CameraDBConf `yaml:"camera-db" mapstructure:"camera-db"`
@@ -103,8 +103,8 @@ func defaultConfig() AppConf {
 			KeyFile:    "repo/server.key",
 			ForceHttps: 1,
 		},
-		TenantConf: TenantConf{
-			TenantID: "0000000000",
+		ProjectConf: ProjectConf{
+			Project: "0000000000",
 		},
 		SubsConf: SubsConf{
 			Muti: 1,
