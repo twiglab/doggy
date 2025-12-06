@@ -27,6 +27,7 @@ func (c *MQTTAction) HandleData(ctx context.Context, data human.DataMix) error {
 		return err
 	}
 
-	token := c.client.Publish("test/topic", 0, false, bb.Bytes())
+	token := c.client.Publish("test/topic", 0, false, bb)
+
 	return token.Error()
 }
