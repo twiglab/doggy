@@ -2,7 +2,7 @@ package pf
 
 import "time"
 
-//go:generate msgp
+//go:generate go tool msgp
 type Channel struct {
 	SN      string    `msg:"s"`
 	IpAddr  string    `msg:"p"`
