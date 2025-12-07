@@ -78,7 +78,7 @@ func buildTaos(ctx context.Context, conf AppConf) (*taosdb.Schemaless, context.C
 }
 
 func buildMQTT(ctx context.Context, _ AppConf) (pf.DataHandler, context.Context) {
-	c := mqttc.New()
+	c := mqttc.New(nil)
 	return c, context.WithValue(ctx, keyBackend, c)
 }
 

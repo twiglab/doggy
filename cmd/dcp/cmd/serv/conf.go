@@ -8,7 +8,7 @@ import (
 )
 
 type ProjectConf struct {
-	Project string `yaml:"tenant-id" mapstructure:"tenant-id"`
+	Project string `yaml:"project" mapstructure:"project"`
 }
 
 type SubsConf struct {
@@ -31,9 +31,15 @@ type TaosDBConf struct {
 	DBName   string `yaml:"dbname" mapstructure:"dbname"`
 }
 
+type MQTTConf struct {
+	Broker   string `yaml:"broker" mapstructure:"broker"`
+	ClientID string `yaml:"client-id" mapstructure:"client-id"`
+}
+
 type BackendConf struct {
 	Use        string     `yaml:"use" mapstructure:"use"`
 	TaosDBConf TaosDBConf `yaml:"taos" mapstructure:"taos"`
+	MQTTConf   MQTTConf   `yaml:"mqtt" mapstructure:"mqtt"`
 }
 
 type CameraDBConf struct {
