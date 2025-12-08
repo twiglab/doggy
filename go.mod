@@ -4,7 +4,6 @@ go 1.25.1
 
 require (
 	github.com/eclipse/paho.golang v0.23.0
-	github.com/eclipse/paho.mqtt.golang v1.5.1
 	github.com/go-chi/chi/v5 v5.2.3
 	github.com/imroc/req/v3 v3.56.0
 	github.com/influxdata/line-protocol/v2 v2.2.1
