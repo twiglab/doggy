@@ -4,13 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json/v2"
-	"fmt"
-	"net/url"
-	"os"
-	"os/signal"
-	"strconv"
-	"syscall"
-	"time"
 
 	"github.com/eclipse/paho.golang/autopaho"
 	"github.com/eclipse/paho.golang/paho"
@@ -30,7 +23,7 @@ func (c *PahoAction) HandleData(ctx context.Context, data human.DataMix) error {
 		return err
 	}
 
-	if _, err = c.client.Publish(ctx, &paho.Publish{QoS: 1, Topic: topic, Payload: bb.Bytes()}); err != nil {
+	if _, err = c.client.Publish(ctx, &paho.Publish{QoS: 1, Topic: "", Payload: bb.Bytes()}); err != nil {
 		return err
 	}
 
@@ -38,6 +31,7 @@ func (c *PahoAction) HandleData(ctx context.Context, data human.DataMix) error {
 
 }
 
+/*
 const clientID = "PahoGoClient" // Change this to something random if using a public test server
 const topic = "PahoGoTestTopic"
 
@@ -133,3 +127,4 @@ func Main() {
 	fmt.Println("signal caught - exiting")
 	<-c.Done() // Wait for clean shutdown (cancelling the context triggered the shutdown)
 }
+*/
