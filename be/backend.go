@@ -23,7 +23,9 @@ func HasCount(count int) bool {
 
 type DataHandler interface {
 	HandleData(ctx context.Context, data human.DataMix) error
+	Name() string
 }
+
 type MutiAction struct {
 	actions []DataHandler
 }

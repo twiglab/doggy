@@ -7,11 +7,16 @@ import (
 
 	"github.com/eclipse/paho.golang/autopaho"
 	"github.com/eclipse/paho.golang/paho"
+	"github.com/twiglab/doggy/be"
 	"github.com/twiglab/doggy/pkg/human"
 )
 
 type PahoAction struct {
 	client *autopaho.ConnectionManager
+}
+
+func (c *PahoAction) Name() string {
+	return be.MQTT5
 }
 
 func (c *PahoAction) HandleData(ctx context.Context, data human.DataMix) error {

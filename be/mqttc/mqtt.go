@@ -6,11 +6,16 @@ import (
 	"encoding/json/v2"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/twiglab/doggy/be"
 	"github.com/twiglab/doggy/pkg/human"
 )
 
 type MQTTAction struct {
 	client mqtt.Client
+}
+
+func (c *MQTTAction) Name() string {
+	return be.MQTT
 }
 
 func (c *MQTTAction) HandleData(ctx context.Context, data human.DataMix) error {

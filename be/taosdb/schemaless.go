@@ -22,6 +22,10 @@ func NewSchLe(s *schemaless.Schemaless) *Schemaless {
 	}
 }
 
+func (c *Schemaless) Name() string {
+	return be.TAOS
+}
+
 func (s *Schemaless) HandleData(ctx context.Context, data human.DataMix) error {
 	switch data.Type {
 	case human.COUNT:
