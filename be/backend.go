@@ -1,9 +1,10 @@
 package be
 
 const (
-	TAOS = "taos"
-	MQTT = "mqtt"
-	NONE = "none"
+	TAOS  = "taos"
+	MQTT  = "mqtt"
+	MQTT5 = "mqtt5"
+	NONE  = "none"
 )
 
 func HasHuman(in, out int) bool {

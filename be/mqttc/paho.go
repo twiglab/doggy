@@ -23,7 +23,7 @@ func (c *PahoAction) HandleData(ctx context.Context, data human.DataMix) error {
 		return err
 	}
 
-	if _, err = c.client.Publish(ctx, &paho.Publish{QoS: 1, Topic: "", Payload: bb.Bytes()}); err != nil {
+	if _, err = c.client.Publish(ctx, &paho.Publish{QoS: 0x00, Topic: "", Payload: bb.Bytes()}); err != nil {
 		return err
 	}
 
