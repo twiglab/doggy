@@ -30,6 +30,19 @@ type MutiAction struct {
 	actions []DataHandler
 }
 
+func NewMutiAction(actions ...DataHandler) *MutiAction {
+	return &MutiAction{actions: actions}
+}
+
+func (a *MutiAction) Name() string {
+	return "muti"
+}
+
+func (a *MutiAction) Add(h DataHandler) *MutiAction {
+	a.actions = append(a.actions, h)
+	return a
+}
+
 func (a *MutiAction) HandleData(ctx context.Context, data human.DataMix) error {
 	for _, action := range a.actions {
 		if err := action.HandleData(ctx, data); err != nil {
