@@ -2,9 +2,7 @@ package be
 
 import (
 	"context"
-	"log/slog"
 
-	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/pkg/human"
 )
 
@@ -12,6 +10,7 @@ const (
 	TAOS  = "taos"
 	MQTT  = "mqtt"
 	MQTT5 = "mqtt5"
+	NOOP  = "noop"
 	NONE  = "none"
 )
 
@@ -53,4 +52,3 @@ func (a *MutiAction) HandleData(ctx context.Context, data human.DataMix) error {
 	}
 	return nil
 }
-
