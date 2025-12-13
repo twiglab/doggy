@@ -12,7 +12,7 @@ const (
 type Head struct {
 	SN       string `json:"sn"`
 	IpAddr   string `json:"ipAddr"`
-	UUID     string `json:"UUID"`
+	UUID     string `json:"uuid"`
 	DeviceID string `json:"deviceID"`
 	Project  string `json:"project"`
 }
@@ -32,8 +32,4 @@ type DataMix struct {
 
 	QueueTime int `json:"queueTime,omitempty"` // 2.6.8
 
-}
-
-func MilliToTime(milli int64, tz int64) time.Time {
-	return time.UnixMilli(milli)
 }

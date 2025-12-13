@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
+	"time"
 )
 
 const (
@@ -69,4 +70,8 @@ func CheckErr(comm *CommonResponse, err error) error {
 		return err
 	}
 	return comm.Err()
+}
+
+func MilliToTime(milli int64, tz int64) time.Time {
+	return time.UnixMilli(milli)
 }

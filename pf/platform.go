@@ -120,8 +120,8 @@ func (h *MainHandle) HandleMetadata(ctx context.Context, data holo.MetadataObjec
 
 			HumanCountIn:  target.HumanCountIn,
 			HumanCountOut: target.HumanCountOut,
-			BeginTime:     human.MilliToTime(target.StartTime, target.TimeZone),
-			EndTime:       human.MilliToTime(target.EndTime, target.TimeZone),
+			BeginTime:     holo.MilliToTime(target.StartTime, target.TimeZone),
+			EndTime:       holo.MilliToTime(target.EndTime, target.TimeZone),
 
 			HumanCount: target.HumanCount,
 			AreaRatio:  target.AreaRatio,
