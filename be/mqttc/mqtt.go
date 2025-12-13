@@ -14,6 +14,10 @@ type MQTTAction struct {
 	client mqtt.Client
 }
 
+func NewMQTTAction(client mqtt.Client) *MQTTAction {
+	return &MQTTAction{client: client}
+}
+
 func (c *MQTTAction) Name() string {
 	return be.MQTT
 }
