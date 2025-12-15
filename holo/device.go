@@ -11,8 +11,12 @@ type DeviceAutoRegisterData struct {
 }
 
 func (d DeviceAutoRegisterData) FirstChannel() Channel {
-	if len(d.ChannelInfo) <= 0 {
-		return Channel{}
+	if len(d.ChannelInfo) < 1 {
+		return Channel{
+			ChannelID: 0,
+			UUID:      "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+			DeviceID:  "illegal",
+		}
 	}
 	return d.ChannelInfo[0]
 }
