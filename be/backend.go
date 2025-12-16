@@ -2,9 +2,12 @@ package be
 
 import (
 	"context"
+	"errors"
 
 	"github.com/twiglab/doggy/pkg/human"
 )
+
+var ErrUnimplType = errors.New("unsupport type")
 
 const (
 	TAOS  = "taos"

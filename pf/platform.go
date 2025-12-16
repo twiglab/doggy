@@ -2,15 +2,12 @@ package pf
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 	"time"
 
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/pkg/human"
 )
-
-var ErrUnimplType = errors.New("unsupport type")
 
 type DataHandler interface {
 	HandleData(ctx context.Context, data human.DataMix) error

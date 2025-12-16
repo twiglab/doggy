@@ -4,15 +4,6 @@ import (
 	"context"
 )
 
-type ChannelUserData struct {
-	UUID     string
-	DeviceID string
-
-	X string
-	Y string
-	Z string
-}
-
 type Camera interface {
 	Setup(ctx context.Context) error
 	Close() error

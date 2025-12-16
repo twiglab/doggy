@@ -8,7 +8,6 @@ import (
 
 	"github.com/taosdata/driver-go/v3/ws/schemaless"
 	"github.com/twiglab/doggy/be"
-	"github.com/twiglab/doggy/pf"
 	"github.com/twiglab/doggy/pkg/human"
 )
 
@@ -35,7 +34,7 @@ func (s *Schemaless) HandleData(ctx context.Context, data human.DataMix) error {
 	case human.QUEUE:
 		return s.handleQueue(ctx, data)
 	}
-	return pf.ErrUnimplType
+	return be.ErrUnimplType
 }
 
 func (s *Schemaless) handleCount(_ context.Context, data human.DataMix) error {

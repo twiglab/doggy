@@ -3,6 +3,7 @@ package pf
 import (
 	"context"
 
+	"github.com/twiglab/doggy/cmdb"
 	"github.com/twiglab/doggy/holo"
 )
 
@@ -16,6 +17,12 @@ type HoloCamera struct {
 	device  *holo.Device
 	s       HoloCameraSetup
 	regData holo.DeviceAutoRegisterData
+
+	userDB cmdb.UserDB
+}
+
+func (c *HoloCamera) ChannelData(ChannelID string) (cmdb.ChannelUserData, error) {
+	return c.userDB.ChannelData(c.regData.SerialNumber, ChannelID)
 }
 
 func (c *HoloCamera) IpAddr() string {

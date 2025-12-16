@@ -54,6 +54,24 @@ func (z *Channel) DecodeMsg(dc *msgp.Reader) (err error) {
 				err = msgp.WrapError(err, "Code")
 				return
 			}
+		case "x":
+			z.X, err = dc.ReadString()
+			if err != nil {
+				err = msgp.WrapError(err, "X")
+				return
+			}
+		case "y":
+			z.Y, err = dc.ReadString()
+			if err != nil {
+				err = msgp.WrapError(err, "Y")
+				return
+			}
+		case "z":
+			z.Z, err = dc.ReadString()
+			if err != nil {
+				err = msgp.WrapError(err, "Z")
+				return
+			}
 		default:
 			err = dc.Skip()
 			if err != nil {
@@ -67,9 +85,9 @@ func (z *Channel) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *Channel) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 5
+	// map header, size 8
 	// write "s"
-	err = en.Append(0x85, 0xa1, 0x73)
+	err = en.Append(0x88, 0xa1, 0x73)
 	if err != nil {
 		return
 	}
@@ -118,15 +136,45 @@ func (z *Channel) EncodeMsg(en *msgp.Writer) (err error) {
 		err = msgp.WrapError(err, "Code")
 		return
 	}
+	// write "x"
+	err = en.Append(0xa1, 0x78)
+	if err != nil {
+		return
+	}
+	err = en.WriteString(z.X)
+	if err != nil {
+		err = msgp.WrapError(err, "X")
+		return
+	}
+	// write "y"
+	err = en.Append(0xa1, 0x79)
+	if err != nil {
+		return
+	}
+	err = en.WriteString(z.Y)
+	if err != nil {
+		err = msgp.WrapError(err, "Y")
+		return
+	}
+	// write "z"
+	err = en.Append(0xa1, 0x7a)
+	if err != nil {
+		return
+	}
+	err = en.WriteString(z.Z)
+	if err != nil {
+		err = msgp.WrapError(err, "Z")
+		return
+	}
 	return
 }
 
 // MarshalMsg implements msgp.Marshaler
 func (z *Channel) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 5
+	// map header, size 8
 	// string "s"
-	o = append(o, 0x85, 0xa1, 0x73)
+	o = append(o, 0x88, 0xa1, 0x73)
 	o = msgp.AppendString(o, z.SN)
 	// string "p"
 	o = append(o, 0xa1, 0x70)
@@ -140,6 +188,15 @@ func (z *Channel) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "c"
 	o = append(o, 0xa1, 0x63)
 	o = msgp.AppendString(o, z.Code)
+	// string "x"
+	o = append(o, 0xa1, 0x78)
+	o = msgp.AppendString(o, z.X)
+	// string "y"
+	o = append(o, 0xa1, 0x79)
+	o = msgp.AppendString(o, z.Y)
+	// string "z"
+	o = append(o, 0xa1, 0x7a)
+	o = msgp.AppendString(o, z.Z)
 	return
 }
 
@@ -191,6 +248,24 @@ func (z *Channel) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				err = msgp.WrapError(err, "Code")
 				return
 			}
+		case "x":
+			z.X, bts, err = msgp.ReadStringBytes(bts)
+			if err != nil {
+				err = msgp.WrapError(err, "X")
+				return
+			}
+		case "y":
+			z.Y, bts, err = msgp.ReadStringBytes(bts)
+			if err != nil {
+				err = msgp.WrapError(err, "Y")
+				return
+			}
+		case "z":
+			z.Z, bts, err = msgp.ReadStringBytes(bts)
+			if err != nil {
+				err = msgp.WrapError(err, "Z")
+				return
+			}
 		default:
 			bts, err = msgp.Skip(bts)
 			if err != nil {
@@ -205,6 +280,6 @@ func (z *Channel) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *Channel) Msgsize() (s int) {
-	s = 1 + 2 + msgp.StringPrefixSize + len(z.SN) + 2 + msgp.StringPrefixSize + len(z.IpAddr) + 2 + msgp.TimeSize + 2 + msgp.StringPrefixSize + len(z.UUID) + 2 + msgp.StringPrefixSize + len(z.Code)
+	s = 1 + 2 + msgp.StringPrefixSize + len(z.SN) + 2 + msgp.StringPrefixSize + len(z.IpAddr) + 2 + msgp.TimeSize + 2 + msgp.StringPrefixSize + len(z.UUID) + 2 + msgp.StringPrefixSize + len(z.Code) + 2 + msgp.StringPrefixSize + len(z.X) + 2 + msgp.StringPrefixSize + len(z.Y) + 2 + msgp.StringPrefixSize + len(z.Z)
 	return
 }

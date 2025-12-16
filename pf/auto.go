@@ -30,13 +30,21 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 
 	var chs []Channel
 	for _, ch := range data.ChannelInfo {
-		chs = append(chs, Channel{
-			SN:      camera.SerialNumber(),
-			IpAddr:  camera.IpAddr(),
-			UUID:    ch.UUID,
-			Code:    ch.DeviceID,
-			RegTime: time.Now(),
-		})
+		d, err := camera.ChannelData(ch.UUID)
+		if err == nil {
+			chs = append(chs, Channel{
+				SN:     camera.SerialNumber(),
+				IpAddr: camera.IpAddr(),
+				UUID:   d.UUID,
+				Code:   d.Code,
+
+				X: d.X,
+				Y: d.Y,
+				Z: d.Z,
+
+				RegTime: time.Now(),
+			})
+		}
 	}
 	return a.Storer.Store(ctx, chs)
 }

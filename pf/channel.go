@@ -10,4 +10,8 @@ type Channel struct {
 
 	UUID string `msg:"i"`
 	Code string `msg:"c"`
+
+	X string `msg:"x"`
+	Y string `msg:"y"`
+	Z string `msg:"z"`
 }
