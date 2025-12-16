@@ -2,17 +2,28 @@ package pf
 
 import (
 	"context"
-
-	"github.com/twiglab/doggy/holo"
 )
 
-type CameraDB struct {
-	User string
-	Pwd  string
+type ChannelUserData struct {
+	UUID     string
+	DeviceID string
 
-	UseHttps bool
+	X string
+	Y string
+	Z string
 }
 
-func (r *CameraDB) Resolve(ctx context.Context, data holo.DeviceAutoRegisterData) (*holo.Device, error) {
-	return holo.OpenDevice(data.IpAddr, r.User, r.Pwd, r.UseHttps)
+type Camera interface {
+	Setup(ctx context.Context) error
+	Close() error
+
+	SerialNumber() string
+	IpAddr() string
+	/*
+		ChannelUseData(channelID string) (ChannelUserData, error)
+	*/
+}
+
+type DeviceResolver[C Camera, R any] interface {
+	Resolve(ctx context.Context, data R) (C, error)
 }
