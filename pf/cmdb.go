@@ -2,6 +2,8 @@ package pf
 
 import (
 	"context"
+
+	"github.com/twiglab/doggy/cmdb"
 )
 
 type Camera interface {
@@ -10,9 +12,7 @@ type Camera interface {
 
 	SerialNumber() string
 	IpAddr() string
-	/*
-		ChannelUseData(channelID string) (ChannelUserData, error)
-	*/
+	ChannelData(channelID string) (cmdb.ChannelUserData, error)
 }
 
 type DeviceResolver[C Camera, R any] interface {

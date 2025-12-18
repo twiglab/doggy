@@ -62,10 +62,11 @@ func (c *HoloCamera) Setup(ctx context.Context) error {
 }
 
 type CameraDB struct {
-	User string
-	Pwd  string
-
+	User     string
+	Pwd      string
 	UseHttps bool
+
+	userDB cmdb.UserDB
 }
 
 func NewCamereaDB() *CameraDB {
@@ -81,5 +82,6 @@ func (r *CameraDB) Resolve(ctx context.Context, data holo.DeviceAutoRegisterData
 	return &HoloCamera{
 		device:  c,
 		regData: data,
+		userDB:  r.userDB,
 	}, nil
 }
