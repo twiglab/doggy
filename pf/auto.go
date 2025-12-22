@@ -12,7 +12,7 @@ type Storer interface {
 }
 
 type AutoSub struct {
-	DeviceResolver DeviceResolver[*HoloCamera, holo.DeviceAutoRegisterData]
+	DeviceResolver DeviceResolver[holo.DeviceAutoRegisterData]
 	Storer         Storer
 }
 
@@ -30,13 +30,13 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 
 	var chs []Channel
 	for _, ch := range data.ChannelInfo {
-		d, err := camera.ChannelData(ch.UUID)
-		if err == nil {
+		if d, err := camera.ChannelData(ch.UUID); err == nil { // 无错继续， 有错跳过
 			chs = append(chs, Channel{
 				SN:     camera.SerialNumber(),
 				IpAddr: camera.IpAddr(),
-				UUID:   d.UUID,
-				Code:   d.Code,
+
+				UUID: d.UUID,
+				Code: d.Code,
 
 				X: d.X,
 				Y: d.Y,

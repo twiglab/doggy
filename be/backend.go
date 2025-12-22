@@ -11,10 +11,10 @@ var ErrUnimplType = errors.New("unsupport type")
 
 const (
 	TAOS  = "taos"
-	MQTT  = "mqtt"
-	MQTT5 = "mqtt5"
+	MQTT  = "mqtt"  // mqtt 3.11
+	MQTT5 = "mqtt5" // mqtt5 保留
 	NOOP  = "noop"
-	NONE  = "none"
+	LOG   = "log"
 )
 
 func HasHuman(in, out int) bool {

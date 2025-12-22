@@ -30,7 +30,7 @@ func (z *Channel) DecodeMsg(dc *msgp.Reader) (err error) {
 				err = msgp.WrapError(err, "SN")
 				return
 			}
-		case "p":
+		case "i":
 			z.IpAddr, err = dc.ReadString()
 			if err != nil {
 				err = msgp.WrapError(err, "IpAddr")
@@ -42,7 +42,7 @@ func (z *Channel) DecodeMsg(dc *msgp.Reader) (err error) {
 				err = msgp.WrapError(err, "RegTime")
 				return
 			}
-		case "i":
+		case "u":
 			z.UUID, err = dc.ReadString()
 			if err != nil {
 				err = msgp.WrapError(err, "UUID")
@@ -96,8 +96,8 @@ func (z *Channel) EncodeMsg(en *msgp.Writer) (err error) {
 		err = msgp.WrapError(err, "SN")
 		return
 	}
-	// write "p"
-	err = en.Append(0xa1, 0x70)
+	// write "i"
+	err = en.Append(0xa1, 0x69)
 	if err != nil {
 		return
 	}
@@ -116,8 +116,8 @@ func (z *Channel) EncodeMsg(en *msgp.Writer) (err error) {
 		err = msgp.WrapError(err, "RegTime")
 		return
 	}
-	// write "i"
-	err = en.Append(0xa1, 0x69)
+	// write "u"
+	err = en.Append(0xa1, 0x75)
 	if err != nil {
 		return
 	}
@@ -176,14 +176,14 @@ func (z *Channel) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "s"
 	o = append(o, 0x88, 0xa1, 0x73)
 	o = msgp.AppendString(o, z.SN)
-	// string "p"
-	o = append(o, 0xa1, 0x70)
+	// string "i"
+	o = append(o, 0xa1, 0x69)
 	o = msgp.AppendString(o, z.IpAddr)
 	// string "r"
 	o = append(o, 0xa1, 0x72)
 	o = msgp.AppendTime(o, z.RegTime)
-	// string "i"
-	o = append(o, 0xa1, 0x69)
+	// string "u"
+	o = append(o, 0xa1, 0x75)
 	o = msgp.AppendString(o, z.UUID)
 	// string "c"
 	o = append(o, 0xa1, 0x63)
@@ -224,7 +224,7 @@ func (z *Channel) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				err = msgp.WrapError(err, "SN")
 				return
 			}
-		case "p":
+		case "i":
 			z.IpAddr, bts, err = msgp.ReadStringBytes(bts)
 			if err != nil {
 				err = msgp.WrapError(err, "IpAddr")
@@ -236,7 +236,7 @@ func (z *Channel) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				err = msgp.WrapError(err, "RegTime")
 				return
 			}
-		case "i":
+		case "u":
 			z.UUID, bts, err = msgp.ReadStringBytes(bts)
 			if err != nil {
 				err = msgp.WrapError(err, "UUID")

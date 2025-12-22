@@ -1,11 +1,14 @@
-package pf
+package camera
 
 import (
 	"context"
 
-	"github.com/twiglab/doggy/cmdb"
 	"github.com/twiglab/doggy/holo"
 )
+
+type UserDB interface {
+	ChannelData(cameraID, channelID string) (ChannelUserData, error)
+}
 
 type HoloCameraSetup struct {
 	MainSub holo.SubscriptionReq
@@ -18,10 +21,10 @@ type HoloCamera struct {
 	s       HoloCameraSetup
 	regData holo.DeviceAutoRegisterData
 
-	userDB cmdb.UserDB
+	userDB UserDB
 }
 
-func (c *HoloCamera) ChannelData(ChannelID string) (cmdb.ChannelUserData, error) {
+func (c *HoloCamera) ChannelData(ChannelID string) (ChannelUserData, error) {
 	return c.userDB.ChannelData(c.regData.SerialNumber, ChannelID)
 }
 
@@ -66,7 +69,7 @@ type CameraDB struct {
 	Pwd      string
 	UseHttps bool
 
-	userDB cmdb.UserDB
+	userDB UserDB
 }
 
 func NewCamereaDB() *CameraDB {

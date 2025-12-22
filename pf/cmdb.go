@@ -2,9 +2,16 @@ package pf
 
 import (
 	"context"
-
-	"github.com/twiglab/doggy/cmdb"
 )
+
+type ChannelUserData struct {
+	UUID string
+	Code string
+
+	X string
+	Y string
+	Z string
+}
 
 type Camera interface {
 	Setup(ctx context.Context) error
@@ -12,9 +19,10 @@ type Camera interface {
 
 	SerialNumber() string
 	IpAddr() string
-	ChannelData(channelID string) (cmdb.ChannelUserData, error)
+	ChannelData(channelID string) (ChannelUserData, error)
 }
 
-type DeviceResolver[C Camera, R any] interface {
-	Resolve(ctx context.Context, data R) (C, error)
+type DeviceResolver[R any] interface {
+	Resolve(ctx context.Context, data R) (Camera, error)
 }
+

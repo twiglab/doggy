@@ -11,7 +11,7 @@ import (
 type noopAction struct {
 }
 
-func (d *noopAction) Name() string {
+func (d noopAction) Name() string {
 	return "noop"
 }
 

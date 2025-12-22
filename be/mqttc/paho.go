@@ -1,5 +1,7 @@
 package mqttc
 
+/*
+
 import (
 	"bytes"
 	"context"
@@ -37,6 +39,7 @@ func (c *PahoAction) HandleData(ctx context.Context, data human.DataMix) error {
 	return nil
 
 }
+*/
 
 /*
 const clientID = "PahoGoClient" // Change this to something random if using a public test server
