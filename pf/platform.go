@@ -62,10 +62,10 @@ type MainHandle struct {
 }
 
 func NewMainHandle(project string, opts ...Option) *MainHandle {
-	action := &noopAction{}
+	var nop = noopAction{}
 	h := &MainHandle{
-		deviceRegister: action,
-		dataHandler:    action,
+		deviceRegister: nop,
+		dataHandler:    nop,
 		toucher:        emptyCache[string, time.Time]{}, // 用于防止摄像头短时间内重复注册
 		cache:          emptyCache[string, Channel]{},
 

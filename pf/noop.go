@@ -8,8 +8,7 @@ import (
 	"github.com/twiglab/doggy/pkg/human"
 )
 
-type noopAction struct {
-}
+type noopAction struct{}
 
 func (d noopAction) Name() string {
 	return "noop"
@@ -27,5 +26,3 @@ func (d noopAction) HandleData(ctx context.Context, data human.DataMix) error {
 	slog.DebugContext(ctx, "handleData", slog.Any("data", data))
 	return nil
 }
-
-var NoopAction = noopAction{}
