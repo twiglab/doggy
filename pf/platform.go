@@ -85,9 +85,6 @@ func (h *MainHandle) HandleAutoRegister(ctx context.Context, data holo.DeviceAut
 	}
 
 	if err := h.deviceRegister.AutoRegister(ctx, data); err != nil {
-		slog.Error("AutoReg error",
-			slog.Any("data", data),
-			slog.Any("error", err))
 		return err
 	}
 	return h.toucher.Set(ctx, ch.UUID, time.Now())
@@ -99,14 +96,16 @@ func (h *MainHandle) HandleMetadata(ctx context.Context, data holo.MetadataObjec
 	}
 
 	head := human.Head{
-		Project:  h.project,
-		UUID:     data.MetadataObject.Common.UUID,
-		DeviceID: data.MetadataObject.Common.DeviceID,
+		Project: h.project,
+		ID:      data.MetadataObject.Common.UUID,
+		Code:    data.MetadataObject.Common.DeviceID,
 	}
 	if item, ok, _ := h.cache.Get(ctx, data.MetadataObject.Common.UUID); ok {
 		head.SN = item.SN
 		head.IpAddr = item.IpAddr
-		head.DeviceID = item.Code
+		if item.Code != "" {
+			head.Code = item.Code
+		}
 	}
 
 	for _, target := range data.MetadataObject.TargetList {

@@ -10,11 +10,11 @@ const (
 )
 
 type Head struct {
-	SN       string `json:"sn"`
-	IpAddr   string `json:"ipAddr"`
-	UUID     string `json:"uuid"`
-	DeviceID string `json:"deviceID"`
-	Project  string `json:"project"`
+	SN      string `json:"sn"`
+	IpAddr  string `json:"ipAddr"`
+	ID      string `json:"id"`
+	Code    string `json:"code"`
+	Project string `json:"project"`
 }
 
 type DataMix struct {
@@ -30,6 +30,5 @@ type DataMix struct {
 	HumanCount int `json:"humanCount,omitempty"`
 	AreaRatio  int `json:"areaRatio,omitempty"`
 
-	QueueTime int `json:"queueTime,omitempty"` // 2.6.8
-
+	QueueTime int `json:"queueTime,omitempty"`
 }
