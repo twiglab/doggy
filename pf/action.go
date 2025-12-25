@@ -8,7 +8,17 @@ import (
 	"github.com/twiglab/doggy/pkg/human"
 )
 
-type LogAction struct{}
+type LogAction struct {
+	log *slog.Logger
+}
+
+func NewLogAction(log *slog.Logger) LogAction {
+	l := slog.Default()
+	if log != nil {
+		l = log
+	}
+	return LogAction{log: l}
+}
 
 func (d LogAction) Name() string {
 	return "log"

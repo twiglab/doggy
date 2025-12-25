@@ -44,7 +44,7 @@ func WithToucher(t Cache[string, time.Time]) Option {
 	}
 }
 
-func WithCache(cache Cache[string, Channel]) Option {
+func WithCache(cache Cache[string, ChannelExtra]) Option {
 	return func(c *MainHandle) {
 		if cache != nil {
 			c.cache = cache
@@ -56,18 +56,18 @@ type MainHandle struct {
 	deviceRegister DeviceRegister
 	dataHandler    DataHandler
 	toucher        Cache[string, time.Time]
-	cache          Cache[string, Channel]
+	cache          Cache[string, ChannelExtra]
 
 	project string
 }
 
 func NewMainHandle(project string, opts ...Option) *MainHandle {
-	var nop = noopAction{}
+	var logA = LogAction{}
 	h := &MainHandle{
-		deviceRegister: nop,
-		dataHandler:    nop,
+		deviceRegister: logA,
+		dataHandler:    logA,
 		toucher:        emptyCache[string, time.Time]{}, // 用于防止摄像头短时间内重复注册
-		cache:          emptyCache[string, Channel]{},
+		cache:          emptyCache[string, ChannelExtra]{},
 
 		project: project,
 	}

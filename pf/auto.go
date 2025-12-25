@@ -8,7 +8,7 @@ import (
 )
 
 type Storer interface {
-	Store(ctx context.Context, channels []Channel) error
+	Store(ctx context.Context, channels []ChannelExtra) error
 }
 
 type AutoSub struct {
@@ -28,10 +28,10 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 		return err
 	}
 
-	var chs []Channel
+	var chs []ChannelExtra
 	for _, ch := range data.ChannelInfo {
 		if d, err := camera.ChannelData(ch.UUID); err == nil { // 无错继续， 有错跳过
-			chs = append(chs, Channel{
+			chs = append(chs, ChannelExtra{
 				SN:     camera.SerialNumber(),
 				IpAddr: camera.IpAddr(),
 

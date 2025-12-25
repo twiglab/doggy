@@ -45,8 +45,8 @@ func New(client *clientv3.Client) *Handle {
 	return &Handle{client: client}
 }
 
-func (h *Handle) GetChannel(ctx context.Context, key string) (pf.Channel, bool, error) {
-	var item pf.Channel
+func (h *Handle) GetChannel(ctx context.Context, key string) (pf.ChannelExtra, bool, error) {
+	var item pf.ChannelExtra
 
 	resp, err := h.client.Get(ctx, channelKey(key))
 	if err != nil {
@@ -64,7 +64,7 @@ func (h *Handle) GetChannel(ctx context.Context, key string) (pf.Channel, bool, 
 	return item, true, nil
 }
 
-func (h *Handle) SetChannel(ctx context.Context, u pf.Channel) error {
+func (h *Handle) SetChannel(ctx context.Context, u pf.ChannelExtra) error {
 	var sb strings.Builder
 	sb.Grow(512)
 	if err := msgp.Encode(&sb, &u); err != nil {
@@ -74,7 +74,7 @@ func (h *Handle) SetChannel(ctx context.Context, u pf.Channel) error {
 	return err
 }
 
-func (h *Handle) SetChannels(ctx context.Context, us []pf.Channel) error {
+func (h *Handle) SetChannels(ctx context.Context, us []pf.ChannelExtra) error {
 	_, err := concurrency.NewSTM(h.client, func(stm concurrency.STM) error {
 		for _, item := range us {
 			var sb strings.Builder
@@ -89,8 +89,8 @@ func (h *Handle) SetChannels(ctx context.Context, us []pf.Channel) error {
 	return err
 }
 
-func (h *Handle) AllChannels(ctx context.Context) ([]pf.Channel, error) {
-	var items []pf.Channel
+func (h *Handle) AllChannels(ctx context.Context) ([]pf.ChannelExtra, error) {
+	var items []pf.ChannelExtra
 
 	resp, err := h.client.Get(ctx, channelPrefixKey(), clientv3.WithPrefix())
 	if err != nil {
@@ -98,7 +98,7 @@ func (h *Handle) AllChannels(ctx context.Context) ([]pf.Channel, error) {
 	}
 
 	for _, v := range resp.Kvs {
-		var item pf.Channel
+		var item pf.ChannelExtra
 		if err := msgp.Decode(bytes.NewReader(v.Value), &item); err == nil { // err == nil
 			items = append(items, item)
 		}

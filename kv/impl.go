@@ -29,7 +29,7 @@ type Store struct {
 	H *Handle
 }
 
-func (u *Store) Store(ctx context.Context, channels []pf.Channel) error {
+func (u *Store) Store(ctx context.Context, channels []pf.ChannelExtra) error {
 	return u.H.SetChannels(ctx, channels)
 }
 
@@ -37,10 +37,10 @@ type ChannelCache struct {
 	H *Handle
 }
 
-func (c *ChannelCache) Get(ctx context.Context, key string) (pf.Channel, bool, error) {
+func (c *ChannelCache) Get(ctx context.Context, key string) (pf.ChannelExtra, bool, error) {
 	return c.H.GetChannel(ctx, key)
 }
 
-func (c *ChannelCache) Set(ctx context.Context, _ string, ch pf.Channel) error {
+func (c *ChannelCache) Set(ctx context.Context, _ string, ch pf.ChannelExtra) error {
 	return c.H.SetChannel(ctx, ch)
 }

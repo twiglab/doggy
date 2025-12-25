@@ -11,11 +11,11 @@ import (
 )
 
 type Loader interface {
-	AllChannels(ctx context.Context) ([]pf.Channel, error)
+	AllChannels(ctx context.Context) ([]pf.ChannelExtra, error)
 }
 
 type Item struct {
-	Upload pf.Channel
+	Upload pf.ChannelExtra
 	TTL    time.Time
 }
 type Page struct {

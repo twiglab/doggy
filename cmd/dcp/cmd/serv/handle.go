@@ -37,7 +37,7 @@ func pfHandle(ctx context.Context, conf AppConf) http.Handler {
 		Muti:           conf.SubsConf.Muti,
 	}
 
-	cache := pf.NewTiersCache[string, pf.Channel]().WithSecond(&kv.ChannelCache{H: kvh})
+	cache := pf.NewTiersCache[string, pf.ChannelExtra]().WithSecond(&kv.ChannelCache{H: kvh})
 	toucher := kv.NewTouch(kvh, 90)
 
 	h := pf.NewMainHandle(
