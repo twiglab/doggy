@@ -10,6 +10,10 @@ import (
 	"github.com/twiglab/doggy/pkg/human"
 )
 
+func pushTopic(uuid, typ string) string {
+	return "dcp/" + uuid + "/" + typ
+}
+
 type MQTTAction struct {
 	client mqtt.Client
 }
@@ -31,7 +35,7 @@ func (c *MQTTAction) HandleData(ctx context.Context, data human.DataMix) error {
 		return err
 	}
 
-	topic := pushTopic(data.Head.UUID, data.Type)
+	topic := pushTopic(data.Head.ID, data.Type)
 
 	pubToken := c.client.Publish(topic, 0x00, false, bb)
 	pubToken.Wait()

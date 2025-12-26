@@ -6,6 +6,7 @@ import "time"
 type ChannelExtra struct {
 	SN      string    `msg:"s"`
 	IpAddr  string    `msg:"i"`
+
 	RegTime time.Time `msg:"r"`
 
 	UUID string `msg:"u"`

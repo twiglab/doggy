@@ -9,7 +9,7 @@ require (
 	github.com/influxdata/line-protocol/v2 v2.2.1
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
-	github.com/taosdata/driver-go/v3 v3.7.6
+	github.com/taosdata/driver-go/v3 v3.7.7
 	github.com/tinylib/msgp v1.6.1
 	go.etcd.io/etcd/client/v3 v3.6.7
 	go.yaml.in/yaml/v3 v3.0.4
