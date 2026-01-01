@@ -18,7 +18,7 @@ type HoloCameraSetup struct {
 
 type HoloCamera struct {
 	device  *holo.Device
-	s       HoloCameraSetup
+	setup   HoloCameraSetup
 	regData holo.DeviceAutoRegisterData
 
 	userDB UserDB
@@ -41,18 +41,18 @@ func (c *HoloCamera) Close() error {
 }
 
 func (c *HoloCamera) Setup(ctx context.Context) error {
-	if c.s.Muti > 0 {
+	if c.setup.Muti > 0 {
 		subs, err := c.device.GetMetadataSubscription(ctx)
 		if err != nil {
 			return err
 		}
 		if len(subs.Subscriptions) == 0 {
-			res, err := c.device.PostMetadataSubscription(ctx, c.s.MainSub)
+			res, err := c.device.PostMetadataSubscription(ctx, c.setup.MainSub)
 			if err := holo.CheckErr(res, err); err != nil {
 				return err
 			}
-			if c.s.Muti > 1 {
-				for _, sub := range c.s.Backups {
+			if c.setup.Muti > 1 {
+				for _, sub := range c.setup.Backups {
 					res, err := c.device.PostMetadataSubscription(ctx, sub)
 					if err := holo.CheckErr(res, err); err != nil {
 						return err
