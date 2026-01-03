@@ -13,8 +13,9 @@ const (
 	TAOS  = "taos"
 	MQTT  = "mqtt"  // mqtt 3.11
 	MQTT5 = "mqtt5" // mqtt5 保留
-	NOOP  = "noop"
+	HTTP  = "http"
 	LOG   = "log"
+	NOOP  = "noop"
 )
 
 func HasHuman(in, out int) bool {

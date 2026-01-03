@@ -2,20 +2,20 @@ package serv
 
 import (
 	"context"
-	"net/http"
 
+	"github.com/spf13/viper"
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/kv"
 	"github.com/twiglab/doggy/pf"
 )
 
-func pfHandle(ctx context.Context, conf AppConf) http.Handler {
-	cmdb := ctx.Value(keyCmdb).(pf.DeviceResolver)
+func pfHandle2(ctx context.Context, v *viper.Viper) (pf.DeviceRegister, context.Context) {
 	kvh := ctx.Value(keyKvHandle).(*kv.Handle)
 	backend := ctx.Value(keyBackend).(pf.DataHandler)
 
 	var backups []holo.SubscriptionReq
-	for _, b := range conf.SubsConf.Backups {
+	bs := v.GetStringSlice("camera.setup.backups")
+	for _, b := range bs {
 		backups = append(backups, MustSubReq(holo.SubReq(b)))
 	}
 

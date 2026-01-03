@@ -55,11 +55,14 @@ func WithCache(cache Cache[string, ChannelExtra]) Option {
 	}
 }
 
+type TouchCache = Cache[string, time.Time]
+type ChannelCache = Cache[string, ChannelExtra]
+
 type MainHandle struct {
 	deviceRegister DeviceRegister
 	dataHandler    DataHandler
-	toucher        Cache[string, time.Time]
-	cache          Cache[string, ChannelExtra]
+	toucher        TouchCache
+	cache          ChannelCache
 
 	project string
 }

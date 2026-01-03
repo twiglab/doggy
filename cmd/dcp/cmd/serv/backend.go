@@ -2,7 +2,7 @@ package serv
 
 import (
 	"context"
-	"strings"
+	"log"
 	"time"
 
 	"github.com/spf13/viper"
@@ -12,24 +12,20 @@ import (
 	"github.com/twiglab/doggy/be/taosdb"
 )
 
-func backendName2(s string) string {
-
-	if key, _, ok := strings.Cut(s, "_"); ok {
-		switch strings.ToLower(key) {
-		case be.TAOS:
-			return be.TAOS
-		case be.MQTT:
-			return be.MQTT
-		case be.MQTT5:
-			return be.MQTT5
-		case be.LOG:
-			return be.LOG
-		}
+func backendName2(key string) string {
+	switch key {
+	case "taos", "TAOS":
+		return be.TAOS
+	case "mqtt", "MQTT":
+		return be.MQTT
+	case "http", "HTTP":
+		return be.HTTP
+	case "log", "LOG":
+		return be.LOG
 	}
-
 	return be.NOOP
-
 }
+
 func buildTaos2(ctx context.Context, v *viper.Viper) (*taosdb.Schemaless, error) {
 	url := taosdb.SchemalessURL(
 		v.GetString("backend.taos.addr"),
@@ -64,13 +60,19 @@ func buildBackend2(ctx context.Context, v *viper.Viper) (be.MutiAction, context.
 	for _, bk := range blist {
 		switch backendName2(bk) {
 		case be.TAOS:
-			if h, err := buildTaos2(ctx, subviper(bk, v)); err == nil {
-				act.Add(h)
+			h, err := buildTaos2(ctx, v)
+			if err != nil {
+				log.Println(err)
 			}
+			act.Add(h)
 		case be.MQTT:
-			if h, err := buildMQTT2(ctx, subviper(bk, v)); err == nil {
-				act.Add(h)
+			h, err := buildMQTT2(ctx, v)
+			if err != nil {
+				log.Println(err)
 			}
+			act.Add(h)
+		case be.HTTP:
+		case be.LOG:
 		}
 	}
 	return act, context.WithValue(ctx, keyBackend, act)

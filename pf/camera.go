@@ -6,9 +6,7 @@ import (
 	"github.com/twiglab/doggy/holo"
 )
 
-type UserDB interface {
-	ChannelData(cameraID, channelID string) (ChannelUserData, error)
-}
+type UserDataCache = Cache[string, ChannelUserData]
 
 type HoloCameraSetup struct {
 	MainSub holo.SubscriptionReq
@@ -21,11 +19,12 @@ type HoloCamera struct {
 	setup   HoloCameraSetup
 	regData holo.DeviceAutoRegisterData
 
-	userDB UserDB
+	cache UserDataCache
 }
 
-func (c *HoloCamera) ChannelData(ChannelID string) (ChannelUserData, error) {
-	return c.userDB.ChannelData(c.regData.SerialNumber, ChannelID)
+func (c *HoloCamera) ChannelData(ctx context.Context, ChannelID string) (data ChannelUserData, err error) {
+	data, _, err = c.cache.Get(ctx, ChannelID)
+	return
 }
 
 func (c *HoloCamera) IpAddr() string {
@@ -68,8 +67,6 @@ type CameraDB struct {
 	User     string
 	Pwd      string
 	UseHttps bool
-
-	userDB UserDB
 }
 
 func NewCamereaDB() *CameraDB {
@@ -85,6 +82,5 @@ func (r *CameraDB) Resolve(ctx context.Context, data holo.DeviceAutoRegisterData
 	return &HoloCamera{
 		device:  c,
 		regData: data,
-		userDB:  r.userDB,
 	}, nil
 }
