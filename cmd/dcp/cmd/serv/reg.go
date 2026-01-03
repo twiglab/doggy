@@ -2,44 +2,67 @@ package serv
 
 import (
 	"context"
+	"log"
 
 	"github.com/spf13/viper"
+	"github.com/twiglab/doggy/ddb"
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/kv"
 	"github.com/twiglab/doggy/pf"
 )
 
-func pfHandle2(ctx context.Context, v *viper.Viper) (pf.DeviceRegister, context.Context) {
+func buildReg(ctx context.Context, v *viper.Viper) (pf.DeviceRegister, context.Context) {
 	kvh := ctx.Value(keyKvHandle).(*kv.Handle)
-	backend := ctx.Value(keyBackend).(pf.DataHandler)
+	//backend := ctx.Value(keyBackend).(pf.DataHandler)
 
-	var backups []holo.SubscriptionReq
-	bs := v.GetStringSlice("camera.setup.backups")
-	for _, b := range bs {
-		backups = append(backups, MustSubReq(holo.SubReq(b)))
+	db, err := ddb.New(v.GetString("cmdb.ddb.from"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	main := MustSubReq(holo.SubReq(v.GetString("camera.setup.main")))
+	/*
+		var backups []holo.SubscriptionReq
+		bs := v.GetStringSlice("camera.setup.backups")
+		for _, b := range bs {
+			backups = append(backups, MustSubReq(holo.SubReq(b)))
+		}
+	*/
+
+	cameraDB := &pf.CameraDB{
+		User:     v.GetString("camera.user"),
+		Pwd:      v.GetString("camera.pwd"),
+		UseHttps: true,
+
+		Setup: pf.HoloCameraSetup{
+			Muti:    1,
+			MainSub: main,
+			// Backups: backups,
+		},
+
+		UserData: db,
 	}
 
 	autoSub := &pf.AutoSub{
-		DeviceResolver: cmdb,
+		DeviceResolver: cameraDB,
 		Storer:         &kv.Store{H: kvh},
-		/*
-			MainSub:        MustSubReq(holo.SubReq(conf.SubsConf.Main)),
-			Backups:        backups,
-			Muti:           conf.SubsConf.Muti,
-		*/
 	}
 
-	cache := pf.NewTiersCache[string, pf.ChannelExtra]().WithSecond(&kv.ChannelCache{H: kvh})
-	toucher := kv.NewTouch(kvh, 90)
+	//cache := pf.NewTiersCache[string, pf.ChannelExtra]().WithSecond(&kv.ChannelCache{H: kvh})
+	//toucher := kv.NewTouch(kvh, 90)
 
-	h := pf.NewMainHandle(
-		conf.ProjectConf.Project,
+	return autoSub, context.WithValue(ctx, keyReg, autoSub)
+	/*
 
-		pf.WithDeviceRegister(autoSub),
-		pf.WithDataHandler(backend),
-		pf.WithToucher(toucher),
-		pf.WithCache(cache),
-	)
+		h := pf.NewMainHandle(
+			v.GetString("project"),
 
-	return pf.PlatformHandle(h)
+			pf.WithDeviceRegister(autoSub),
+			pf.WithDataHandler(backend),
+			pf.WithToucher(toucher),
+			pf.WithCache(cache),
+		)
+
+		return pf.PlatformHandle(h)
+	*/
 }

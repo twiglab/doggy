@@ -3,7 +3,7 @@ package serv
 import (
 	"context"
 
-	"github.com/twiglab/doggy/pf"
+	"github.com/spf13/viper"
 )
 
 type ctxKey struct {
@@ -12,25 +12,15 @@ type ctxKey struct {
 
 var (
 	keyKvHandle = ctxKey{"_kvh_"}
-	keyCmdb     = ctxKey{"_cmdb_"}
 	keyBackend  = ctxKey{"_backend_"}
 	keyRootLog  = ctxKey{"_root_log_"}
+	keyReg      = ctxKey{"_auto_reg_"}
 )
 
-func buildCmdb(ctx context.Context, conf AppConf) (*pf.CameraDB, context.Context) {
-	cmdb := &pf.CameraDB{
-		User:     conf.CameraDBConf.CsvCameraDB.CameraUser,
-		Pwd:      conf.CameraDBConf.CsvCameraDB.CameraPwd,
-		UseHttps: true,
-	}
-
-	return cmdb, context.WithValue(ctx, keyCmdb, cmdb)
-}
-
-func buildAll(box context.Context, conf AppConf) context.Context {
-	_, box = buildRootlogger(box, conf)
-	_, box = buildKVHandle(box, conf)
-	_, box = buildCmdb(box, conf)
-	_, box = buildBackend2(box, conf)
+func buildAll(box context.Context, v *viper.Viper) context.Context {
+	_, box = buildRootLog(box, v)
+	_, box = buildKVHandle(box, v)
+	_, box = buildReg(box, v)
+	_, box = buildBackend2(box, v)
 	return box
 }

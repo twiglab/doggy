@@ -13,16 +13,6 @@ type ChannelUserData struct {
 	Z string
 }
 
-type Camera interface {
-	Setup(ctx context.Context) error
-	Close() error
-
-	SerialNumber() string
-	IpAddr() string
-	ChannelData(channelID string) (ChannelUserData, error)
+type DeviceResolver[R any, C any] interface {
+	Resolve(ctx context.Context, data R) (C, error)
 }
-
-type DeviceResolver[R any] interface {
-	Resolve(ctx context.Context, data R) (Camera, error)
-}
-

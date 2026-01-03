@@ -39,7 +39,7 @@ func WithDeviceRegister(h DeviceRegister) Option {
 	}
 }
 
-func WithToucher(t Cache[string, time.Time]) Option {
+func WithToucher(t TouchCache) Option {
 	return func(c *MainHandle) {
 		if t != nil {
 			c.toucher = t
@@ -47,7 +47,7 @@ func WithToucher(t Cache[string, time.Time]) Option {
 	}
 }
 
-func WithCache(cache Cache[string, ChannelExtra]) Option {
+func WithCache(cache ChannelCache) Option {
 	return func(c *MainHandle) {
 		if cache != nil {
 			c.cache = cache
