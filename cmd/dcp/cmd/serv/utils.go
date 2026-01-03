@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/spf13/viper"
 	"github.com/twiglab/doggy/be/taosdb"
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/kv"
@@ -31,10 +32,10 @@ func MustSubReq(req holo.SubscriptionReq, err error) holo.SubscriptionReq {
 	return req
 }
 
-func MustOpenKV(conf AppConf) *kv.Handle {
-	h, err := kv.FromURLs(conf.EtcdConf.URLs)
-	if err != nil {
-		log.Fatal(err)
+
+func subviper(prefix string, v *viper.Viper) *viper.Viper {
+	if len(prefix) == 0 {
+		return v
 	}
-	return h
+	return v.Sub("backend." + prefix)
 }

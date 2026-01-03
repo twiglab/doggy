@@ -1,11 +1,13 @@
 package serv
 
 import (
+	"context"
 	"io"
 	"log/slog"
 	"os"
 	"strings"
 
+	"github.com/spf13/viper"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
@@ -32,25 +34,29 @@ func RootLog(id string, logFile string, level slog.Level) *slog.Logger {
 	return logger
 }
 
-func BuildRootLog(conf AppConf) *slog.Logger {
-	logFile := conf.LoggerConf.LogFile
+func buildRootLog(ctx context.Context, v *viper.Viper) (*slog.Logger, context.Context) {
+	logFile := v.GetString("log.root.file")
 	if logFile == "" {
 		logFile = "dcp.log"
 	}
 
 	var level slog.Level
 
-	l := strings.ToUpper(conf.LoggerConf.Level)
-	switch l {
-	case "DEBUG", "debug":
+	l := v.GetString("log.root.level")
+
+	switch strings.ToLower(l) {
+	case "debug":
 		level = slog.LevelDebug
-	case "WARN", "warn":
+	case "warn":
 		level = slog.LevelWarn
-	case "ERROR", "error":
+	case "error":
 		level = slog.LevelError
 	default:
 		level = slog.LevelInfo
 	}
 
-	return RootLog(conf.ID, logFile, level)
+	id := v.GetString("id")
+
+	logger := RootLog(id, logFile, level)
+	return logger, context.WithValue(ctx, keyRootLog, logger)
 }

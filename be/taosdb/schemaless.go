@@ -47,10 +47,10 @@ func (s *Schemaless) handleCount(_ context.Context, data human.DataMix) error {
 	enc.SetPrecision(lineprotocol.Millisecond)
 	enc.StartLine(MA_COUNTY)
 
-	enc.AddTag(TAG_DIVICE_ID, data.Head.DeviceID)
+	enc.AddTag(TAG_DIVICE_ID, data.Head.Code)
 	enc.AddTag(TAG_PROJECT, data.Head.Project)
 	enc.AddTag(TAG_TYPE, data.Type)
-	enc.AddTag(TAG_UUID, data.Head.UUID)
+	enc.AddTag(TAG_UUID, data.Head.ID)
 
 	enc.AddField(FIELD_COUNT_IN, lineprotocol.MustNewValue(int64(data.HumanCountIn)))
 	enc.AddField(FIELD_COUNT_OUT, lineprotocol.MustNewValue(int64(data.HumanCountOut)))
@@ -76,10 +76,10 @@ func (s *Schemaless) handleDensity(_ context.Context, data human.DataMix) error 
 	enc.SetPrecision(lineprotocol.Millisecond)
 	enc.StartLine(MA_DENSITY)
 
-	enc.AddTag(TAG_DIVICE_ID, data.Head.DeviceID)
+	enc.AddTag(TAG_DIVICE_ID, data.Head.Code)
 	enc.AddTag(TAG_PROJECT, data.Head.Project)
 	enc.AddTag(TAG_TYPE, data.Type)
-	enc.AddTag(TAG_UUID, data.Head.UUID)
+	enc.AddTag(TAG_UUID, data.Head.ID)
 
 	enc.AddField(FIELD_DENSITY_COUNT, lineprotocol.MustNewValue(int64(data.HumanCount)))
 	enc.AddField(FIELD_DENSITY_RATIO, lineprotocol.MustNewValue(int64(data.AreaRatio)))
@@ -105,10 +105,10 @@ func (s *Schemaless) handleQueue(_ context.Context, data human.DataMix) error {
 	enc.SetPrecision(lineprotocol.Millisecond)
 	enc.StartLine(MA_QUEUE)
 
-	enc.AddTag(TAG_DIVICE_ID, data.Head.DeviceID)
+	enc.AddTag(TAG_DIVICE_ID, data.Head.Code)
 	enc.AddTag(TAG_PROJECT, data.Head.Project)
 	enc.AddTag(TAG_TYPE, data.Type)
-	enc.AddTag(TAG_UUID, data.Head.UUID)
+	enc.AddTag(TAG_UUID, data.Head.ID)
 
 	enc.AddField(FIELD_QUEUE_COUNT, lineprotocol.MustNewValue(int64(data.HumanCount)))
 	enc.AddField(FIELD_QUEUE_TIME, lineprotocol.MustNewValue(int64(data.QueueTime)))

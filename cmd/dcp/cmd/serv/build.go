@@ -2,15 +2,7 @@ package serv
 
 import (
 	"context"
-	"log"
-	"log/slog"
-	"time"
 
-	"github.com/taosdata/driver-go/v3/ws/schemaless"
-	"github.com/twiglab/doggy/be"
-	"github.com/twiglab/doggy/be/mqttc"
-	"github.com/twiglab/doggy/be/taosdb"
-	"github.com/twiglab/doggy/kv"
 	"github.com/twiglab/doggy/pf"
 )
 
@@ -19,31 +11,11 @@ type ctxKey struct {
 }
 
 var (
-	keyKvHandle = ctxKey{"_ehc_"}
+	keyKvHandle = ctxKey{"_kvh_"}
 	keyCmdb     = ctxKey{"_cmdb_"}
 	keyBackend  = ctxKey{"_backend_"}
 	keyRootLog  = ctxKey{"_root_log_"}
 )
-
-func backendName(conf AppConf) string {
-	switch conf.BackendConf.Use {
-	case "taos", "TAOS":
-		return be.TAOS
-	case "mqtt", "MQTT":
-		return be.MQTT
-	}
-	return be.NONE
-}
-
-func buildRootlogger(ctx context.Context, conf AppConf) (*slog.Logger, context.Context) {
-	logger := BuildRootLog(conf)
-	return logger, context.WithValue(ctx, keyRootLog, logger)
-}
-
-func buildKVHandle(ctx context.Context, conf AppConf) (*kv.Handle, context.Context) {
-	h := MustOpenKV(conf)
-	return h, context.WithValue(ctx, keyKvHandle, h)
-}
 
 func buildCmdb(ctx context.Context, conf AppConf) (*pf.CameraDB, context.Context) {
 	cmdb := &pf.CameraDB{
@@ -55,47 +27,10 @@ func buildCmdb(ctx context.Context, conf AppConf) (*pf.CameraDB, context.Context
 	return cmdb, context.WithValue(ctx, keyCmdb, cmdb)
 }
 
-func buildTaos(ctx context.Context, conf AppConf) (*taosdb.Schemaless, context.Context) {
-	url := taosdb.SchemalessURL(
-		conf.BackendConf.TaosDBConf.Addr,
-		conf.BackendConf.TaosDBConf.Port,
-	)
-	sc := schemaless.NewConfig(url, 1,
-		schemaless.SetDb(conf.BackendConf.TaosDBConf.DBName),
-		schemaless.SetAutoReconnect(true),
-		schemaless.SetUser(conf.BackendConf.TaosDBConf.Username),
-		schemaless.SetPassword(conf.BackendConf.TaosDBConf.Password),
-		schemaless.SetReadTimeout(5*time.Second),
-		schemaless.SetWriteTimeout(5*time.Second),
-	)
-	s, err := schemaless.NewSchemaless(sc)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	schema := taosdb.NewSchLe(s)
-	return schema, context.WithValue(ctx, keyBackend, schema)
-}
-
-func buildMQTT(ctx context.Context, _ AppConf) (pf.DataHandler, context.Context) {
-	c := mqttc.New(nil)
-	return c, context.WithValue(ctx, keyBackend, c)
-}
-
-func buildBackend(ctx context.Context, conf AppConf) (pf.DataHandler, context.Context) {
-	switch backendName(conf) {
-	case be.TAOS:
-		return buildTaos(ctx, conf)
-	case be.MQTT:
-		return buildMQTT(ctx, conf)
-	}
-	return pf.NoneAction, context.WithValue(ctx, keyBackend, pf.NoneAction)
-}
-
 func buildAll(box context.Context, conf AppConf) context.Context {
 	_, box = buildRootlogger(box, conf)
 	_, box = buildKVHandle(box, conf)
 	_, box = buildCmdb(box, conf)
-	_, box = buildBackend(box, conf)
+	_, box = buildBackend2(box, conf)
 	return box
 }

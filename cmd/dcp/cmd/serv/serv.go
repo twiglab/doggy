@@ -11,11 +11,10 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
-	"go.yaml.in/yaml/v3"
 )
 
 var cfgFile string
+var vp *viper.Viper = viper.New()
 
 var ServCmd = &cobra.Command{
 	Use:   "serv",
@@ -33,30 +32,18 @@ func init() {
 
 func initConfig() {
 	if cfgFile != "" {
-		viper.SetConfigFile(cfgFile)
+		vp.SetConfigFile(cfgFile)
 	} else {
-		viper.AddConfigPath(".")
-		viper.SetConfigName("dcp")
-		viper.SetConfigType("yaml")
+		vp.AddConfigPath(".")
+		vp.SetConfigName("dcp")
+		vp.SetConfigType("toml")
 	}
 
-	viper.AutomaticEnv()
+	vp.AutomaticEnv()
 
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+	if err := vp.ReadInConfig(); err == nil {
+		fmt.Fprintln(os.Stderr, "Using config file:", vp.ConfigFileUsed())
 	}
-}
-
-func printConf(conf AppConf) {
-	enc := yaml.NewEncoder(os.Stdout)
-	defer enc.Close()
-	enc.SetIndent(2)
-	fmt.Println("--------------------")
-	enc.Encode(conf)
-	fmt.Println("--------------------")
-	fmt.Println("backend:", conf.BackendConf.Use)
-	fmt.Println("muti-sub :", conf.SubsConf.Muti)
-	fmt.Println("--------------------")
 }
 
 func fullMux(conf AppConf) http.Handler {
@@ -66,13 +53,6 @@ func fullMux(conf AppConf) http.Handler {
 }
 
 func servCmd() {
-	var conf AppConf
-
-	if err := viper.Unmarshal(&conf); err != nil {
-		log.Fatal(err)
-	}
-
-	printConf(conf)
 
 	RunWithConf(conf)
 }
