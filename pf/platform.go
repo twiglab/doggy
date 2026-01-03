@@ -68,12 +68,9 @@ type MainHandle struct {
 }
 
 func NewMainHandle(project string, opts ...Option) *MainHandle {
-	var logA = LogAction{}
 	h := &MainHandle{
-		deviceRegister: logA,
-		dataHandler:    logA,
-		toucher:        emptyCache[string, time.Time]{}, // 用于防止摄像头短时间内重复注册
-		cache:          emptyCache[string, ChannelExtra]{},
+		toucher: emptyCache[string, time.Time]{}, // 用于防止摄像头短时间内重复注册
+		cache:   emptyCache[string, ChannelExtra]{},
 
 		project: project,
 	}

@@ -26,7 +26,7 @@ func backendName2(key string) string {
 	return be.NOOP
 }
 
-func buildTaos2(ctx context.Context, v *viper.Viper) (*taosdb.Schemaless, error) {
+func buildTaos2(_ context.Context, v *viper.Viper) (*taosdb.Schemaless, error) {
 	url := taosdb.SchemalessURL(
 		v.GetString("backend.taos.addr"),
 		v.GetInt("backend.taos.port"),
@@ -47,7 +47,7 @@ func buildTaos2(ctx context.Context, v *viper.Viper) (*taosdb.Schemaless, error)
 	return taosdb.NewSchLe(s), nil
 }
 
-func buildMQTT2(ctx context.Context, v *viper.Viper) (*mqttc.MQTTAction, error) {
+func buildMQTT2(_ context.Context, v *viper.Viper) (*mqttc.MQTTAction, error) {
 	c := &mqttc.MQTTAction{}
 	return c, nil
 }

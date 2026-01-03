@@ -3,6 +3,7 @@ package be
 import (
 	"context"
 	"errors"
+	"log/slog"
 
 	"github.com/twiglab/doggy/pkg/human"
 )
@@ -54,5 +55,26 @@ func (a MutiAction) HandleData(ctx context.Context, data human.DataMix) error {
 			return err
 		}
 	}
+	return nil
+}
+
+type LogAction struct {
+	log *slog.Logger
+}
+
+func NewLogAction(log *slog.Logger) LogAction {
+	l := slog.Default()
+	if log != nil {
+		l = log
+	}
+	return LogAction{log: l}
+}
+
+func (d LogAction) Name() string {
+	return "log"
+}
+
+func (d LogAction) HandleData(ctx context.Context, data human.DataMix) error {
+	slog.DebugContext(ctx, "handleData", slog.Any("data", data))
 	return nil
 }
