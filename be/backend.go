@@ -16,6 +16,7 @@ const (
 	MQTT5 = "mqtt5" // mqtt5 保留
 	HTTP  = "http"
 	LOG   = "log"
+	FILE  = "file"
 	NOOP  = "noop"
 )
 
@@ -75,6 +76,5 @@ func (d LogAction) Name() string {
 }
 
 func (d LogAction) HandleData(ctx context.Context, data human.DataMix) error {
-	slog.DebugContext(ctx, "handleData", slog.Any("data", data))
 	return nil
 }
