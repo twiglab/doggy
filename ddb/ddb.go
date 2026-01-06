@@ -35,10 +35,6 @@ func New(from string) (*DuckDB, error) {
 func (d *DuckDB) Load(ctx context.Context) error {
 
 	nextTbl, cr := losdSql(d.tbl, d.from)
-	dr := dropSql(nextTbl)
-	if _, err := d.db.ExecContext(ctx, dr); err != nil {
-		return err
-	}
 	if _, err := d.db.ExecContext(ctx, cr); err != nil {
 		return err
 	}
@@ -70,12 +66,10 @@ func (d *DuckDB) Loop(ctx context.Context) (chan struct{}, chan struct{}, error)
 			case <-reLoadCh:
 				_ = d.Load(ctx)
 			case <-soptCh:
-				close(soptCh)
-				close(reLoadCh)
 				return
 			}
 		}
-	}(context.Background())
+	}(ctx)
 
 	return reLoadCh, soptCh, nil
 }

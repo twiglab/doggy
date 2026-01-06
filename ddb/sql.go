@@ -4,16 +4,11 @@ import "fmt"
 
 const (
 	sqlQuery  = "SELECT code, name  FROM  "
-	dropTable = "drop table if exists  "
-	createSql = "create table %s as %s "
+	createSql = "create or replace table %s as %s "
 )
 
 func querySql(tbl string) string {
 	return sqlQuery + tbl + " where uuid = $1"
-}
-
-func dropSql(tbl string) string {
-	return dropTable + tbl
 }
 
 func nextTbl(curr string) string {
