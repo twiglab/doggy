@@ -18,7 +18,7 @@ type DuckDB struct {
 }
 
 func New(from string) (*DuckDB, error) {
-	db, err := sql.Open("duckdb", "memory")
+	db, err := sql.Open("duckdb", "")
 	if err != nil {
 		return nil, err
 	}
