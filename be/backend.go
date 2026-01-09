@@ -11,13 +11,13 @@ import (
 var ErrUnimplType = errors.New("unsupport type")
 
 const (
-	TAOS  = "taos"
-	MQTT  = "mqtt"  // mqtt 3.11
+	TAOS = "taos"
+	MQTT = "mqtt" // mqtt 3.11
+	LOG  = "log"
+
 	MQTT5 = "mqtt5" // mqtt5 保留
-	HTTP  = "http"
-	LOG   = "log"
-	FILE  = "file"
-	NOOP  = "noop"
+	HTTP  = "http"  // 保留，暂不提供
+	NOOP  = "noop"  // 保留，仅作占位符
 )
 
 func HasHuman(in, out int) bool {
@@ -72,7 +72,7 @@ func NewLogAction(log *slog.Logger) LogAction {
 }
 
 func (d LogAction) Name() string {
-	return "log"
+	return LOG
 }
 
 func (d LogAction) HandleData(ctx context.Context, data human.DataMix) error {
