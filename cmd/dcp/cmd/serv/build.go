@@ -21,6 +21,6 @@ func buildAll(box context.Context, v *viper.Viper) context.Context {
 	_, box = buildRootLog(box, v)
 	_, box = buildKVHandle(box, v)
 	_, box = buildReg(box, v)
-	_, box = buildBackend2(box, v)
+	_, box = buildBackend(box, v)
 	return box
 }

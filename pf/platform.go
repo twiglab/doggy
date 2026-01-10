@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 	"github.com/twiglab/doggy/holo"
 	"github.com/twiglab/doggy/hx"
 	"github.com/twiglab/doggy/pkg/human"
@@ -99,9 +100,9 @@ func (h *MainHandle) HandleMetadata(ctx context.Context, data holo.MetadataObjec
 	}
 
 	head := human.Head{
-		Project: h.project,
-		ID:      data.MetadataObject.Common.UUID,
-		Code:    data.MetadataObject.Common.DeviceID,
+		Project:   h.project,
+		ChannelID: data.MetadataObject.Common.UUID,
+		Code:      data.MetadataObject.Common.DeviceID,
 	}
 	if item, ok, _ := h.cache.Get(ctx, data.MetadataObject.Common.UUID); ok {
 		head.SN = item.SN
@@ -120,6 +121,7 @@ func (h *MainHandle) HandleMetadata(ctx context.Context, data holo.MetadataObjec
 			Head: head,
 
 			Type: dataType(target.TargetType),
+			UUID: v7(),
 
 			HumanCountIn:  target.HumanCountIn,
 			HumanCountOut: target.HumanCountOut,
@@ -139,6 +141,10 @@ func (h *MainHandle) HandleMetadata(ctx context.Context, data holo.MetadataObjec
 		}
 	}
 	return nil
+}
+
+func v7() uuid.UUID {
+	return uuid.Must(uuid.NewV7())
 }
 
 func dataType(t int) string {

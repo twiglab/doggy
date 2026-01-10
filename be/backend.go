@@ -15,12 +15,11 @@ var ErrUnimplType = errors.New("unsupport type")
 const (
 	TAOS = "taos"
 	MQTT = "mqtt" // mqtt 3.11
-	FILE = "file"
+	LOG  = "log"
 
 	MQTT5 = "mqtt5" // mqtt5 保留
 	HTTP  = "http"  // 保留，暂不提供
 
-	LOG  = "log"
 	NOOP = "noop" // 保留，仅作占位符
 )
 
@@ -63,15 +62,15 @@ func (a MutiAction) HandleData(ctx context.Context, data human.DataMix) error {
 	return nil
 }
 
-type FileAction struct {
+type LogAction struct {
 	logDensity *slog.Logger // density 密度
 	logQueue   *slog.Logger // queue 排队长度
 	logCount   *slog.Logger // count 人数
 	logDir     string
 }
 
-func NewFileAction(logDir string) FileAction {
-	return FileAction{
+func NewLogAction(logDir string) LogAction {
+	return LogAction{
 		logDensity: newLog(logfile(logDir, human.DENSITY)),
 		logQueue:   newLog(logfile(logDir, human.QUEUE)),
 		logCount:   newLog(logfile(logDir, human.COUNT)),
@@ -79,11 +78,11 @@ func NewFileAction(logDir string) FileAction {
 	}
 }
 
-func (d FileAction) Name() string {
-	return FILE
+func (d LogAction) Name() string {
+	return LOG
 }
 
-func (d FileAction) HandleData(ctx context.Context, data human.DataMix) error {
+func (d LogAction) HandleData(ctx context.Context, data human.DataMix) error {
 	switch data.Type {
 	case human.COUNT:
 		d.logCount.InfoContext(ctx, human.COUNT, slog.Any("data", data))
@@ -103,8 +102,8 @@ func newLog(logFile string) *slog.Logger {
 	out := &lumberjack.Logger{
 		Filename:   logFile,
 		MaxSize:    10, // megabytes
-		MaxBackups: 10,
-		MaxAge:     10, //days
+		MaxBackups: 30,
+		MaxAge:     30, //days
 	}
 	return slog.New(slog.NewJSONHandler(out, nil))
 }

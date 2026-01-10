@@ -1,6 +1,10 @@
 package human
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 const (
 	DENSITY = "density"
@@ -10,11 +14,11 @@ const (
 )
 
 type Head struct {
-	SN      string `json:"sn"`
-	IpAddr  string `json:"ipAddr"`
-	ID      string `json:"id"`
-	Code    string `json:"code"`
-	Project string `json:"project"`
+	SN        string `json:"sn"`
+	IpAddr    string `json:"ipAddr"`
+	ChannelID string `json:"channelID"`
+	Code      string `json:"code"`
+	Project   string `json:"project"`
 
 	X string `json:"x"`
 	Y string `json:"y"`
@@ -24,7 +28,8 @@ type Head struct {
 type DataMix struct {
 	Head Head `json:"head"`
 
-	Type string `json:"type"`
+	Type string    `json:"type"`
+	UUID uuid.UUID `json:"uuid"`
 
 	HumanCountIn  int       `json:"humanCountIn,omitempty"`
 	HumanCountOut int       `json:"humanCountOut,omitempty"`

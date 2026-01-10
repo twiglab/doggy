@@ -35,7 +35,7 @@ func (c *MQTTAction) HandleData(ctx context.Context, data human.DataMix) error {
 		return err
 	}
 
-	topic := pushTopic(data.Head.ID, data.Type)
+	topic := pushTopic(data.Head.ChannelID, data.Type)
 
 	pubToken := c.client.Publish(topic, 0x00, false, bb)
 	pubToken.Wait()

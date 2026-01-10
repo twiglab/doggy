@@ -2,7 +2,6 @@ package serv
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/spf13/viper"
@@ -26,7 +25,7 @@ func backendName2(key string) string {
 	return be.NOOP
 }
 
-func buildTaos2(_ context.Context, v *viper.Viper) (*taosdb.Schemaless, error) {
+func buildTaos(_ context.Context, v *viper.Viper) (*taosdb.Schemaless, error) {
 	url := taosdb.SchemalessURL(
 		v.GetString("backend.taos.addr"),
 		v.GetInt("backend.taos.port"),
@@ -47,33 +46,29 @@ func buildTaos2(_ context.Context, v *viper.Viper) (*taosdb.Schemaless, error) {
 	return taosdb.NewSchLe(s), nil
 }
 
-func buildMQTT2(_ context.Context, v *viper.Viper) (*mqttc.MQTTAction, error) {
+func buildMQTT(_ context.Context, v *viper.Viper) (*mqttc.MQTTAction, error) {
 	c := &mqttc.MQTTAction{}
 	return c, nil
 }
 
-func buildBackend2(ctx context.Context, v *viper.Viper) (be.MutiAction, context.Context) {
-	var act be.MutiAction
+func buildLogAction(_ context.Context, v *viper.Viper) (be.LogAction, error) {
+	logDir := v.GetString("backend.log.logdir")
+	return be.NewLogAction(logDir), nil
+}
+
+func buildBackend(ctx context.Context, v *viper.Viper) (be.MutiAction, context.Context) {
+	var acts be.MutiAction
 
 	blist := v.GetStringSlice("backend.list")
 
 	for _, bk := range blist {
 		switch backendName2(bk) {
 		case be.TAOS:
-			h, err := buildTaos2(ctx, v)
-			if err != nil {
-				log.Println(err)
-			}
-			act.Add(h)
 		case be.MQTT:
-			h, err := buildMQTT2(ctx, v)
-			if err != nil {
-				log.Println(err)
-			}
-			act.Add(h)
-		case be.HTTP:
 		case be.LOG:
+			la, _ := buildLogAction(ctx, v)
+			acts.Add(la)
 		}
 	}
-	return act, context.WithValue(ctx, keyBackend, act)
+	return acts, context.WithValue(ctx, keyBackend, acts)
 }
