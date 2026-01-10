@@ -68,17 +68,4 @@ func buildReg(ctx context.Context, v *viper.Viper) (pf.DeviceRegister, context.C
 	//toucher := kv.NewTouch(kvh, 90)
 
 	return autoSub, context.WithValue(ctx, keyReg, autoSub)
-	/*
-
-		h := pf.NewMainHandle(
-			v.GetString("project"),
-
-			pf.WithDeviceRegister(autoSub),
-			pf.WithDataHandler(backend),
-			pf.WithToucher(toucher),
-			pf.WithCache(cache),
-		)
-
-		return pf.PlatformHandle(h)
-	*/
 }

@@ -48,7 +48,7 @@ func initConfig() {
 func servCmd() error {
 
 	ctx := buildAll(context.Background(), vp)
-	mux := MainHandle(ctx, vp.GetString("project"))
+	mux := MainHandle(ctx, vp.GetString("project.id"))
 	addr := vp.GetString("server.addr")
 
 	s := hx.NewServer(ctx, addr, mux)
