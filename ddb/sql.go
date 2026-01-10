@@ -11,6 +11,10 @@ func querySql(tbl string) string {
 	return sqlQuery + tbl + " where uuid = $1"
 }
 
+func listSql(tbl string) string {
+	return sqlQuery + tbl
+}
+
 func nextTbl(curr string) string {
 	if curr == "cmdb_a" {
 		return "cmdb_b"

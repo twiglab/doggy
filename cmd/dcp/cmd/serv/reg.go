@@ -15,10 +15,26 @@ func buildReg(ctx context.Context, v *viper.Viper) (pf.DeviceRegister, context.C
 	kvh := ctx.Value(keyKvHandle).(*kv.Handle)
 	//backend := ctx.Value(keyBackend).(pf.DataHandler)
 
-	db, err := ddb.New(v.GetString("cmdb.ddb.from"))
+	ddb, err := ddb.New(v.GetString("cmdb.ddb.from"))
 	if err != nil {
 		log.Fatal(err)
 	}
+	if _, _, err := ddb.Loop(ctx); err != nil {
+		log.Fatal(err)
+	}
+
+	/*
+		fmt.Println(ddb.TblName(ctx))
+
+		rs, err := ddb.List(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		for _, r := range rs {
+			fmt.Println(r.SN, r.UUID, r.Code, r.X, r.Y, r.Z)
+		}
+	*/
 
 	main := MustSubReq(holo.SubReq(v.GetString("camera.setup.main")))
 	/*
@@ -40,7 +56,7 @@ func buildReg(ctx context.Context, v *viper.Viper) (pf.DeviceRegister, context.C
 			// Backups: backups,
 		},
 
-		UserData: db,
+		UserData: ddb,
 	}
 
 	autoSub := &pf.AutoSub{

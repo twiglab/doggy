@@ -57,7 +57,7 @@ func (d *DuckDB) Loop(ctx context.Context) (chan struct{}, chan struct{}, error)
 
 	go func(ctx context.Context) {
 
-		ticker := time.NewTicker(3 * time.Hour)
+		ticker := time.NewTicker(time.Hour)
 		defer ticker.Stop()
 
 		for {
@@ -77,6 +77,29 @@ func (d *DuckDB) Loop(ctx context.Context) (chan struct{}, chan struct{}, error)
 	return reLoadCh, soptCh, nil
 }
 
+func (d *DuckDB) List(ctx context.Context) (rs []pf.ChannelUserData, err error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
+	listsql := listSql(d.tbl)
+
+	var rows *sql.Rows
+	if rows, err = d.db.QueryContext(ctx, listsql); err != nil {
+		return
+	}
+	defer func() { _ = rows.Close() }()
+
+	for rows.Next() {
+		var data pf.ChannelUserData
+		if err = rows.Scan(&data.SN, &data.UUID, &data.Code, &data.X, &data.Y, &data.Z); err != nil {
+			return
+		}
+		rs = append(rs, data)
+	}
+	return
+}
+
+func (d *DuckDB) TblName(ctx context.Context) string { return d.tbl }
 func (d *DuckDB) Get(ctx context.Context, id string) (data pf.ChannelUserData, ok bool, err error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()

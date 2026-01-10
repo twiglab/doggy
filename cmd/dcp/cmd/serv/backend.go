@@ -59,7 +59,7 @@ func buildLogAction(_ context.Context, v *viper.Viper) (be.LogAction, error) {
 func buildBackend(ctx context.Context, v *viper.Viper) (be.MutiAction, context.Context) {
 	var acts be.MutiAction
 
-	blist := v.GetStringSlice("backend.list")
+	blist := v.GetStringSlice("backend.use")
 
 	for _, bk := range blist {
 		switch backendName2(bk) {
