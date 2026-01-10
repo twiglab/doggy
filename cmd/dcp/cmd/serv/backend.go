@@ -12,7 +12,11 @@ import (
 	"github.com/twiglab/doggy/be/taosdb"
 )
 
-func backendName2(key string) string {
+type adder interface {
+	Add(h be.DataHandler)
+}
+
+func backendName(key string) string {
 	switch key {
 	case "taos", "TAOS":
 		return be.TAOS
@@ -24,7 +28,13 @@ func backendName2(key string) string {
 	return be.NOOP
 }
 
-func buildTaosAction(_ context.Context, v *viper.Viper) (*taosdb.Schemaless, error) {
+func buildLogAction(a adder, v *viper.Viper) error {
+	logDir := v.GetString("backend.log.logdir")
+	a.Add(be.NewLogAction(logDir))
+	return nil
+}
+
+func buildTaosAction(a adder, v *viper.Viper) error {
 	url := taosdb.SchemalessURL(
 		v.GetString("backend.taos.addr"),
 		v.GetInt("backend.taos.port"),
@@ -39,13 +49,14 @@ func buildTaosAction(_ context.Context, v *viper.Viper) (*taosdb.Schemaless, err
 	)
 	s, err := schemaless.NewSchemaless(sc)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return taosdb.NewSchLe(s), nil
+	a.Add(taosdb.NewSchLe(s))
+	return nil
 }
 
-func buildMQTTAction(_ context.Context, v *viper.Viper) (*mqttc.MQTTAction, error) {
+func buildMQTTAction(a adder, v *viper.Viper) error {
 	brokers := v.GetStringSlice("backend.mqtt.brokers")
 	clientID := v.GetString("backend.mqtt.cliend-id")
 	cli, err := mqttc.BuildMQTTCLient(mqttc.MQTTConf{
@@ -53,14 +64,10 @@ func buildMQTTAction(_ context.Context, v *viper.Viper) (*mqttc.MQTTAction, erro
 		Borkers:  brokers,
 	})
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return mqttc.NewMQTTAction(cli), nil
-}
-
-func buildLogAction(_ context.Context, v *viper.Viper) (be.LogAction, error) {
-	logDir := v.GetString("backend.log.logdir")
-	return be.NewLogAction(logDir), nil
+	a.Add(mqttc.NewMQTTAction(cli))
+	return nil
 }
 
 func buildBackend(ctx context.Context, v *viper.Viper) (be.MutiAction, context.Context) {
@@ -69,24 +76,17 @@ func buildBackend(ctx context.Context, v *viper.Viper) (be.MutiAction, context.C
 	blist := v.GetStringSlice("backend.use")
 
 	for _, bk := range blist {
-		switch backendName2(bk) {
+		switch backendName(bk) {
 		case be.TAOS:
-			sch, err := buildTaosAction(ctx, v)
-			if err != nil {
+			if err := buildTaosAction(&acts, v); err != nil {
 				log.Println(err)
-			} else {
-				acts.Add(sch)
 			}
 		case be.MQTT:
-			mqc, err := buildMQTTAction(ctx, v)
-			if err != nil {
+			if err := buildMQTTAction(&acts, v); err != nil {
 				log.Println(err)
-			} else {
-				acts.Add(mqc)
 			}
 		case be.LOG:
-			la, _ := buildLogAction(ctx, v)
-			acts.Add(la)
+			_ = buildLogAction(&acts, v)
 		}
 	}
 	return acts, context.WithValue(ctx, keyBackend, acts)

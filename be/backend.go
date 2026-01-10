@@ -48,11 +48,10 @@ func (a MutiAction) Name() string {
 	return "muti"
 }
 
-func (a *MutiAction) Add(h DataHandler) *MutiAction {
+func (a *MutiAction) Add(h DataHandler) {
 	if h != nil {
 		a.actions = append(a.actions, h)
 	}
-	return a
 }
 
 func (a MutiAction) HandleData(ctx context.Context, data human.DataMix) error {
