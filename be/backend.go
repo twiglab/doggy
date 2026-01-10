@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"log/slog"
+	"path/filepath"
 
 	"github.com/twiglab/doggy/pkg/human"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 var ErrUnimplType = errors.New("unsupport type")
@@ -13,11 +15,13 @@ var ErrUnimplType = errors.New("unsupport type")
 const (
 	TAOS = "taos"
 	MQTT = "mqtt" // mqtt 3.11
-	LOG  = "log"
+	FILE = "file"
 
 	MQTT5 = "mqtt5" // mqtt5 保留
 	HTTP  = "http"  // 保留，暂不提供
-	NOOP  = "noop"  // 保留，仅作占位符
+
+	LOG  = "log"
+	NOOP = "noop" // 保留，仅作占位符
 )
 
 func HasHuman(in, out int) bool {
@@ -59,22 +63,48 @@ func (a MutiAction) HandleData(ctx context.Context, data human.DataMix) error {
 	return nil
 }
 
-type LogAction struct {
-	log *slog.Logger
+type FileAction struct {
+	logDensity *slog.Logger // density 密度
+	logQueue   *slog.Logger // queue 排队长度
+	logCount   *slog.Logger // count 人数
+	logDir     string
 }
 
-func NewLogAction(log *slog.Logger) LogAction {
-	l := slog.Default()
-	if log != nil {
-		l = log
+func NewFileAction(logDir string) FileAction {
+	return FileAction{
+		logDensity: newLog(logfile(logDir, human.DENSITY)),
+		logQueue:   newLog(logfile(logDir, human.QUEUE)),
+		logCount:   newLog(logfile(logDir, human.COUNT)),
+		logDir:     logDir,
 	}
-	return LogAction{log: l}
 }
 
-func (d LogAction) Name() string {
-	return LOG
+func (d FileAction) Name() string {
+	return FILE
 }
 
-func (d LogAction) HandleData(ctx context.Context, data human.DataMix) error {
+func (d FileAction) HandleData(ctx context.Context, data human.DataMix) error {
+	switch data.Type {
+	case human.COUNT:
+		d.logCount.InfoContext(ctx, human.COUNT, slog.Any("data", data))
+	case human.QUEUE:
+		d.logQueue.InfoContext(ctx, human.QUEUE, slog.Any("data", data))
+	case human.DENSITY:
+		d.logDensity.InfoContext(ctx, human.DENSITY, slog.Any("data", data))
+	}
 	return nil
+}
+
+func logfile(dir, file string) string {
+	return filepath.Join(dir, file)
+}
+
+func newLog(logFile string) *slog.Logger {
+	out := &lumberjack.Logger{
+		Filename:   logFile,
+		MaxSize:    10, // megabytes
+		MaxBackups: 10,
+		MaxAge:     10, //days
+	}
+	return slog.New(slog.NewJSONHandler(out, nil))
 }
