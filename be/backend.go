@@ -69,12 +69,19 @@ type LogAction struct {
 	logDir     string
 }
 
+const dir = "belogs"
+
 func NewLogAction(logDir string) LogAction {
+	path := dir
+	if logDir == "" {
+		path = logDir
+	}
+
 	return LogAction{
-		logDensity: newLog(logfile(logDir, human.DENSITY)),
-		logQueue:   newLog(logfile(logDir, human.QUEUE)),
-		logCount:   newLog(logfile(logDir, human.COUNT)),
-		logDir:     logDir,
+		logDensity: newLog(logfile(path, human.DENSITY)),
+		logQueue:   newLog(logfile(path, human.QUEUE)),
+		logCount:   newLog(logfile(path, human.COUNT)),
+		logDir:     path,
 	}
 }
 
@@ -95,7 +102,8 @@ func (d LogAction) HandleData(ctx context.Context, data human.DataMix) error {
 }
 
 func logfile(dir, file string) string {
-	return filepath.Join(dir, file)
+	logf := file + ".log"
+	return filepath.Join(dir, logf)
 }
 
 func newLog(logFile string) *slog.Logger {
