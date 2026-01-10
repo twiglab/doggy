@@ -3,7 +3,7 @@ package ddb
 import "fmt"
 
 const (
-	sqlQuery  = "SELECT code, name  FROM  "
+	sqlQuery  = "SELECT sn, uuid, code, x, y, z  FROM  "
 	createSql = "create or replace table %s as %s "
 )
 

@@ -5,6 +5,7 @@ import (
 )
 
 type ChannelUserData struct {
+	SN   string
 	UUID string
 	Code string
 

@@ -109,6 +109,10 @@ func (h *MainHandle) HandleMetadata(ctx context.Context, data holo.MetadataObjec
 		if item.Code != "" {
 			head.Code = item.Code
 		}
+
+		head.X = item.X
+		head.Y = item.Y
+		head.Z = item.Z
 	}
 
 	for _, target := range data.MetadataObject.TargetList {

@@ -35,14 +35,14 @@ func (a *AutoSub) AutoRegister(ctx context.Context, data holo.DeviceAutoRegister
 				SN:     camera.SerialNumber(),
 				IpAddr: camera.IpAddr(),
 
+				RegTime: time.Now(),
+
 				UUID: d.UUID,
 				Code: d.Code,
 
 				X: d.X,
 				Y: d.Y,
 				Z: d.Z,
-
-				RegTime: time.Now(),
 			})
 		}
 	}

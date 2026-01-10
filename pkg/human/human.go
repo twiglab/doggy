@@ -15,6 +15,10 @@ type Head struct {
 	ID      string `json:"id"`
 	Code    string `json:"code"`
 	Project string `json:"project"`
+
+	X string `json:"x"`
+	Y string `json:"y"`
+	Z string `json:"z"`
 }
 
 type DataMix struct {

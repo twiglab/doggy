@@ -6,10 +6,15 @@ import (
 )
 
 const (
-	TAG_UUID      = "uuid"
-	TAG_TYPE      = "type"
-	TAG_DIVICE_ID = "device_id"
-	TAG_PROJECT   = "project"
+	TAG_CODE    = "code"
+	TAG_PROJECT = "project"
+	TAG_SN      = "sn"
+	// TAG_TYPE    = "type"
+	TAG_UUID = "uuid"
+
+	TAG_X = "x"
+	TAG_Y = "y"
+	TAG_Z = "z"
 
 	FIELD_DENSITY_COUNT = "human_count"
 	FIELD_DENSITY_RATIO = "human_ratio"

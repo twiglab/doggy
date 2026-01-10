@@ -29,7 +29,8 @@ func New(from string) (*DuckDB, error) {
 	return &DuckDB{
 		db:   db,
 		from: from,
-		tbl:  "x"}, nil
+		tbl:  "x",
+	}, nil
 }
 
 func (d *DuckDB) Load(ctx context.Context) error {
@@ -67,6 +68,8 @@ func (d *DuckDB) Loop(ctx context.Context) (chan struct{}, chan struct{}, error)
 				_ = d.Load(ctx)
 			case <-soptCh:
 				return
+			case <-ctx.Done():
+				return
 			}
 		}
 	}(ctx)
@@ -80,7 +83,7 @@ func (d *DuckDB) Get(ctx context.Context, id string) (data pf.ChannelUserData, o
 
 	sql := querySql(d.tbl)
 	row := d.db.QueryRowContext(ctx, sql, id)
-	err = row.Scan(&data.UUID, &data.Code, &data.X, &data.Y, &data.Z)
+	err = row.Scan(&data.SN, &data.UUID, &data.Code, &data.X, &data.Y, &data.Z)
 	return
 }
 
