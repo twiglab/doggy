@@ -49,7 +49,9 @@ func (a MutiAction) Name() string {
 }
 
 func (a *MutiAction) Add(h DataHandler) *MutiAction {
-	a.actions = append(a.actions, h)
+	if h != nil {
+		a.actions = append(a.actions, h)
+	}
 	return a
 }
 

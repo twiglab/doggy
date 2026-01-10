@@ -51,6 +51,11 @@ type MQTTConf struct {
 func BuildMQTTCLient(conf MQTTConf) (mqtt.Client, error) {
 	opts := mqtt.NewClientOptions()
 	opts.SetClientID(conf.ClientID)
+
+	for _, b := range conf.Borkers {
+		opts.AddBroker(b)
+	}
+
 	client := mqtt.NewClient(opts)
 	// 连接到 Broker
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
