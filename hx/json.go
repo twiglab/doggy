@@ -11,12 +11,6 @@ func JsonTo(code int, resp any, w http.ResponseWriter) error {
 	return json.MarshalWrite(w, resp)
 }
 
-// Deprecated: use Bind
-func BindAndClose(r *http.Request, p any) error {
-	defer r.Body.Close()
-	return json.UnmarshalRead(r.Body, p)
-}
-
 func Bind(r *http.Request, p any) error {
 	return json.UnmarshalRead(r.Body, p)
 }

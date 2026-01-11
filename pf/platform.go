@@ -164,7 +164,7 @@ func DeviceAutoRegisterUpload(h *MainHandle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var data holo.DeviceAutoRegisterData
-		if err := hx.BindAndClose(r, &data); err != nil {
+		if err := hx.Bind(r, &data); err != nil {
 			_ = hx.JsonTo(http.StatusInternalServerError,
 				holo.CommonResponseFailedError(r.URL.Path, err), w)
 			return
@@ -189,7 +189,7 @@ func DeviceAutoRegisterUpload(h *MainHandle) http.HandlerFunc {
 func MetadataEntryUpload(h *MainHandle) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var data holo.MetadataObjectUpload
-		if err := hx.BindAndClose(r, &data); err != nil {
+		if err := hx.Bind(r, &data); err != nil {
 			slog.ErrorContext(r.Context(), "error-01",
 				slog.String("method", "MetadataEntryUpload"),
 				slog.Any("error", err))

@@ -191,7 +191,7 @@ func d3252() {
 
 	sdcapi.Put("/V1.0/Rest/DeviceID", func(w http.ResponseWriter, r *http.Request) {
 		var idList holo.DeviceIDList
-		if err := hx.BindAndClose(r, &idList); err != nil {
+		if err := hx.Bind(r, &idList); err != nil {
 			hx.JsonTo(http.StatusInternalServerError,
 				holo.NewCommonResponse(r.URL.Path, -1, err.Error()), w)
 			return
@@ -216,7 +216,7 @@ func d3252() {
 
 	sdcapi.Post("/V2.0/Metadata/Subscription", func(w http.ResponseWriter, r *http.Request) {
 		var data holo.SubscriptionReq
-		if err := hx.BindAndClose(r, &data); err != nil {
+		if err := hx.Bind(r, &data); err != nil {
 			hx.JsonTo(http.StatusInternalServerError,
 				holo.NewCommonResponse(r.URL.Path, -1, err.Error()), w)
 			return
