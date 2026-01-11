@@ -99,14 +99,18 @@ func (d *DuckDB) List(ctx context.Context) (rs []pf.ChannelUserData, err error) 
 	return
 }
 
-func (d *DuckDB) TblName(ctx context.Context) string { return d.tbl }
-func (d *DuckDB) Get(ctx context.Context, id string) (data pf.ChannelUserData, ok bool, err error) {
+func (d *DuckDB) TblName(ctx context.Context) string {
 	d.mu.Lock()
 	defer d.mu.Unlock()
+	return d.tbl
+}
 
-	sql := querySql(d.tbl)
+func (d *DuckDB) Get(ctx context.Context, id string) (data pf.ChannelUserData, ok bool, err error) {
+	tblname := d.TblName(ctx)
+	sql := querySql(tblname)
 	row := d.db.QueryRowContext(ctx, sql, id)
 	err = row.Scan(&data.SN, &data.UUID, &data.Code, &data.X, &data.Y, &data.Z)
+	ok = err == nil
 	return
 }
 
