@@ -1,11 +1,12 @@
 module github.com/twiglab/doggy
 
-go 1.25.1
+go 1.25.3
 
 require (
 	github.com/duckdb/duckdb-go/v2 v2.5.4
 	github.com/eclipse/paho.mqtt.golang v1.5.1
 	github.com/go-chi/chi/v5 v5.2.3
+	github.com/google/uuid v1.6.0
 	github.com/imroc/req/v3 v3.57.0
 	github.com/influxdata/line-protocol/v2 v2.2.1
 	github.com/spf13/cobra v1.10.2
@@ -36,7 +37,6 @@ require (
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/flatbuffers v25.12.19+incompatible // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.4 // indirect
 	github.com/hashicorp/go-version v1.7.0 // indirect
