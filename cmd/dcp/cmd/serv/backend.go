@@ -77,6 +77,8 @@ func buildBackend(ctx context.Context, v *viper.Viper) (be.MutiAction, context.C
 
 	for _, bk := range blist {
 		switch backendName(bk) {
+		case be.LOG:
+			_ = buildLogAction(&acts, v)
 		case be.TAOS:
 			if err := buildTaosAction(&acts, v); err != nil {
 				log.Println(err)
@@ -85,8 +87,7 @@ func buildBackend(ctx context.Context, v *viper.Viper) (be.MutiAction, context.C
 			if err := buildMQTTAction(&acts, v); err != nil {
 				log.Println(err)
 			}
-		case be.LOG:
-			_ = buildLogAction(&acts, v)
+		case be.HTTP:
 		}
 	}
 	return acts, context.WithValue(ctx, keyBackend, acts)
