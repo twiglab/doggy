@@ -5,20 +5,25 @@ import (
 	"time"
 
 	"github.com/influxdata/line-protocol/v2/lineprotocol"
+	"github.com/taosdata/driver-go/v3/ws/unified"
 
-	"github.com/taosdata/driver-go/v3/ws/schemaless"
 	"github.com/twiglab/doggy/be"
 	"github.com/twiglab/doggy/pkg/human"
 )
 
 type Schemaless struct {
-	schemaless *schemaless.Schemaless
+	schemaless *unified.Client
 }
 
-func NewSchLe(s *schemaless.Schemaless) *Schemaless {
+func NewSchLe(dsn string) (*Schemaless, error) {
+	s, err := unified.Open(dsn)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Schemaless{
 		schemaless: s,
-	}
+	}, nil
 }
 
 func (c *Schemaless) Name() string {
@@ -66,7 +71,7 @@ func (s *Schemaless) handleCount(_ context.Context, data human.DataMix) error {
 	bs := enc.Bytes()
 	line := bytesToStr(bs)
 
-	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_MILLI_SECONDS, 0, 0)
+	return s.schemaless.SchemalessInsert(0, line, unified.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_MILLI_SECONDS, 0, "")
 }
 
 func (s *Schemaless) handleDensity(_ context.Context, data human.DataMix) error {
@@ -98,7 +103,7 @@ func (s *Schemaless) handleDensity(_ context.Context, data human.DataMix) error 
 	bs := enc.Bytes()
 	line := bytesToStr(bs)
 
-	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_MILLI_SECONDS, 0, 0)
+	return s.schemaless.SchemalessInsert(0, line, unified.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_MILLI_SECONDS, 0, "")
 }
 
 func (s *Schemaless) handleQueue(_ context.Context, data human.DataMix) error {
@@ -130,5 +135,5 @@ func (s *Schemaless) handleQueue(_ context.Context, data human.DataMix) error {
 	bs := enc.Bytes()
 	line := bytesToStr(bs)
 
-	return s.schemaless.Insert(line, schemaless.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_MILLI_SECONDS, 0, 0)
+	return s.schemaless.SchemalessInsert(0, line, unified.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_MILLI_SECONDS, 0, "")
 }

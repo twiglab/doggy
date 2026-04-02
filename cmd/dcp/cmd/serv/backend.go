@@ -3,10 +3,8 @@ package serv
 import (
 	"context"
 	"log"
-	"time"
 
 	"github.com/spf13/viper"
-	"github.com/taosdata/driver-go/v3/ws/schemaless"
 	"github.com/twiglab/doggy/be"
 	"github.com/twiglab/doggy/be/mqttc"
 	"github.com/twiglab/doggy/be/taosdb"
@@ -35,24 +33,14 @@ func buildLogAction(a adder, v *viper.Viper) error {
 }
 
 func buildTaosAction(a adder, v *viper.Viper) error {
-	url := taosdb.SchemalessURL(
-		v.GetString("backend.taos.addr"),
-		v.GetInt("backend.taos.port"),
-	)
-	sc := schemaless.NewConfig(url, 1,
-		schemaless.SetDb(v.GetString("backend.taos.dbname")),
-		schemaless.SetAutoReconnect(true),
-		schemaless.SetUser(v.GetString("backend.taos.username")),
-		schemaless.SetPassword(v.GetString("backend.taos.password")),
-		schemaless.SetReadTimeout(5*time.Second),
-		schemaless.SetWriteTimeout(5*time.Second),
-	)
-	s, err := schemaless.NewSchemaless(sc)
+	dsn := v.GetString("backend.taos.dsn")
+
+	s, err := taosdb.NewSchLe(dsn)
 	if err != nil {
 		return err
 	}
 
-	a.Add(taosdb.NewSchLe(s))
+	a.Add(s)
 	return nil
 }
 

@@ -1,7 +1,6 @@
 package taosdb
 
 import (
-	"fmt"
 	"unsafe"
 )
 
@@ -36,15 +35,6 @@ const (
 	TSDB_SML_TIMESTAMP_MICRO_SECONDS = "us"
 	TSDB_SML_TIMESTAMP_NANO_SECONDS  = "ns"
 )
-
-func TaosDSN(user, pwd, addr string, port int, dbname string) (string, string) {
-	dns := fmt.Sprintf("%s:%s@ws(%s:%d)/%s", user, pwd, addr, port, dbname)
-	return "taosWS", dns
-}
-
-func SchemalessURL(addr string, port int) string {
-	return fmt.Sprintf("ws://%s:%d", addr, port)
-}
 
 func bytesToStr(bs []byte) string {
 	return unsafe.String(&bs[0], len(bs))
