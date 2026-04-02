@@ -11,7 +11,7 @@ require (
 	github.com/influxdata/line-protocol/v2 v2.2.1
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
-	github.com/taosdata/driver-go/v3 v3.7.8
+	github.com/taosdata/driver-go/v3 v3.8.0
 	github.com/tinylib/msgp v1.6.3
 	go.etcd.io/etcd/client/v3 v3.6.9
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
@@ -37,7 +37,6 @@ require (
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.4 // indirect
-	github.com/hashicorp/go-version v1.7.0 // indirect
 	github.com/icholy/digest v1.1.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
